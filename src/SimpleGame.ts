@@ -11,8 +11,8 @@ namespace Example
             let config = 
             {
                 type: Phaser.AUTO,
-                width: 960,
-                height: 540,
+                width: 400,
+                height: 240,
                 scene: [ExampleScene],
                 banner: true,
                 title: 'Playground',

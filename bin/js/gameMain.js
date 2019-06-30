@@ -1,57 +1,52 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 var Example;
 (function (Example) {
-    var ExampleScene = /** @class */ (function (_super) {
-        __extends(ExampleScene, _super);
-        function ExampleScene() {
-            return _super.call(this, { key: 'ExampleScene' }) || this;
+    class ExampleScene extends Phaser.Scene {
+        constructor() {
+            super({ key: 'ExampleScene' });
+            this.logo_scale = 0.5;
         }
-        ExampleScene.prototype.preload = function () {
+        preload() {
             this.load.image('logo', 'assets/BlueHGRMJsm.png');
-        };
-        ExampleScene.prototype.create = function () {
+        }
+        create() {
             this.logo = this.add.image(Example.InitPhaser.gameRef.config["width"] / 2, Example.InitPhaser.gameRef.config["height"] / 2, 'logo');
-            this.logo.setScale(.5, .5);
-            var tween = this.tweens.add({
-                targets: this.logo,
-                scaleX: { value: 1.0, duration: 2000, ease: 'Back.easeInOut' },
-                scaleY: { value: 1.0, duration: 2000, ease: 'Back.easeInOut' },
-                yoyo: true,
-                repeat: -1
-            });
+            this.logo.setScale(this.logo_scale, this.logo_scale);
+            // let tween = this.tweens.add({
+            //                 targets: this.logo,
+            //                 scaleX: { value: 1.0, duration: 2000, ease: 'Back.easeInOut' },
+            //                 scaleY: { value: 1.0, duration: 2000, ease: 'Back.easeInOut' },
+            //                 yoyo: true,
+            //                 repeat: -1
+            //                 });
             // for (var i:number = 0; i < 4000; i++)
             // {
             //     var tmpText = this.add.text(16 + (i % 40) * 20, 16 + Math.floor(i / 40) * 20, '哇哦', {fontSize: '9px'});
             // }
-        };
-        return ExampleScene;
-    }(Phaser.Scene));
+        }
+        update(time, dt) {
+            this.logo_scale = time / 10000.0;
+            this.logo.setScale(this.logo_scale, this.logo_scale);
+        }
+    }
     Example.ExampleScene = ExampleScene;
 })(Example || (Example = {}));
 /// <reference path='ExampleScene.ts'/>
 var Example;
 (function (Example) {
-    var InitPhaser = /** @class */ (function () {
-        function InitPhaser() {
-        }
-        InitPhaser.initGame = function () {
-            var config = {
+    class InitPhaser {
+        static initGame() {
+            let config = {
                 type: Phaser.AUTO,
-                width: 960,
-                height: 540,
+                width: 400,
+                height: 240,
                 scene: [Example.ExampleScene],
                 banner: true,
                 title: 'Playground',
@@ -59,13 +54,132 @@ var Example;
                 version: '-1.0',
             };
             this.gameRef = new Phaser.Game(config);
-        };
-        return InitPhaser;
-    }());
+        }
+    }
     Example.InitPhaser = InitPhaser;
 })(Example || (Example = {}));
 window.onload =
-    function () {
+    () => {
         Example.InitPhaser.initGame();
     };
+define("Events/EventSystem", ["require", "exports", "typescript-collections"], function (require, exports, Collections) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    Collections = __importStar(Collections);
+    class EventElement {
+        constructor(parentSystem) {
+            this.parentSystem = parentSystem;
+        }
+        emit(evt, ...args) {
+            return this.parentSystem.emit(this, evt, args);
+        }
+        listen(src, evt, callback) {
+            var result = this.parentSystem.listen(src, this, callback, evt);
+            this.listenRecord.add({ src: src, evt: evt });
+            // result?
+            return result;
+        }
+        unlisten(src, evt) {
+            if (this.listenRecord.contains({ src: src, evt: evt })) {
+                this.parentSystem.discardListener(src, this, evt);
+                this.listenRecord.remove({ src: src, evt: evt });
+                return true;
+            }
+            return false;
+        }
+        // So lazy to use another dict omg
+        unlistenAll(src) {
+            var result = false;
+            // Will "this" be correct here? idk
+            this.listenRecord.forEach((obj) => {
+                if (obj.src === src) {
+                    result = true;
+                    this.unlisten(obj.src, obj.evt);
+                }
+            });
+            return result;
+        }
+        discardEmitter() {
+            this.parentSystem.discardEmitter(this);
+        }
+        discardReceiver() {
+            // Will "this" be correct here? idk
+            this.listenRecord.forEach((element) => {
+                this.parentSystem.discardListener(element.src, this, element.evt);
+            });
+        }
+        discard() {
+            this.discardEmitter();
+            this.discardReceiver();
+        }
+    }
+    exports.EventElement = EventElement;
+    class EventSystem {
+        constructor() {
+            this.dict = new Collections.Dictionary();
+            // nothing to do?
+        }
+        listen(src, dst, callback, evt) {
+            // Check if the source object is in our dict
+            if (!this.dict.containsKey(src)) {
+                this.dict.setValue(src, new Collections.Dictionary());
+            }
+            var srcDict = this.dict.getValue(src);
+            // Check if the event type is in our dict
+            if (!srcDict.containsKey(evt)) {
+                srcDict.setValue(evt, new Collections.LinkedDictionary());
+            }
+            var evtList = srcDict.getValue(evt);
+            // Check if the destnation is already be in the listener list
+            var overlay = true;
+            if (!evtList.containsKey(dst)) {
+                overlay = false;
+            }
+            // Use new value anyway
+            evtList.setValue(dst, callback);
+            return overlay;
+        }
+        emit(src, evt, ...args) {
+            var totalCnt = 0;
+            if (this.dict.containsKey(src)) {
+                var srcDict = this.dict.getValue(src);
+                if (srcDict.containsKey(evt)) {
+                    var evtList = srcDict.getValue(evt);
+                    // Pack argument array
+                    var lst = [src];
+                    lst.push.apply(args);
+                    // Call the event callback function for each destination
+                    evtList.forEach((dst, callback) => {
+                        callback.apply(dst, args);
+                        totalCnt += 1;
+                    });
+                }
+            }
+            return totalCnt;
+        }
+        discardEmitter(src) {
+            if (this.dict.containsKey(src)) {
+                this.dict.remove(src);
+            }
+        }
+        discardListener(src, dst, evt, clean = false) {
+            if (this.dict.containsKey(src)) {
+                var srcDict = this.dict.getValue(src);
+                if (srcDict.containsKey(evt)) {
+                    var evtList = srcDict.getValue(evt);
+                    if (evtList.containsKey(dst)) {
+                        evtList.remove(dst);
+                    }
+                    if (clean === true && evtList.isEmpty()) {
+                        srcDict.remove(evt);
+                    }
+                }
+                if (clean === true && srcDict.isEmpty()) {
+                    this.dict.remove(src);
+                }
+            }
+        }
+    }
+    exports.EventSystem = EventSystem;
+});
 //# sourceMappingURL=gameMain.js.map
