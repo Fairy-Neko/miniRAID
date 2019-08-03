@@ -21,7 +21,7 @@ export interface IEventReceiver
 export class EventElement implements IEventEmitter, IEventReceiver
 {
     parentSystem: EventSystem;
-    listenRecord: Collections.Set<ListenRecord>;
+    listenRecord: Collections.Set<ListenRecord> = new Collections.Set<ListenRecord>();
     
     constructor(parentSystem: EventSystem)
     {
@@ -133,7 +133,7 @@ export class EventSystem
         return overlay;
     }
 
-    emit(src: IEventEmitter, evt: String, ...args: any[]): number
+    emit(src: IEventEmitter, evt: String, args: any[]): number
     {
         var totalCnt: number = 0;
         if(this.dict.containsKey(src))
@@ -145,7 +145,7 @@ export class EventSystem
                 
                 // Pack argument array
                 var lst: any[] = [src];
-                lst.push.apply(args);
+                lst.push.apply(lst, args);
 
                 // Call the event callback function for each destination
                 evtList.forEach((dst, callback) => 

@@ -83448,7 +83448,7 @@ declare type Purchase = {
 
 declare type integer = number;
 
-declare module 'phaser' {
+declare module 'Phaser' {
     export = Phaser;
 
 }

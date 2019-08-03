@@ -6,8 +6,26 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Test Game</title>
 
+    <script src = "js/require.min.js"></script>
+    <!-- <script src = "js/umd.min.js"></script> -->
     <script src = "js/phaser.js"></script>
     <script src = "js/gameMain.js"></script>
+
+    <script>
+        require.config({
+            paths: {
+                "SimpleGame": "js/gameMain",
+                "typescript-collections": "js/umd",
+                "Phaser": 'js/phaser',
+            },
+
+            deps: [ "Phaser", "typescript-collections" ]
+        });
+
+        window.onload = () => {
+            require(["SimpleGame"]);
+        }
+    </script>
 </head>
 <body>
     
