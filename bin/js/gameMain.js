@@ -146,10 +146,42 @@ define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser"], f
             this.load.image('logo', 'assets/BlueHGRMJsm.png');
             this.width = this.sys.game.canvas.width;
             this.height = this.sys.game.canvas.height;
+            this.load.image('Grass_Overworld', 'assets/tilemaps/tiles/overworld_tileset_grass.png');
+            this.load.tilemapTiledJSON('overworld', 'assets/tilemaps/Overworld_tst.json');
         }
         create() {
             this.logo = this.add.image(this.width / 2, this.height / 2, 'logo');
             this.logo.setScale(this.logo_scale, this.logo_scale);
+            this.map = this.make.tilemap({ key: 'overworld' });
+            this.tiles = this.map.addTilesetImage('Grass_Overworld', 'Grass_Overworld');
+            this.terrainLayer = this.map.createStaticLayer('Terrain', this.tiles, 0, 0).setVisible(false);
+            this.ground_rt = this.add.renderTexture(0, 0, 960, 544);
+            this.ground_rt.saveTexture('ground_rt');
+            this.mesh0 = this.make.mesh({
+                key: 'ground_rt',
+                x: 400,
+                y: 250,
+                vertices: [
+                    /*  X   |   Y  */
+                    /* ----------- */
+                    -150, -150,
+                    -300, 150,
+                    300, 150,
+                    -150, -150,
+                    300, 150,
+                    150, -150
+                ],
+                uv: [
+                    /*  U   |   V  */
+                    /* ----------- */
+                    0, 0,
+                    0, 1,
+                    1, 1,
+                    0, 0,
+                    1, 1,
+                    1, 0
+                ]
+            });
             // let tween = this.tweens.add({
             //                 targets: this.logo,
             //                 scaleX: { value: 1.0, duration: 2000, ease: 'Back.easeInOut' },
@@ -199,8 +231,13 @@ define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser"], f
             //     console.log(1000.0 / dt);
             //     this.cnt = 0;
             // }
-            this.logo_scale = time / 10000.0;
-            this.logo.setScale(this.logo_scale, this.logo_scale);
+            // this.logo_scale = time / 10000.0;
+            // this.logo.setScale(this.logo_scale, this.logo_scale);
+            // this.ground_rt.scale -= 0.01;
+            this.ground_rt.setAngle(15);
+            this.ground_rt.clear();
+            this.ground_rt.draw(this.terrainLayer);
+            // this.ground_rt.draw(this.mesh0);
             // for(var i = 0; i < this.num; i++)
             // {
             //     this.objs[i * 10].emit('update', this.objs[i * 10], dt);
@@ -223,8 +260,8 @@ define("SimpleGame", ["require", "exports", "ExampleScene"], function (require, 
         static initGame() {
             let config = {
                 type: Phaser.AUTO,
-                width: 400,
-                height: 240,
+                width: 1024,
+                height: 640,
                 scene: [ExampleScene_1.default],
                 banner: true,
                 title: 'Playground',

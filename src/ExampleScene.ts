@@ -14,6 +14,12 @@ export default class ExampleScene extends Phaser.Scene
     width:number;
     height:number;
 
+    ground_rt:Phaser.GameObjects.RenderTexture;
+    terrainLayer:Phaser.Tilemaps.StaticTilemapLayer;
+    map:Phaser.Tilemaps.Tilemap;
+    tiles:Phaser.Tilemaps.Tileset;
+    mesh0: Phaser.GameObjects.Mesh;
+
     constructor() 
     {
         super({key: 'ExampleScene'});
@@ -24,12 +30,50 @@ export default class ExampleScene extends Phaser.Scene
         this.load.image('logo', 'assets/BlueHGRMJsm.png');
         this.width = this.sys.game.canvas.width;
         this.height = this.sys.game.canvas.height;
+    
+        this.load.image('Grass_Overworld', 'assets/tilemaps/tiles/overworld_tileset_grass.png');
+        this.load.tilemapTiledJSON('overworld', 'assets/tilemaps/Overworld_tst.json');
     }
 
     create() 
     {
         this.logo = this.add.image(this.width / 2, this.height / 2, 'logo');
         this.logo.setScale(this.logo_scale, this.logo_scale);
+
+        this.map = this.make.tilemap({key: 'overworld'});
+        this.tiles = this.map.addTilesetImage('Grass_Overworld', 'Grass_Overworld');
+        this.terrainLayer = this.map.createStaticLayer('Terrain', this.tiles, 0, 0).setVisible(false);
+        this.ground_rt = this.add.renderTexture(0, 0, 960, 544);
+
+        this.ground_rt.saveTexture('ground_rt');
+
+        this.mesh0 = this.make.mesh({
+            key: 'ground_rt',
+            x: 400,
+            y: 250,
+            vertices: [
+            /*  X   |   Y  */
+            /* ----------- */
+                -150, -150,
+                -300, 150,
+                300, 150,
+    
+                -150, -150,
+                300, 150,
+                150, -150
+            ],
+            uv: [
+            /*  U   |   V  */
+            /* ----------- */
+                0,      0,
+                0,      1,
+                1,      1,
+                
+                0,      0,
+                1,      1,
+                1,      0
+            ]
+        });
 
         // let tween = this.tweens.add({
         //                 targets: this.logo,
@@ -86,8 +130,14 @@ export default class ExampleScene extends Phaser.Scene
         //     console.log(1000.0 / dt);
         //     this.cnt = 0;
         // }
-        this.logo_scale = time / 10000.0;
-        this.logo.setScale(this.logo_scale, this.logo_scale);
+        // this.logo_scale = time / 10000.0;
+        // this.logo.setScale(this.logo_scale, this.logo_scale);
+
+        // this.ground_rt.scale -= 0.01;
+        this.ground_rt.setAngle(15);
+        this.ground_rt.clear();
+        this.ground_rt.draw(this.terrainLayer);
+        // this.ground_rt.draw(this.mesh0);
 
         // for(var i = 0; i < this.num; i++)
         // {

@@ -9,8 +9,8 @@ export default class InitPhaser
         let config = 
         {
             type: Phaser.AUTO,
-            width: 400,
-            height: 240,
+            width: 1024,
+            height: 640,
             scene: [ExampleScene],
             banner: true,
             title: 'Playground',
