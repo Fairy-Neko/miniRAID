@@ -193,14 +193,202 @@ define("Events/EventSystem", ["require", "exports", "typescript-collections"], f
 //         this.objs[i * 10].emit('onDamageReceived', this.objs[i * 10], src, dmg, true, false);
 //     }
 // }
-define("mob", ["require", "exports"], function (require, exports) {
+define("DynamicLoader/DynamicLoadObject", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+});
+define("UI/DraggableScene", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class DraggableScene extends Phaser.Scene {
+        constructor(config) {
+            super(config);
+        }
+        create() {
+            this.cameras.main.setViewport(this.screenX, this.screenY, this.sizeX, this.sizeY);
+        }
+        update(time, dt) {
+        }
+    }
+    exports.default = DraggableScene;
+});
+define("DynamicLoader/DynamicLoaderScene", ["require", "exports", "UI/DraggableScene"], function (require, exports, DraggableScene_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    DraggableScene_1 = __importDefault(DraggableScene_1);
+    class DynamicLoaderScene extends DraggableScene_1.default {
+        constructor() {
+            super({ key: 'DynamicLoaderScene' });
+            this.queue = [];
+            this.pending = new Map();
+            this.isLoading = false;
+            this.pools = new Map();
+            this.screenX = 10;
+            this.screenY = 10;
+            this.sizeX = 200;
+            this.sizeY = 40;
+        }
+        preload() {
+            this.load.json('assetList', './assets/assetList.json');
+        }
+        create() {
+            super.create();
+            this.label = this.add.text(0, 0, 'Loading ... [100.0%]');
+            this.assetList = this.cache.json.get('assetList');
+            this.pools.set("image", { "load": this.scene.scene.load.image,
+                "pool": this.scene.scene.textures });
+            this.pools.set("spritesheet", { "load": this.scene.scene.load.spritesheet,
+                "pool": this.scene.scene.textures });
+            this.pools.set("audio", { "load": this.scene.scene.load.audio,
+                "pool": this.scene.scene.cache.audio });
+            this.pools.set("bitmapFont", { "load": this.scene.scene.load.bitmapFont,
+                "pool": this.scene.scene.cache.bitmapFont });
+            this.pools.set("binary", { "load": this.scene.scene.load.binary,
+                "pool": this.scene.scene.cache.binary });
+            this.pools.set("json", { "load": this.scene.scene.load.json,
+                "pool": this.scene.scene.cache.json });
+            this.pools.set("JSONtilemap", { "load": this.scene.scene.load.tilemapTiledJSON,
+                "pool": this.scene.scene.cache.tilemap });
+            this.pools.set("glsl", { "load": this.scene.scene.load.glsl,
+                "pool": this.scene.scene.cache.shader });
+            this.pools.set("text", { "load": this.scene.scene.load.text,
+                "pool": this.scene.scene.cache.text });
+            this.scene.scene.load.on('complete', this.loadComplete.bind(this));
+        }
+        update(time, dt) {
+            this.isLoading = this.scene.scene.load.isLoading();
+            if (this.isLoading) {
+                this.label.setVisible(true);
+                this.label.text = `Loading ... [${(this.scene.scene.load.progress / 1.0 * 100.0).toFixed(1)}]`;
+            }
+            else {
+                this.label.setVisible(false);
+            }
+            if (this.queue.length > 0) {
+                for (let i = 0; i < this.queue.length; i++) {
+                    let item = this.queue[i];
+                    if (this.assetList.hasOwnProperty(item.key)) {
+                        let resource = this.assetList[item.key];
+                        let target;
+                        let IOObj = this.pools.get(resource.type);
+                        if (IOObj.pool.exists(item.key)) {
+                            // We already have this
+                            item.callback(item.key, resource.type, IOObj.pool.get(item.key));
+                        }
+                        // We don't want load a file many times (Phaser will throw a warning and actually it won't load multiple times for same keys, but hey we hate warnings (x))
+                        else if (!this.pending.has(item.key)) {
+                            console.log(`[DynamicLoader] Loading resource ${item.key} as type ${resource.type}`);
+                            resource.key = item.key;
+                            IOObj.load.apply(this.scene.scene.load, [resource]);
+                            this.pending.set(item.key, item);
+                        }
+                    }
+                    else {
+                        console.warn(`[DynamicLoader] Resource not found: ${item.key}, discarding`);
+                    }
+                }
+                // Since we are done for all items
+                this.queue.length = 0;
+            }
+            // Look for not yet loaded requests
+            if (!this.isLoading && this.pending.size > 0) {
+                this.scene.scene.load.start();
+            }
+        }
+        loadSingle(req) {
+            this.queue.push(req);
+        }
+        loadMultiple(reqs) {
+            this.queue.push.apply(this.queue, reqs);
+        }
+        loadComplete() {
+            // Since we are done for all pending requests
+            let self = this;
+            this.pending.forEach(function (value, key, map) {
+                // Maybe we don't want to get it again for performance ...
+                let resource = self.assetList[key];
+                let IOObj = self.pools.get(resource.type);
+                value.callback(key, resource.type, IOObj.pool.get(key));
+            });
+            // Again, we are done so goodbye
+            this.pending.clear();
+        }
+        pendLoad(requirement) {
+            this.queue.push(requirement);
+        }
+        static getSingleton() {
+            if (!DynamicLoaderScene.instance) {
+                DynamicLoaderScene.instance = new DynamicLoaderScene();
+                console.log("registering dynamic loader...");
+            }
+            return DynamicLoaderScene.instance;
+        }
+    }
+    exports.default = DynamicLoaderScene;
+});
+define("DynamicLoader/dSprite", ["require", "exports", "DynamicLoader/DynamicLoaderScene"], function (require, exports, DynamicLoaderScene_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    DynamicLoaderScene_1 = __importDefault(DynamicLoaderScene_1);
+    class dSprite extends Phaser.GameObjects.Sprite {
+        constructor(scene, x, y, texture, subsTexture, frame) {
+            var textureToLoad;
+            var frameToLoad;
+            if (!scene.textures.exists(texture)) {
+                textureToLoad = texture;
+                frameToLoad = frame;
+                texture = subsTexture;
+                frame = 0;
+            }
+            if (!texture) {
+                texture = 'default';
+            }
+            super(scene, x, y, texture, frame);
+            // Since we cannot put "super" to the very beginning ...
+            this.resources = [];
+            this.currentAnim = { 'key': '', 'startFrame': 0 };
+            if (textureToLoad) {
+                this.resources.push({ 'key': textureToLoad, 'metadata': {}, 'callback': this.onLoadComplete.bind(this) });
+                this.textureToLoad = textureToLoad;
+                this.frameToLoad = frameToLoad;
+            }
+            DynamicLoaderScene_1.default.getSingleton().loadMultiple(this.resources);
+        }
+        fetchChildren() {
+            return [];
+        }
+        onLoadComplete(key, type, fileObj) {
+            if (key == this.textureToLoad) {
+                this.loadComplete = true;
+                this.setTexture(this.textureToLoad, this.frameToLoad);
+                // Play cached animation
+                if (this.currentAnim.key) {
+                    this.play(this.currentAnim.key, true, this.currentAnim.startFrame);
+                }
+            }
+        }
+        // override to allow play() calls when not loaded (not sure if without this it will work or not, never tried)
+        play(key, ignoreIfPlaying, startFrame) {
+            this.currentAnim.key = key;
+            this.currentAnim.startFrame = startFrame;
+            if (this.loadComplete == true) {
+                super.play(key, ignoreIfPlaying, startFrame);
+            }
+            return this;
+        }
+    }
+    exports.default = dSprite;
+});
+define("Mob", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Mob {
         constructor(sprite, moveAnim) {
             this.sprite = sprite;
             this.moveAnim = moveAnim;
-            this.sprite.play(this.moveAnim);
+            if (this.moveAnim) {
+                this.sprite.play(this.moveAnim);
+            }
         }
         update(dt) {
             this.sprite.x += dt / 1000.0 * 10;
@@ -208,12 +396,13 @@ define("mob", ["require", "exports"], function (require, exports) {
     }
     exports.default = Mob;
 });
-define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "mob"], function (require, exports, Events, Phaser, mob_1) {
+define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "Mob", "DynamicLoader/dSprite"], function (require, exports, Events, Phaser, Mob_1, dSprite_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     Events = __importStar(Events);
     Phaser = __importStar(Phaser);
-    mob_1 = __importDefault(mob_1);
+    Mob_1 = __importDefault(Mob_1);
+    dSprite_1 = __importDefault(dSprite_1);
     class ExampleScene extends Phaser.Scene {
         constructor() {
             super({ key: 'ExampleScene' });
@@ -229,14 +418,17 @@ define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "m
             this.height = this.sys.game.canvas.height;
             this.load.image('Grass_Overworld', 'assets/tilemaps/tiles/overworld_tileset_grass.png');
             this.load.tilemapTiledJSON('overworld', 'assets/tilemaps/Overworld_tst.json');
-            this.load.spritesheet('elf', 'assets/forestElfMyst.png', { frameWidth: 32, frameHeight: 32, endFrame: 3 });
+            // this.load.spritesheet('elf', 'assets/forestElfMyst.png', {frameWidth: 32, frameHeight: 32, endFrame: 3});
         }
         create() {
             this.map = this.make.tilemap({ key: 'overworld' });
             this.tiles = this.map.addTilesetImage('Grass_Overworld', 'Grass_Overworld');
             this.terrainLayer = this.map.createStaticLayer('Terrain', this.tiles, 0, 0);
-            this.anims.create({ key: 'move', frames: this.anims.generateFrameNumbers('elf', { start: 0, end: 3, first: 0 }), frameRate: 8 });
-            this.alive.push(new mob_1.default(this.add.sprite(100, 200, 'elf', 4), 'move'));
+            // this.anims.create({key: 'move', frames: this.anims.generateFrameNumbers('elf', {start: 0, end: 3, first: 0}), frameRate: 8, repeat: -1});
+            // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
+            let girl = new Mob_1.default(new dSprite_1.default(this, 100, 200, 'char_sheet_forestelf_myst'), '');
+            this.alive.push(girl);
+            this.add.existing(girl.sprite);
         }
         update(time, dt) {
             for (let m of this.alive) {
@@ -246,10 +438,11 @@ define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "m
     }
     exports.default = ExampleScene;
 });
-define("SimpleGame", ["require", "exports", "ExampleScene"], function (require, exports, ExampleScene_1) {
+define("SimpleGame", ["require", "exports", "ExampleScene", "DynamicLoader/DynamicLoaderScene"], function (require, exports, ExampleScene_1, DynamicLoaderScene_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     ExampleScene_1 = __importDefault(ExampleScene_1);
+    DynamicLoaderScene_2 = __importDefault(DynamicLoaderScene_2);
     class InitPhaser {
         static initGame() {
             let config = {
@@ -263,10 +456,10 @@ define("SimpleGame", ["require", "exports", "ExampleScene"], function (require, 
                 version: '-1.0',
             };
             this.gameRef = new Phaser.Game(config);
+            this.gameRef.scene.add('DynamicLoaderScene', DynamicLoaderScene_2.default.getSingleton(), true);
         }
     }
     exports.default = InitPhaser;
-    console.log("!");
     InitPhaser.initGame();
 });
 //# sourceMappingURL=gameMain.js.map

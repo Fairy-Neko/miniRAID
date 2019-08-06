@@ -1,6 +1,7 @@
 import * as Events from './Events/EventSystem'
 import * as Phaser from 'Phaser'
-import Mob from './mob'
+import Mob from './Mob'
+import dSprite from './DynamicLoader/dSprite';
 
 export default class ExampleScene extends Phaser.Scene 
 {
@@ -35,7 +36,7 @@ export default class ExampleScene extends Phaser.Scene
         this.load.image('Grass_Overworld', 'assets/tilemaps/tiles/overworld_tileset_grass.png');
         this.load.tilemapTiledJSON('overworld', 'assets/tilemaps/Overworld_tst.json');
 
-        this.load.spritesheet('elf', 'assets/forestElfMyst.png', {frameWidth: 32, frameHeight: 32, endFrame: 3});
+        // this.load.spritesheet('elf', 'assets/forestElfMyst.png', {frameWidth: 32, frameHeight: 32, endFrame: 3});
     }
 
     create() 
@@ -44,9 +45,12 @@ export default class ExampleScene extends Phaser.Scene
         this.tiles = this.map.addTilesetImage('Grass_Overworld', 'Grass_Overworld');
         this.terrainLayer = this.map.createStaticLayer('Terrain', this.tiles, 0, 0);
 
-        this.anims.create({key: 'move', frames: this.anims.generateFrameNumbers('elf', {start: 0, end: 3, first: 0}), frameRate: 8});
+        // this.anims.create({key: 'move', frames: this.anims.generateFrameNumbers('elf', {start: 0, end: 3, first: 0}), frameRate: 8, repeat: -1});
 
-        this.alive.push(new Mob(this.add.sprite(100, 200, 'elf', 4), 'move'));
+        // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
+        let girl = new Mob(new dSprite(this, 100, 200, 'char_sheet_forestelf_myst'), '');
+        this.alive.push(girl);
+        this.add.existing(girl.sprite);
     }
 
     update(time:number, dt:number)

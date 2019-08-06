@@ -1,4 +1,5 @@
 import ExampleScene from './ExampleScene'
+import DynamicLoaderScene from './DynamicLoader/DynamicLoaderScene'
 
 export default class InitPhaser 
 {
@@ -19,8 +20,8 @@ export default class InitPhaser
         }
 
         this.gameRef = new Phaser.Game(config);
+        this.gameRef.scene.add('DynamicLoaderScene', DynamicLoaderScene.getSingleton(), true);
     }
 }
 
-console.log("!");
 InitPhaser.initGame();

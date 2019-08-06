@@ -1,14 +1,19 @@
+import dSprite from './DynamicLoader/dSprite'
+
 export default class Mob
 {
-    sprite:Phaser.GameObjects.Sprite;
+    sprite:dSprite;
     moveAnim:string;
 
-    constructor(sprite:Phaser.GameObjects.Sprite, moveAnim:string)
+    constructor(sprite: dSprite, moveAnim:string)
     {
         this.sprite = sprite;
         this.moveAnim = moveAnim;
 
-        this.sprite.play(this.moveAnim);
+        if(this.moveAnim)
+        {
+            this.sprite.play(this.moveAnim);
+        }
     }
 
     update(dt:number)

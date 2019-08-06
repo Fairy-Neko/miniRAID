@@ -1,0 +1,8 @@
+{
+    "char_sheet_forestelf_myst":
+    {
+        "url": "./assets/forestElfMyst.png",
+        "type": "spritesheet",
+        "frameConfig": {"frameWidth": 32, "frameHeight": 32, "endFrame": 4}
+    }
+}
