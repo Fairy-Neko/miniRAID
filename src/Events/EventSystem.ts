@@ -1,12 +1,17 @@
+/**
+ * @module Events
+ */
+
 import * as Collections from 'typescript-collections'
 
-type EventCallback = (...args: any[]) => void;
+type EventCallback = (...args: any[]) => any;
 type ListenRecord  = {src: IEventEmitter, evt: String};
 
 export interface IEventEmitter
 {
     parentSystem: EventSystem;
-    emit(evt: String, ...args: any[]): number;
+    emit(evt: String, resCallback: (res:any) => void, ...args: any[]): number;
+    emitArray(evt: String, resCallback: (res:any) => void, args: any[]): number;
     discardEmitter(): void;
 }
 
@@ -28,9 +33,14 @@ export class EventElement implements IEventEmitter, IEventReceiver
         this.parentSystem = parentSystem;
     }    
 
-    public emit(evt: String, ...args: any[]): number
+    public emit(evt: String, resCallback: (res:any) => void, ...args: any[]): number
     {
-        return this.parentSystem.emit(this, evt, args);
+        return this.parentSystem.emit(this, resCallback, evt, args);
+    }
+
+    public emitArray(evt: String, resCallback: (res:any) => void, args: any[]): number
+    {
+        return this.parentSystem.emit(this, resCallback, evt, args);
     }
 
     public listen(src: IEventEmitter, evt: String, callback: EventCallback): boolean
@@ -133,7 +143,7 @@ export class EventSystem
         return overlay;
     }
 
-    emit(src: IEventEmitter, evt: String, args: any[]): number
+    emit(src: IEventEmitter, resCallback: (res:any) => void, evt: String, args: any[]): number
     {
         var totalCnt: number = 0;
         if(this.dict.containsKey(src))
@@ -150,7 +160,12 @@ export class EventSystem
                 // Call the event callback function for each destination
                 evtList.forEach((dst, callback) => 
                 {
-                    callback.apply(dst, args);
+                    let result = callback.apply(dst, args);
+                    if(resCallback)
+                    {
+                        resCallback(result);
+                    }
+
                     totalCnt += 1;
                 });
             }

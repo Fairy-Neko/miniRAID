@@ -1,3 +1,5 @@
+/** @module DynamicLoader */
+
 import * as Phaser from 'Phaser'
 import DraggableScene from '../UI/DraggableScene'
 import * as DLO from './DynamicLoadObject'

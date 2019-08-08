@@ -1,3 +1,5 @@
+/** @module DynamicLoader */
+
 export interface ResourceRequirements
 {
     // type: string;

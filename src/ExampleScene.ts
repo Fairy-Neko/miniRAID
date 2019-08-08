@@ -1,3 +1,5 @@
+/** @module GameScene */
+
 import * as Events from './Events/EventSystem'
 import * as Phaser from 'Phaser'
 import Mob from './Mob'
@@ -48,7 +50,10 @@ export default class ExampleScene extends Phaser.Scene
         // this.anims.create({key: 'move', frames: this.anims.generateFrameNumbers('elf', {start: 0, end: 3, first: 0}), frameRate: 8, repeat: -1});
 
         // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
-        let girl = new Mob(new dSprite(this, 100, 200, 'char_sheet_forestelf_myst'), '');
+        let girl = new Mob({
+            'sprite': new dSprite(this, 100, 200, 'char_sheet_forestelf_myst'), 
+            'moveAnim': ''
+        });
         this.alive.push(girl);
         this.add.existing(girl.sprite);
     }

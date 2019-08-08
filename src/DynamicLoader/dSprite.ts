@@ -1,3 +1,5 @@
+/** @module DynamicLoader */
+
 import DynamicLoadObject from './DynamicLoadObject'
 import * as dl from './DynamicLoadObject'
 import DynamicLoaderScene from './DynamicLoaderScene';
@@ -46,6 +48,10 @@ export default class dSprite extends Phaser.GameObjects.Sprite implements Dynami
             this.textureToLoad = textureToLoad;
             this.frameToLoad = frameToLoad;
         }
+        if(texture == 'default')
+        {
+            this.setVisible(false);
+        }
 
         DynamicLoaderScene.getSingleton().loadMultiple(this.resources);
     }
@@ -67,6 +73,8 @@ export default class dSprite extends Phaser.GameObjects.Sprite implements Dynami
             {
                 this.play(this.currentAnim.key, true, this.currentAnim.startFrame);
             }
+
+            this.setVisible(true);
         }
     }
 

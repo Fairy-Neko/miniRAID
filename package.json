@@ -4,6 +4,8 @@
   "description": "Please refer to https://updatestage.com/create-a-phaser-3-project-part-1/ for build up the enviorment, phaser and typescript.   You need this library: `typescript-collections`. type `npm ci` in root folder to install it. (I am lazy to figure out how to correctly use `package.json` and `package-lock.json` right now so **please use `npm ci` instead of `npm i`.** Thanks!)",
   "main": "index.js",
   "dependencies": {
+    "typedoc": "^0.14.2",
+    "typedoc-plugin-external-module-name": "^2.1.0",
     "typescript-collections": "^1.3.2"
   },
   "devDependencies": {},

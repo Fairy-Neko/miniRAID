@@ -1,3 +1,5 @@
+/** @module GameScene */
+
 import ExampleScene from './ExampleScene'
 import DynamicLoaderScene from './DynamicLoader/DynamicLoaderScene'
 

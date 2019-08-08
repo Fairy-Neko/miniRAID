@@ -61,5 +61,16 @@
     // "emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
 
     "watch": true,
-  }
+  },
+  // "files": [
+  //   "src/Events/EventSystem.ts"
+  // ]
+  "include": [
+    "src/**/*",
+    "tsDefinitions/phaser.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
 }
