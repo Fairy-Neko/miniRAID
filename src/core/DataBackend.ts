@@ -968,8 +968,8 @@ export class MobListener extends EventSystem.EventElement
 {
     focusList: Set<MobData>;
     priority: number;
-    enabled: boolean;
-    isOver: boolean;
+    enabled: boolean = true;
+    isOver: boolean = false;
     type: MobListenerType;
 
     constructor()
@@ -978,6 +978,20 @@ export class MobListener extends EventSystem.EventElement
         this.focusList = new Set();
         this.priority = 0;
         this.enabled = true;
+
+        // let tst = new MobData({'name': 'test'});
+        // this.listen(tst, 'dealDamage', this.isReadyWrapper(this.onDealDamage));
+    }
+
+    isReadyWrapper(func:(...args:any[]) => any) : (...args: any[]) => any
+    {
+        return (...args:any[]) => // In order to catch the correct "this" (really?) ref: https://github.com/Microsoft/TypeScript/wiki/'this'-in-TypeScript
+        {
+            if(this.enabled && (!this.isOver))
+            {
+                func.apply(this, args);
+            }
+        };
     }
 
     update(dt:number)
@@ -1065,20 +1079,20 @@ export class MobListener extends EventSystem.EventElement
     onKill(damageInfo:mRTypes.DamageHeal) { return false; }
     onDeath(damageInfo:mRTypes.DamageHeal) { return false; }
 
-    onFocusDealDamage(damageInfo:mRTypes.DamageHeal) { return false; }
-    onFocusDealDamageFinal(damageInfo:mRTypes.DamageHeal) { return false; }
+    // onFocusDealDamage(damageInfo:mRTypes.DamageHeal) { return false; }
+    // onFocusDealDamageFinal(damageInfo:mRTypes.DamageHeal) { return false; }
 
-    onFocusDealHeal(healInfo:mRTypes.DamageHeal) { return false; }
-    onFocusDealHealFinal(healInfo:mRTypes.DamageHeal) { return false; }
+    // onFocusDealHeal(healInfo:mRTypes.DamageHeal) { return false; }
+    // onFocusDealHealFinal(healInfo:mRTypes.DamageHeal) { return false; }
 
-    onFocusReceiveDamage(damageInfo:mRTypes.DamageHeal) { return false; }
-    onFocusReceiveDamageFinal(damageInfo:mRTypes.DamageHeal) { return false; }
+    // onFocusReceiveDamage(damageInfo:mRTypes.DamageHeal) { return false; }
+    // onFocusReceiveDamageFinal(damageInfo:mRTypes.DamageHeal) { return false; }
 
-    onFocusReceiveHeal(healInfo:mRTypes.DamageHeal) { return false; }
-    onFocusReceiveHealFinal(healInfo:mRTypes.DamageHeal) { return false; }
+    // onFocusReceiveHeal(healInfo:mRTypes.DamageHeal) { return false; }
+    // onFocusReceiveHealFinal(healInfo:mRTypes.DamageHeal) { return false; }
 
-    onFocusKill(damageInfo:mRTypes.DamageHeal) { return false; }
-    onFocusDeath(damageInfo:mRTypes.DamageHeal) { return false; }
+    // onFocusKill(damageInfo:mRTypes.DamageHeal) { return false; }
+    // onFocusDeath(damageInfo:mRTypes.DamageHeal) { return false; }
 }
 
 /**

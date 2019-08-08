@@ -23,44 +23,44 @@ export namespace Settings
     export interface MobData
     {
         name:string;
-        image:string;
+        image?:string;
         
-        race:string;
-        class:string;
-        level:number;
+        race?:string;
+        class?:string;
+        level?:number;
 
-        availableBP:number;
-        availableSP:number;
+        availableBP?:number;
+        availableSP?:number;
 
-        vit:number;
-        str:number;
-        dex:number;
-        tec:number;
-        int:number;
-        mag:number;
+        vit?:number;
+        str?:number;
+        dex?:number;
+        tec?:number;
+        int?:number;
+        mag?:number;
 
-        health:number;
-        damage:number;
-        mana:number;
+        health?:number;
+        damage?:number;
+        mana?:number;
 
-        speed:number;
-        movingSpeed:number;
-        attackSpeed:number;
-        spellSpeed:number;
-        resourceCost:number;
+        speed?:number;
+        movingSpeed?:number;
+        attackSpeed?:number;
+        spellSpeed?:number;
+        resourceCost?:number;
 
-        baseSpeed:number;
-        baseAttackSpeed:number;
+        baseSpeed?:number;
+        baseAttackSpeed?:number;
 
-        weaponLeft: Weapon;
-        weaponRight: Weapon;
-        armor: Armor;
-        accessory: Accessory;
+        weaponLeft?: Weapon;
+        weaponRight?: Weapon;
+        armor?: Armor;
+        accessory?: Accessory;
 
-        isPlayer: boolean;
-        tauntMul: number;
+        isPlayer?: boolean;
+        tauntMul?: number;
 
-        mobConstructor: MobConstructor;
+        mobConstructor?: MobConstructor;
     }
 
     export interface Mob
