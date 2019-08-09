@@ -83,6 +83,8 @@ export interface BaseStats
     tec: number;
     int: number;
     mag: number;
+
+    [index:string] : number;
 }
 
 export interface MobSpeedModifiers
@@ -92,49 +94,55 @@ export interface MobSpeedModifiers
     attackSpeed: number;
     spellSpeed: number;
     resourceCost: number;
+
+    [index:string] : number;
 }
 
-export interface AllTypeNumbers
+export interface AllTypes<T>
 {
-    physical: number;
-    elemental: number;
-    pure: number; // It should be 0
+    physical: T;
+    elemental: T;
+    pure: T; // It should be 0
 
-    slash: number;
-    knock: number;
-    pierce: number;
-    fire: number;
-    ice: number;
-    water: number;
-    nature: number;
-    wind: number;
-    thunder: number;
-    light: number;
+    slash: T;
+    knock: T;
+    pierce: T;
+    fire: T;
+    ice: T;
+    water: T;
+    nature: T;
+    wind: T;
+    thunder: T;
+    light: T;
 
-    heal: number;
+    heal: T;
+
+    [index:string] : T;
 }
 
-export interface LeafTypeNumbers
+export interface LeafTypes<T>
 {
-    slash: number;
-    knock: number;
-    pierce: number;
-    fire: number;
-    ice: number;
-    water: number;
-    nature: number;
-    wind: number;
-    thunder: number;
-    light: number;
-    heal: number;
+    slash: T;
+    knock: T;
+    pierce: T;
+    fire: T;
+    ice: T;
+    water: T;
+    nature: T;
+    wind: T;
+    thunder: T;
+    light: T;
+    heal: T;
+
+    [index:string] : T;
 }
 
 export interface DamageHeal
 {
     source?: MobData;
     target: MobData;
-    value: LeafTypeNumbers;
-    overdeal: LeafTypeNumbers;
+    value: LeafTypes<number>;
+    overdeal: LeafTypes<number>;
     isCrit: boolean;
     isAvoid: boolean;
     isBlock: boolean;
@@ -143,9 +151,9 @@ export interface DamageHeal
 
 export interface BattleStats
 {
-    resist: AllTypeNumbers;
+    resist: AllTypes<number>;
 
-    attackPower: AllTypeNumbers;
+    attackPower: AllTypes<number>;
 
     // Write a helper to get hit / avoid / crit percentage from current level and parameters ?
     // Percentage
@@ -168,4 +176,10 @@ export interface BattleStats
 export interface SpellDictionary 
 {
     [index: string]: SpellData;
+}
+
+export interface HTMLToolTip
+{
+    title: string;
+    text: string;
 }

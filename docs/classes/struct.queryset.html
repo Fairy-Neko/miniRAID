@@ -107,10 +107,13 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="struct.queryset.html#_query" class="tsd-kind-icon">_query</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="struct.queryset.html#additem" class="tsd-kind-icon">add<wbr>Item</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="struct.queryset.html#addquery" class="tsd-kind-icon">add<wbr>Query</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="struct.queryset.html#getall" class="tsd-kind-icon">get<wbr>All</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="struct.queryset.html#has" class="tsd-kind-icon">has</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="struct.queryset.html#livequery" class="tsd-kind-icon">live<wbr>Query</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="struct.queryset.html#query" class="tsd-kind-icon">query</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="struct.queryset.html#removeitem" class="tsd-kind-icon">remove<wbr>Item</a></li>
 							</ul>
 						</section>
 					</div>
@@ -128,7 +131,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in Structs/QuerySet.ts:21</li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Structs/QuerySet.ts#L26">Structs/QuerySet.ts:26</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -168,7 +171,7 @@
 					<div class="tsd-signature tsd-kind-icon">current<wbr>Timestamp<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">integer</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in Structs/QuerySet.ts:19</li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Structs/QuerySet.ts#L24">Structs/QuerySet.ts:24</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -183,7 +186,7 @@
 					<div class="tsd-signature tsd-kind-icon">data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in Structs/QuerySet.ts:15</li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Structs/QuerySet.ts#L20">Structs/QuerySet.ts:20</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -193,7 +196,7 @@
 					<div class="tsd-signature tsd-kind-icon">key<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in Structs/QuerySet.ts:21</li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Structs/QuerySet.ts#L26">Structs/QuerySet.ts:26</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -224,89 +227,24 @@
 					<div class="tsd-signature tsd-kind-icon">queries<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/struct.querycache.html" class="tsd-signature-type">QueryCache</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Map&lt;string, QueryCache&lt;T&gt;&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in Structs/QuerySet.ts:16</li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Structs/QuerySet.ts#L21">Structs/QuerySet.ts:21</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="_query" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _query</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">_query<span class="tsd-signature-symbol">(</span>filter<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span>, sort<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in Structs/QuerySet.ts:111</li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> filter: <span class="tsd-signature-type">function</span></h5>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter-siganture">
-											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-											</ul>
-											<ul class="tsd-descriptions">
-												<li class="tsd-description">
-													<h4 class="tsd-parameters-title">Parameters</h4>
-													<ul class="tsd-parameters">
-														<li>
-															<h5>arg: <span class="tsd-signature-type">T</span></h5>
-														</li>
-													</ul>
-													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-												</li>
-											</ul>
-										</li>
-									</ul>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> sort: <span class="tsd-signature-type">function</span></h5>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter-siganture">
-											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>lhs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span>, rhs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
-											</ul>
-											<ul class="tsd-descriptions">
-												<li class="tsd-description">
-													<h4 class="tsd-parameters-title">Parameters</h4>
-													<ul class="tsd-parameters">
-														<li>
-															<h5>lhs: <span class="tsd-signature-type">T</span></h5>
-														</li>
-														<li>
-															<h5>rhs: <span class="tsd-signature-type">T</span></h5>
-														</li>
-													</ul>
-													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
-												</li>
-											</ul>
-										</li>
-									</ul>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="additem" class="tsd-anchor"></a>
 					<h3>add<wbr>Item</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Item<span class="tsd-signature-symbol">(</span>item<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span>, failCallback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Item<span class="tsd-signature-symbol">(</span>item<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span>, failCallback<span class="tsd-signature-symbol">?: </span><a href="../modules/struct.html#failcallback" class="tsd-signature-type">FailCallback</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in Structs/QuerySet.ts:58</li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Structs/QuerySet.ts#L89">Structs/QuerySet.ts:89</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -323,28 +261,10 @@
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> failCallback: <span class="tsd-signature-type">function</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> failCallback: <a href="../modules/struct.html#failcallback" class="tsd-signature-type">FailCallback</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>Callback if the item was already in this QuerySet. This callback takes the item (inside the QuerySet) as input and returns whether the item in this QuerySet is modified or not by the callback function (e.g. buffs might want to +1 stack if already exists), and updates currentTimeStep if modification was done.</p>
 									</div>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter-siganture">
-											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-											</ul>
-											<ul class="tsd-descriptions">
-												<li class="tsd-description">
-													<h4 class="tsd-parameters-title">Parameters</h4>
-													<ul class="tsd-parameters">
-														<li>
-															<h5>arg: <span class="tsd-signature-type">T</span></h5>
-														</li>
-													</ul>
-													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-												</li>
-											</ul>
-										</li>
-									</ul>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -355,67 +275,124 @@
 					<a name="addquery" class="tsd-anchor"></a>
 					<h3>add<wbr>Query</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Query<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, filter<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span>, sort<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Query<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, filter<span class="tsd-signature-symbol">?: </span><a href="../modules/struct.html#filterfunc" class="tsd-signature-type">FilterFunc</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span>, sort<span class="tsd-signature-symbol">?: </span><a href="../modules/struct.html#comparefunc" class="tsd-signature-type">CompareFunc</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in Structs/QuerySet.ts:37</li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Structs/QuerySet.ts#L68">Structs/QuerySet.ts:68</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Add a query to the QuerySet.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>name: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Name for this query, will be used in query() function.</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> filter: <a href="../modules/struct.html#filterfunc" class="tsd-signature-type">FilterFunc</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>filtering function as in Array.filter. It defines a criteia that whether an element in the query should be keeped or discarded. Returns false to filter out that element.</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> sort: <a href="../modules/struct.html#comparefunc" class="tsd-signature-type">CompareFunc</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>compareFunction as in Array.sort. You want to return a negative value if lhs &lt; rhs and vice versa. The result then will come with an ascending order if you do so (smaller first).</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getall" class="tsd-anchor"></a>
+					<h3>get<wbr>All</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>All<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IterableIterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Structs/QuerySet.ts#L45">Structs/QuerySet.ts:45</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get all data inside this set as an array.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IterableIterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="has" class="tsd-anchor"></a>
+					<h3>has</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">has<span class="tsd-signature-symbol">(</span>item<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Structs/QuerySet.ts#L50">Structs/QuerySet.ts:50</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>name: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> filter: <span class="tsd-signature-type">function</span></h5>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter-siganture">
-											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-											</ul>
-											<ul class="tsd-descriptions">
-												<li class="tsd-description">
-													<h4 class="tsd-parameters-title">Parameters</h4>
-													<ul class="tsd-parameters">
-														<li>
-															<h5>arg: <span class="tsd-signature-type">T</span></h5>
-														</li>
-													</ul>
-													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-												</li>
-											</ul>
-										</li>
-									</ul>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> sort: <span class="tsd-signature-type">function</span></h5>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter-siganture">
-											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>lhs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span>, rhs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
-											</ul>
-											<ul class="tsd-descriptions">
-												<li class="tsd-description">
-													<h4 class="tsd-parameters-title">Parameters</h4>
-													<ul class="tsd-parameters">
-														<li>
-															<h5>lhs: <span class="tsd-signature-type">T</span></h5>
-														</li>
-														<li>
-															<h5>rhs: <span class="tsd-signature-type">T</span></h5>
-														</li>
-													</ul>
-													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
-												</li>
-											</ul>
-										</li>
-									</ul>
+									<h5>item: <span class="tsd-signature-type">T</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="livequery" class="tsd-anchor"></a>
+					<h3>live<wbr>Query</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">live<wbr>Query<span class="tsd-signature-symbol">(</span>filter<span class="tsd-signature-symbol">?: </span><a href="../modules/struct.html#filterfunc" class="tsd-signature-type">FilterFunc</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span>, sort<span class="tsd-signature-symbol">?: </span><a href="../modules/struct.html#comparefunc" class="tsd-signature-type">CompareFunc</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Structs/QuerySet.ts#L165">Structs/QuerySet.ts:165</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Perform an online query with input functions.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> filter: <a href="../modules/struct.html#filterfunc" class="tsd-signature-type">FilterFunc</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Filter function</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> sort: <a href="../modules/struct.html#comparefunc" class="tsd-signature-type">CompareFunc</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Compare function</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -429,7 +406,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in Structs/QuerySet.ts:99</li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Structs/QuerySet.ts#L148">Structs/QuerySet.ts:148</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -448,6 +425,29 @@
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>An array contains a sorted query results.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="removeitem" class="tsd-anchor"></a>
+					<h3>remove<wbr>Item</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Item<span class="tsd-signature-symbol">(</span>item<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Structs/QuerySet.ts#L124">Structs/QuerySet.ts:124</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>item: <span class="tsd-signature-type">T</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -504,9 +504,6 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="struct.queryset.html#queries" class="tsd-kind-icon">queries</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="struct.queryset.html#_query" class="tsd-kind-icon">_query</a>
-							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="struct.queryset.html#additem" class="tsd-kind-icon">add<wbr>Item</a>
 							</li>
@@ -514,7 +511,19 @@
 								<a href="struct.queryset.html#addquery" class="tsd-kind-icon">add<wbr>Query</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="struct.queryset.html#getall" class="tsd-kind-icon">get<wbr>All</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="struct.queryset.html#has" class="tsd-kind-icon">has</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="struct.queryset.html#livequery" class="tsd-kind-icon">live<wbr>Query</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="struct.queryset.html#query" class="tsd-kind-icon">query</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="struct.queryset.html#removeitem" class="tsd-kind-icon">remove<wbr>Item</a>
 							</li>
 						</ul>
 					</li>
@@ -522,6 +531,15 @@
 				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported">
 						<a href="../interfaces/struct.querycache.html" class="tsd-kind-icon">Query<wbr>Cache</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
+						<a href="../modules/struct.html#comparefunc" class="tsd-kind-icon">Compare<wbr>Func</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
+						<a href="../modules/struct.html#failcallback" class="tsd-kind-icon">Fail<wbr>Callback</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
+						<a href="../modules/struct.html#filterfunc" class="tsd-kind-icon">Filter<wbr>Func</a>
 					</li>
 				</ul>
 			</nav>

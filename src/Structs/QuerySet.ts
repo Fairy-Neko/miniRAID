@@ -1,6 +1,7 @@
 /** @module Struct */
 
 import { Data } from "Phaser";
+import { stringify } from "querystring";
 
 interface QueryCache<T>
 {
@@ -9,6 +10,10 @@ interface QueryCache<T>
     latest: integer;
     result: Array<T>;
 }
+
+export type FilterFunc<T> = (arg: T) => boolean;
+export type CompareFunc<T> = (lhs: T, rhs: T) => number;
+export type FailCallback<T> = (arg: T) => boolean;
 
 export default class QuerySet<T>
 {
@@ -35,6 +40,26 @@ export default class QuerySet<T>
     }
 
     /**
+     * Get all data inside this set as an array.
+     */
+    getAll() : IterableIterator<T>
+    {
+        return this.data.values();
+    }
+
+    has(item: T) : boolean
+    {
+        if(this.keyFn)
+        {
+            return (<Map<string, T>>this.data).has(this.keyFn(item));
+        }
+        else
+        {
+            return (<Set<T>>this.data).has(item);
+        }
+    }
+
+    /**
      * Add a query to the QuerySet.
      * @param name Name for this query, will be used in query() function.
      * @param filter filtering function as in Array.filter. It defines a criteia that whether an element in the query should be keeped or discarded. Returns false to filter out that element.
@@ -42,8 +67,8 @@ export default class QuerySet<T>
      */
     addQuery(
         name: string,
-        filter?: (arg: T) => boolean,
-        sort?:   (lhs: T, rhs: T) => number
+        filter?: FilterFunc<T>,
+        sort?:   CompareFunc<T>
     )
     {
         // Note that every time you call this will force the query to be refreshed even if it is the same query
@@ -61,7 +86,7 @@ export default class QuerySet<T>
      * @param item The item needs to be added
      * @param failCallback Callback if the item was already in this QuerySet. This callback takes the item (inside the QuerySet) as input and returns whether the item in this QuerySet is modified or not by the callback function (e.g. buffs might want to +1 stack if already exists), and updates currentTimeStep if modification was done.
      */
-    addItem(item: T, failCallback?: (arg: T) => boolean)
+    addItem(item: T, failCallback?: FailCallback<T>)
     {
         if(!this.keyFn)
         {
@@ -96,6 +121,24 @@ export default class QuerySet<T>
         }
     }
 
+    removeItem(item: T)
+    {
+        if(!this.keyFn)
+        {
+            if((<Set<T>>this.data).delete(item))
+            {
+                this.currentTimestamp += 1;
+            }
+        }
+        else
+        {
+            if((<Map<string, T>>this.data).delete(this.keyFn(item)))
+            {
+                this.currentTimestamp += 1;
+            }
+        }
+    }
+
     /**
      * Apply a query and return the results.
      * 
@@ -107,16 +150,21 @@ export default class QuerySet<T>
         let q = this.queries.get(name);
         if(q.latest < this.currentTimestamp)
         {
-            q.result = this._query(q.filter, q.sort);
+            q.result = this.liveQuery(q.filter, q.sort);
             q.latest = this.currentTimestamp;
         }
 
         return q.result;
     }
 
-    private _query(
-        filter?: (arg: T) => boolean,
-        sort?:   (lhs: T, rhs: T) => number) : Array<T>
+    /**
+     * Perform an online query with input functions.
+     * @param filter Filter function
+     * @param sort Compare function
+     */
+    liveQuery(
+        filter?: FilterFunc<T>,
+        sort?:   CompareFunc<T>) : Array<T>
     {
         let arr = Array.from<T>(this.data.values());
         

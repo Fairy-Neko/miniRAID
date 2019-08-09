@@ -7,7 +7,8 @@ import Mob from '../Mob';
 import { Weapon, Armor, Accessory } from './EquipmentCore';
 import Buff from './Buff';
 import * as Collections from 'typescript-collections'
-import QuerySet from '../Structs/QuerySet';
+import QuerySet, { FailCallback } from '../Structs/QuerySet';
+import * as GameData from './GameData';
 
 export default class DataBackend
 {
@@ -174,6 +175,7 @@ export class MobData extends EventSystem.EventElement
     mobConstructor: mRTypes.MobConstructor;
     parentMob?: Mob;
     spells: mRTypes.SpellDictionary;
+    healthRatio: number;
     
     constructor(settings:mRTypes.Settings.MobData)
     {
@@ -408,12 +410,12 @@ export class MobData extends EventSystem.EventElement
             this.addListener(this.currentWeapon);
     
             // I switched my weapon !!!
-            this.updateListeners(this, 'onSwitchWeapon', [this, this.currentWeapon]);
+            this.updateListeners(this, 'switchWeapon', this, this.currentWeapon);
         }
 
         // Update all listeners
-        this.updateListeners(mob, 'onUpdate', [mob, dt]);
-        for (let listener of this.listeners.values())
+        this.updateListeners(this, 'onUpdate', this, dt);
+        for (let listener of this.listeners.getAll())
         {
             if(listener.isOver == true)
             {
@@ -492,70 +494,38 @@ export class MobData extends EventSystem.EventElement
         }
     }
 
-    addBuff(buff)
+    addBuff(buff:Buff)
     {
-        if(buff.multiply == false)
-        {
-            for(let localBuff of this.buffList)
+        this.addListener(buff, buff.source, (arg: MobListener) : boolean => {
+            if(arg instanceof Buff)
             {
-                // no more unlimited bloodlust!
-                // maybe we should add stacks here
-                if(localBuff.name === buff.name/* && localBuff.source === buff.source*/)
+                if(arg.stackable === true)
                 {
-                    localBuff.timeRemain = buff.timeMax;
-
-                    if(localBuff.stackable === true)
-                    {
-                        localBuff.stacks += 1;
-                        localBuff.onAdded(this.parentMob, null);
-                    }
-
-                    return;
+                    arg.addStack();
+                    // arg.emit('added', undefined, this, arg.source);
                 }
             }
-        }
-        this.addListener(buff);
+            return false;
+        });
     }
-    
-    findBuff(buffname)
+
+    hasBuff(buff:Buff) : boolean
     {
-        for(let localBuff of this.buffList)
-        {
-            if(localBuff.name === buffname)
-            {
-                return localBuff;
-            }
-        }
-
-        return undefined;
+        return this.listeners.has(buff);
     }
 
-    findBuffIncludesName(buffname)
+    findBuffIncludesName(buffname:string)
     {
-        for(let localBuff of this.buffList)
-        {
-            if(localBuff.name.includes(buffname))
-            {
-                return localBuff;
-            }
-        }
-
-        return undefined;
+        return this.listeners.liveQuery((arg:MobListener) => (arg instanceof Buff && arg.name.includes(buffname)), undefined);
     }
 
-    addListener(listener)
+    addListener(listener: MobListener, source?: MobData, callback?: FailCallback<MobListener>)
     {
-        this.listeners.add(listener);
-        listener.onAdded(this.parentMob, null);
-
-        if(listener.isBuff)
-        {
-            // Should we still keep buffList ? Maybe(x
-            this.buffList.add(listener);
-        }
+        this.listeners.addItem(listener, callback);
+        listener.emit('add', undefined, this, source);
     }
 
-    removeListener(listener)
+    removeListener(listener: MobListener, source?: MobData)
     {
         if(!listener)
         {
@@ -563,17 +533,11 @@ export class MobData extends EventSystem.EventElement
         }
 
         // TODO: Who removed this listener ?
-        listener.onRemoved(this.parentMob, null);
-
-        if(listener.isBuff)
-        {
-            this.buffList.delete(listener);
-        }
-
-        this.listeners.delete(listener);
+        listener.emit('remove', undefined, this, source);
+        this.listeners.removeItem(listener);
     }
 
-    cast(mob, target, spell)
+    cast(mob: Mob, target: Mob | Phaser.Math.Vector2, spell: SpellData)
     {
         // Check if ready to cast
         if(mob.data.canCastSpell() == false || spell.preCast(mob, target) == false)
@@ -601,7 +565,7 @@ export class MobData extends EventSystem.EventElement
         }
     }
 
-    finishCast(mob, target, spell)
+    finishCast(mob: Mob, target: Mob | Phaser.Math.Vector2, spell: SpellData)
     {
         mob.data.inCasting = false;
 
@@ -617,7 +581,7 @@ export class MobData extends EventSystem.EventElement
         spell.cast(mob, target);
     }
 
-    calcStats(mob)
+    calcStats(mob: Mob)
     {
         // TODO: Stats calculation:
         // 1. Calculate (get) base stats from self
@@ -627,7 +591,7 @@ export class MobData extends EventSystem.EventElement
         }
 
         // 2. Add equipment base stats to self by listener.calcBaseStats()
-        this.updateListeners(mob, 'onBaseStatCalculation', [mob]);        
+        this.updateListeners(this, 'onBaseStatCalculation', this);        
 
         // 3. Reset battle stats
         this.battleStats = {
@@ -711,15 +675,15 @@ export class MobData extends EventSystem.EventElement
         // Actually, those steps were combined in a single call,
         // as the calculation step of each class will happen in their player classes,
         // which should be the first called listener in updateListeners().
-        this.updateListeners(mob, 'onStatCalculation', [mob]);
-        this.updateListeners(mob, 'onStatCalculationFinish', [mob]);
+        this.updateListeners(this, 'onStatCalculation', this);
+        this.updateListeners(this, 'onStatCalculationFinish', this);
 
         // 5. Finish
         this.maxHealth = Math.ceil(this.maxHealth);
         this.currentHealth = Math.max(0, Math.ceil(this.healthRatio * this.maxHealth));
     }
 
-    receiveDamage(damageInfo)
+    receiveDamage(damageInfo: mRTypes.DamageHeal)
     {
         // Calculate crit based on parameters
         if(!damageInfo.isCrit)
@@ -733,13 +697,11 @@ export class MobData extends EventSystem.EventElement
                 damageInfo.target.getPercentage(damageInfo.target.battleStats.avoid));
         }
 
-        this.updateListeners(damageInfo.target, 'onReceiveDamage', damageInfo);
+        this.updateListeners(damageInfo.target, 'receiveDamage', damageInfo);
         if (damageInfo.source)
         {
-            damageInfo.source.updateListeners(damageInfo.source, 'onDealDamage', damageInfo);
+            damageInfo.source.updateListeners(damageInfo.source, 'dealDamage', damageInfo);
         }
-        game.units.boardcast('onFocusReceiveDamage', damageInfo.target, damageInfo);
-        game.units.boardcast('onFocusDealDamage', damageInfo.source, damageInfo);
 
         // Check if it was avoided (we check it before final calculation, so when onReceiveDamageFinal(), damage are guaranteed not avoided)
         if (damageInfo.isAvoid === true)
@@ -752,17 +714,17 @@ export class MobData extends EventSystem.EventElement
         // then set isAvoid to false. You can also pop some text when you add the extra damage.
 
         // Do the calculation
-        for(var dmgType in damageInfo.damage)
+        for(var dmgType in damageInfo.value)
         {
             // damage% = 1.0353 ^ power
             // 20pts of power = 100% more damage
             if(damageInfo.source)
             {
-                damageInfo.damage[dmgType] = Math.ceil(
-                    damageInfo.damage[dmgType] * 
+                damageInfo.value[dmgType] = Math.ceil(
+                    damageInfo.value[dmgType] * 
                     (Math.pow(
                         1.0353,
-                        damageInfo.source.battleStats.attackPower[game.data.damageType[dmgType]] +
+                        damageInfo.source.battleStats.attackPower[GameData.damageType[dmgType]] +
                         damageInfo.source.battleStats.attackPower[dmgType])));
             }
 
@@ -770,62 +732,62 @@ export class MobData extends EventSystem.EventElement
             // This is, every 1 point of resist reduces corresponding damage by 3.41%, 
             // which will reach 50% damage reducement at 20 points.
             // TODO: it should all correspond to current level (resist based on source level, atkPower based on target level, same as healing)
-            damageInfo.damage[dmgType] = Math.ceil(
-                damageInfo.damage[dmgType] * 
+            damageInfo.value[dmgType] = Math.ceil(
+                damageInfo.value[dmgType] * 
                 (Math.pow(
                     0.9659, 
-                    this.battleStats.resist[game.data.damageType[dmgType]] + 
+                    this.battleStats.resist[GameData.damageType[dmgType]] + 
                     this.battleStats.resist[dmgType])));
 
             // Apply criticals
-            damageInfo.damage[dmgType] = Math.ceil( 
-                damageInfo.damage[dmgType] * 
-                (damageInfo.isCrit ? game.data.critMultiplier[dmgType] : 1.0));
+            damageInfo.value[dmgType] = Math.ceil( 
+                damageInfo.value[dmgType] * 
+                (damageInfo.isCrit ? GameData.critMultiplier[dmgType] : 1.0));
         }
 
         // Let everyone know what is happening
         // damageObj.damage = finalDmg;
 
-        this.updateListeners(damageInfo.target, 'onReceiveDamageFinal', damageInfo);
+        this.updateListeners(damageInfo.target, 'receiveDamageFinal', damageInfo);
         if(damageInfo.source)
         {
-            damageInfo.source.updateListeners(damageInfo.source, 'onDealDamageFinal', damageInfo);
+            damageInfo.source.updateListeners(damageInfo.source, 'dealDamageFinal', damageInfo);
         }
-        game.units.boardcast('onFocusReceiveDamageFinal', damageInfo.target, damageInfo);
-        game.units.boardcast('onFocusDealDamageFinal', damageInfo.source, damageInfo);
 
         // Decrese HP
         // Check if I am dead
-        for(dmg in damageInfo.damage)
+        let realDmg : mRTypes.LeafTypes<number> = {fire:0, water:0, ice:0, wind:0, nature:0, light:0, thunder:0, slash:0, pierce:0, knock:0, heal:0};
+        for(let dmg in damageInfo.value)
         {
-            this.currentHealth -= damageInfo.damage[dmg];
-            game.data.monitor.addDamage(damageInfo.damage[dmg], dmg, damageInfo.source, damageInfo.target, damageInfo.isCrit, damageInfo.spell);
-            
+            realDmg[dmg] += Math.min(this.currentHealth, damageInfo.value[dmg]);
+            this.currentHealth -= realDmg[dmg];
+            damageInfo.overdeal[dmg] = damageInfo.value[dmg] - realDmg[dmg];
+            damageInfo.value[dmg] = realDmg[dmg];
+            // game.data.monitor.addDamage(damageInfo.value[dmg], dmg, damageInfo.source, damageInfo.target, damageInfo.isCrit, damageInfo.spell);
+        }
+
+        if(this.currentHealth <= 0)
+        {
+            // Let everyone know what is happening
+            this.updateListeners(damageInfo.target, 'death', damageInfo);
+            if(damageInfo.source)
+            {
+                damageInfo.source.updateListeners(damageInfo.source, 'kill', damageInfo);
+            }
+
+            // If still I am dead
             if(this.currentHealth <= 0)
             {
-                // Let everyone know what is happening
-                this.updateListeners(damageInfo.target, 'onDeath', damageInfo);
-                if(damageInfo.source)
-                {
-                    damageInfo.source.updateListeners(damageInfo.source, 'onKill', damageInfo);
-                }
-                game.units.boardcast('onFocusDeath', damageInfo.target, damageInfo);
-                game.units.boardcast('onFocusKill', damageInfo.source, damageInfo);
-
-                // If still I am dead
-                if(this.currentHealth <= 0)
-                {
-                    // I die cuz I am killed
-                    this.alive = false;
-                }
+                // I die cuz I am killed
+                this.alive = false;
             }
         }
 
         // It hits!
-        return damageInfo.damage;
+        return damageInfo.value;
     }
 
-    receiveHeal(healInfo)
+    receiveHeal(healInfo: mRTypes.DamageHeal)
     {
         // Calculate crit based on parameters
         if(!healInfo.isCrit)
@@ -836,22 +798,20 @@ export class MobData extends EventSystem.EventElement
         }
 
         // Let everyone know what is happening
-        this.updateListeners(healInfo.target, 'onReceiveHeal', healInfo);
+        this.updateListeners(healInfo.target, 'receiveHeal', healInfo);
         if(healInfo.source)
         {
-            healInfo.source.updateListeners(healInfo.source, 'onDealHeal', healInfo);
+            healInfo.source.updateListeners(healInfo.source, 'dealHeal', healInfo);
         }
-        game.units.boardcast('onFocusReceiveHeal', healInfo.target, healInfo);
-        game.units.boardcast('onFocusDealHeal', healInfo.source, healInfo);
 
         // Do the calculation
         // _finalHeal: total amount of healing (real + over)
-        healInfo.heal.total = healInfo.heal.real;
+        // healInfo.value = healInfo.heal.real;
 
         if(healInfo.source)
         {
-            healInfo.heal.total = Math.ceil(
-                healInfo.heal.total * 
+            healInfo.value.heal = Math.ceil(
+                healInfo.value.heal * 
                 (Math.pow(
                     1.0353,
                     healInfo.source.battleStats.attackPower.heal)));
@@ -860,35 +820,34 @@ export class MobData extends EventSystem.EventElement
         // damage% = 0.9659 ^ resist
         // This is, every 1 point of resist reduces corresponding damage by 3.41%, 
         // which will reach 50% damage reducement at 20 points.
-        healInfo.heal.total = Math.ceil(
-            healInfo.heal.total * 
+        healInfo.value.heal = Math.ceil(
+            healInfo.value.heal * 
             (Math.pow(
                 0.9659,
                 this.battleStats.resist.heal)));
         
-        healInfo.heal.total = Math.ceil(
-            healInfo.heal.total 
-            * ( healInfo.isCrit ? game.data.critMultiplier.heal : 1.0 )
+        healInfo.value.heal = Math.ceil(
+            healInfo.value.heal 
+            * ( healInfo.isCrit ? GameData.critMultiplier.heal : 1.0 )
         );
 
         // calculate overHealing using current HP and max HP.
-        healInfo.heal.real = Math.min(healInfo.target.maxHealth - healInfo.target.currentHealth, healInfo.heal.total);
-        healInfo.heal.over = healInfo.heal.total - healInfo.heal.real;
+        let realHeal = Math.min(healInfo.target.maxHealth - healInfo.target.currentHealth, healInfo.value.heal);
+        healInfo.overdeal.heal = healInfo.value.heal - realHeal;
+        healInfo.value.heal = realHeal;
 
         // Let buffs and agents know what is happening
-        this.updateListeners(healInfo.target, 'onReceiveHealFinal', healInfo);
+        this.updateListeners(healInfo.target, 'receiveHealFinal', healInfo);
         if(healInfo.source)
         {
-            healInfo.source.updateListeners(healInfo.source, 'onDealHealFinal', healInfo);
+            healInfo.source.updateListeners(healInfo.source, 'dealHealFinal', healInfo);
         }
-        game.units.boardcast('onFocusReceiveHealFinal', healInfo.target, healInfo);
-        game.units.boardcast('onFocusDealHealFinal', healInfo.source, healInfo);
 
         // Increase the HP.
-        this.currentHealth += healInfo.heal.real;
-        game.data.monitor.addHeal(healInfo.heal.real, healInfo.heal.over, healInfo.source, healInfo.target, healInfo.isCrit, healInfo.spell);
+        this.currentHealth += healInfo.value.heal;
+        // game.data.monitor.addHeal(healInfo.value.heal, healInfo.overdeal.heal, healInfo.source, healInfo.target, healInfo.isCrit, healInfo.spell);
 
-        return healInfo.heal;
+        return healInfo.value.heal;
     }
 
     // Function used to tell buffs and agents what was going on
@@ -898,18 +857,6 @@ export class MobData extends EventSystem.EventElement
         var flag = false;
 
         this.emitArray(event, (res) => {if(typeof res == "boolean") {flag = flag || res;}}, args);
-
-        // Original melonJS version
-        // call every listener in the order of priority
-        // for(let listener of this.listeners.values())
-        // {
-        //     if(  listener != mob && 
-        //         (listener.enabled == undefined || listener.enabled && listener.enabled == true)
-        //       && listener[method])
-        //     {
-        //         flag = flag | listener[method].apply(listener, args);
-        //     }
-        // }
 
         return flag;
     }
@@ -1052,7 +999,12 @@ export class MobListener extends EventSystem.EventElement
     // e.g. reduce remain time, etc.
     onUpdate(mob:MobData, dt:number) {}
 
-    // Be triggered when the mob switches its weapon.
+    /** 
+     * 'switchWeapon', be triggered when the mob switches its weapon.
+     * @param mobData the mob data 
+     * @param weapon the weapon that the mob currently holds (after switching).
+     * @event 
+     */
     onSwitchWeapon(mob:MobData, weapon:Weapon) {}
 
     // Following functions return a boolean.

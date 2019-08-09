@@ -9,7 +9,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 /**
- * @module event
+ * @module Events
  */
 define("Events/EventSystem", ["require", "exports", "typescript-collections"], function (require, exports, Collections) {
     "use strict";
@@ -20,11 +20,11 @@ define("Events/EventSystem", ["require", "exports", "typescript-collections"], f
             this.listenRecord = new Collections.Set();
             this.parentSystem = parentSystem;
         }
-        emit(evt, ...args) {
-            return this.parentSystem.emit(this, evt, args);
+        emit(evt, resCallback, ...args) {
+            return this.parentSystem.emit(this, resCallback, evt, args);
         }
-        emitArray(evt, args) {
-            return this.parentSystem.emit(this, evt, args);
+        emitArray(evt, resCallback, args) {
+            return this.parentSystem.emit(this, resCallback, evt, args);
         }
         listen(src, evt, callback) {
             var result = this.parentSystem.listen(src, this, callback, evt);
@@ -92,7 +92,7 @@ define("Events/EventSystem", ["require", "exports", "typescript-collections"], f
             evtList.setValue(dst, callback);
             return overlay;
         }
-        emit(src, evt, args) {
+        emit(src, resCallback, evt, args) {
             var totalCnt = 0;
             if (this.dict.containsKey(src)) {
                 var srcDict = this.dict.getValue(src);
@@ -103,7 +103,10 @@ define("Events/EventSystem", ["require", "exports", "typescript-collections"], f
                     lst.push.apply(lst, args);
                     // Call the event callback function for each destination
                     evtList.forEach((dst, callback) => {
-                        callback.apply(dst, args);
+                        let result = callback.apply(dst, args);
+                        if (resCallback) {
+                            resCallback(result);
+                        }
                         totalCnt += 1;
                     });
                 }
@@ -199,6 +202,7 @@ define("Events/EventSystem", ["require", "exports", "typescript-collections"], f
 //         this.objs[i * 10].emit('onDamageReceived', this.objs[i * 10], src, dmg, true, false);
 //     }
 // }
+/** @module DynamicLoader */
 define("DynamicLoader/DynamicLoadObject", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -221,9 +225,7 @@ define("UI/DraggableScene", ["require", "exports"], function (require, exports) 
     }
     exports.default = DraggableScene;
 });
-/**
- * @module DynamicLoader
- */
+/** @module DynamicLoader */
 define("DynamicLoader/DynamicLoaderScene", ["require", "exports", "UI/DraggableScene"], function (require, exports, DraggableScene_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -338,6 +340,7 @@ define("DynamicLoader/DynamicLoaderScene", ["require", "exports", "UI/DraggableS
     }
     exports.default = DynamicLoaderScene;
 });
+/** @module DynamicLoader */
 define("DynamicLoader/dSprite", ["require", "exports", "DynamicLoader/DynamicLoaderScene"], function (require, exports, DynamicLoaderScene_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -395,6 +398,7 @@ define("DynamicLoader/dSprite", ["require", "exports", "DynamicLoader/DynamicLoa
     }
     exports.default = dSprite;
 });
+/** @module Core */
 define("core/InventoryCore", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -409,6 +413,7 @@ define("core/InventoryCore", ["require", "exports"], function (require, exports)
     }
     exports.Item = Item;
 });
+/** @module Core */
 define("core/Buff", ["require", "exports", "core/DataBackend"], function (require, exports, DataBackend_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -416,13 +421,181 @@ define("core/Buff", ["require", "exports", "core/DataBackend"], function (requir
         constructor(settings) {
             super();
         }
+        /**
+         * Addes one stack of itself.
+         */
+        addStack() {
+        }
     }
     exports.default = Buff;
 });
-define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/InventoryCore"], function (require, exports, EventSystem, InventoryCore_1) {
+/** @module Struct */
+define("Structs/QuerySet", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class QuerySet {
+        constructor(key) {
+            this.queries = new Map();
+            /** Used to determine are the queries dirty or not. */
+            this.currentTimestamp = 0;
+            if (key) {
+                this.keyFn = key;
+                this.data = new Map();
+            }
+            else {
+                this.keyFn = undefined;
+                this.data = new Set();
+            }
+        }
+        /**
+         * Get all data inside this set as an array.
+         */
+        getAll() {
+            return this.data.values();
+        }
+        has(item) {
+            if (this.keyFn) {
+                return this.data.has(this.keyFn(item));
+            }
+            else {
+                return this.data.has(item);
+            }
+        }
+        /**
+         * Add a query to the QuerySet.
+         * @param name Name for this query, will be used in query() function.
+         * @param filter filtering function as in Array.filter. It defines a criteia that whether an element in the query should be keeped or discarded. Returns false to filter out that element.
+         * @param sort compareFunction as in Array.sort. You want to return a negative value if lhs < rhs and vice versa. The result then will come with an ascending order if you do so (smaller first).
+         */
+        addQuery(name, filter, sort) {
+            // Note that every time you call this will force the query to be refreshed even if it is the same query
+            this.queries.set(name, {
+                'filter': filter,
+                'sort': sort,
+                'latest': -1,
+                'result': [],
+            });
+        }
+        /**
+         * Add an item to this QuerySet.
+         *
+         * @param item The item needs to be added
+         * @param failCallback Callback if the item was already in this QuerySet. This callback takes the item (inside the QuerySet) as input and returns whether the item in this QuerySet is modified or not by the callback function (e.g. buffs might want to +1 stack if already exists), and updates currentTimeStep if modification was done.
+         */
+        addItem(item, failCallback) {
+            if (!this.keyFn) {
+                if (!this.data.has(item)) {
+                    this.data.add(item);
+                }
+                else if (failCallback) {
+                    let modified = failCallback(item); // since this condition implies item === item in the Set
+                    if (modified) {
+                        this.currentTimestamp += 1;
+                    }
+                }
+            }
+            else {
+                let key = this.keyFn(item);
+                if (!this.data.has(key)) {
+                    this.data.set(key, item);
+                }
+                else if (failCallback) {
+                    let modified = failCallback(this.data.get(key));
+                    if (modified) {
+                        this.currentTimestamp += 1;
+                    }
+                }
+            }
+        }
+        removeItem(item) {
+            if (!this.keyFn) {
+                if (this.data.delete(item)) {
+                    this.currentTimestamp += 1;
+                }
+            }
+            else {
+                if (this.data.delete(this.keyFn(item))) {
+                    this.currentTimestamp += 1;
+                }
+            }
+        }
+        /**
+         * Apply a query and return the results.
+         *
+         * @param name The query needs to be performed.
+         * @returns An array contains a sorted query results.
+         */
+        query(name) {
+            let q = this.queries.get(name);
+            if (q.latest < this.currentTimestamp) {
+                q.result = this.liveQuery(q.filter, q.sort);
+                q.latest = this.currentTimestamp;
+            }
+            return q.result;
+        }
+        /**
+         * Perform an online query with input functions.
+         * @param filter Filter function
+         * @param sort Compare function
+         */
+        liveQuery(filter, sort) {
+            let arr = Array.from(this.data.values());
+            if (filter) {
+                arr = arr.filter(filter);
+            }
+            if (sort) {
+                arr.sort(sort);
+            }
+            return arr;
+        }
+    }
+    exports.default = QuerySet;
+});
+/** @module Core */
+define("core/GameData", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    const damageType = {
+        slash: "physical",
+        knock: "physical",
+        pierce: "physical",
+        fire: "elemental",
+        ice: "elemental",
+        water: "elemental",
+        nature: "elemental",
+        wind: "elemental",
+        thunder: "elemental",
+        // Let them just add 0 (as themselves when calculating) for convinence
+        light: "pure",
+        physical: "pure",
+        elemental: "pure",
+        heal: "pure",
+        pure: "pure",
+    };
+    exports.damageType = damageType;
+    const critMultiplier = {
+        slash: 2.0,
+        knock: 1.6,
+        pierce: 2.5,
+        fire: 2.0,
+        ice: 2.0,
+        water: 1.6,
+        nature: 2.0,
+        wind: 2.5,
+        thunder: 2.5,
+        light: 1.6,
+        heal: 2.0,
+    };
+    exports.critMultiplier = critMultiplier;
+});
+/** @module Core */
+define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/InventoryCore", "core/Buff", "Structs/QuerySet", "core/GameData"], function (require, exports, EventSystem, InventoryCore_1, Buff_1, QuerySet_1, GameData) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     EventSystem = __importStar(EventSystem);
+    Buff_1 = __importDefault(Buff_1);
+    QuerySet_1 = __importDefault(QuerySet_1);
+    GameData = __importStar(GameData);
     class DataBackend {
         constructor() {
             // Save all available players (characters).
@@ -629,11 +802,14 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
             // A Specific identify name only for this mob
             this.ID = DataBackend.getSingleton().getID();
             // ref for MobListeners (buffs, agent, weapons, armor, ...)
-            this.listeners = new Set();
+            /** test */
+            this.listeners = new QuerySet_1.default();
+            this.listeners.addQuery('buff', (arg) => (arg.type == MobListenerType.Buff), undefined);
+            this.listeners.addQuery('priority', undefined, (l, r) => (r.priority - l.priority));
             // buff list, only for rendering UI
             // buffs are actually plain mob listeners
             // maybe they have something different (x)
-            this.buffList = new Set();
+            // this.buffList = new Set();
             // spell list, only for spells with cooldowns.
             this.spells = {};
             // Which class should be used when realize this mob ?
@@ -666,118 +842,344 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
             return ["equipment"];
         }
         // To be continued - dataBackend.js:301
-        // updateMobBackend(mob:Mob, dt:number)
-        // {
-        //     // Register parent mob
-        //     if(typeof this.parentMob == undefined)
-        //     {
-        //         this.parentMob = mob;
-        //     }
-        //     // Switch weapon ?
-        //     if(this.shouldSwitchWeapon === true)
-        //     {
-        //         this.shouldSwitchWeapon = false;
-        //         if(typeof this.anotherWeapon !== "undefined")
-        //         {
-        //             var tmp = this.currentWeapon;
-        //             this.currentWeapon = this.anotherWeapon;
-        //             this.anotherWeapon = tmp;
-        //         }
-        //         this.removeListener(this.anotherWeapon);
-        //         this.addListener(this.currentWeapon);
-        //         // I switched my weapon !!!
-        //         this.updateListeners(this, 'onSwitchWeapon', [this, this.currentWeapon]);
-        //     }
-        //     // Update all listeners
-        //     this.updateListeners(mob, 'onUpdate', [mob, dt]);
-        //     for (let listener of this.listeners.values())
-        //     {
-        //         if(listener.isOver == true)
-        //         {
-        //             //this buff is over. delete it from the list.
-        //             // this.buffList.delete(buff);
-        //             this.removeListener(listener);
-        //         }
-        //     }
-        //     // Mana Regen
-        //     if(typeof this.currentWeapon !== "undefined")
-        //     {
-        //         this.currentMana += dt * this.currentWeapon.manaRegen * 0.001; // change to this.manaRegen plz
-        //     }
-        //     if(this.currentMana > this.maxMana)
-        //     {
-        //         this.currentMana = this.maxMana;
-        //     }
-        //     // Spell Casting
-        //     if(this.globalCDRemain > 0)
-        //     {
-        //         this.globalCDRemain -= dt * 0.001;
-        //     }
-        //     else
-        //     {
-        //         this.globalCDRemain = 0;
-        //     }
-        //     if(this.isMoving == true)
-        //     {
-        //         // TODO: check if this can cast during moving
-        //         this.inCasting = false;
-        //         this.inChanneling = false;
-        //         this.castRemain = 0;
-        //         this.channelRemain = 0;
-        //     }
-        //     if(this.inCasting == true)
-        //     {
-        //         if(this.castRemain > 0)
-        //         {
-        //             this.castRemain -= dt * 0.001;
-        //         }
-        //         else
-        //         {
-        //             this.inCasting = false;
-        //             this.finishCast(mob, this.currentSpellTarget, this.currentSpell);
-        //         }
-        //     }
-        //     if(this.inChanneling == true)
-        //     {
-        //         if(this.channelRemain > 0)
-        //         {
-        //             this.channelRemain -= dt * 0.001;
-        //             this.currentSpell.onChanneling(mob, this.currentSpellTarget, dt * 0.001 * this.channelTimeFactor);
-        //         }
-        //         else
-        //         {
-        //             this.inChanneling = false;
-        //         }
-        //     }
-        //     // calculate Stats
-        //     // TODO: seperate calculation to 2 phase, base and battle stats.
-        //     this.calcStats(mob);
-        //     // update spells
-        //     for (let spell in this.spells)
-        //     {
-        //         if(this.spells.hasOwnProperty(spell))
-        //         {
-        //             this.spells[spell].update(mob, dt);
-        //         }
-        //     }
-        // }
-        // // Function used to tell buffs and agents what was going on
-        // // when damage and heal happens. They can modify them.
-        // updateListeners(mobData:MobData, method:string, ...args: any[])
-        // {
-        //     var flag = false;
-        //     // call every listener in the order of priority
-        //     for(let listener of this.listeners.values())
-        //     {
-        //         if(  listener != mob && 
-        //             (listener.enabled == undefined || listener.enabled && listener.enabled == true)
-        //           && listener[method])
-        //         {
-        //             flag = flag | listener[method].apply(listener, args);
-        //         }
-        //     }
-        //     return flag;
-        // }
+        updateMobBackend(mob, dt) {
+            // Register parent mob
+            if (typeof this.parentMob == undefined) {
+                this.parentMob = mob;
+            }
+            // Switch weapon ?
+            if (this.shouldSwitchWeapon === true) {
+                this.shouldSwitchWeapon = false;
+                if (typeof this.anotherWeapon !== "undefined") {
+                    var tmp = this.currentWeapon;
+                    this.currentWeapon = this.anotherWeapon;
+                    this.anotherWeapon = tmp;
+                }
+                this.removeListener(this.anotherWeapon);
+                this.addListener(this.currentWeapon);
+                // I switched my weapon !!!
+                this.updateListeners(this, 'switchWeapon', this, this.currentWeapon);
+            }
+            // Update all listeners
+            this.updateListeners(this, 'onUpdate', this, dt);
+            for (let listener of this.listeners.getAll()) {
+                if (listener.isOver == true) {
+                    //this buff is over. delete it from the list.
+                    // this.buffList.delete(buff);
+                    this.removeListener(listener);
+                }
+            }
+            // Mana Regen
+            if (typeof this.currentWeapon !== "undefined") {
+                this.currentMana += dt * this.currentWeapon.manaRegen * 0.001; // change to this.manaRegen plz
+            }
+            if (this.currentMana > this.maxMana) {
+                this.currentMana = this.maxMana;
+            }
+            // Spell Casting
+            if (this.globalCDRemain > 0) {
+                this.globalCDRemain -= dt * 0.001;
+            }
+            else {
+                this.globalCDRemain = 0;
+            }
+            if (this.isMoving == true) {
+                // TODO: check if this can cast during moving
+                this.inCasting = false;
+                this.inChanneling = false;
+                this.castRemain = 0;
+                this.channelRemain = 0;
+            }
+            if (this.inCasting == true) {
+                if (this.castRemain > 0) {
+                    this.castRemain -= dt * 0.001;
+                }
+                else {
+                    this.inCasting = false;
+                    this.finishCast(mob, this.currentSpellTarget, this.currentSpell);
+                }
+            }
+            if (this.inChanneling == true) {
+                if (this.channelRemain > 0) {
+                    this.channelRemain -= dt * 0.001;
+                    this.currentSpell.onChanneling(mob, this.currentSpellTarget, dt * 0.001 * this.channelTimeFactor);
+                }
+                else {
+                    this.inChanneling = false;
+                }
+            }
+            // calculate Stats
+            // TODO: seperate calculation to 2 phase, base and battle stats.
+            this.calcStats(mob);
+            // update spells
+            for (let spell in this.spells) {
+                if (this.spells.hasOwnProperty(spell)) {
+                    this.spells[spell].update(mob, dt);
+                }
+            }
+        }
+        addBuff(buff) {
+            this.addListener(buff, buff.source, (arg) => {
+                if (arg instanceof Buff_1.default) {
+                    if (arg.stackable === true) {
+                        arg.addStack();
+                        // arg.emit('added', undefined, this, arg.source);
+                    }
+                }
+                return false;
+            });
+        }
+        hasBuff(buff) {
+            return this.listeners.has(buff);
+        }
+        findBuffIncludesName(buffname) {
+            return this.listeners.liveQuery((arg) => (arg instanceof Buff_1.default && arg.name.includes(buffname)), undefined);
+        }
+        addListener(listener, source, callback) {
+            this.listeners.addItem(listener, callback);
+            listener.emit('add', undefined, this, source);
+        }
+        removeListener(listener, source) {
+            if (!listener) {
+                return;
+            }
+            // TODO: Who removed this listener ?
+            listener.emit('remove', undefined, this, source);
+            this.listeners.removeItem(listener);
+        }
+        cast(mob, target, spell) {
+            // Check if ready to cast
+            if (mob.data.canCastSpell() == false || spell.preCast(mob, target) == false) {
+                return;
+            }
+            // TODO: Check mana cost, cooldown etc.
+            // May combined into readyToCast().
+            // Start GCD Timer
+            mob.data.globalCDRemain = spell.globalCoolDown / mob.data.modifiers.spellSpeed;
+            if (spell.isCast == true) {
+                // Start casting
+                mob.data.inCasting = true;
+                mob.data.castTime = spell.castTime / mob.data.modifiers.spellSpeed;
+                mob.data.castRemain = mob.data.castTime;
+                mob.data.currentSpell = spell;
+            }
+            else {
+                mob.data.finishCast(mob, target, spell);
+            }
+        }
+        finishCast(mob, target, spell) {
+            mob.data.inCasting = false;
+            if (spell.isChannel == true) {
+                // Start channeling
+                mob.data.inChanneling = true;
+                mob.data.channelTimeFactor = mob.data.modifiers.spellSpeed;
+                mob.data.channelTime = spell.channelTime / mob.data.channelTimeFactor;
+                mob.data.channelRemain = mob.data.channelTime;
+            }
+            spell.cast(mob, target);
+        }
+        calcStats(mob) {
+            // TODO: Stats calculation:
+            // 1. Calculate (get) base stats from self
+            for (let stat in this.baseStats) {
+                this.baseStats[stat] = this.baseStatsFundemental[stat];
+            }
+            // 2. Add equipment base stats to self by listener.calcBaseStats()
+            this.updateListeners(this, 'onBaseStatCalculation', this);
+            // 3. Reset battle stats
+            this.battleStats = {
+                resist: {
+                    physical: 0,
+                    elemental: 10,
+                    pure: 0,
+                    slash: 0,
+                    knock: 0,
+                    pierce: 0,
+                    fire: 0,
+                    ice: 0,
+                    water: 0,
+                    nature: 0,
+                    wind: 0,
+                    thunder: 0,
+                    light: 0,
+                    heal: 0,
+                },
+                attackPower: {
+                    physical: 0,
+                    elemental: 0,
+                    pure: 0,
+                    slash: 0,
+                    knock: 0,
+                    pierce: 0,
+                    fire: 0,
+                    ice: 0,
+                    water: 0,
+                    nature: 0,
+                    wind: 0,
+                    thunder: 0,
+                    light: 0,
+                    heal: 0,
+                },
+                // Write a helper to get hit / avoid / crit percentage from current level and parameters ?
+                // Percentage
+                // Those are basic about overall hit accuracy & avoid probabilities, critical hits.
+                // Advanced actions (avoid specific spell) should be calculated inside onReceiveDamage() etc.
+                // Same for shields, healing absorbs (Heal Pause ====...===...==...=>! SS: [ABSORB]!!! ...*&@^#), etc.
+                hitAcc: 100,
+                avoid: 0,
+                // Percentage
+                crit: 20,
+                antiCrit: 0,
+                // Parry for shield should calculate inside the shield itself when onReceiveDamage().
+                attackRange: 0,
+                extraRange: 0,
+            };
+            this.tauntMul = 1.0;
+            // Go back to base speed
+            this.modifiers.speed = 1.0;
+            this.modifiers.movingSpeed = 1.0;
+            this.modifiers.attackSpeed = 1.0;
+            this.modifiers.spellSpeed = 1.0;
+            this.modifiers.resourceCost = 1.0;
+            // Calculate health from stats
+            this.healthRatio = this.currentHealth / this.maxHealth;
+            this.maxHealth =
+                this.baseStats.vit * 10
+                    + this.baseStats.str * 8
+                    + this.baseStats.dex * 4
+                    + this.baseStats.tec * 4
+                    + this.baseStats.int * 4
+                    + this.baseStats.mag * 4;
+            // 4. Calculate battle (advanced) stats from base stats (e.g. atkPower = INT * 0.7 * floor( MAG * 1.4 ) ... )
+            // 5. Add equipment by listener.calcStats()
+            // Actually, those steps were combined in a single call,
+            // as the calculation step of each class will happen in their player classes,
+            // which should be the first called listener in updateListeners().
+            this.updateListeners(this, 'onStatCalculation', this);
+            this.updateListeners(this, 'onStatCalculationFinish', this);
+            // 5. Finish
+            this.maxHealth = Math.ceil(this.maxHealth);
+            this.currentHealth = Math.max(0, Math.ceil(this.healthRatio * this.maxHealth));
+        }
+        receiveDamage(damageInfo) {
+            // Calculate crit based on parameters
+            if (!damageInfo.isCrit) {
+                damageInfo.isCrit = (100 * Math.random()) < (damageInfo.source.getPercentage(damageInfo.source.battleStats.crit) -
+                    damageInfo.target.getPercentage(damageInfo.target.battleStats.antiCrit));
+                damageInfo.isAvoid = (100 * Math.random()) > (damageInfo.source.getPercentage(damageInfo.source.battleStats.hitAcc) -
+                    damageInfo.target.getPercentage(damageInfo.target.battleStats.avoid));
+            }
+            this.updateListeners(damageInfo.target, 'receiveDamage', damageInfo);
+            if (damageInfo.source) {
+                damageInfo.source.updateListeners(damageInfo.source, 'dealDamage', damageInfo);
+            }
+            // Check if it was avoided (we check it before final calculation, so when onReceiveDamageFinal(), damage are guaranteed not avoided)
+            if (damageInfo.isAvoid === true) {
+                // Tell mob this attack was avoided
+                return { isAvoid: true };
+            }
+            // N.B. if you want do something if target avoid, e.g. deal extra on avoid,
+            // you should let it change the damage at onDealDamage() when isAvoid == true. (e.g. set other to 0 and add extra damage)
+            // then set isAvoid to false. You can also pop some text when you add the extra damage.
+            // Do the calculation
+            for (var dmgType in damageInfo.value) {
+                // damage% = 1.0353 ^ power
+                // 20pts of power = 100% more damage
+                if (damageInfo.source) {
+                    damageInfo.value[dmgType] = Math.ceil(damageInfo.value[dmgType] *
+                        (Math.pow(1.0353, damageInfo.source.battleStats.attackPower[GameData.damageType[dmgType]] +
+                            damageInfo.source.battleStats.attackPower[dmgType])));
+                }
+                // damage% = 0.9659 ^ resist
+                // This is, every 1 point of resist reduces corresponding damage by 3.41%, 
+                // which will reach 50% damage reducement at 20 points.
+                // TODO: it should all correspond to current level (resist based on source level, atkPower based on target level, same as healing)
+                damageInfo.value[dmgType] = Math.ceil(damageInfo.value[dmgType] *
+                    (Math.pow(0.9659, this.battleStats.resist[GameData.damageType[dmgType]] +
+                        this.battleStats.resist[dmgType])));
+                // Apply criticals
+                damageInfo.value[dmgType] = Math.ceil(damageInfo.value[dmgType] *
+                    (damageInfo.isCrit ? GameData.critMultiplier[dmgType] : 1.0));
+            }
+            // Let everyone know what is happening
+            // damageObj.damage = finalDmg;
+            this.updateListeners(damageInfo.target, 'receiveDamageFinal', damageInfo);
+            if (damageInfo.source) {
+                damageInfo.source.updateListeners(damageInfo.source, 'dealDamageFinal', damageInfo);
+            }
+            // Decrese HP
+            // Check if I am dead
+            let realDmg = { fire: 0, water: 0, ice: 0, wind: 0, nature: 0, light: 0, thunder: 0, slash: 0, pierce: 0, knock: 0, heal: 0 };
+            for (let dmg in damageInfo.value) {
+                realDmg[dmg] += Math.min(this.currentHealth, damageInfo.value[dmg]);
+                this.currentHealth -= realDmg[dmg];
+                damageInfo.overdeal[dmg] = damageInfo.value[dmg] - realDmg[dmg];
+                damageInfo.value[dmg] = realDmg[dmg];
+                // game.data.monitor.addDamage(damageInfo.value[dmg], dmg, damageInfo.source, damageInfo.target, damageInfo.isCrit, damageInfo.spell);
+            }
+            if (this.currentHealth <= 0) {
+                // Let everyone know what is happening
+                this.updateListeners(damageInfo.target, 'death', damageInfo);
+                if (damageInfo.source) {
+                    damageInfo.source.updateListeners(damageInfo.source, 'kill', damageInfo);
+                }
+                // If still I am dead
+                if (this.currentHealth <= 0) {
+                    // I die cuz I am killed
+                    this.alive = false;
+                }
+            }
+            // It hits!
+            return damageInfo.value;
+        }
+        receiveHeal(healInfo) {
+            // Calculate crit based on parameters
+            if (!healInfo.isCrit) {
+                healInfo.isCrit = (100 * Math.random()) < (healInfo.source.getPercentage(healInfo.source.battleStats.crit) -
+                    healInfo.target.getPercentage(healInfo.target.battleStats.antiCrit));
+            }
+            // Let everyone know what is happening
+            this.updateListeners(healInfo.target, 'receiveHeal', healInfo);
+            if (healInfo.source) {
+                healInfo.source.updateListeners(healInfo.source, 'dealHeal', healInfo);
+            }
+            // Do the calculation
+            // _finalHeal: total amount of healing (real + over)
+            // healInfo.value = healInfo.heal.real;
+            if (healInfo.source) {
+                healInfo.value.heal = Math.ceil(healInfo.value.heal *
+                    (Math.pow(1.0353, healInfo.source.battleStats.attackPower.heal)));
+            }
+            // damage% = 0.9659 ^ resist
+            // This is, every 1 point of resist reduces corresponding damage by 3.41%, 
+            // which will reach 50% damage reducement at 20 points.
+            healInfo.value.heal = Math.ceil(healInfo.value.heal *
+                (Math.pow(0.9659, this.battleStats.resist.heal)));
+            healInfo.value.heal = Math.ceil(healInfo.value.heal
+                * (healInfo.isCrit ? GameData.critMultiplier.heal : 1.0));
+            // calculate overHealing using current HP and max HP.
+            let realHeal = Math.min(healInfo.target.maxHealth - healInfo.target.currentHealth, healInfo.value.heal);
+            healInfo.overdeal.heal = healInfo.value.heal - realHeal;
+            healInfo.value.heal = realHeal;
+            // Let buffs and agents know what is happening
+            this.updateListeners(healInfo.target, 'receiveHealFinal', healInfo);
+            if (healInfo.source) {
+                healInfo.source.updateListeners(healInfo.source, 'dealHealFinal', healInfo);
+            }
+            // Increase the HP.
+            this.currentHealth += healInfo.value.heal;
+            // game.data.monitor.addHeal(healInfo.value.heal, healInfo.overdeal.heal, healInfo.source, healInfo.target, healInfo.isCrit, healInfo.spell);
+            return healInfo.value.heal;
+        }
+        // Function used to tell buffs and agents what was going on
+        // when damage and heal happens. They can modify them.
+        updateListeners(mobData, event, ...args) {
+            var flag = false;
+            this.emitArray(event, (res) => { if (typeof res == "boolean") {
+                flag = flag || res;
+            } }, args);
+            return flag;
+        }
         canCastSpell() {
             if (this.globalCDRemain <= 0 && this.inCasting == false && this.inChanneling == false) {
                 return true;
@@ -803,12 +1205,37 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
         }
     }
     exports.MobData = MobData;
+    var MobListenerType;
+    (function (MobListenerType) {
+        MobListenerType[MobListenerType["Buff"] = 0] = "Buff";
+        MobListenerType[MobListenerType["Weapon"] = 1] = "Weapon";
+        MobListenerType[MobListenerType["Armor"] = 2] = "Armor";
+        MobListenerType[MobListenerType["Accessory"] = 3] = "Accessory";
+        /** Attachable things on top of weapon / armor etc. (e.g. Gems, ...) */
+        MobListenerType[MobListenerType["Attachment"] = 4] = "Attachment";
+        /** Mob Agent (The action controller of the actual mob, both for player and enemies) */
+        MobListenerType[MobListenerType["Agent"] = 5] = "Agent";
+        /** Job characteristics modifier, e.g. ForestElfMyth, FloraFairy, etc. */
+        MobListenerType[MobListenerType["Characteristics"] = 6] = "Characteristics";
+    })(MobListenerType = exports.MobListenerType || (exports.MobListenerType = {}));
     class MobListener extends EventSystem.EventElement {
         constructor() {
             super(DataBackend.getSingleton().eventSystem);
+            this.enabled = true;
+            this.isOver = false;
             this.focusList = new Set();
             this.priority = 0;
             this.enabled = true;
+            // let tst = new MobData({'name': 'test'});
+            // this.listen(tst, 'dealDamage', this.isReadyWrapper(this.onDealDamage));
+        }
+        isReadyWrapper(func) {
+            return (...args) => // In order to catch the correct "this" (really?) ref: https://github.com/Microsoft/TypeScript/wiki/'this'-in-TypeScript
+             {
+                if (this.enabled && (!this.isOver)) {
+                    func.apply(this, args);
+                }
+            };
         }
         update(dt) {
             for (let mob of this.focusList) {
@@ -855,7 +1282,12 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
         // This will be triggered before onStatCalculation.
         // e.g. reduce remain time, etc.
         onUpdate(mob, dt) { }
-        // Be triggered when the mob switches its weapon.
+        /**
+         * 'switchWeapon', be triggered when the mob switches its weapon.
+         * @param mobData the mob data
+         * @param weapon the weapon that the mob currently holds (after switching).
+         * @event
+         */
         onSwitchWeapon(mob, weapon) { }
         // Following functions return a boolean.
         // True:    the damage / heal was modified.
@@ -873,16 +1305,6 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
         onReceiveHealFinal(healInfo) { return false; }
         onKill(damageInfo) { return false; }
         onDeath(damageInfo) { return false; }
-        onFocusDealDamage(damageInfo) { return false; }
-        onFocusDealDamageFinal(damageInfo) { return false; }
-        onFocusDealHeal(healInfo) { return false; }
-        onFocusDealHealFinal(healInfo) { return false; }
-        onFocusReceiveDamage(damageInfo) { return false; }
-        onFocusReceiveDamageFinal(damageInfo) { return false; }
-        onFocusReceiveHeal(healInfo) { return false; }
-        onFocusReceiveHealFinal(healInfo) { return false; }
-        onFocusKill(damageInfo) { return false; }
-        onFocusDeath(damageInfo) { return false; }
     }
     exports.MobListener = MobListener;
     /**
@@ -942,6 +1364,7 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
     }
     exports.SpellData = SpellData;
 });
+/** @module Core */
 define("core/EquipmentCore", ["require", "exports", "core/DataBackend"], function (require, exports, DataBackend_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -961,11 +1384,12 @@ define("core/EquipmentCore", ["require", "exports", "core/DataBackend"], functio
     }
     exports.Accessory = Accessory;
 });
+/** @module Core */
 define("core/mRTypes", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
 });
-/** @module thing1 */
+/** @module GameEntity */
 define("Mob", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -989,7 +1413,7 @@ define("Mob", ["require", "exports"], function (require, exports) {
     }
     exports.default = Mob;
 });
-/** @module thing1 */
+/** @module GameScene */
 define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "Mob", "DynamicLoader/dSprite"], function (require, exports, Events, Phaser, Mob_1, dSprite_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -1035,7 +1459,7 @@ define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "M
     }
     exports.default = ExampleScene;
 });
-/** @module thing1 */
+/** @module GameScene */
 define("SimpleGame", ["require", "exports", "ExampleScene", "DynamicLoader/DynamicLoaderScene"], function (require, exports, ExampleScene_1, DynamicLoaderScene_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -1060,62 +1484,7 @@ define("SimpleGame", ["require", "exports", "ExampleScene", "DynamicLoader/Dynam
     exports.default = InitPhaser;
     InitPhaser.initGame();
 });
-/**
- * Event module
- *
- * @module event
- * @preferred
- */
-define("core_tmp", ["require", "exports", "Events/EventSystem"], function (require, exports, EventSystem_1) {
-    "use strict";
-    function __export(m) {
-        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-    }
-    Object.defineProperty(exports, "__esModule", { value: true });
-    __export(EventSystem_1);
-});
-define("Structs/QuerySet", ["require", "exports"], function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    class QuerySet {
-        constructor(key) {
-            this.result = new Map();
-            this.currentTimestamp = 0;
-            if (key) {
-                this.keyFn = key;
-                this.data = new Map();
-            }
-            else {
-                this.keyFn = undefined;
-                this.data = new Set();
-            }
-        }
-        addQuery(name, filter, sort) {
-            // Note that every time you call this will force the query to be refreshed even if it is the same query
-            this.result.set(name, {
-                'filter': filter,
-                'sort': sort,
-                'latest': -1,
-                'data': [],
-            });
-        }
-        addItem(item, failCallback) {
-            if (this.keyFn) {
-            }
-            else {
-                let key = this.keyFn(item);
-                if (!this.data.has(key)) {
-                    this.data.set(key, item);
-                }
-                else if (failCallback) {
-                }
-            }
-        }
-        query(name) {
-        }
-    }
-    exports.default = QuerySet;
-});
+/** @module Core */
 define("core/BattleMonitor", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });

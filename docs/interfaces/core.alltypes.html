@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>BaseStats | phaser_playground</title>
+	<title>AllTypes | phaser_playground</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -59,27 +59,35 @@
 					<a href="../modules/core.html">Core</a>
 				</li>
 				<li>
-					<a href="core.basestats.html">BaseStats</a>
+					<a href="core.alltypes.html">AllTypes</a>
 				</li>
 			</ul>
-			<h1>Interface BaseStats</h1>
+			<h1>Interface AllTypes&lt;T&gt;</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-type-parameters">
+				<h3>Type parameters</h3>
+				<ul class="tsd-type-parameters">
+					<li>
+						<h4>T</h4>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">BaseStats</span>
+						<span class="target">AllTypes</span>
 					</li>
 				</ul>
 			</section>
-			<section class="tsd-panel tsd-kind-interface tsd-parent-kind-external-module">
+			<section class="tsd-panel tsd-kind-interface tsd-parent-kind-external-module tsd-has-type-parameter">
 				<h3 class="tsd-before-signature">Indexable</h3>
-				<div class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">[</span>index: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">number</span></div>
+				<div class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">[</span>index: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">T</span></div>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
@@ -88,12 +96,20 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="core.basestats.html#dex" class="tsd-kind-icon">dex</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="core.basestats.html#int" class="tsd-kind-icon">int</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="core.basestats.html#mag" class="tsd-kind-icon">mag</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="core.basestats.html#str" class="tsd-kind-icon">str</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="core.basestats.html#tec" class="tsd-kind-icon">tec</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="core.basestats.html#vit" class="tsd-kind-icon">vit</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="core.alltypes.html#elemental" class="tsd-kind-icon">elemental</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="core.alltypes.html#fire" class="tsd-kind-icon">fire</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="core.alltypes.html#heal" class="tsd-kind-icon">heal</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="core.alltypes.html#ice" class="tsd-kind-icon">ice</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="core.alltypes.html#knock" class="tsd-kind-icon">knock</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="core.alltypes.html#light" class="tsd-kind-icon">light</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="core.alltypes.html#nature" class="tsd-kind-icon">nature</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="core.alltypes.html#physical" class="tsd-kind-icon">physical</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="core.alltypes.html#pierce" class="tsd-kind-icon">pierce</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="core.alltypes.html#pure" class="tsd-kind-icon">pure</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="core.alltypes.html#slash" class="tsd-kind-icon">slash</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="core.alltypes.html#thunder" class="tsd-kind-icon">thunder</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="core.alltypes.html#water" class="tsd-kind-icon">water</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="core.alltypes.html#wind" class="tsd-kind-icon">wind</a></li>
 							</ul>
 						</section>
 					</div>
@@ -102,62 +118,142 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="dex" class="tsd-anchor"></a>
-					<h3>dex</h3>
-					<div class="tsd-signature tsd-kind-icon">dex<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="elemental" class="tsd-anchor"></a>
+					<h3>elemental</h3>
+					<div class="tsd-signature tsd-kind-icon">elemental<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/mRTypes.ts#L82">core/mRTypes.ts:82</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/mRTypes.ts#L104">core/mRTypes.ts:104</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="int" class="tsd-anchor"></a>
-					<h3>int</h3>
-					<div class="tsd-signature tsd-kind-icon">int<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="fire" class="tsd-anchor"></a>
+					<h3>fire</h3>
+					<div class="tsd-signature tsd-kind-icon">fire<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/mRTypes.ts#L84">core/mRTypes.ts:84</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/mRTypes.ts#L110">core/mRTypes.ts:110</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="mag" class="tsd-anchor"></a>
-					<h3>mag</h3>
-					<div class="tsd-signature tsd-kind-icon">mag<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="heal" class="tsd-anchor"></a>
+					<h3>heal</h3>
+					<div class="tsd-signature tsd-kind-icon">heal<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/mRTypes.ts#L85">core/mRTypes.ts:85</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/mRTypes.ts#L118">core/mRTypes.ts:118</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="str" class="tsd-anchor"></a>
-					<h3>str</h3>
-					<div class="tsd-signature tsd-kind-icon">str<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="ice" class="tsd-anchor"></a>
+					<h3>ice</h3>
+					<div class="tsd-signature tsd-kind-icon">ice<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/mRTypes.ts#L81">core/mRTypes.ts:81</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/mRTypes.ts#L111">core/mRTypes.ts:111</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="tec" class="tsd-anchor"></a>
-					<h3>tec</h3>
-					<div class="tsd-signature tsd-kind-icon">tec<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="knock" class="tsd-anchor"></a>
+					<h3>knock</h3>
+					<div class="tsd-signature tsd-kind-icon">knock<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/mRTypes.ts#L83">core/mRTypes.ts:83</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/mRTypes.ts#L108">core/mRTypes.ts:108</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="vit" class="tsd-anchor"></a>
-					<h3>vit</h3>
-					<div class="tsd-signature tsd-kind-icon">vit<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="light" class="tsd-anchor"></a>
+					<h3>light</h3>
+					<div class="tsd-signature tsd-kind-icon">light<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/mRTypes.ts#L80">core/mRTypes.ts:80</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/mRTypes.ts#L116">core/mRTypes.ts:116</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="nature" class="tsd-anchor"></a>
+					<h3>nature</h3>
+					<div class="tsd-signature tsd-kind-icon">nature<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/mRTypes.ts#L113">core/mRTypes.ts:113</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="physical" class="tsd-anchor"></a>
+					<h3>physical</h3>
+					<div class="tsd-signature tsd-kind-icon">physical<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/mRTypes.ts#L103">core/mRTypes.ts:103</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="pierce" class="tsd-anchor"></a>
+					<h3>pierce</h3>
+					<div class="tsd-signature tsd-kind-icon">pierce<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/mRTypes.ts#L109">core/mRTypes.ts:109</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="pure" class="tsd-anchor"></a>
+					<h3>pure</h3>
+					<div class="tsd-signature tsd-kind-icon">pure<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/mRTypes.ts#L105">core/mRTypes.ts:105</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="slash" class="tsd-anchor"></a>
+					<h3>slash</h3>
+					<div class="tsd-signature tsd-kind-icon">slash<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/mRTypes.ts#L107">core/mRTypes.ts:107</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="thunder" class="tsd-anchor"></a>
+					<h3>thunder</h3>
+					<div class="tsd-signature tsd-kind-icon">thunder<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/mRTypes.ts#L115">core/mRTypes.ts:115</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="water" class="tsd-anchor"></a>
+					<h3>water</h3>
+					<div class="tsd-signature tsd-kind-icon">water<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/mRTypes.ts#L112">core/mRTypes.ts:112</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="wind" class="tsd-anchor"></a>
+					<h3>wind</h3>
+					<div class="tsd-signature tsd-kind-icon">wind<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/mRTypes.ts#L114">core/mRTypes.ts:114</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -233,36 +329,60 @@
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
 						<a href="../classes/core.weapon.html" class="tsd-kind-icon">Weapon</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-has-type-parameter">
-						<a href="core.alltypes.html" class="tsd-kind-icon">All<wbr>Types</a>
-					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="core.basestats.html" class="tsd-kind-icon">Base<wbr>Stats</a>
+					<li class="current tsd-kind-interface tsd-parent-kind-external-module tsd-has-type-parameter">
+						<a href="core.alltypes.html" class="tsd-kind-icon">All<wbr>Types</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="core.basestats.html#dex" class="tsd-kind-icon">dex</a>
+								<a href="core.alltypes.html#elemental" class="tsd-kind-icon">elemental</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="core.basestats.html#int" class="tsd-kind-icon">int</a>
+								<a href="core.alltypes.html#fire" class="tsd-kind-icon">fire</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="core.basestats.html#mag" class="tsd-kind-icon">mag</a>
+								<a href="core.alltypes.html#heal" class="tsd-kind-icon">heal</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="core.basestats.html#str" class="tsd-kind-icon">str</a>
+								<a href="core.alltypes.html#ice" class="tsd-kind-icon">ice</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="core.basestats.html#tec" class="tsd-kind-icon">tec</a>
+								<a href="core.alltypes.html#knock" class="tsd-kind-icon">knock</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="core.basestats.html#vit" class="tsd-kind-icon">vit</a>
+								<a href="core.alltypes.html#light" class="tsd-kind-icon">light</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="core.alltypes.html#nature" class="tsd-kind-icon">nature</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="core.alltypes.html#physical" class="tsd-kind-icon">physical</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="core.alltypes.html#pierce" class="tsd-kind-icon">pierce</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="core.alltypes.html#pure" class="tsd-kind-icon">pure</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="core.alltypes.html#slash" class="tsd-kind-icon">slash</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="core.alltypes.html#thunder" class="tsd-kind-icon">thunder</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="core.alltypes.html#water" class="tsd-kind-icon">water</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="core.alltypes.html#wind" class="tsd-kind-icon">wind</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="core.basestats.html" class="tsd-kind-icon">Base<wbr>Stats</a>
+					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="core.battlestats.html" class="tsd-kind-icon">Battle<wbr>Stats</a>
 					</li>
