@@ -5,6 +5,7 @@ import * as Phaser from 'Phaser'
 import Mob from './Mob'
 import dSprite from './DynamicLoader/dSprite';
 import UnitManager from './core/UnitManager';
+import dPhysSprite from './DynamicLoader/dPhysSprite';
 
 export default class ExampleScene extends Phaser.Scene 
 {
@@ -53,7 +54,7 @@ export default class ExampleScene extends Phaser.Scene
 
         // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
         let girl = new Mob({
-            'sprite': new dSprite(this, 100, 200, 'char_sheet_forestelf_myst'), 
+            'sprite': new dPhysSprite(this, 100, 200, 'char_sheet_forestelf_myst'), 
             'moveAnim': ''
         });
         this.alive.push(girl);

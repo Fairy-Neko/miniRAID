@@ -4,6 +4,7 @@ import { Weapon, Armor, Accessory } from "./EquipmentCore";
 import dSprite from "../DynamicLoader/dSprite";
 import Mob from "../Mob";
 import { SpellData, MobData } from "./DataBackend";
+import dPhysSprite from "../DynamicLoader/dPhysSprite";
 
 export namespace Settings
 {
@@ -65,7 +66,7 @@ export namespace Settings
 
     export interface Mob
     {
-        sprite:   dSprite;
+        sprite:   dPhysSprite;
         moveAnim: string;
     }
 }

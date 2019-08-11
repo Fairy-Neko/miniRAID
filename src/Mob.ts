@@ -3,11 +3,14 @@
 import dSprite from './DynamicLoader/dSprite'
 import * as mRTypes from './core/mRTypes'
 import { MobData } from './core/DataBackend';
+import dPhysSprite from './DynamicLoader/dPhysSprite';
 
 export default class Mob
 {
-    sprite:dSprite;
+    sprite:dPhysSprite;
     moveAnim:string;
+    idleAnim:string;
+    deadAnim:string;
 
     data:MobData;
 
@@ -32,6 +35,11 @@ export default class Mob
     getEquipableTags(type:string):string[]
     {
         return [];
+    }
+
+    doAttack(dt: number) : boolean
+    {
+        throw new Error("Method not implemented.");
     }
 
     static checkExist(mob?:Mob):boolean

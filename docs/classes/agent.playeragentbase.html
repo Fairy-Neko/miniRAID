@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>MobListener | phaser_playground</title>
+	<title>PlayerAgentBase | phaser_playground</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/core.html">Core</a>
+					<a href="../modules/agent.html">Agent</a>
 				</li>
 				<li>
-					<a href="core.moblistener.html">MobListener</a>
+					<a href="agent.playeragentbase.html">PlayerAgentBase</a>
 				</li>
 			</ul>
-			<h1>Class MobListener</h1>
+			<h1>Class PlayerAgentBase</h1>
 		</div>
 	</div>
 </header>
@@ -73,19 +73,13 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="events.eventelement.html" class="tsd-signature-type">EventElement</a>
+						<a href="agent.mobagent.html" class="tsd-signature-type">MobAgent</a>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">MobListener</span>
+								<span class="target">PlayerAgentBase</span>
 								<ul class="tsd-hierarchy">
 									<li>
-										<a href="core.buff.html" class="tsd-signature-type">Buff</a>
-									</li>
-									<li>
-										<a href="core.equipable.html" class="tsd-signature-type">Equipable</a>
-									</li>
-									<li>
-										<a href="agent.mobagent.html" class="tsd-signature-type">MobAgent</a>
+										<a href="agent.simple.html" class="tsd-signature-type">Simple</a>
 									</li>
 								</ul>
 							</li>
@@ -107,64 +101,69 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="core.moblistener.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="agent.playeragentbase.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section ">
+						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Events</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-event tsd-parent-kind-class"><a href="core.moblistener.html#onswitchweapon" class="tsd-kind-icon">on<wbr>Switch<wbr>Weapon</a></li>
+								<li class="tsd-kind-event tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#onswitchweapon" class="tsd-kind-icon">on<wbr>Switch<wbr>Weapon</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="core.moblistener.html#enabled" class="tsd-kind-icon">enabled</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="core.moblistener.html#focuslist" class="tsd-kind-icon">focus<wbr>List</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="core.moblistener.html#isover" class="tsd-kind-icon">is<wbr>Over</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="core.moblistener.html#listenrecord" class="tsd-kind-icon">listen<wbr>Record</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="core.moblistener.html#parentsystem" class="tsd-kind-icon">parent<wbr>System</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="core.moblistener.html#priority" class="tsd-kind-icon">priority</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="core.moblistener.html#type" class="tsd-kind-icon">type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#enabled" class="tsd-kind-icon">enabled</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#focuslist" class="tsd-kind-icon">focus<wbr>List</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#isover" class="tsd-kind-icon">is<wbr>Over</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#listenrecord" class="tsd-kind-icon">listen<wbr>Record</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#parentsystem" class="tsd-kind-icon">parent<wbr>System</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#priority" class="tsd-kind-icon">priority</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="agent.playeragentbase.html#targetmob" class="tsd-kind-icon">target<wbr>Mob</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="agent.playeragentbase.html#targetpos" class="tsd-kind-icon">target<wbr>Pos</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#type" class="tsd-kind-icon">type</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core.moblistener.html#discard" class="tsd-kind-icon">discard</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core.moblistener.html#discardemitter" class="tsd-kind-icon">discard<wbr>Emitter</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core.moblistener.html#discardreceiver" class="tsd-kind-icon">discard<wbr>Receiver</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core.moblistener.html#emit" class="tsd-kind-icon">emit</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core.moblistener.html#emitarray" class="tsd-kind-icon">emit<wbr>Array</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#isreadywrapper" class="tsd-kind-icon">is<wbr>Ready<wbr>Wrapper</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core.moblistener.html#listen" class="tsd-kind-icon">listen</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#onadded" class="tsd-kind-icon">on<wbr>Added</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#onafterattack" class="tsd-kind-icon">on<wbr>After<wbr>Attack</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#onafterspecialattack" class="tsd-kind-icon">on<wbr>After<wbr>Special<wbr>Attack</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#onattack" class="tsd-kind-icon">on<wbr>Attack</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#onbasestatcalculation" class="tsd-kind-icon">on<wbr>Base<wbr>Stat<wbr>Calculation</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#oncreate" class="tsd-kind-icon">on<wbr>Create</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#ondealdamage" class="tsd-kind-icon">on<wbr>Deal<wbr>Damage</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#ondealdamagefinal" class="tsd-kind-icon">on<wbr>Deal<wbr>Damage<wbr>Final</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#ondealheal" class="tsd-kind-icon">on<wbr>Deal<wbr>Heal</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#ondealhealfinal" class="tsd-kind-icon">on<wbr>Deal<wbr>Heal<wbr>Final</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#ondeath" class="tsd-kind-icon">on<wbr>Death</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#onfrontenddestroy" class="tsd-kind-icon">on<wbr>Front<wbr>End<wbr>Destroy</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#onfrontendupdate" class="tsd-kind-icon">on<wbr>Front<wbr>End<wbr>Update</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#onkill" class="tsd-kind-icon">on<wbr>Kill</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#onreceivedamage" class="tsd-kind-icon">on<wbr>Receive<wbr>Damage</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#onreceivedamagefinal" class="tsd-kind-icon">on<wbr>Receive<wbr>Damage<wbr>Final</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#onreceiveheal" class="tsd-kind-icon">on<wbr>Receive<wbr>Heal</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#onreceivehealfinal" class="tsd-kind-icon">on<wbr>Receive<wbr>Heal<wbr>Final</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#onremoved" class="tsd-kind-icon">on<wbr>Removed</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#onrender" class="tsd-kind-icon">on<wbr>Render</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#onspecialattack" class="tsd-kind-icon">on<wbr>Special<wbr>Attack</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#onstatcalculation" class="tsd-kind-icon">on<wbr>Stat<wbr>Calculation</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#onstatcalculationfinish" class="tsd-kind-icon">on<wbr>Stat<wbr>Calculation<wbr>Finish</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#onupdate" class="tsd-kind-icon">on<wbr>Update</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core.moblistener.html#unlisten" class="tsd-kind-icon">unlisten</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core.moblistener.html#unlistenall" class="tsd-kind-icon">unlisten<wbr>All</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.moblistener.html#update" class="tsd-kind-icon">update</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#discard" class="tsd-kind-icon">discard</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#discardemitter" class="tsd-kind-icon">discard<wbr>Emitter</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#discardreceiver" class="tsd-kind-icon">discard<wbr>Receiver</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#emit" class="tsd-kind-icon">emit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#emitarray" class="tsd-kind-icon">emit<wbr>Array</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#isreadywrapper" class="tsd-kind-icon">is<wbr>Ready<wbr>Wrapper</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#listen" class="tsd-kind-icon">listen</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#onadded" class="tsd-kind-icon">on<wbr>Added</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#onafterattack" class="tsd-kind-icon">on<wbr>After<wbr>Attack</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#onafterspecialattack" class="tsd-kind-icon">on<wbr>After<wbr>Special<wbr>Attack</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#onattack" class="tsd-kind-icon">on<wbr>Attack</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#onbasestatcalculation" class="tsd-kind-icon">on<wbr>Base<wbr>Stat<wbr>Calculation</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#oncreate" class="tsd-kind-icon">on<wbr>Create</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#ondealdamage" class="tsd-kind-icon">on<wbr>Deal<wbr>Damage</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#ondealdamagefinal" class="tsd-kind-icon">on<wbr>Deal<wbr>Damage<wbr>Final</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#ondealheal" class="tsd-kind-icon">on<wbr>Deal<wbr>Heal</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#ondealhealfinal" class="tsd-kind-icon">on<wbr>Deal<wbr>Heal<wbr>Final</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#ondeath" class="tsd-kind-icon">on<wbr>Death</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#onfrontenddestroy" class="tsd-kind-icon">on<wbr>Front<wbr>End<wbr>Destroy</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#onfrontendupdate" class="tsd-kind-icon">on<wbr>Front<wbr>End<wbr>Update</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#onkill" class="tsd-kind-icon">on<wbr>Kill</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#onreceivedamage" class="tsd-kind-icon">on<wbr>Receive<wbr>Damage</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#onreceivedamagefinal" class="tsd-kind-icon">on<wbr>Receive<wbr>Damage<wbr>Final</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#onreceiveheal" class="tsd-kind-icon">on<wbr>Receive<wbr>Heal</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#onreceivehealfinal" class="tsd-kind-icon">on<wbr>Receive<wbr>Heal<wbr>Final</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#onremoved" class="tsd-kind-icon">on<wbr>Removed</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#onrender" class="tsd-kind-icon">on<wbr>Render</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#onspecialattack" class="tsd-kind-icon">on<wbr>Special<wbr>Attack</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#onstatcalculation" class="tsd-kind-icon">on<wbr>Stat<wbr>Calculation</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#onstatcalculationfinish" class="tsd-kind-icon">on<wbr>Stat<wbr>Calculation<wbr>Finish</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#onupdate" class="tsd-kind-icon">on<wbr>Update</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="agent.playeragentbase.html#settargetmob" class="tsd-kind-icon">set<wbr>Target<wbr>Mob</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="agent.playeragentbase.html#settargetpos" class="tsd-kind-icon">set<wbr>Target<wbr>Pos</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#unlisten" class="tsd-kind-icon">unlisten</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#unlistenall" class="tsd-kind-icon">unlisten<wbr>All</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#update" class="tsd-kind-icon">update</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="agent.playeragentbase.html#updatemob" class="tsd-kind-icon">update<wbr>Mob</a></li>
 							</ul>
 						</section>
 					</div>
@@ -176,32 +175,33 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Mob<wbr>Listener<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="core.moblistener.html" class="tsd-signature-type">MobListener</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Player<wbr>Agent<wbr>Base<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="agent.playeragentbase.html" class="tsd-signature-type">PlayerAgentBase</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Overrides <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#constructor">constructor</a></p>
+								<p>Overrides <a href="agent.mobagent.html">MobAgent</a>.<a href="agent.mobagent.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L939">core/DataBackend.ts:939</a></li>
+									<li>Defined in agents/PlayerAgents.ts:10</li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <a href="core.moblistener.html" class="tsd-signature-type">MobListener</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="agent.playeragentbase.html" class="tsd-signature-type">PlayerAgentBase</a></h4>
 						</li>
 					</ul>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
+			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
 				<h2>Events</h2>
-				<section class="tsd-panel tsd-member tsd-kind-event tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-event tsd-parent-kind-class tsd-is-inherited">
 					<a name="onswitchweapon" class="tsd-anchor"></a>
 					<h3>on<wbr>Switch<wbr>Weapon</h3>
-					<ul class="tsd-signatures tsd-kind-event tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-event tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Switch<wbr>Weapon<span class="tsd-signature-symbol">(</span>mob<span class="tsd-signature-symbol">: </span><a href="core.mobdata.html" class="tsd-signature-type">MobData</a>, weapon<span class="tsd-signature-symbol">: </span><a href="core.weapon.html" class="tsd-signature-type">Weapon</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#onswitchweapon">onSwitchWeapon</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L1027">core/DataBackend.ts:1027</a></li>
 								</ul>
@@ -230,31 +230,34 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="enabled" class="tsd-anchor"></a>
 					<h3>enabled</h3>
 					<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;true</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#enabled">enabled</a></p>
 						<ul>
 							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L937">core/DataBackend.ts:937</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="focuslist" class="tsd-anchor"></a>
 					<h3>focus<wbr>List</h3>
 					<div class="tsd-signature tsd-kind-icon">focus<wbr>List<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><a href="core.mobdata.html" class="tsd-signature-type">MobData</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#focuslist">focusList</a></p>
 						<ul>
 							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L935">core/DataBackend.ts:935</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="isover" class="tsd-anchor"></a>
 					<h3>is<wbr>Over</h3>
 					<div class="tsd-signature tsd-kind-icon">is<wbr>Over<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#isover">isOver</a></p>
 						<ul>
 							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L938">core/DataBackend.ts:938</a></li>
 						</ul>
@@ -284,21 +287,43 @@
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="priority" class="tsd-anchor"></a>
 					<h3>priority</h3>
 					<div class="tsd-signature tsd-kind-icon">priority<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#priority">priority</a></p>
 						<ul>
 							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L936">core/DataBackend.ts:936</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="targetmob" class="tsd-anchor"></a>
+					<h3>target<wbr>Mob</h3>
+					<div class="tsd-signature tsd-kind-icon">target<wbr>Mob<span class="tsd-signature-symbol">:</span> <a href="gameentity.mob.html" class="tsd-signature-type">Mob</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in agents/PlayerAgents.ts:10</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="targetpos" class="tsd-anchor"></a>
+					<h3>target<wbr>Pos</h3>
+					<div class="tsd-signature tsd-kind-icon">target<wbr>Pos<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Vector2</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in agents/PlayerAgents.ts:9</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="type" class="tsd-anchor"></a>
 					<h3>type</h3>
 					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../enums/core.moblistenertype.html" class="tsd-signature-type">MobListenerType</a></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#type">type</a></p>
 						<ul>
 							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L939">core/DataBackend.ts:939</a></li>
 						</ul>
@@ -459,15 +484,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="isreadywrapper" class="tsd-anchor"></a>
 					<h3>is<wbr>Ready<wbr>Wrapper</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">is<wbr>Ready<wbr>Wrapper<span class="tsd-signature-symbol">(</span>func<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#isreadywrapper">isReadyWrapper</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L952">core/DataBackend.ts:952</a></li>
 								</ul>
@@ -549,15 +575,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="onadded" class="tsd-anchor"></a>
 					<h3>on<wbr>Added</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Added<span class="tsd-signature-symbol">(</span>mob<span class="tsd-signature-symbol">: </span><a href="core.mobdata.html" class="tsd-signature-type">MobData</a>, source<span class="tsd-signature-symbol">: </span><a href="core.mobdata.html" class="tsd-signature-type">MobData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#onadded">onAdded</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L990">core/DataBackend.ts:990</a></li>
 								</ul>
@@ -575,15 +602,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="onafterattack" class="tsd-anchor"></a>
 					<h3>on<wbr>After<wbr>Attack</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>After<wbr>Attack<span class="tsd-signature-symbol">(</span>mob<span class="tsd-signature-symbol">: </span><a href="core.mobdata.html" class="tsd-signature-type">MobData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#onafterattack">onAfterAttack</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L1000">core/DataBackend.ts:1000</a></li>
 								</ul>
@@ -598,15 +626,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="onafterspecialattack" class="tsd-anchor"></a>
 					<h3>on<wbr>After<wbr>Special<wbr>Attack</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>After<wbr>Special<wbr>Attack<span class="tsd-signature-symbol">(</span>mob<span class="tsd-signature-symbol">: </span><a href="core.mobdata.html" class="tsd-signature-type">MobData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#onafterspecialattack">onAfterSpecialAttack</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L1007">core/DataBackend.ts:1007</a></li>
 								</ul>
@@ -621,15 +650,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="onattack" class="tsd-anchor"></a>
 					<h3>on<wbr>Attack</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Attack<span class="tsd-signature-symbol">(</span>mob<span class="tsd-signature-symbol">: </span><a href="core.mobdata.html" class="tsd-signature-type">MobData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#onattack">onAttack</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L997">core/DataBackend.ts:997</a></li>
 								</ul>
@@ -644,15 +674,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="onbasestatcalculation" class="tsd-anchor"></a>
 					<h3>on<wbr>Base<wbr>Stat<wbr>Calculation</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Base<wbr>Stat<wbr>Calculation<span class="tsd-signature-symbol">(</span>mob<span class="tsd-signature-symbol">: </span><a href="core.mobdata.html" class="tsd-signature-type">MobData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#onbasestatcalculation">onBaseStatCalculation</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L984">core/DataBackend.ts:984</a></li>
 								</ul>
@@ -667,15 +698,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="oncreate" class="tsd-anchor"></a>
 					<h3>on<wbr>Create</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Create<span class="tsd-signature-symbol">(</span>mob<span class="tsd-signature-symbol">: </span><a href="gameentity.mob.html" class="tsd-signature-type">Mob</a>, scene<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Scene</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#oncreate">onCreate</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L1011">core/DataBackend.ts:1011</a></li>
 								</ul>
@@ -693,15 +725,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="ondealdamage" class="tsd-anchor"></a>
 					<h3>on<wbr>Deal<wbr>Damage</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Deal<wbr>Damage<span class="tsd-signature-symbol">(</span>damageInfo<span class="tsd-signature-symbol">: </span><a href="../interfaces/core.damageheal.html" class="tsd-signature-type">DamageHeal</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#ondealdamage">onDealDamage</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L1038">core/DataBackend.ts:1038</a></li>
 								</ul>
@@ -716,15 +749,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="ondealdamagefinal" class="tsd-anchor"></a>
 					<h3>on<wbr>Deal<wbr>Damage<wbr>Final</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Deal<wbr>Damage<wbr>Final<span class="tsd-signature-symbol">(</span>damageInfo<span class="tsd-signature-symbol">: </span><a href="../interfaces/core.damageheal.html" class="tsd-signature-type">DamageHeal</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#ondealdamagefinal">onDealDamageFinal</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L1039">core/DataBackend.ts:1039</a></li>
 								</ul>
@@ -739,15 +773,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="ondealheal" class="tsd-anchor"></a>
 					<h3>on<wbr>Deal<wbr>Heal</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Deal<wbr>Heal<span class="tsd-signature-symbol">(</span>healInfo<span class="tsd-signature-symbol">: </span><a href="../interfaces/core.damageheal.html" class="tsd-signature-type">DamageHeal</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#ondealheal">onDealHeal</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L1041">core/DataBackend.ts:1041</a></li>
 								</ul>
@@ -762,15 +797,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="ondealhealfinal" class="tsd-anchor"></a>
 					<h3>on<wbr>Deal<wbr>Heal<wbr>Final</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Deal<wbr>Heal<wbr>Final<span class="tsd-signature-symbol">(</span>healInfo<span class="tsd-signature-symbol">: </span><a href="../interfaces/core.damageheal.html" class="tsd-signature-type">DamageHeal</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#ondealhealfinal">onDealHealFinal</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L1042">core/DataBackend.ts:1042</a></li>
 								</ul>
@@ -785,15 +821,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="ondeath" class="tsd-anchor"></a>
 					<h3>on<wbr>Death</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Death<span class="tsd-signature-symbol">(</span>damageInfo<span class="tsd-signature-symbol">: </span><a href="../interfaces/core.damageheal.html" class="tsd-signature-type">DamageHeal</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#ondeath">onDeath</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L1051">core/DataBackend.ts:1051</a></li>
 								</ul>
@@ -808,15 +845,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="onfrontenddestroy" class="tsd-anchor"></a>
 					<h3>on<wbr>Front<wbr>End<wbr>Destroy</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Front<wbr>End<wbr>Destroy<span class="tsd-signature-symbol">(</span>mob<span class="tsd-signature-symbol">: </span><a href="gameentity.mob.html" class="tsd-signature-type">Mob</a>, scene<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Scene</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#onfrontenddestroy">onFrontEndDestroy</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L1014">core/DataBackend.ts:1014</a></li>
 								</ul>
@@ -834,15 +872,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="onfrontendupdate" class="tsd-anchor"></a>
 					<h3>on<wbr>Front<wbr>End<wbr>Update</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Front<wbr>End<wbr>Update<span class="tsd-signature-symbol">(</span>mob<span class="tsd-signature-symbol">: </span><a href="gameentity.mob.html" class="tsd-signature-type">Mob</a>, dt<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#onfrontendupdate">onFrontEndUpdate</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L1012">core/DataBackend.ts:1012</a></li>
 								</ul>
@@ -860,15 +899,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="onkill" class="tsd-anchor"></a>
 					<h3>on<wbr>Kill</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Kill<span class="tsd-signature-symbol">(</span>damageInfo<span class="tsd-signature-symbol">: </span><a href="../interfaces/core.damageheal.html" class="tsd-signature-type">DamageHeal</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#onkill">onKill</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L1050">core/DataBackend.ts:1050</a></li>
 								</ul>
@@ -883,15 +923,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="onreceivedamage" class="tsd-anchor"></a>
 					<h3>on<wbr>Receive<wbr>Damage</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Receive<wbr>Damage<span class="tsd-signature-symbol">(</span>damageInfo<span class="tsd-signature-symbol">: </span><a href="../interfaces/core.damageheal.html" class="tsd-signature-type">DamageHeal</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#onreceivedamage">onReceiveDamage</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L1044">core/DataBackend.ts:1044</a></li>
 								</ul>
@@ -906,15 +947,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="onreceivedamagefinal" class="tsd-anchor"></a>
 					<h3>on<wbr>Receive<wbr>Damage<wbr>Final</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Receive<wbr>Damage<wbr>Final<span class="tsd-signature-symbol">(</span>damageInfo<span class="tsd-signature-symbol">: </span><a href="../interfaces/core.damageheal.html" class="tsd-signature-type">DamageHeal</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#onreceivedamagefinal">onReceiveDamageFinal</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L1045">core/DataBackend.ts:1045</a></li>
 								</ul>
@@ -929,15 +971,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="onreceiveheal" class="tsd-anchor"></a>
 					<h3>on<wbr>Receive<wbr>Heal</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Receive<wbr>Heal<span class="tsd-signature-symbol">(</span>healInfo<span class="tsd-signature-symbol">: </span><a href="../interfaces/core.damageheal.html" class="tsd-signature-type">DamageHeal</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#onreceiveheal">onReceiveHeal</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L1047">core/DataBackend.ts:1047</a></li>
 								</ul>
@@ -952,15 +995,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="onreceivehealfinal" class="tsd-anchor"></a>
 					<h3>on<wbr>Receive<wbr>Heal<wbr>Final</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Receive<wbr>Heal<wbr>Final<span class="tsd-signature-symbol">(</span>healInfo<span class="tsd-signature-symbol">: </span><a href="../interfaces/core.damageheal.html" class="tsd-signature-type">DamageHeal</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#onreceivehealfinal">onReceiveHealFinal</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L1048">core/DataBackend.ts:1048</a></li>
 								</ul>
@@ -975,15 +1019,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="onremoved" class="tsd-anchor"></a>
 					<h3>on<wbr>Removed</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Removed<span class="tsd-signature-symbol">(</span>mob<span class="tsd-signature-symbol">: </span><a href="core.mobdata.html" class="tsd-signature-type">MobData</a>, source<span class="tsd-signature-symbol">: </span><a href="core.mobdata.html" class="tsd-signature-type">MobData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#onremoved">onRemoved</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L993">core/DataBackend.ts:993</a></li>
 								</ul>
@@ -1001,15 +1046,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="onrender" class="tsd-anchor"></a>
 					<h3>on<wbr>Render</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Render<span class="tsd-signature-symbol">(</span>mob<span class="tsd-signature-symbol">: </span><a href="gameentity.mob.html" class="tsd-signature-type">Mob</a>, scene<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Scene</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#onrender">onRender</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L1013">core/DataBackend.ts:1013</a></li>
 								</ul>
@@ -1027,15 +1073,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="onspecialattack" class="tsd-anchor"></a>
 					<h3>on<wbr>Special<wbr>Attack</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Special<wbr>Attack<span class="tsd-signature-symbol">(</span>mob<span class="tsd-signature-symbol">: </span><a href="core.mobdata.html" class="tsd-signature-type">MobData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#onspecialattack">onSpecialAttack</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L1004">core/DataBackend.ts:1004</a></li>
 								</ul>
@@ -1050,15 +1097,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="onstatcalculation" class="tsd-anchor"></a>
 					<h3>on<wbr>Stat<wbr>Calculation</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Stat<wbr>Calculation<span class="tsd-signature-symbol">(</span>mob<span class="tsd-signature-symbol">: </span><a href="core.mobdata.html" class="tsd-signature-type">MobData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#onstatcalculation">onStatCalculation</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L985">core/DataBackend.ts:985</a></li>
 								</ul>
@@ -1073,15 +1121,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="onstatcalculationfinish" class="tsd-anchor"></a>
 					<h3>on<wbr>Stat<wbr>Calculation<wbr>Finish</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Stat<wbr>Calculation<wbr>Finish<span class="tsd-signature-symbol">(</span>mob<span class="tsd-signature-symbol">: </span><a href="core.mobdata.html" class="tsd-signature-type">MobData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#onstatcalculationfinish">onStatCalculationFinish</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L986">core/DataBackend.ts:986</a></li>
 								</ul>
@@ -1096,15 +1145,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="onupdate" class="tsd-anchor"></a>
 					<h3>on<wbr>Update</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Update<span class="tsd-signature-symbol">(</span>mob<span class="tsd-signature-symbol">: </span><a href="core.mobdata.html" class="tsd-signature-type">MobData</a>, dt<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#onupdate">onUpdate</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L1019">core/DataBackend.ts:1019</a></li>
 								</ul>
@@ -1113,6 +1163,64 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5>mob: <a href="core.mobdata.html" class="tsd-signature-type">MobData</a></h5>
+								</li>
+								<li>
+									<h5>dt: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="settargetmob" class="tsd-anchor"></a>
+					<h3>set<wbr>Target<wbr>Mob</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Target<wbr>Mob<span class="tsd-signature-symbol">(</span>player<span class="tsd-signature-symbol">: </span><a href="gameentity.mob.html" class="tsd-signature-type">Mob</a>, target<span class="tsd-signature-symbol">: </span><a href="gameentity.mob.html" class="tsd-signature-type">Mob</a>, dt<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in agents/PlayerAgents.ts:18</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>player: <a href="gameentity.mob.html" class="tsd-signature-type">Mob</a></h5>
+								</li>
+								<li>
+									<h5>target: <a href="gameentity.mob.html" class="tsd-signature-type">Mob</a></h5>
+								</li>
+								<li>
+									<h5>dt: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="settargetpos" class="tsd-anchor"></a>
+					<h3>set<wbr>Target<wbr>Pos</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Target<wbr>Pos<span class="tsd-signature-symbol">(</span>player<span class="tsd-signature-symbol">: </span><a href="gameentity.mob.html" class="tsd-signature-type">Mob</a>, position<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Vector2</span>, dt<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in agents/PlayerAgents.ts:17</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>player: <a href="gameentity.mob.html" class="tsd-signature-type">Mob</a></h5>
+								</li>
+								<li>
+									<h5>position: <span class="tsd-signature-type">Vector2</span></h5>
 								</li>
 								<li>
 									<h5>dt: <span class="tsd-signature-type">number</span></h5>
@@ -1173,21 +1281,49 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="update" class="tsd-anchor"></a>
 					<h3>update</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">update<span class="tsd-signature-symbol">(</span>dt<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#update">update</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/core/DataBackend.ts#L963">core/DataBackend.ts:963</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
+								<li>
+									<h5>dt: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="updatemob" class="tsd-anchor"></a>
+					<h3>update<wbr>Mob</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">update<wbr>Mob<span class="tsd-signature-symbol">(</span>mob<span class="tsd-signature-symbol">: </span><a href="gameentity.mob.html" class="tsd-signature-type">Mob</a>, dt<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="agent.mobagent.html">MobAgent</a>.<a href="agent.mobagent.html#updatemob">updateMob</a></p>
+								<ul>
+									<li>Defined in agents/MobAgent.ts:19</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>mob: <a href="gameentity.mob.html" class="tsd-signature-type">Mob</a></h5>
+								</li>
 								<li>
 									<h5>dt: <span class="tsd-signature-type">number</span></h5>
 								</li>
@@ -1204,10 +1340,10 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="../modules/agent.html">Agent</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/core.html">Core</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -1232,242 +1368,164 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
-						<a href="../enums/core.moblistenertype.html" class="tsd-kind-icon">Mob<wbr>Listener<wbr>Type</a>
-					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="core.accessory.html" class="tsd-kind-icon">Accessory</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="core.armor.html" class="tsd-kind-icon">Armor</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="core.battlemonitor.html" class="tsd-kind-icon">Battle<wbr>Monitor</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="core.buff.html" class="tsd-kind-icon">Buff</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="core.databackend.html" class="tsd-kind-icon">Data<wbr>Backend</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="core.equipable.html" class="tsd-kind-icon">Equipable</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="core.inventory.html" class="tsd-kind-icon">Inventory</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="core.item.html" class="tsd-kind-icon">Item</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="core.mobdata.html" class="tsd-kind-icon">Mob<wbr>Data</a>
+						<a href="agent.mobagent.html" class="tsd-kind-icon">Mob<wbr>Agent</a>
 					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="core.moblistener.html" class="tsd-kind-icon">Mob<wbr>Listener</a>
+						<a href="agent.playeragentbase.html" class="tsd-kind-icon">Player<wbr>Agent<wbr>Base</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-								<a href="core.moblistener.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="agent.playeragentbase.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-event tsd-parent-kind-class">
-								<a href="core.moblistener.html#onswitchweapon" class="tsd-kind-icon">on<wbr>Switch<wbr>Weapon</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="core.moblistener.html#enabled" class="tsd-kind-icon">enabled</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="core.moblistener.html#focuslist" class="tsd-kind-icon">focus<wbr>List</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="core.moblistener.html#isover" class="tsd-kind-icon">is<wbr>Over</a>
+							<li class=" tsd-kind-event tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#onswitchweapon" class="tsd-kind-icon">on<wbr>Switch<wbr>Weapon</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="core.moblistener.html#listenrecord" class="tsd-kind-icon">listen<wbr>Record</a>
+								<a href="agent.playeragentbase.html#enabled" class="tsd-kind-icon">enabled</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="core.moblistener.html#parentsystem" class="tsd-kind-icon">parent<wbr>System</a>
+								<a href="agent.playeragentbase.html#focuslist" class="tsd-kind-icon">focus<wbr>List</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#isover" class="tsd-kind-icon">is<wbr>Over</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#listenrecord" class="tsd-kind-icon">listen<wbr>Record</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#parentsystem" class="tsd-kind-icon">parent<wbr>System</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#priority" class="tsd-kind-icon">priority</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="core.moblistener.html#priority" class="tsd-kind-icon">priority</a>
+								<a href="agent.playeragentbase.html#targetmob" class="tsd-kind-icon">target<wbr>Mob</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="core.moblistener.html#type" class="tsd-kind-icon">type</a>
+								<a href="agent.playeragentbase.html#targetpos" class="tsd-kind-icon">target<wbr>Pos</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#type" class="tsd-kind-icon">type</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="core.moblistener.html#discard" class="tsd-kind-icon">discard</a>
+								<a href="agent.playeragentbase.html#discard" class="tsd-kind-icon">discard</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="core.moblistener.html#discardemitter" class="tsd-kind-icon">discard<wbr>Emitter</a>
+								<a href="agent.playeragentbase.html#discardemitter" class="tsd-kind-icon">discard<wbr>Emitter</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="core.moblistener.html#discardreceiver" class="tsd-kind-icon">discard<wbr>Receiver</a>
+								<a href="agent.playeragentbase.html#discardreceiver" class="tsd-kind-icon">discard<wbr>Receiver</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="core.moblistener.html#emit" class="tsd-kind-icon">emit</a>
+								<a href="agent.playeragentbase.html#emit" class="tsd-kind-icon">emit</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="core.moblistener.html#emitarray" class="tsd-kind-icon">emit<wbr>Array</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#isreadywrapper" class="tsd-kind-icon">is<wbr>Ready<wbr>Wrapper</a>
+								<a href="agent.playeragentbase.html#emitarray" class="tsd-kind-icon">emit<wbr>Array</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="core.moblistener.html#listen" class="tsd-kind-icon">listen</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#onadded" class="tsd-kind-icon">on<wbr>Added</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#onafterattack" class="tsd-kind-icon">on<wbr>After<wbr>Attack</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#onafterspecialattack" class="tsd-kind-icon">on<wbr>After<wbr>Special<wbr>Attack</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#onattack" class="tsd-kind-icon">on<wbr>Attack</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#onbasestatcalculation" class="tsd-kind-icon">on<wbr>Base<wbr>Stat<wbr>Calculation</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#oncreate" class="tsd-kind-icon">on<wbr>Create</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#ondealdamage" class="tsd-kind-icon">on<wbr>Deal<wbr>Damage</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#ondealdamagefinal" class="tsd-kind-icon">on<wbr>Deal<wbr>Damage<wbr>Final</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#ondealheal" class="tsd-kind-icon">on<wbr>Deal<wbr>Heal</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#ondealhealfinal" class="tsd-kind-icon">on<wbr>Deal<wbr>Heal<wbr>Final</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#ondeath" class="tsd-kind-icon">on<wbr>Death</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#onfrontenddestroy" class="tsd-kind-icon">on<wbr>Front<wbr>End<wbr>Destroy</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#onfrontendupdate" class="tsd-kind-icon">on<wbr>Front<wbr>End<wbr>Update</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#onkill" class="tsd-kind-icon">on<wbr>Kill</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#onreceivedamage" class="tsd-kind-icon">on<wbr>Receive<wbr>Damage</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#onreceivedamagefinal" class="tsd-kind-icon">on<wbr>Receive<wbr>Damage<wbr>Final</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#onreceiveheal" class="tsd-kind-icon">on<wbr>Receive<wbr>Heal</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#onreceivehealfinal" class="tsd-kind-icon">on<wbr>Receive<wbr>Heal<wbr>Final</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#onremoved" class="tsd-kind-icon">on<wbr>Removed</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#onrender" class="tsd-kind-icon">on<wbr>Render</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#onspecialattack" class="tsd-kind-icon">on<wbr>Special<wbr>Attack</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#onstatcalculation" class="tsd-kind-icon">on<wbr>Stat<wbr>Calculation</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#onstatcalculationfinish" class="tsd-kind-icon">on<wbr>Stat<wbr>Calculation<wbr>Finish</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#onupdate" class="tsd-kind-icon">on<wbr>Update</a>
+								<a href="agent.playeragentbase.html#isreadywrapper" class="tsd-kind-icon">is<wbr>Ready<wbr>Wrapper</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="core.moblistener.html#unlisten" class="tsd-kind-icon">unlisten</a>
+								<a href="agent.playeragentbase.html#listen" class="tsd-kind-icon">listen</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="core.moblistener.html#unlistenall" class="tsd-kind-icon">unlisten<wbr>All</a>
+								<a href="agent.playeragentbase.html#onadded" class="tsd-kind-icon">on<wbr>Added</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#onafterattack" class="tsd-kind-icon">on<wbr>After<wbr>Attack</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#onafterspecialattack" class="tsd-kind-icon">on<wbr>After<wbr>Special<wbr>Attack</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#onattack" class="tsd-kind-icon">on<wbr>Attack</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#onbasestatcalculation" class="tsd-kind-icon">on<wbr>Base<wbr>Stat<wbr>Calculation</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#oncreate" class="tsd-kind-icon">on<wbr>Create</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#ondealdamage" class="tsd-kind-icon">on<wbr>Deal<wbr>Damage</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#ondealdamagefinal" class="tsd-kind-icon">on<wbr>Deal<wbr>Damage<wbr>Final</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#ondealheal" class="tsd-kind-icon">on<wbr>Deal<wbr>Heal</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#ondealhealfinal" class="tsd-kind-icon">on<wbr>Deal<wbr>Heal<wbr>Final</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#ondeath" class="tsd-kind-icon">on<wbr>Death</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#onfrontenddestroy" class="tsd-kind-icon">on<wbr>Front<wbr>End<wbr>Destroy</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#onfrontendupdate" class="tsd-kind-icon">on<wbr>Front<wbr>End<wbr>Update</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#onkill" class="tsd-kind-icon">on<wbr>Kill</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#onreceivedamage" class="tsd-kind-icon">on<wbr>Receive<wbr>Damage</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#onreceivedamagefinal" class="tsd-kind-icon">on<wbr>Receive<wbr>Damage<wbr>Final</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#onreceiveheal" class="tsd-kind-icon">on<wbr>Receive<wbr>Heal</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#onreceivehealfinal" class="tsd-kind-icon">on<wbr>Receive<wbr>Heal<wbr>Final</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#onremoved" class="tsd-kind-icon">on<wbr>Removed</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#onrender" class="tsd-kind-icon">on<wbr>Render</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#onspecialattack" class="tsd-kind-icon">on<wbr>Special<wbr>Attack</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#onstatcalculation" class="tsd-kind-icon">on<wbr>Stat<wbr>Calculation</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#onstatcalculationfinish" class="tsd-kind-icon">on<wbr>Stat<wbr>Calculation<wbr>Finish</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#onupdate" class="tsd-kind-icon">on<wbr>Update</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="core.moblistener.html#update" class="tsd-kind-icon">update</a>
+								<a href="agent.playeragentbase.html#settargetmob" class="tsd-kind-icon">set<wbr>Target<wbr>Mob</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="agent.playeragentbase.html#settargetpos" class="tsd-kind-icon">set<wbr>Target<wbr>Pos</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#unlisten" class="tsd-kind-icon">unlisten</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#unlistenall" class="tsd-kind-icon">unlisten<wbr>All</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#update" class="tsd-kind-icon">update</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="agent.playeragentbase.html#updatemob" class="tsd-kind-icon">update<wbr>Mob</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="core.spelldata.html" class="tsd-kind-icon">Spell<wbr>Data</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="core.unitmanager.html" class="tsd-kind-icon">Unit<wbr>Manager</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="core.weapon.html" class="tsd-kind-icon">Weapon</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-has-type-parameter">
-						<a href="../interfaces/core.alltypes.html" class="tsd-kind-icon">All<wbr>Types</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/core.basestats.html" class="tsd-kind-icon">Base<wbr>Stats</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/core.battlestats.html" class="tsd-kind-icon">Battle<wbr>Stats</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/core.damageheal.html" class="tsd-kind-icon">Damage<wbr>Heal</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/core.htmltooltip.html" class="tsd-kind-icon">HTMLTool<wbr>Tip</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-has-type-parameter">
-						<a href="../interfaces/core.leaftypes.html" class="tsd-kind-icon">Leaf<wbr>Types</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/core.mobconstructor.html" class="tsd-kind-icon">Mob<wbr>Constructor</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/core.mobspeedmodifiers.html" class="tsd-kind-icon">Mob<wbr>Speed<wbr>Modifiers</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/core.spelldictionary.html" class="tsd-kind-icon">Spell<wbr>Dictionary</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
-						<a href="../modules/core.html#comparefunc" class="tsd-kind-icon">Compare<wbr>Func</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
-						<a href="../modules/core.html#failcallback" class="tsd-kind-icon">Fail<wbr>Callback</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
-						<a href="../modules/core.html#filterfunc" class="tsd-kind-icon">Filter<wbr>Func</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/core.html#healtaunt" class="tsd-kind-icon">heal<wbr>Taunt</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/core.html#movethreshold" class="tsd-kind-icon">move<wbr>Threshold</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/core.html#playermax" class="tsd-kind-icon">player<wbr>Max</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/core.html#playersparse" class="tsd-kind-icon">player<wbr>Sparse</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/core.html#playersparseinc" class="tsd-kind-icon">player<wbr>Sparse<wbr>Inc</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/core.html#useautomove" class="tsd-kind-icon">use<wbr>Automove</a>
-					</li>
-					<li class=" tsd-kind-object-literal tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/core.html#critmultiplier" class="tsd-kind-icon">crit<wbr>Multiplier</a>
-					</li>
-					<li class=" tsd-kind-object-literal tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/core.html#damagetype" class="tsd-kind-icon">damage<wbr>Type</a>
+						<a href="agent.simple.html" class="tsd-kind-icon">Simple</a>
 					</li>
 				</ul>
 			</nav>

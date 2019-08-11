@@ -91,6 +91,8 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="gameentity.mob.html#data" class="tsd-kind-icon">data</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="gameentity.mob.html#deadanim" class="tsd-kind-icon">dead<wbr>Anim</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="gameentity.mob.html#idleanim" class="tsd-kind-icon">idle<wbr>Anim</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="gameentity.mob.html#moveanim" class="tsd-kind-icon">move<wbr>Anim</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="gameentity.mob.html#sprite" class="tsd-kind-icon">sprite</a></li>
 							</ul>
@@ -98,6 +100,7 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="gameentity.mob.html#doattack" class="tsd-kind-icon">do<wbr>Attack</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="gameentity.mob.html#getequipabletags" class="tsd-kind-icon">get<wbr>Equipable<wbr>Tags</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="gameentity.mob.html#update" class="tsd-kind-icon">update</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="gameentity.mob.html#checkalive" class="tsd-kind-icon">check<wbr>Alive</a></li>
@@ -119,7 +122,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/Mob.ts#L12">Mob.ts:12</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/Mob.ts#L15">Mob.ts:15</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -141,7 +144,27 @@
 					<div class="tsd-signature tsd-kind-icon">data<span class="tsd-signature-symbol">:</span> <a href="core.mobdata.html" class="tsd-signature-type">MobData</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/Mob.ts#L12">Mob.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/Mob.ts#L15">Mob.ts:15</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="deadanim" class="tsd-anchor"></a>
+					<h3>dead<wbr>Anim</h3>
+					<div class="tsd-signature tsd-kind-icon">dead<wbr>Anim<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/Mob.ts#L13">Mob.ts:13</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="idleanim" class="tsd-anchor"></a>
+					<h3>idle<wbr>Anim</h3>
+					<div class="tsd-signature tsd-kind-icon">idle<wbr>Anim<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/Mob.ts#L12">Mob.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -151,23 +174,46 @@
 					<div class="tsd-signature tsd-kind-icon">move<wbr>Anim<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/Mob.ts#L10">Mob.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/Mob.ts#L11">Mob.ts:11</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="sprite" class="tsd-anchor"></a>
 					<h3>sprite</h3>
-					<div class="tsd-signature tsd-kind-icon">sprite<span class="tsd-signature-symbol">:</span> <a href="dynamicloader.dsprite.html" class="tsd-signature-type">dSprite</a></div>
+					<div class="tsd-signature tsd-kind-icon">sprite<span class="tsd-signature-symbol">:</span> <a href="dynamicloader.dphyssprite.html" class="tsd-signature-type">dPhysSprite</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/Mob.ts#L9">Mob.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/Mob.ts#L10">Mob.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="doattack" class="tsd-anchor"></a>
+					<h3>do<wbr>Attack</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">do<wbr>Attack<span class="tsd-signature-symbol">(</span>dt<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/Mob.ts#L40">Mob.ts:40</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>dt: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="getequipabletags" class="tsd-anchor"></a>
 					<h3>get<wbr>Equipable<wbr>Tags</h3>
@@ -178,7 +224,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/Mob.ts#L32">Mob.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/Mob.ts#L35">Mob.ts:35</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -201,7 +247,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/Mob.ts#L27">Mob.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/Mob.ts#L30">Mob.ts:30</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -224,7 +270,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/Mob.ts#L42">Mob.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/Mob.ts#L50">Mob.ts:50</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -247,7 +293,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/Mob.ts#L37">Mob.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/be629dc/src/Mob.ts#L45">Mob.ts:45</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -267,6 +313,9 @@
 				<ul>
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/agent.html">Agent</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/core.html">Core</a>
@@ -305,10 +354,19 @@
 								<a href="gameentity.mob.html#data" class="tsd-kind-icon">data</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="gameentity.mob.html#deadanim" class="tsd-kind-icon">dead<wbr>Anim</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="gameentity.mob.html#idleanim" class="tsd-kind-icon">idle<wbr>Anim</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="gameentity.mob.html#moveanim" class="tsd-kind-icon">move<wbr>Anim</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="gameentity.mob.html#sprite" class="tsd-kind-icon">sprite</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="gameentity.mob.html#doattack" class="tsd-kind-icon">do<wbr>Attack</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="gameentity.mob.html#getequipabletags" class="tsd-kind-icon">get<wbr>Equipable<wbr>Tags</a>

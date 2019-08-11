@@ -1412,11 +1412,78 @@ define("core/EquipmentCore", ["require", "exports", "core/DataBackend"], functio
     }
     exports.Armor = Armor;
     class Weapon extends Equipable {
+        isInRange(mob, target) {
+            throw new Error("Method not implemented.");
+        }
+        grabTargets(mob) {
+            return [];
+        }
+        attack(source, target) {
+            throw new Error("Method not implemented.");
+        }
     }
     exports.Weapon = Weapon;
     class Accessory extends Equipable {
     }
     exports.Accessory = Accessory;
+});
+/** @module DynamicLoader */
+define("DynamicLoader/dPhysSprite", ["require", "exports", "DynamicLoader/DynamicLoaderScene"], function (require, exports, DynamicLoaderScene_2) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    DynamicLoaderScene_2 = __importDefault(DynamicLoaderScene_2);
+    class dPhysSprite extends Phaser.Physics.Arcade.Sprite {
+        constructor(scene, x, y, texture, subsTexture, frame) {
+            var textureToLoad;
+            var frameToLoad;
+            if (!scene.textures.exists(texture)) {
+                textureToLoad = texture;
+                frameToLoad = frame;
+                texture = subsTexture;
+                frame = 0;
+            }
+            if (!texture) {
+                texture = 'default';
+            }
+            super(scene, x, y, texture, frame);
+            // Since we cannot put "super" to the very beginning ...
+            this.resources = [];
+            this.currentAnim = { 'key': '', 'startFrame': 0 };
+            if (textureToLoad) {
+                this.resources.push({ 'key': textureToLoad, 'metadata': {}, 'callback': this.onLoadComplete.bind(this) });
+                this.textureToLoad = textureToLoad;
+                this.frameToLoad = frameToLoad;
+            }
+            if (texture == 'default') {
+                this.setVisible(false);
+            }
+            DynamicLoaderScene_2.default.getSingleton().loadMultiple(this.resources);
+        }
+        fetchChildren() {
+            return [];
+        }
+        onLoadComplete(key, type, fileObj) {
+            if (key == this.textureToLoad) {
+                this.loadComplete = true;
+                this.setTexture(this.textureToLoad, this.frameToLoad);
+                // Play cached animation
+                if (this.currentAnim.key) {
+                    this.play(this.currentAnim.key, true, this.currentAnim.startFrame);
+                }
+                this.setVisible(true);
+            }
+        }
+        // override to allow play() calls when not loaded (not sure if without this it will work or not, never tried)
+        play(key, ignoreIfPlaying, startFrame) {
+            this.currentAnim.key = key;
+            this.currentAnim.startFrame = startFrame;
+            if (this.loadComplete == true) {
+                super.play(key, ignoreIfPlaying, startFrame);
+            }
+            return this;
+        }
+    }
+    exports.default = dPhysSprite;
 });
 /** @module Core */
 define("core/mRTypes", ["require", "exports"], function (require, exports) {
@@ -1441,6 +1508,9 @@ define("Mob", ["require", "exports"], function (require, exports) {
         }
         getEquipableTags(type) {
             return [];
+        }
+        doAttack(dt) {
+            throw new Error("Method not implemented.");
         }
         static checkExist(mob) {
             return (mob == null);
@@ -1681,14 +1751,14 @@ define("core/UnitManager", ["require", "exports", "Mob", "core/GameData"], funct
     exports.default = UnitManager;
 });
 /** @module GameScene */
-define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "Mob", "DynamicLoader/dSprite", "core/UnitManager"], function (require, exports, Events, Phaser, Mob_2, dSprite_1, UnitManager_1) {
+define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "Mob", "core/UnitManager", "DynamicLoader/dPhysSprite"], function (require, exports, Events, Phaser, Mob_2, UnitManager_1, dPhysSprite_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     Events = __importStar(Events);
     Phaser = __importStar(Phaser);
     Mob_2 = __importDefault(Mob_2);
-    dSprite_1 = __importDefault(dSprite_1);
     UnitManager_1 = __importDefault(UnitManager_1);
+    dPhysSprite_1 = __importDefault(dPhysSprite_1);
     class ExampleScene extends Phaser.Scene {
         constructor() {
             super({ key: 'ExampleScene' });
@@ -1713,7 +1783,7 @@ define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "M
             // this.anims.create({key: 'move', frames: this.anims.generateFrameNumbers('elf', {start: 0, end: 3, first: 0}), frameRate: 8, repeat: -1});
             // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
             let girl = new Mob_2.default({
-                'sprite': new dSprite_1.default(this, 100, 200, 'char_sheet_forestelf_myst'),
+                'sprite': new dPhysSprite_1.default(this, 100, 200, 'char_sheet_forestelf_myst'),
                 'moveAnim': ''
             });
             this.alive.push(girl);
@@ -1730,11 +1800,11 @@ define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "M
     exports.default = ExampleScene;
 });
 /** @module GameScene */
-define("SimpleGame", ["require", "exports", "ExampleScene", "DynamicLoader/DynamicLoaderScene"], function (require, exports, ExampleScene_1, DynamicLoaderScene_2) {
+define("SimpleGame", ["require", "exports", "ExampleScene", "DynamicLoader/DynamicLoaderScene"], function (require, exports, ExampleScene_1, DynamicLoaderScene_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     ExampleScene_1 = __importDefault(ExampleScene_1);
-    DynamicLoaderScene_2 = __importDefault(DynamicLoaderScene_2);
+    DynamicLoaderScene_3 = __importDefault(DynamicLoaderScene_3);
     class InitPhaser {
         static initGame() {
             let config = {
@@ -1748,11 +1818,177 @@ define("SimpleGame", ["require", "exports", "ExampleScene", "DynamicLoader/Dynam
                 version: '-1.0',
             };
             this.gameRef = new Phaser.Game(config);
-            this.gameRef.scene.add('DynamicLoaderScene', DynamicLoaderScene_2.default.getSingleton(), true);
+            this.gameRef.scene.add('DynamicLoaderScene', DynamicLoaderScene_3.default.getSingleton(), true);
         }
     }
     exports.default = InitPhaser;
     InitPhaser.initGame();
+});
+/**
+ * Agents are used to control the action of mobs (players, enemies). They are also MobListeners so that they could handle events like dealDamage etc.
+ * They are the "brain" of a mob, and a mob will not make any action without an agent.
+ *
+ * @module Agent
+ * @preferred
+ */
+define("agents/MobAgent", ["require", "exports", "core/DataBackend"], function (require, exports, DataBackend_3) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class MobAgent extends DataBackend_3.MobListener {
+        constructor() {
+            super();
+        }
+        updateMob(mob, dt) { }
+    }
+    exports.default = MobAgent;
+});
+/** @module Agent */
+define("agents/PlayerAgents", ["require", "exports", "agents/MobAgent", "Mob", "core/GameData"], function (require, exports, MobAgent_1, Mob_3, GameData) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    MobAgent_1 = __importDefault(MobAgent_1);
+    Mob_3 = __importDefault(Mob_3);
+    GameData = __importStar(GameData);
+    class PlayerAgentBase extends MobAgent_1.default {
+        constructor() {
+            super();
+        }
+        setTargetPos(player, position, dt) { }
+        setTargetMob(player, target, dt) { }
+    }
+    exports.PlayerAgentBase = PlayerAgentBase;
+    class Simple extends PlayerAgentBase {
+        constructor() {
+            super();
+            // Will the player move automatically (to nearest mob) if it is free ?
+            this.autoMove = GameData.useAutomove;
+            // this.autoMove = true;
+            // idleCount will count down from idleFrame if player is in idle (-1 / frame) to smooth the animation.
+            // Only if idleCount = 0, the player will be "idle".
+            // idleFrame is seperated for targeting Mob (which may move = need more smooth)
+            // and targeting a static position (don't move and need high precision)
+            // WTF? I cannot understood what have I wrote ...
+            this.idleFrameMob = 10;
+            this.idleFramePos = 0;
+            this.idleCount = 0;
+            this.speedFriction = 0.9;
+            // TODO: smooth when hit world object ?
+        }
+        updateMob(player, dt) {
+            this.autoMove = GameData.useAutomove;
+            this.footPos = new Phaser.Math.Vector2(player.sprite.originX, player.sprite.originY);
+            if (Mob_3.default.checkAlive(player) === true) {
+                if (typeof this.targetPos !== "undefined") {
+                    if (this.targetPos.distance(this.footPos) > 1.5) {
+                        let velocity = this.targetPos.subtract(this.footPos).normalize().scale(player.data.getMovingSpeed() * dt);
+                        player.sprite.setVelocity(velocity.x, velocity.y);
+                        this.isMoving = true;
+                        // Reset the anim counter
+                        this.idleCount = this.idleFramePos;
+                    }
+                    else {
+                        this.targetPos = undefined;
+                        this.isMoving = false;
+                    }
+                }
+                else if (Mob_3.default.checkAlive(this.targetMob) == true) {
+                    // we need move to goin the range of our current weapon
+                    if (player.data.currentWeapon.isInRange(player, this.targetMob) == false) {
+                        let targetPos = new Phaser.Math.Vector2(this.targetMob.sprite.originX, this.targetMob.sprite.originY);
+                        let velocity = targetPos.subtract(this.footPos).normalize().scale(player.data.getMovingSpeed() * dt);
+                        player.sprite.setVelocity(velocity.x, velocity.y);
+                        this.isMoving = true;
+                        // Reset the anim counter
+                        this.idleCount = this.idleFrameMob;
+                    }
+                    // and then we don't move anymore.
+                    else {
+                        this.targetMob = undefined;
+                        this.isMoving = false;
+                    }
+                }
+                else {
+                    // We lose the target.
+                    this.targetPos = undefined;
+                    this.targetMob = undefined;
+                    this.isMoving = false;
+                }
+                if (this.isMoving === true) {
+                    // Fix our face direction when moving
+                    if (player.sprite.body.velocity.x > 0) {
+                        player.sprite.flipX = true;
+                    }
+                    else {
+                        player.sprite.flipX = false;
+                    }
+                    if (!(player.sprite.anims.currentAnim.key == player.moveAnim)) {
+                        player.sprite.play(player.moveAnim);
+                    }
+                }
+                else {
+                    // Count the frames
+                    if (this.idleCount > 0) {
+                        this.idleCount--;
+                        // Also smooth the speed
+                        player.sprite.setVelocity(player.sprite.body.velocity.x * this.speedFriction, player.sprite.body.velocity.y * this.speedFriction);
+                    }
+                    else {
+                        player.sprite.setVelocity(0, 0);
+                        if (!(player.sprite.anims.currentAnim.key == player.idleAnim)) {
+                            player.sprite.play(player.idleAnim);
+                        }
+                    }
+                    if (this.autoMove === true) {
+                        if (player.data.currentWeapon) {
+                            let targetList = player.data.currentWeapon.grabTargets(player);
+                            if (targetList.length > 0) {
+                                this.setTargetMob(player, targetList[0], dt);
+                            }
+                        }
+                    }
+                }
+                // Attack !
+                // Todo: attack single time for multi targets, they should add same amount of weapon gauge (basically)
+                if (player.doAttack(dt) === true) {
+                    let targets = player.data.currentWeapon.grabTargets(player);
+                    if (targets.length > 0) {
+                        for (var target of targets.values()) {
+                            if (player.data.currentWeapon.isInRange(player, target)) {
+                                if (player.data.currentMana > player.data.currentWeapon.manaCost) {
+                                    player.data.currentMana -= player.data.currentWeapon.manaCost;
+                                    player.data.currentWeapon.attack(player, target);
+                                }
+                            }
+                        }
+                    }
+                }
+                // Use any spells available
+                for (let spell in player.data.spells) {
+                    if (player.data.spells.hasOwnProperty(spell)) {
+                        if (this.isMoving == false) {
+                            if (player.data.spells[spell].available) {
+                                player.data.cast(player, null, player.data.spells[spell]);
+                            }
+                        }
+                    }
+                }
+            }
+            // YOU DIED !
+            else {
+                this.isMoving = false;
+                player.sprite.setVelocity(0, 0);
+                player.sprite.flipX = false;
+                player.sprite.play(player.deadAnim);
+            }
+        }
+        setTargetPos(player, position, dt) {
+            this.targetPos = position;
+        }
+        setTargetMob(player, mob, dt) {
+            this.targetMob = mob;
+        }
+    }
+    exports.Simple = Simple;
 });
 /** @module Core */
 define("core/BattleMonitor", ["require", "exports"], function (require, exports) {
