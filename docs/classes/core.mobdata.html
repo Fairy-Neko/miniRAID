@@ -100,6 +100,12 @@
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
+							<h3>Events</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-event tsd-parent-kind-class"><a href="core.mobdata.html#onstatchange" class="tsd-kind-icon">on<wbr>Stat<wbr>Change</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="core.mobdata.html#id" class="tsd-kind-icon">ID</a></li>
@@ -132,6 +138,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="core.mobdata.html#image" class="tsd-kind-icon">image</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="core.mobdata.html#incasting" class="tsd-kind-icon">in<wbr>Casting</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="core.mobdata.html#inchanneling" class="tsd-kind-icon">in<wbr>Channeling</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="core.mobdata.html#incontrol" class="tsd-kind-icon">in<wbr>Control</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="core.mobdata.html#ismoving" class="tsd-kind-icon">is<wbr>Moving</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="core.mobdata.html#isplayer" class="tsd-kind-icon">is<wbr>Player</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="core.mobdata.html#level" class="tsd-kind-icon">level</a></li>
@@ -202,7 +209,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L178">core/DataBackend.ts:178</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L180">core/DataBackend.ts:180</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -217,6 +224,40 @@
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Events</h2>
+				<section class="tsd-panel tsd-member tsd-kind-event tsd-parent-kind-class">
+					<a name="onstatchange" class="tsd-anchor"></a>
+					<h3>on<wbr>Stat<wbr>Change</h3>
+					<ul class="tsd-signatures tsd-kind-event tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Stat<wbr>Change<span class="tsd-signature-symbol">(</span>listener<span class="tsd-signature-symbol">: </span><a href="core.moblistener.html" class="tsd-signature-type">MobListener</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L598">core/DataBackend.ts:598</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Event &#39;statChange&#39; - emitted while a listener (buff, weapon, etc.) needs to change the stat of parent mob.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>listener: <a href="core.moblistener.html" class="tsd-signature-type">MobListener</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The listener that triggered a stat change</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="id" class="tsd-anchor"></a>
@@ -224,7 +265,7 @@
 					<div class="tsd-signature tsd-kind-icon">ID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L170">core/DataBackend.ts:170</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L170">core/DataBackend.ts:170</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -234,7 +275,7 @@
 					<div class="tsd-signature tsd-kind-icon">accessory<span class="tsd-signature-symbol">:</span> <a href="core.accessory.html" class="tsd-signature-type">Accessory</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L158">core/DataBackend.ts:158</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L158">core/DataBackend.ts:158</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -244,7 +285,7 @@
 					<div class="tsd-signature tsd-kind-icon">alive<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L131">core/DataBackend.ts:131</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L131">core/DataBackend.ts:131</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -254,7 +295,7 @@
 					<div class="tsd-signature tsd-kind-icon">another<wbr>Weapon<span class="tsd-signature-symbol">:</span> <a href="core.weapon.html" class="tsd-signature-type">Weapon</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L161">core/DataBackend.ts:161</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L161">core/DataBackend.ts:161</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -264,7 +305,7 @@
 					<div class="tsd-signature tsd-kind-icon">armor<span class="tsd-signature-symbol">:</span> <a href="core.armor.html" class="tsd-signature-type">Armor</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L157">core/DataBackend.ts:157</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L157">core/DataBackend.ts:157</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -274,7 +315,7 @@
 					<div class="tsd-signature tsd-kind-icon">availableBP<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L121">core/DataBackend.ts:121</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L121">core/DataBackend.ts:121</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -284,7 +325,7 @@
 					<div class="tsd-signature tsd-kind-icon">availableSP<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L122">core/DataBackend.ts:122</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L122">core/DataBackend.ts:122</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -294,7 +335,7 @@
 					<div class="tsd-signature tsd-kind-icon">base<wbr>Attack<wbr>Speed<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L135">core/DataBackend.ts:135</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L135">core/DataBackend.ts:135</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -304,7 +345,7 @@
 					<div class="tsd-signature tsd-kind-icon">base<wbr>Speed<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L134">core/DataBackend.ts:134</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L134">core/DataBackend.ts:134</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -314,7 +355,7 @@
 					<div class="tsd-signature tsd-kind-icon">base<wbr>Stats<span class="tsd-signature-symbol">:</span> <a href="../interfaces/core.basestats.html" class="tsd-signature-type">BaseStats</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L124">core/DataBackend.ts:124</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L124">core/DataBackend.ts:124</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -324,7 +365,7 @@
 					<div class="tsd-signature tsd-kind-icon">base<wbr>Stats<wbr>Fundemental<span class="tsd-signature-symbol">:</span> <a href="../interfaces/core.basestats.html" class="tsd-signature-type">BaseStats</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L125">core/DataBackend.ts:125</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L125">core/DataBackend.ts:125</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -334,7 +375,7 @@
 					<div class="tsd-signature tsd-kind-icon">battle<wbr>Stats<span class="tsd-signature-symbol">:</span> <a href="../interfaces/core.battlestats.html" class="tsd-signature-type">BattleStats</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L153">core/DataBackend.ts:153</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L153">core/DataBackend.ts:153</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -344,7 +385,7 @@
 					<div class="tsd-signature tsd-kind-icon">being<wbr>Attack<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L167">core/DataBackend.ts:167</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L167">core/DataBackend.ts:167</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -354,7 +395,7 @@
 					<div class="tsd-signature tsd-kind-icon">cast<wbr>Remain<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L143">core/DataBackend.ts:143</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L143">core/DataBackend.ts:143</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -364,7 +405,7 @@
 					<div class="tsd-signature tsd-kind-icon">cast<wbr>Time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L142">core/DataBackend.ts:142</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L142">core/DataBackend.ts:142</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -374,7 +415,7 @@
 					<div class="tsd-signature tsd-kind-icon">channel<wbr>Remain<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L148">core/DataBackend.ts:148</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L148">core/DataBackend.ts:148</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -384,7 +425,7 @@
 					<div class="tsd-signature tsd-kind-icon">channel<wbr>Time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L146">core/DataBackend.ts:146</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L146">core/DataBackend.ts:146</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -394,7 +435,7 @@
 					<div class="tsd-signature tsd-kind-icon">channel<wbr>Time<wbr>Factor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L147">core/DataBackend.ts:147</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L147">core/DataBackend.ts:147</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -404,7 +445,7 @@
 					<div class="tsd-signature tsd-kind-icon">class<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L118">core/DataBackend.ts:118</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L118">core/DataBackend.ts:118</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -414,7 +455,7 @@
 					<div class="tsd-signature tsd-kind-icon">current<wbr>Health<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L128">core/DataBackend.ts:128</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L128">core/DataBackend.ts:128</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -424,7 +465,7 @@
 					<div class="tsd-signature tsd-kind-icon">current<wbr>Mana<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L130">core/DataBackend.ts:130</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L130">core/DataBackend.ts:130</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -434,7 +475,7 @@
 					<div class="tsd-signature tsd-kind-icon">current<wbr>Spell<span class="tsd-signature-symbol">:</span> <a href="core.spelldata.html" class="tsd-signature-type">SpellData</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L150">core/DataBackend.ts:150</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L150">core/DataBackend.ts:150</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -444,7 +485,7 @@
 					<div class="tsd-signature tsd-kind-icon">current<wbr>Spell<wbr>Target<span class="tsd-signature-symbol">:</span> <a href="gameentity.mob.html" class="tsd-signature-type">Mob</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Vector2</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L151">core/DataBackend.ts:151</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L151">core/DataBackend.ts:151</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -454,7 +495,7 @@
 					<div class="tsd-signature tsd-kind-icon">current<wbr>Weapon<span class="tsd-signature-symbol">:</span> <a href="core.weapon.html" class="tsd-signature-type">Weapon</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L160">core/DataBackend.ts:160</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L160">core/DataBackend.ts:160</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -464,7 +505,7 @@
 					<div class="tsd-signature tsd-kind-icon">globalCDRemain<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L139">core/DataBackend.ts:139</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L139">core/DataBackend.ts:139</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -474,7 +515,7 @@
 					<div class="tsd-signature tsd-kind-icon">heal<wbr>Priority<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L168">core/DataBackend.ts:168</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L168">core/DataBackend.ts:168</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -484,7 +525,7 @@
 					<div class="tsd-signature tsd-kind-icon">health<wbr>Ratio<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L178">core/DataBackend.ts:178</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L178">core/DataBackend.ts:178</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -494,7 +535,7 @@
 					<div class="tsd-signature tsd-kind-icon">image<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L115">core/DataBackend.ts:115</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L115">core/DataBackend.ts:115</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -504,7 +545,7 @@
 					<div class="tsd-signature tsd-kind-icon">in<wbr>Casting<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L141">core/DataBackend.ts:141</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L141">core/DataBackend.ts:141</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -514,7 +555,17 @@
 					<div class="tsd-signature tsd-kind-icon">in<wbr>Channeling<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L145">core/DataBackend.ts:145</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L145">core/DataBackend.ts:145</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="incontrol" class="tsd-anchor"></a>
+					<h3>in<wbr>Control</h3>
+					<div class="tsd-signature tsd-kind-icon">in<wbr>Control<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L180">core/DataBackend.ts:180</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -524,7 +575,7 @@
 					<div class="tsd-signature tsd-kind-icon">is<wbr>Moving<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L137">core/DataBackend.ts:137</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L137">core/DataBackend.ts:137</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -534,7 +585,7 @@
 					<div class="tsd-signature tsd-kind-icon">is<wbr>Player<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L164">core/DataBackend.ts:164</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L164">core/DataBackend.ts:164</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -544,7 +595,7 @@
 					<div class="tsd-signature tsd-kind-icon">level<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L119">core/DataBackend.ts:119</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L119">core/DataBackend.ts:119</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -556,7 +607,7 @@
 						<p>Implementation of <a href="../interfaces/events.ieventreceiver.html">IEventReceiver</a>.<a href="../interfaces/events.ieventreceiver.html#listenrecord">listenRecord</a></p>
 						<p>Inherited from <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#listenrecord">listenRecord</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Events/EventSystem.ts#L29">Events/EventSystem.ts:29</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/Events/EventSystem.ts#L29">Events/EventSystem.ts:29</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -566,7 +617,7 @@
 					<div class="tsd-signature tsd-kind-icon">listeners<span class="tsd-signature-symbol">:</span> <a href="struct.queryset.html" class="tsd-signature-type">QuerySet</a><span class="tsd-signature-symbol">&lt;</span><a href="core.moblistener.html" class="tsd-signature-type">MobListener</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L172">core/DataBackend.ts:172</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L172">core/DataBackend.ts:172</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -576,7 +627,7 @@
 					<div class="tsd-signature tsd-kind-icon">max<wbr>Health<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L127">core/DataBackend.ts:127</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L127">core/DataBackend.ts:127</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -586,7 +637,7 @@
 					<div class="tsd-signature tsd-kind-icon">max<wbr>Mana<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L129">core/DataBackend.ts:129</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L129">core/DataBackend.ts:129</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -596,7 +647,7 @@
 					<div class="tsd-signature tsd-kind-icon">mob<wbr>Constructor<span class="tsd-signature-symbol">:</span> <a href="../interfaces/core.mobconstructor.html" class="tsd-signature-type">MobConstructor</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L175">core/DataBackend.ts:175</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L175">core/DataBackend.ts:175</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -606,7 +657,7 @@
 					<div class="tsd-signature tsd-kind-icon">modifiers<span class="tsd-signature-symbol">:</span> <a href="../interfaces/core.mobspeedmodifiers.html" class="tsd-signature-type">MobSpeedModifiers</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L133">core/DataBackend.ts:133</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L133">core/DataBackend.ts:133</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -616,7 +667,7 @@
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L114">core/DataBackend.ts:114</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L114">core/DataBackend.ts:114</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -626,7 +677,7 @@
 					<div class="tsd-signature tsd-kind-icon">parent<wbr>Mob<span class="tsd-signature-symbol">:</span> <a href="gameentity.mob.html" class="tsd-signature-type">Mob</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L176">core/DataBackend.ts:176</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L176">core/DataBackend.ts:176</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -638,7 +689,7 @@
 						<p>Implementation of <a href="../interfaces/events.ieventreceiver.html">IEventReceiver</a>.<a href="../interfaces/events.ieventreceiver.html#parentsystem">parentSystem</a></p>
 						<p>Inherited from <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#parentsystem">parentSystem</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Events/EventSystem.ts#L28">Events/EventSystem.ts:28</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/Events/EventSystem.ts#L28">Events/EventSystem.ts:28</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -648,7 +699,7 @@
 					<div class="tsd-signature tsd-kind-icon">race<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L117">core/DataBackend.ts:117</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L117">core/DataBackend.ts:117</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -658,7 +709,7 @@
 					<div class="tsd-signature tsd-kind-icon">should<wbr>Switch<wbr>Weapon<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L162">core/DataBackend.ts:162</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L162">core/DataBackend.ts:162</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -668,7 +719,7 @@
 					<div class="tsd-signature tsd-kind-icon">spells<span class="tsd-signature-symbol">:</span> <a href="../interfaces/core.spelldictionary.html" class="tsd-signature-type">SpellDictionary</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L177">core/DataBackend.ts:177</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L177">core/DataBackend.ts:177</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -678,7 +729,7 @@
 					<div class="tsd-signature tsd-kind-icon">taunt<wbr>Mul<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L166">core/DataBackend.ts:166</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L166">core/DataBackend.ts:166</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -688,7 +739,7 @@
 					<div class="tsd-signature tsd-kind-icon">weapon<wbr>Left<span class="tsd-signature-symbol">:</span> <a href="core.weapon.html" class="tsd-signature-type">Weapon</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L155">core/DataBackend.ts:155</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L155">core/DataBackend.ts:155</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -698,7 +749,7 @@
 					<div class="tsd-signature tsd-kind-icon">weapon<wbr>Right<span class="tsd-signature-symbol">:</span> <a href="core.weapon.html" class="tsd-signature-type">Weapon</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L156">core/DataBackend.ts:156</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L156">core/DataBackend.ts:156</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -715,7 +766,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L497">core/DataBackend.ts:497</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L500">core/DataBackend.ts:500</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -732,13 +783,13 @@
 					<a name="addlistener" class="tsd-anchor"></a>
 					<h3>add<wbr>Listener</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Listener<span class="tsd-signature-symbol">(</span>listener<span class="tsd-signature-symbol">: </span><a href="core.moblistener.html" class="tsd-signature-type">MobListener</a>, source<span class="tsd-signature-symbol">?: </span><a href="core.mobdata.html" class="tsd-signature-type">MobData</a>, callback<span class="tsd-signature-symbol">?: </span><a href="../modules/struct.html#failcallback" class="tsd-signature-type">FailCallback</a><span class="tsd-signature-symbol">&lt;</span><a href="core.moblistener.html" class="tsd-signature-type">MobListener</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Listener<span class="tsd-signature-symbol">(</span>listener<span class="tsd-signature-symbol">: </span><a href="core.moblistener.html" class="tsd-signature-type">MobListener</a>, source<span class="tsd-signature-symbol">?: </span><a href="core.mobdata.html" class="tsd-signature-type">MobData</a>, callback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">mRTypes.FailCallback</span><span class="tsd-signature-symbol">&lt;</span><a href="core.moblistener.html" class="tsd-signature-type">MobListener</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L522">core/DataBackend.ts:522</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L525">core/DataBackend.ts:525</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -750,7 +801,7 @@
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> source: <a href="core.mobdata.html" class="tsd-signature-type">MobData</a></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> callback: <a href="../modules/struct.html#failcallback" class="tsd-signature-type">FailCallback</a><span class="tsd-signature-symbol">&lt;</span><a href="core.moblistener.html" class="tsd-signature-type">MobListener</a><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> callback: <span class="tsd-signature-type">mRTypes.FailCallback</span><span class="tsd-signature-symbol">&lt;</span><a href="core.moblistener.html" class="tsd-signature-type">MobListener</a><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -767,7 +818,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L584">core/DataBackend.ts:584</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L603">core/DataBackend.ts:603</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -790,7 +841,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L864">core/DataBackend.ts:864</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L883">core/DataBackend.ts:883</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -807,7 +858,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L540">core/DataBackend.ts:540</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L549">core/DataBackend.ts:549</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -836,7 +887,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L893">core/DataBackend.ts:893</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L912">core/DataBackend.ts:912</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -860,7 +911,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#discard">discard</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Events/EventSystem.ts#L99">Events/EventSystem.ts:99</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/Events/EventSystem.ts#L99">Events/EventSystem.ts:99</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -879,7 +930,7 @@
 								<p>Implementation of <a href="../interfaces/events.ieventemitter.html">IEventEmitter</a>.<a href="../interfaces/events.ieventemitter.html#discardemitter">discardEmitter</a></p>
 								<p>Inherited from <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#discardemitter">discardEmitter</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Events/EventSystem.ts#L86">Events/EventSystem.ts:86</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/Events/EventSystem.ts#L86">Events/EventSystem.ts:86</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -898,7 +949,7 @@
 								<p>Implementation of <a href="../interfaces/events.ieventreceiver.html">IEventReceiver</a>.<a href="../interfaces/events.ieventreceiver.html#discardreceiver">discardReceiver</a></p>
 								<p>Inherited from <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#discardreceiver">discardReceiver</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Events/EventSystem.ts#L91">Events/EventSystem.ts:91</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/Events/EventSystem.ts#L91">Events/EventSystem.ts:91</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -916,7 +967,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#emit">emit</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Events/EventSystem.ts#L36">Events/EventSystem.ts:36</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/Events/EventSystem.ts#L36">Events/EventSystem.ts:36</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -964,7 +1015,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#emitarray">emitArray</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Events/EventSystem.ts#L41">Events/EventSystem.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/Events/EventSystem.ts#L41">Events/EventSystem.ts:41</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1011,7 +1062,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L517">core/DataBackend.ts:517</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L520">core/DataBackend.ts:520</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1034,7 +1085,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L568">core/DataBackend.ts:568</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L577">core/DataBackend.ts:577</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1063,7 +1114,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L367">core/DataBackend.ts:367</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L369">core/DataBackend.ts:369</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -1080,7 +1131,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L379">core/DataBackend.ts:379</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L381">core/DataBackend.ts:381</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1103,7 +1154,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L362">core/DataBackend.ts:362</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L364">core/DataBackend.ts:364</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -1120,7 +1171,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L356">core/DataBackend.ts:356</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L358">core/DataBackend.ts:358</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1143,7 +1194,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L512">core/DataBackend.ts:512</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L515">core/DataBackend.ts:515</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1166,7 +1217,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L884">core/DataBackend.ts:884</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L903">core/DataBackend.ts:903</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1191,7 +1242,7 @@
 								<p>Implementation of <a href="../interfaces/events.ieventreceiver.html">IEventReceiver</a>.<a href="../interfaces/events.ieventreceiver.html#listen">listen</a></p>
 								<p>Inherited from <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#listen">listen</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Events/EventSystem.ts#L46">Events/EventSystem.ts:46</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/Events/EventSystem.ts#L46">Events/EventSystem.ts:46</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1220,7 +1271,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L686">core/DataBackend.ts:686</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L705">core/DataBackend.ts:705</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1246,7 +1297,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L790">core/DataBackend.ts:790</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L809">core/DataBackend.ts:809</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1269,7 +1320,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L528">core/DataBackend.ts:528</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L534">core/DataBackend.ts:534</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1295,7 +1346,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L351">core/DataBackend.ts:351</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L353">core/DataBackend.ts:353</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1313,7 +1364,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#unlisten">unlisten</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Events/EventSystem.ts#L56">Events/EventSystem.ts:56</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/Events/EventSystem.ts#L56">Events/EventSystem.ts:56</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1340,7 +1391,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#unlistenall">unlistenAll</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/Events/EventSystem.ts#L69">Events/EventSystem.ts:69</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/Events/EventSystem.ts#L69">Events/EventSystem.ts:69</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1363,7 +1414,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L855">core/DataBackend.ts:855</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L874">core/DataBackend.ts:874</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1392,7 +1443,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L389">core/DataBackend.ts:389</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L391">core/DataBackend.ts:391</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1418,7 +1469,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/d584947/src/core/DataBackend.ts#L874">core/DataBackend.ts:874</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/PhaserPlayground/blob/458906f/src/core/DataBackend.ts#L893">core/DataBackend.ts:893</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1498,6 +1549,9 @@
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 								<a href="core.mobdata.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-event tsd-parent-kind-class">
+								<a href="core.mobdata.html#onstatchange" class="tsd-kind-icon">on<wbr>Stat<wbr>Change</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="core.mobdata.html#id" class="tsd-kind-icon">ID</a>
@@ -1588,6 +1642,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="core.mobdata.html#inchanneling" class="tsd-kind-icon">in<wbr>Channeling</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="core.mobdata.html#incontrol" class="tsd-kind-icon">in<wbr>Control</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="core.mobdata.html#ismoving" class="tsd-kind-icon">is<wbr>Moving</a>
@@ -1741,6 +1798,9 @@
 						<a href="core.spelldata.html" class="tsd-kind-icon">Spell<wbr>Data</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="core.unitmanager.html" class="tsd-kind-icon">Unit<wbr>Manager</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
 						<a href="core.weapon.html" class="tsd-kind-icon">Weapon</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-has-type-parameter">
@@ -1769,6 +1829,33 @@
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="../interfaces/core.spelldictionary.html" class="tsd-kind-icon">Spell<wbr>Dictionary</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
+						<a href="../modules/core.html#comparefunc" class="tsd-kind-icon">Compare<wbr>Func</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
+						<a href="../modules/core.html#failcallback" class="tsd-kind-icon">Fail<wbr>Callback</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
+						<a href="../modules/core.html#filterfunc" class="tsd-kind-icon">Filter<wbr>Func</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/core.html#healtaunt" class="tsd-kind-icon">heal<wbr>Taunt</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/core.html#movethreshold" class="tsd-kind-icon">move<wbr>Threshold</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/core.html#playermax" class="tsd-kind-icon">player<wbr>Max</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/core.html#playersparse" class="tsd-kind-icon">player<wbr>Sparse</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/core.html#playersparseinc" class="tsd-kind-icon">player<wbr>Sparse<wbr>Inc</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/core.html#useautomove" class="tsd-kind-icon">use<wbr>Automove</a>
 					</li>
 					<li class=" tsd-kind-object-literal tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="../modules/core.html#critmultiplier" class="tsd-kind-icon">crit<wbr>Multiplier</a>

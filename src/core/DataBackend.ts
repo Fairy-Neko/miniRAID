@@ -7,7 +7,7 @@ import Mob from '../Mob';
 import { Weapon, Armor, Accessory } from './EquipmentCore';
 import Buff from './Buff';
 import * as Collections from 'typescript-collections'
-import QuerySet, { FailCallback } from '../Structs/QuerySet';
+import QuerySet from '../Structs/QuerySet';
 import * as GameData from './GameData';
 
 export default class DataBackend
@@ -176,6 +176,8 @@ export class MobData extends EventSystem.EventElement
     parentMob?: Mob;
     spells: mRTypes.SpellDictionary;
     healthRatio: number;
+
+    inControl:boolean = false;
     
     constructor(settings:mRTypes.Settings.MobData)
     {
@@ -480,9 +482,10 @@ export class MobData extends EventSystem.EventElement
             }
         }
 
+        // Now we only calc stats when needed to save computational resource, controlled by the event system.
         // calculate Stats
         // TODO: seperate calculation to 2 phase, base and battle stats.
-        this.calcStats(mob);
+        // this.calcStats(mob);
 
         // update spells
         for (let spell in this.spells)
@@ -519,10 +522,13 @@ export class MobData extends EventSystem.EventElement
         return this.listeners.liveQuery((arg:MobListener) => (arg instanceof Buff && arg.name.includes(buffname)), undefined);
     }
 
-    addListener(listener: MobListener, source?: MobData, callback?: FailCallback<MobListener>)
+    addListener(listener: MobListener, source?: MobData, callback?: mRTypes.FailCallback<MobListener>)
     {
-        this.listeners.addItem(listener, callback);
-        listener.emit('add', undefined, this, source);
+        if(this.listeners.addItem(listener, callback))
+        {
+            this.listen(listener, 'statChange', (arg:MobListener) => this.onStatChange(arg));
+            listener.emit('add', undefined, this, source);
+        }
     }
 
     removeListener(listener: MobListener, source?: MobData)
@@ -533,8 +539,11 @@ export class MobData extends EventSystem.EventElement
         }
 
         // TODO: Who removed this listener ?
-        listener.emit('remove', undefined, this, source);
-        this.listeners.removeItem(listener);
+        if(this.listeners.removeItem(listener))
+        {
+            listener.emit('remove', undefined, this, source);
+            this.unlistenAll(listener);
+        }
     }
 
     cast(mob: Mob, target: Mob | Phaser.Math.Vector2, spell: SpellData)
@@ -579,6 +588,16 @@ export class MobData extends EventSystem.EventElement
         }
 
         spell.cast(mob, target);
+    }
+
+    /**
+     * Event 'statChange' - emitted while a listener (buff, weapon, etc.) needs to change the stat of parent mob.
+     * @param listener The listener that triggered a stat change
+     * @event
+     */
+    onStatChange(listener: MobListener)
+    {
+        this.calcStats(this.parentMob);
     }
 
     calcStats(mob: Mob)
@@ -1030,21 +1049,6 @@ export class MobListener extends EventSystem.EventElement
 
     onKill(damageInfo:mRTypes.DamageHeal) { return false; }
     onDeath(damageInfo:mRTypes.DamageHeal) { return false; }
-
-    // onFocusDealDamage(damageInfo:mRTypes.DamageHeal) { return false; }
-    // onFocusDealDamageFinal(damageInfo:mRTypes.DamageHeal) { return false; }
-
-    // onFocusDealHeal(healInfo:mRTypes.DamageHeal) { return false; }
-    // onFocusDealHealFinal(healInfo:mRTypes.DamageHeal) { return false; }
-
-    // onFocusReceiveDamage(damageInfo:mRTypes.DamageHeal) { return false; }
-    // onFocusReceiveDamageFinal(damageInfo:mRTypes.DamageHeal) { return false; }
-
-    // onFocusReceiveHeal(healInfo:mRTypes.DamageHeal) { return false; }
-    // onFocusReceiveHealFinal(healInfo:mRTypes.DamageHeal) { return false; }
-
-    // onFocusKill(damageInfo:mRTypes.DamageHeal) { return false; }
-    // onFocusDeath(damageInfo:mRTypes.DamageHeal) { return false; }
 }
 
 /**

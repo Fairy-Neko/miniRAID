@@ -20,6 +20,8 @@ export default class Mob
         {
             this.sprite.play(this.moveAnim);
         }
+
+        this.sprite.setOrigin(0.5, 0.8);
     }
 
     update(dt:number)
@@ -35,5 +37,10 @@ export default class Mob
     static checkExist(mob?:Mob):boolean
     {
         return (mob == null);
+    }
+
+    static checkAlive(mob?:Mob):boolean
+    {
+        return (Mob.checkExist(mob) && (mob.data.alive === true));
     }
 }

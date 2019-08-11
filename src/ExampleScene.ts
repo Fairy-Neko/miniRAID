@@ -4,6 +4,7 @@ import * as Events from './Events/EventSystem'
 import * as Phaser from 'Phaser'
 import Mob from './Mob'
 import dSprite from './DynamicLoader/dSprite';
+import UnitManager from './core/UnitManager';
 
 export default class ExampleScene extends Phaser.Scene 
 {
@@ -23,6 +24,7 @@ export default class ExampleScene extends Phaser.Scene
     tiles:Phaser.Tilemaps.Tileset;
 
     alive:Mob[] = [];
+    unitMgr: UnitManager;
 
     constructor() 
     {
@@ -56,6 +58,8 @@ export default class ExampleScene extends Phaser.Scene
         });
         this.alive.push(girl);
         this.add.existing(girl.sprite);
+
+        this.unitMgr = new UnitManager(this);
     }
 
     update(time:number, dt:number)
@@ -64,5 +68,7 @@ export default class ExampleScene extends Phaser.Scene
         {
             m.update(dt);
         }
+
+        this.unitMgr.update(dt);
     }
 }

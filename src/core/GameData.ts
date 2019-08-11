@@ -35,4 +35,12 @@ const critMultiplier:LeafTypes<number> = {
     heal: 2.0,
 }
 
-export { damageType, critMultiplier };
+const playerMax:number = 8;
+let playerSparse:number = 12;
+let playerSparseInc:number = 2;
+let useAutomove:boolean = false;
+let moveThreshold:number = 150;
+
+const healTaunt:number = 2;
+
+export { damageType, critMultiplier, playerMax, playerSparse, playerSparseInc, useAutomove, moveThreshold, healTaunt };

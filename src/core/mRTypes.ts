@@ -70,6 +70,10 @@ export namespace Settings
     }
 }
 
+export type FilterFunc<T> = (arg: T) => boolean;
+export type CompareFunc<T> = (lhs: T, rhs: T) => number;
+export type FailCallback<T> = (arg: T) => boolean;
+
 export interface MobConstructor
 {
     new (settings:Settings.Mob): Mob;

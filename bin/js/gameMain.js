@@ -481,29 +481,34 @@ define("Structs/QuerySet", ["require", "exports"], function (require, exports) {
          *
          * @param item The item needs to be added
          * @param failCallback Callback if the item was already in this QuerySet. This callback takes the item (inside the QuerySet) as input and returns whether the item in this QuerySet is modified or not by the callback function (e.g. buffs might want to +1 stack if already exists), and updates currentTimeStep if modification was done.
+         * @returns If the item has been added (no duplicates).
          */
         addItem(item, failCallback) {
             if (!this.keyFn) {
                 if (!this.data.has(item)) {
                     this.data.add(item);
+                    return true;
                 }
                 else if (failCallback) {
                     let modified = failCallback(item); // since this condition implies item === item in the Set
                     if (modified) {
                         this.currentTimestamp += 1;
                     }
+                    return false;
                 }
             }
             else {
                 let key = this.keyFn(item);
                 if (!this.data.has(key)) {
                     this.data.set(key, item);
+                    return true;
                 }
                 else if (failCallback) {
                     let modified = failCallback(this.data.get(key));
                     if (modified) {
                         this.currentTimestamp += 1;
                     }
+                    return false;
                 }
             }
         }
@@ -511,13 +516,16 @@ define("Structs/QuerySet", ["require", "exports"], function (require, exports) {
             if (!this.keyFn) {
                 if (this.data.delete(item)) {
                     this.currentTimestamp += 1;
+                    return true;
                 }
             }
             else {
                 if (this.data.delete(this.keyFn(item))) {
                     this.currentTimestamp += 1;
+                    return true;
                 }
             }
+            return false;
         }
         /**
          * Apply a query and return the results.
@@ -587,6 +595,18 @@ define("core/GameData", ["require", "exports"], function (require, exports) {
         heal: 2.0,
     };
     exports.critMultiplier = critMultiplier;
+    const playerMax = 8;
+    exports.playerMax = playerMax;
+    let playerSparse = 12;
+    exports.playerSparse = playerSparse;
+    let playerSparseInc = 2;
+    exports.playerSparseInc = playerSparseInc;
+    let useAutomove = false;
+    exports.useAutomove = useAutomove;
+    let moveThreshold = 150;
+    exports.moveThreshold = moveThreshold;
+    const healTaunt = 2;
+    exports.healTaunt = healTaunt;
 });
 /** @module Core */
 define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/InventoryCore", "core/Buff", "Structs/QuerySet", "core/GameData"], function (require, exports, EventSystem, InventoryCore_1, Buff_1, QuerySet_1, GameData) {
@@ -678,6 +698,7 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
     class MobData extends EventSystem.EventElement {
         constructor(settings) {
             super(DataBackend.getSingleton().eventSystem);
+            this.inControl = false;
             this.name = settings.name || "noname";
             // this.position = {x: this.body.left, y: this.body.top};
             this.image = settings.image || "magical_girl";
@@ -908,9 +929,10 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
                     this.inChanneling = false;
                 }
             }
+            // Now we only calc stats when needed to save computational resource, controlled by the event system.
             // calculate Stats
             // TODO: seperate calculation to 2 phase, base and battle stats.
-            this.calcStats(mob);
+            // this.calcStats(mob);
             // update spells
             for (let spell in this.spells) {
                 if (this.spells.hasOwnProperty(spell)) {
@@ -936,16 +958,20 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
             return this.listeners.liveQuery((arg) => (arg instanceof Buff_1.default && arg.name.includes(buffname)), undefined);
         }
         addListener(listener, source, callback) {
-            this.listeners.addItem(listener, callback);
-            listener.emit('add', undefined, this, source);
+            if (this.listeners.addItem(listener, callback)) {
+                this.listen(listener, 'statChange', (arg) => this.onStatChange(arg));
+                listener.emit('add', undefined, this, source);
+            }
         }
         removeListener(listener, source) {
             if (!listener) {
                 return;
             }
             // TODO: Who removed this listener ?
-            listener.emit('remove', undefined, this, source);
-            this.listeners.removeItem(listener);
+            if (this.listeners.removeItem(listener)) {
+                listener.emit('remove', undefined, this, source);
+                this.unlistenAll(listener);
+            }
         }
         cast(mob, target, spell) {
             // Check if ready to cast
@@ -977,6 +1003,14 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
                 mob.data.channelRemain = mob.data.channelTime;
             }
             spell.cast(mob, target);
+        }
+        /**
+         * Event 'statChange' - emitted while a listener (buff, weapon, etc.) needs to change the stat of parent mob.
+         * @param listener The listener that triggered a stat change
+         * @event
+         */
+        onStatChange(listener) {
+            this.calcStats(this.parentMob);
         }
         calcStats(mob) {
             // TODO: Stats calculation:
@@ -1400,6 +1434,7 @@ define("Mob", ["require", "exports"], function (require, exports) {
             if (this.moveAnim) {
                 this.sprite.play(this.moveAnim);
             }
+            this.sprite.setOrigin(0.5, 0.8);
         }
         update(dt) {
             this.sprite.x += dt / 1000.0 * 10;
@@ -1410,17 +1445,250 @@ define("Mob", ["require", "exports"], function (require, exports) {
         static checkExist(mob) {
             return (mob == null);
         }
+        static checkAlive(mob) {
+            return (Mob.checkExist(mob) && (mob.data.alive === true));
+        }
     }
     exports.default = Mob;
 });
+/** @module Core */
+define("core/UnitManager", ["require", "exports", "Mob", "core/GameData"], function (require, exports, Mob_1, GameData) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    Mob_1 = __importDefault(Mob_1);
+    GameData = __importStar(GameData);
+    class UnitManager {
+        constructor(scene) {
+            this.name = "Unit Manager";
+            // TODO: change this to QuerySet ?
+            this.player = new Set();
+            this.enemy = new Set();
+            this.selectedPlayerCount = 0;
+            this.isDown = false;
+            this.isDragging = false;
+            this.timeCounter = 0;
+            this.origin = new Phaser.Math.Vector2(0, 0);
+            this.rectOrigin = new Phaser.Math.Vector2(0, 0);
+            this.rectTarget = new Phaser.Math.Vector2(0, 0);
+            this.selectingRect = new Phaser.Geom.Rectangle(0, 0, 0, 0);
+            scene.input.on('pointerdown', (pt) => this.pointerDown(pt));
+            scene.input.on('pointerup', (pt) => this.pointerUp(pt));
+            // scene.input.on('pointerleave', (pt:any) => this.pointerLeave(pt));
+            scene.input.on('pointermove', (pt) => this.pointerMove(pt));
+            this.sparseKey = scene.input.keyboard.addKey('F');
+            this.rotateKey = scene.input.keyboard.addKey('R');
+            this.playerRotation = 0;
+            //Add a rectangle to the scene
+            this.renderRect = scene.add.rectangle(0, 0, 0, 0, 0x90D7EC, 0.2);
+            scene.add.line(0, 200, 0, 0, 1000, 0, 0xFF0000);
+        }
+        update(dt) {
+            if (this.isDragging == true) {
+                this.renderRect.setVisible(true);
+                this.renderRect.setPosition(this.selectingRect.x, this.selectingRect.y);
+                this.renderRect.setSize(this.selectingRect.width, this.selectingRect.height);
+                var minX = Math.min(this.rectOrigin.x, this.rectTarget.x);
+                var minY = Math.min(this.rectOrigin.y, this.rectTarget.y);
+                var maxX = Math.max(this.rectOrigin.x, this.rectTarget.x);
+                var maxY = Math.max(this.rectOrigin.y, this.rectTarget.y);
+                var playerCount = 0;
+                for (let player of this.player) {
+                    if (Mob_1.default.checkAlive(player)) {
+                        var pt = new Phaser.Math.Vector2(player.sprite.originX, player.sprite.originY);
+                        // var frame = game.UI.unitFrameSlots.slots[playerCount];
+                        // TODO: use box intersection instead of containsPoint
+                        if (this.selectingRect.contains(pt.x, pt.y)) {
+                            player.data.inControl = true;
+                        }
+                        // else if(this.selectingRect.containsPoint(frame.pos.x - minX, frame.pos.y - minY))
+                        // {
+                        //     player.data.inControl = true;
+                        // }
+                        else {
+                            player.data.inControl = false;
+                        }
+                    }
+                    playerCount++;
+                }
+            }
+            else {
+                this.renderRect.setVisible(false);
+            }
+        }
+        isMouseLeft(pointer) {
+            if ("which" in pointer.event) // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
+                return pointer.event.which == 1;
+            else if ("button" in pointer.event) // IE, Opera 
+                return pointer.event.button == 0;
+        }
+        isMouseMiddle(pointer) {
+            if ("which" in pointer.event) // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
+                return pointer.event.which == 2;
+            else if ("button" in pointer.event) // IE, Opera 
+                return pointer.event.button == 1;
+        }
+        isMouseRight(pointer) {
+            if ("which" in pointer.event) // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
+                return pointer.event.which == 3;
+            else if ("button" in pointer.event) // IE, Opera 
+                return pointer.event.button == 2;
+        }
+        pointerDown(pointer) {
+            // console.log(pointer);
+            pointer.event.preventDefault();
+            // Drag a rect
+            if (this.isMouseLeft(pointer)) {
+                this.isDown = true;
+                this.isDragging = true;
+                // console.log("Drag start");
+                this.rectOrigin.set(pointer.x, pointer.y);
+                this.rectTarget.set(pointer.x, pointer.y);
+                this.selectingRect.setPosition(pointer.x, pointer.y);
+                this.selectingRect.setSize(0, 0);
+                return true;
+            }
+            // Move player
+            if (this.isMouseRight(pointer)) {
+                this.selectedPlayerCount = 0;
+                for (var player of this.player) {
+                    if (player.data.inControl == true) {
+                        this.selectedPlayerCount += 1;
+                    }
+                }
+                this.origin.set(pointer.x, pointer.y);
+                var playerNum = 0;
+                var playerSparse = GameData.playerSparse + GameData.playerSparseInc * this.selectedPlayerCount;
+                if (this.sparseKey.isDown) {
+                    playerSparse = 60;
+                }
+                if (this.rotateKey.isDown) {
+                    this.playerRotation += 2;
+                }
+                if (this.selectedPlayerCount == 1) {
+                    playerSparse = 0;
+                }
+                for (var player of this.player) {
+                    if (player.data.inControl == true) {
+                        // player.agent.setTargetPos(player, this.origin.clone().add(new me.Vector2d(playerSparse, 0).rotate((playerNum + this.playerRotation) / this.selectedPlayerCount * 2 * Math.PI)));
+                        playerNum++;
+                    }
+                }
+                return false;
+            }
+        }
+        pointerMove(pointer) {
+            // this.timeCounter += me.timer.lastUpdate;
+            if (this.isDragging) {
+                this.rectTarget.set(pointer.x, pointer.y);
+                // this.selectingRect.setPosition(this.rectOrigin.x, this.rectOrigin.y);
+                this.selectingRect.setSize(this.rectTarget.x - this.rectOrigin.x, this.rectTarget.y - this.rectOrigin.y);
+            }
+        }
+        pointerUp(pointer) {
+            this.isDown = false;
+            if (this.isMouseLeft(pointer)) {
+                this.isDragging = false;
+                // console.log("Drag end");
+            }
+            return true;
+        }
+        pointerLeave(pointer) {
+            console.log("leave");
+            this.isDown = false;
+            this.isDragging = false;
+            return true;
+        }
+        addPlayer(player) {
+            this.player.add(player);
+        }
+        addEnemy(enemy) {
+            this.enemy.add(enemy);
+        }
+        removePlayer(player) {
+            this.player.delete(player);
+        }
+        removeEnemy(enemy) {
+            this.enemy.delete(enemy);
+        }
+        _getUnitList(targetSet, sortMethod, availableTest, containsDead = false) {
+            var result = [];
+            for (var unit of targetSet) {
+                // TODO: how to do with raise skills ?
+                if ((containsDead || Mob_1.default.checkAlive(unit)) && availableTest(unit) === true) {
+                    result.push(unit);
+                }
+            }
+            result.sort(sortMethod);
+            return result;
+        }
+        // Get a list of units, e.g. attack target list etc.
+        // You will get a list that:
+        // * The list was sorted using sortMethod,
+        // * The list will contain units only if they have passed availableTest. (availableTest(unit) returns true)
+        getPlayerList(sortMethod, availableTest, containsDead = false) {
+            sortMethod = sortMethod || function (a, b) { return 0; };
+            availableTest = availableTest || function (a) { return true; };
+            return this._getUnitList(this.player, sortMethod, availableTest, containsDead);
+        }
+        getPlayerListWithDead(sortMethod, availableTest) {
+            sortMethod = sortMethod || function (a, b) { return 0; };
+            availableTest = availableTest || function (a) { return true; };
+            return this._getUnitList(this.player, sortMethod, availableTest, true);
+        }
+        getEnemyList(sortMethod, availableTest) {
+            sortMethod = sortMethod || function (a, b) { return 0; };
+            availableTest = availableTest || function (a) { return true; };
+            return this._getUnitList(this.enemy, sortMethod, availableTest);
+        }
+        getUnitList(sortMethod, availableTest, isPlayer = false) {
+            if (isPlayer === true) {
+                return this._getUnitList(this.player, sortMethod, availableTest);
+            }
+            else {
+                return this._getUnitList(this.enemy, sortMethod, availableTest);
+            }
+        }
+        getUnitListAll(sortMethod, availableTest) {
+            sortMethod = sortMethod || function (a, b) { return 0; };
+            availableTest = availableTest || function (a) { return true; };
+            return this._getUnitList(this.enemy, sortMethod, availableTest).concat(this._getUnitList(this.player, sortMethod, availableTest)).sort(sortMethod);
+        }
+        // Shorthand to get k-nearest (as a parameter "count") player around a position using above API.
+        getNearest(position, isPlayer = false, count = 1) {
+            var result = this.getUnitList(UnitManager.sortNearest(position), UnitManager.NOOP, isPlayer);
+            return result.slice(0, Math.min(count, result.length));
+        }
+        getNearestUnitAll(position, count = 1) {
+            var result = this.getUnitListAll(UnitManager.sortNearest(position), UnitManager.NOOP);
+            return result.slice(0, Math.min(count, result.length));
+        }
+        static sortNearest(position) {
+            return (a, b) => {
+                return (new Phaser.Math.Vector2(a.sprite.originX, a.sprite.originY).distance(position)
+                    - new Phaser.Math.Vector2(b.sprite.originX, b.sprite.originY).distance(position));
+            };
+        }
+    }
+    UnitManager.sortByHealth = (a, b) => {
+        return a.data.currentHealth - b.data.currentHealth;
+    };
+    UnitManager.sortByHealthPercentage = (a, b) => {
+        return (((a.data.currentHealth / a.data.maxHealth) - 0.4 * (a.data.healPriority ? 1.0 : 0.0)) -
+            ((b.data.currentHealth / b.data.maxHealth) - 0.4 * (b.data.healPriority ? 1.0 : 0.0)));
+    };
+    UnitManager.IDENTITY = (a, b) => 0;
+    UnitManager.NOOP = (a) => true;
+    exports.default = UnitManager;
+});
 /** @module GameScene */
-define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "Mob", "DynamicLoader/dSprite"], function (require, exports, Events, Phaser, Mob_1, dSprite_1) {
+define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "Mob", "DynamicLoader/dSprite", "core/UnitManager"], function (require, exports, Events, Phaser, Mob_2, dSprite_1, UnitManager_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     Events = __importStar(Events);
     Phaser = __importStar(Phaser);
-    Mob_1 = __importDefault(Mob_1);
+    Mob_2 = __importDefault(Mob_2);
     dSprite_1 = __importDefault(dSprite_1);
+    UnitManager_1 = __importDefault(UnitManager_1);
     class ExampleScene extends Phaser.Scene {
         constructor() {
             super({ key: 'ExampleScene' });
@@ -1444,17 +1712,19 @@ define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "M
             this.terrainLayer = this.map.createStaticLayer('Terrain', this.tiles, 0, 0);
             // this.anims.create({key: 'move', frames: this.anims.generateFrameNumbers('elf', {start: 0, end: 3, first: 0}), frameRate: 8, repeat: -1});
             // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
-            let girl = new Mob_1.default({
+            let girl = new Mob_2.default({
                 'sprite': new dSprite_1.default(this, 100, 200, 'char_sheet_forestelf_myst'),
                 'moveAnim': ''
             });
             this.alive.push(girl);
             this.add.existing(girl.sprite);
+            this.unitMgr = new UnitManager_1.default(this);
         }
         update(time, dt) {
             for (let m of this.alive) {
                 m.update(dt);
             }
+            this.unitMgr.update(dt);
         }
     }
     exports.default = ExampleScene;

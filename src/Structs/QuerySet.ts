@@ -2,6 +2,7 @@
 
 import { Data } from "Phaser";
 import { stringify } from "querystring";
+import { FilterFunc, CompareFunc, FailCallback } from "../core/mRTypes";
 
 interface QueryCache<T>
 {
@@ -10,10 +11,6 @@ interface QueryCache<T>
     latest: integer;
     result: Array<T>;
 }
-
-export type FilterFunc<T> = (arg: T) => boolean;
-export type CompareFunc<T> = (lhs: T, rhs: T) => number;
-export type FailCallback<T> = (arg: T) => boolean;
 
 export default class QuerySet<T>
 {
@@ -85,14 +82,16 @@ export default class QuerySet<T>
      * 
      * @param item The item needs to be added
      * @param failCallback Callback if the item was already in this QuerySet. This callback takes the item (inside the QuerySet) as input and returns whether the item in this QuerySet is modified or not by the callback function (e.g. buffs might want to +1 stack if already exists), and updates currentTimeStep if modification was done.
+     * @returns If the item has been added (no duplicates).
      */
-    addItem(item: T, failCallback?: FailCallback<T>)
+    addItem(item: T, failCallback?: FailCallback<T>): boolean
     {
         if(!this.keyFn)
         {
             if(!(<Set<T>>this.data).has(item))
             {
                 (<Set<T>>this.data).add(item);
+                return true;
             }
             else if(failCallback)
             {
@@ -101,6 +100,8 @@ export default class QuerySet<T>
                 {
                     this.currentTimestamp += 1;
                 }
+
+                return false;
             }
         }
         else
@@ -109,6 +110,7 @@ export default class QuerySet<T>
             if(!(<Map<string, T>>this.data).has(key))
             {
                 (<Map<string, T>>this.data).set(key, item);
+                return true;
             }
             else if(failCallback)
             {
@@ -117,17 +119,19 @@ export default class QuerySet<T>
                 {
                     this.currentTimestamp += 1;
                 }
+                return false;
             }
         }
     }
 
-    removeItem(item: T)
+    removeItem(item: T): boolean
     {
         if(!this.keyFn)
         {
             if((<Set<T>>this.data).delete(item))
             {
                 this.currentTimestamp += 1;
+                return true;
             }
         }
         else
@@ -135,8 +139,11 @@ export default class QuerySet<T>
             if((<Map<string, T>>this.data).delete(this.keyFn(item)))
             {
                 this.currentTimestamp += 1;
+                return true;
             }
         }
+
+        return false;
     }
 
     /**
