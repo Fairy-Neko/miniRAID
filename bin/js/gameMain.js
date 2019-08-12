@@ -609,10 +609,11 @@ define("core/GameData", ["require", "exports"], function (require, exports) {
     exports.healTaunt = healTaunt;
 });
 /** @module Core */
-define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/InventoryCore", "core/Buff", "Structs/QuerySet", "core/GameData"], function (require, exports, EventSystem, InventoryCore_1, Buff_1, QuerySet_1, GameData) {
+define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/InventoryCore", "core/mRTypes", "core/Buff", "Structs/QuerySet", "core/GameData"], function (require, exports, EventSystem, InventoryCore_1, mRTypes, Buff_1, QuerySet_1, GameData) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     EventSystem = __importStar(EventSystem);
+    mRTypes = __importStar(mRTypes);
     Buff_1 = __importDefault(Buff_1);
     QuerySet_1 = __importDefault(QuerySet_1);
     GameData = __importStar(GameData);
@@ -1143,7 +1144,7 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
             }
             // Decrese HP
             // Check if I am dead
-            let realDmg = { fire: 0, water: 0, ice: 0, wind: 0, nature: 0, light: 0, thunder: 0, slash: 0, pierce: 0, knock: 0, heal: 0 };
+            let realDmg = mRTypes.LeafTypesZERO;
             for (let dmg in damageInfo.value) {
                 realDmg[dmg] += Math.min(this.currentHealth, damageInfo.value[dmg]);
                 this.currentHealth -= realDmg[dmg];
@@ -1402,6 +1403,13 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
 define("core/EquipmentCore", ["require", "exports", "core/DataBackend"], function (require, exports, DataBackend_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    var EquipmentType;
+    (function (EquipmentType) {
+        EquipmentType[EquipmentType["All"] = 0] = "All";
+        EquipmentType[EquipmentType["Accessory"] = 1] = "Accessory";
+        EquipmentType[EquipmentType["Armor"] = 2] = "Armor";
+        EquipmentType[EquipmentType["Weapon"] = 3] = "Weapon";
+    })(EquipmentType = exports.EquipmentType || (exports.EquipmentType = {}));
     class Equipable extends DataBackend_2.MobListener {
         constructor() {
             super();
@@ -1485,32 +1493,292 @@ define("DynamicLoader/dPhysSprite", ["require", "exports", "DynamicLoader/Dynami
     }
     exports.default = dPhysSprite;
 });
+/**
+ * Agents are used to control the action of mobs (players, enemies). They are also MobListeners so that they could handle events like dealDamage etc.
+ * They are the "brain" of a mob, and a mob will not make any action without an agent.
+ *
+ * @module Agent
+ * @preferred
+ */
+define("agents/MobAgent", ["require", "exports", "core/DataBackend"], function (require, exports, DataBackend_3) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class MobAgent extends DataBackend_3.MobListener {
+        constructor(parentMob) {
+            super();
+        }
+        updateMob(mob, dt) { }
+    }
+    exports.default = MobAgent;
+});
 /** @module Core */
 define("core/mRTypes", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.LeafTypesZERO = { fire: 0, water: 0, ice: 0, wind: 0, nature: 0, light: 0, thunder: 0, slash: 0, pierce: 0, knock: 0, heal: 0 };
 });
 /** @module GameEntity */
-define("Mob", ["require", "exports"], function (require, exports) {
+define("Mob", ["require", "exports", "core/mRTypes"], function (require, exports, mRTypes) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    mRTypes = __importStar(mRTypes);
     class Mob {
         constructor(settings) {
             this.sprite = settings.sprite;
-            this.moveAnim = settings.moveAnim;
-            if (this.moveAnim) {
-                this.sprite.play(this.moveAnim);
-            }
             this.sprite.setOrigin(0.5, 0.8);
+            this.moveAnim = settings.moveAnim;
+            this.idleAnim = settings.idleAnim;
+            this.deadAnim = settings.deadAnim;
+            if (this.idleAnim) {
+                this.sprite.play(this.idleAnim);
+            }
+            this.isPlayer = settings.isPlayer;
+            if (this.isPlayer === true) {
+                // Is player
+            }
+            else {
+                // Is enemy
+            }
+            this.sprite.setGravity(0, 0);
+            if (settings.agent) {
+                this.agent = new settings.agent(this);
+            }
+            this.data.addListener(this.agent);
+            this.attackCounter = 0;
+            // HPBar
         }
         update(dt) {
             this.sprite.x += dt / 1000.0 * 10;
         }
-        getEquipableTags(type) {
-            return [];
-        }
         doAttack(dt) {
-            throw new Error("Method not implemented.");
+            if (typeof this.data.currentWeapon === "undefined") {
+                return false;
+            }
+            this.attackCounter += dt * 0.001;
+            if (this.data.canCastSpell() == false) {
+                return false;
+            }
+            if (this.attackCounter > (this.data.getAttackSpeed())) {
+                // This will cause mutiple attacks if attackspeed increases.
+                // this.attackCounter -= this.data.getAttackSpeed();
+                this.attackCounter = 0;
+                return true;
+            }
+            return false;
+        }
+        getEquipableTags(equipmentType) {
+            return ["equipment"];
+        }
+        // Will be called when a buff is going to affect the mob.
+        // If anything some object with buff ability (e.g. fireball can fire sth up) hits has method receiveBuff(),
+        // receiveBuff() will be called and the mob will be buffed.
+        // receiveBuff() should be the final step of being buffed, and if the mob resists some buff this should not be called.
+        // e.g. in some inherited classes use:
+        //                                       if(...){ nothing happens; } else { super.receiveBuff() }.
+        // N.B. recieveBuff should also work like recieveDamage(), that triggers listener events and decide
+        // if we should keep the buff or ignore it.
+        // But I have not write it.
+        // TODO: add onReceiveBuff & onFocusReceiveBuff for game.MobListeners.
+        // ...Maybe we should let them auto trigger onFocusXXX for any events ?
+        receiveBuff(source = undefined, buff = undefined, popUp = true) {
+            if (Mob.checkAlive(this) == false) {
+                return false;
+            }
+            if (buff != undefined) {
+                // Set source if not
+                if (typeof buff.source === "undefined") {
+                    buff.source = source.data;
+                }
+                // Call backend to add the buff.
+                // Actually, for the backend, a buff is same as a plain listener (this.data.addListener(listener)).
+                this.data.addBuff(buff);
+                // Initial popUp
+                if (popUp == true) {
+                    throw new Error("Please implement popup");
+                    // buff.popUp(this);
+                }
+            }
+            return true;
+        }
+        // Same as receiveBuff(),
+        // this method will be used to receive damage from any object.
+        // this method will also trigger events for listeners, and let them modify the damage.
+        // e.g. mob equiped fire resist necklace -> it's event will be triggered ...
+        // (actually for fire resist necklace, change parameters in onStatsChange() is convinent, though. lol.)
+        // This method will also popup a text with the final amount of damage, 
+        // with corresponding color defined in gama.data.damageColor.
+        // this action could be disabled by setting popUp = false.
+        /**
+         * Params of damageInfo (default value)
+         * source:          damage source
+         * damage ({}):     actual damage. e.g. {fire: 165, ice: 100, thunder: 600}
+         * isCrit (false):  is this damage crits ? It will be calculated automatically if it is false.
+         * isAvoid (false): Same as above.
+         * spell:           the spell used at this attack
+         * popUp (true):    Should this damage popup a text ?
+         */
+        receiveDamage(_damageInfo) {
+            if (Mob.checkAlive(this) == false) {
+                return false;
+            }
+            let damageInfo = {
+                'source': _damageInfo.source.data,
+                'target': this.data,
+                'spell': _damageInfo.spell,
+                'value': _damageInfo.value,
+                'isCrit': _damageInfo.isCrit,
+                'isAvoid': _damageInfo.isAvoid,
+                'isBlock': _damageInfo.isBlock,
+                'overdeal': mRTypes.LeafTypesZERO
+            };
+            // The actual damage calculate and event trigger moved into backend
+            // If mob dead finally, this.data.alive will become false
+            this.data.receiveDamage(damageInfo);
+            // It does not hit !
+            if (damageInfo.isAvoid) {
+                throw new Error("Please implement popup");
+                // if(damageInfo.popUp == true)
+                // {
+                //     var popUpPos = this.getRenderPos(0.5, 0.0);
+                //     game.UI.popupMgr.addText({
+                //         text: "MISS",
+                //         color: game.data.damageColor.miss,
+                //         posX: popUpPos.x,
+                //         posY: popUpPos.y,
+                //     });
+                // }
+                return false;
+            }
+            // Mob itself only do rendering popUp texts
+            for (var dmgType in damageInfo.value) {
+                if (_damageInfo.popUp == true && damageInfo.value[dmgType] > 0) {
+                    throw new Error("Please implement popup");
+                    // var popUpPos = this.getRenderPos(0.5, 0.0);
+                    // game.UI.popupMgr.addText({
+                    //     text: damageInfo.damage[dmgType].toString() + (damageInfo.isCrit ? " !" : ""),
+                    //     color: game.data.damageColor[dmgType],
+                    //     posX: popUpPos.x,
+                    //     posY: popUpPos.y,
+                    // });
+                    // // popUp texts on unit frames
+                    // // fade from the edge of currentHealth to the left
+                    // if(this.data.isPlayer)
+                    // {
+                    //     for(var i = 0; i < game.units.getPlayerListWithDead().length; i++)
+                    //     {
+                    //         if(this === game.units.getPlayerListWithDead()[i])
+                    //         {
+                    //             popUpPos = game.UI.unitFrameSlots.slots[i].pos;
+                    //             game.UI.popupMgr.addText({
+                    //                 text: "-" + damageInfo.damage[dmgType].toString(),
+                    //                 time: 0.75,
+                    //                 color: game.data.damageColor[dmgType],
+                    //                 posX: popUpPos.x + 126,// * (this.data.currentHealth / this.data.maxHealth), // Maybe this is better ? (or cannot see if sudden death)
+                    //                 posY: popUpPos.y - 10,
+                    //                 velX: -256,
+                    //                 velY: 0.0,
+                    //                 accX: 384,
+                    //                 accY: 0.0,
+                    //             });
+                    //         }
+                    //     }
+                    // }
+                }
+            }
+            // However, it should also check if self dead here
+            // since it should remove the renderable (actual object) from the scene and mob list
+            // Check if I am alive
+            if (this.data.alive == false) {
+                this.die(_damageInfo.source, damageInfo);
+            }
+            return true;
+        }
+        // Receive healing, same as recieve damage.
+        /**
+         * Params of healInfo (default value)
+         * source:          heal source
+         * heal (0):        actual heal, a number.
+         * isCrit (false):  is this heal crits ? It will be calculated automatically if it is false.
+         * spell:           the spell used at this attack
+         * popUp (true):    Should this heal popup a text ?
+         */
+        receiveHeal(_healInfo) {
+            if (Mob.checkAlive(this) == false) {
+                return false;
+            }
+            // Same as above
+            let healInfo = {
+                'source': _healInfo.source.data,
+                'target': this.data,
+                'spell': _healInfo.spell,
+                'value': _healInfo.value,
+                'isCrit': _healInfo.isCrit,
+                'isAvoid': _healInfo.isAvoid,
+                'isBlock': _healInfo.isBlock,
+                'overdeal': mRTypes.LeafTypesZERO
+            };
+            this.data.receiveHeal(healInfo);
+            // Show popUp text with overhealing hint
+            if (_healInfo.popUp == true && (healInfo.value.heal + healInfo.overdeal.heal) > 0) {
+                throw new Error("Please implement popup");
+                // var popUpPos = this.getRenderPos(0.5, 0.0);
+                // if(healInfo.heal.over > 0)
+                // {
+                //     game.UI.popupMgr.addText({
+                //         text: healInfo.heal.real.toString() + (healInfo.isCrit ? " !" : "") + " <" + healInfo.heal.over.toString() + ">",
+                //         color: game.data.damageColor.heal,
+                //         velX: 64,
+                //         posX: popUpPos.x,
+                //         posY: popUpPos.y,
+                //     });
+                // }
+                // else
+                // {
+                //     game.UI.popupMgr.addText({
+                //         text: healInfo.heal.real.toString() + (healInfo.isCrit ? " !" : ""),
+                //         color: game.data.damageColor.heal,
+                //         velX: 64,
+                //         posX: popUpPos.x,
+                //         posY: popUpPos.y,
+                //     });
+                // }
+                // // popUp texts on unit frames
+                // // fade from left to the the edge of currentHealth
+                // if(this.data.isPlayer && healInfo.heal.real > 0){
+                //     for(var i = 0; i < game.units.getPlayerListWithDead().length; i++)
+                //     {
+                //         if(this === game.units.getPlayerListWithDead()[i])
+                //         {
+                //             popUpPos = game.UI.unitFrameSlots.slots[i].pos;
+                //             game.UI.popupMgr.addText({
+                //                 text: "+" + healInfo.heal.real.toString(),
+                //                 time: 0.75,
+                //                 color: game.data.damageColor.heal,
+                //                 posX: popUpPos.x + 30,
+                //                 posY: popUpPos.y + 10,
+                //                 velX: 256,
+                //                 velY: 0.0,
+                //                 accX: -384,
+                //                 accY: 0.0,
+                //             });
+                //         }
+                //     }
+                // }
+            }
+        }
+        die(source, damage) {
+            this.data.die(damage);
+            // this.body.collisionType = me.collision.types.NO_OBJECT;
+            if (this.data.isPlayer === true) {
+                // Don't remove it, keep it dead
+                // game.units.removePlayer(this);
+            }
+            else {
+                throw new Error("Remove the mob here");
+                // me.game.world.removeChild(this.HPBar);
+                // game.units.removeEnemy(this);
+                // me.game.world.removeChild(this);
+            }
         }
         static checkExist(mob) {
             return (mob == null);
@@ -1824,24 +2092,6 @@ define("SimpleGame", ["require", "exports", "ExampleScene", "DynamicLoader/Dynam
     exports.default = InitPhaser;
     InitPhaser.initGame();
 });
-/**
- * Agents are used to control the action of mobs (players, enemies). They are also MobListeners so that they could handle events like dealDamage etc.
- * They are the "brain" of a mob, and a mob will not make any action without an agent.
- *
- * @module Agent
- * @preferred
- */
-define("agents/MobAgent", ["require", "exports", "core/DataBackend"], function (require, exports, DataBackend_3) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    class MobAgent extends DataBackend_3.MobListener {
-        constructor() {
-            super();
-        }
-        updateMob(mob, dt) { }
-    }
-    exports.default = MobAgent;
-});
 /** @module Agent */
 define("agents/PlayerAgents", ["require", "exports", "agents/MobAgent", "Mob", "core/GameData"], function (require, exports, MobAgent_1, Mob_3, GameData) {
     "use strict";
@@ -1850,16 +2100,16 @@ define("agents/PlayerAgents", ["require", "exports", "agents/MobAgent", "Mob", "
     Mob_3 = __importDefault(Mob_3);
     GameData = __importStar(GameData);
     class PlayerAgentBase extends MobAgent_1.default {
-        constructor() {
-            super();
+        constructor(parentMob) {
+            super(parentMob);
         }
         setTargetPos(player, position, dt) { }
         setTargetMob(player, target, dt) { }
     }
     exports.PlayerAgentBase = PlayerAgentBase;
     class Simple extends PlayerAgentBase {
-        constructor() {
-            super();
+        constructor(parentMob) {
+            super(parentMob);
             // Will the player move automatically (to nearest mob) if it is free ?
             this.autoMove = GameData.useAutomove;
             // this.autoMove = true;

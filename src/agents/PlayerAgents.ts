@@ -9,9 +9,9 @@ export class PlayerAgentBase extends MobAgent
     targetPos: Phaser.Math.Vector2;
     targetMob: Mob;
 
-    constructor()
+    constructor(parentMob:Mob)
     {
-        super();
+        super(parentMob);
     }
 
     setTargetPos(player:Mob, position:Phaser.Math.Vector2, dt:number) {}
@@ -30,9 +30,9 @@ export class Simple extends PlayerAgentBase
     footPos: Phaser.Math.Vector2;
     isMoving: boolean;
 
-    constructor()
+    constructor(parentMob:Mob)
     {
-        super();
+        super(parentMob);
 
         // Will the player move automatically (to nearest mob) if it is free ?
         this.autoMove = GameData.useAutomove;

@@ -11,7 +11,7 @@ import Mob from "../Mob";
 
 export default class MobAgent extends MobListener
 {
-    constructor()
+    constructor(parentMob:Mob)
     {
         super();
     }

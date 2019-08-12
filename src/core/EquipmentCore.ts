@@ -3,6 +3,14 @@
 import { MobListener, MobData } from './DataBackend'
 import Mob from '../Mob';
 
+export enum EquipmentType
+{
+    All,
+    Accessory,
+    Armor,
+    Weapon,
+}
+
 export class Equipable extends MobListener
 {
     equipper:MobData;

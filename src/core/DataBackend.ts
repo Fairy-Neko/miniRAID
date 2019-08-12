@@ -775,7 +775,7 @@ export class MobData extends EventSystem.EventElement
 
         // Decrese HP
         // Check if I am dead
-        let realDmg : mRTypes.LeafTypes<number> = {fire:0, water:0, ice:0, wind:0, nature:0, light:0, thunder:0, slash:0, pierce:0, knock:0, heal:0};
+        let realDmg : mRTypes.LeafTypes<number> = mRTypes.LeafTypesZERO;
         for(let dmg in damageInfo.value)
         {
             realDmg[dmg] += Math.min(this.currentHealth, damageInfo.value[dmg]);

@@ -5,6 +5,7 @@ import dSprite from "../DynamicLoader/dSprite";
 import Mob from "../Mob";
 import { SpellData, MobData } from "./DataBackend";
 import dPhysSprite from "../DynamicLoader/dPhysSprite";
+import MobAgent from "../agents/MobAgent";
 
 export namespace Settings
 {
@@ -67,7 +68,15 @@ export namespace Settings
     export interface Mob
     {
         sprite:   dPhysSprite;
+        
         moveAnim: string;
+        idleAnim: string;
+        deadAnim: string;
+
+        backendData: MobData;
+        
+        isPlayer: boolean;
+        agent: AgentConstructor;
     }
 }
 
@@ -78,6 +87,11 @@ export type FailCallback<T> = (arg: T) => boolean;
 export interface MobConstructor
 {
     new (settings:Settings.Mob): Mob;
+}
+
+export interface AgentConstructor
+{
+    new (arg:Mob): MobAgent;
 }
 
 export interface BaseStats
@@ -142,6 +156,8 @@ export interface LeafTypes<T>
     [index:string] : T;
 }
 
+export const LeafTypesZERO:LeafTypes<number> = {fire:0, water:0, ice:0, wind:0, nature:0, light:0, thunder:0, slash:0, pierce:0, knock:0, heal:0};
+
 export interface DamageHeal
 {
     source?: MobData;
@@ -152,6 +168,19 @@ export interface DamageHeal
     isAvoid: boolean;
     isBlock: boolean;
     spell?: SpellData;
+}
+
+export interface DamageHeal_FrontEnd
+{
+    source?: Mob;
+    target: Mob;
+    value: LeafTypes<number>;
+    overdeal: LeafTypes<number>;
+    isCrit: boolean;
+    isAvoid: boolean;
+    isBlock: boolean;
+    spell?: SpellData;
+    popUp: boolean;
 }
 
 export interface BattleStats
