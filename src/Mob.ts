@@ -8,6 +8,7 @@ import MobAgent from './agents/MobAgent'
 import { Game } from 'Phaser';
 import Buff from './core/Buff';
 import { EquipmentType } from './core/EquipmentCore';
+import UnitManager from './core/UnitManager';
 
 export default class Mob
 {
@@ -39,10 +40,12 @@ export default class Mob
         if(this.isPlayer === true)
         {
             // Is player
+            UnitManager.getCurrent().addPlayer(this);
         }
         else
         {
             // Is enemy
+            UnitManager.getCurrent().addEnemy(this);
         }
         
         this.sprite.setGravity(0, 0);

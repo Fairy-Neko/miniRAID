@@ -29,6 +29,11 @@ export default class UnitManager
     renderRect: Phaser.GameObjects.Rectangle;
     selectingRect: Phaser.Geom.Rectangle;
 
+    playerGroup: Phaser.Physics.Arcade.Group;
+    enemyGroup: Phaser.Physics.Arcade.Group;
+    allyGroup: Phaser.Physics.Arcade.Group;
+    thirdGroup: Phaser.Physics.Arcade.Group;
+
     constructor(scene:Phaser.Scene)
     {
         this.name = "Unit Manager";
@@ -60,6 +65,30 @@ export default class UnitManager
         //Add a rectangle to the scene
         this.renderRect = scene.add.rectangle(0, 0, 0, 0, 0x90D7EC, 0.2);
         scene.add.line(0, 200, 0, 0, 1000, 0, 0xFF0000);
+
+        this.playerGroup = scene.physics.add.group();
+        this.enemyGroup = scene.physics.add.group();
+        this.allyGroup = scene.physics.add.group();
+        this.thirdGroup = scene.physics.add.group();
+    }
+
+    private static instance: UnitManager;
+    static resetScene(scene:Phaser.Scene)
+    {
+        if(UnitManager.instance)
+        {
+            delete UnitManager.instance;
+        }
+        UnitManager.instance = new UnitManager(scene);
+    }
+
+    static getCurrent(): UnitManager
+    {
+        if(!UnitManager.instance)
+        {
+            return undefined;
+        }
+        return UnitManager.instance;
     }
 
     update(dt: number)
@@ -236,11 +265,13 @@ export default class UnitManager
     addPlayer(player:Mob)
     {
         this.player.add(player);
+        this.playerGroup.add(player.sprite);
     }
 
     addEnemy(enemy:Mob)
     {
         this.enemy.add(enemy);
+        this.enemyGroup.add(enemy.sprite);
     }
 
     removePlayer(player:Mob)
