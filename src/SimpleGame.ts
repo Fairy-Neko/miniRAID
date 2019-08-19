@@ -1,15 +1,15 @@
 /** @module GameScene */
 
-import ExampleScene from './ExampleScene'
-import DynamicLoaderScene from './DynamicLoader/DynamicLoaderScene'
+import {ExampleScene} from './ExampleScene'
+import {DynamicLoaderScene} from './DynamicLoader/DynamicLoaderScene'
 
-export default class InitPhaser 
+export class InitPhaser 
 {
     static gameRef:Phaser.Game;
 
     public static initGame() 
     {
-        let config = 
+        let config:Phaser.Types.Core.GameConfig = 
         {
             type: Phaser.AUTO,
             width: 1024,
@@ -19,6 +19,7 @@ export default class InitPhaser
             title: 'Playground',
             url: 'https://updatestage.littlegames.app',
             version: '-1.0',
+            parent: 'GameFrame',
         }
 
         this.gameRef = new Phaser.Game(config);

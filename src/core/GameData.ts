@@ -1,46 +1,48 @@
 /** @module Core */
 
-import { AllTypes, LeafTypes } from "./mRTypes";
+import { mRTypes } from "./mRTypes";
 
-const damageType:AllTypes<string> = {
-    slash: "physical",  
-    knock: "physical",  
-    pierce: "physical",  
-    fire: "elemental",
-    ice: "elemental",
-    water: "elemental",
-    nature: "elemental",
-    wind: "elemental",
-    thunder: "elemental",
 
-    // Let them just add 0 (as themselves when calculating) for convinence
-    light: "pure",
-    physical: "pure",
-    elemental: "pure",
-    heal: "pure",
-    pure: "pure",
+export namespace GameData
+{
+    export const damageType:mRTypes.AllTypes<string> = {
+        slash: "physical",  
+        knock: "physical",  
+        pierce: "physical",  
+        fire: "elemental",
+        ice: "elemental",
+        water: "elemental",
+        nature: "elemental",
+        wind: "elemental",
+        thunder: "elemental",
+    
+        // Let them just add 0 (as themselves when calculating) for convinence
+        light: "pure",
+        physical: "pure",
+        elemental: "pure",
+        heal: "pure",
+        pure: "pure",
+    }
+    
+    export const critMultiplier:mRTypes.LeafTypes<number> = {
+        slash: 2.0,
+        knock: 1.6,
+        pierce: 2.5,
+        fire: 2.0,
+        ice: 2.0,
+        water: 1.6,
+        nature: 2.0,
+        wind: 2.5,
+        thunder: 2.5,
+        light: 1.6,
+        heal: 2.0,
+    }
+    
+    export const playerMax:number = 8;
+    export let playerSparse:number = 12;
+    export let playerSparseInc:number = 2;
+    export let useAutomove:boolean = false;
+    export let moveThreshold:number = 150;
+    
+    export const healTaunt:number = 2;
 }
-
-const critMultiplier:LeafTypes<number> = {
-    slash: 2.0,
-    knock: 1.6,
-    pierce: 2.5,
-    fire: 2.0,
-    ice: 2.0,
-    water: 1.6,
-    nature: 2.0,
-    wind: 2.5,
-    thunder: 2.5,
-    light: 1.6,
-    heal: 2.0,
-}
-
-const playerMax:number = 8;
-let playerSparse:number = 12;
-let playerSparseInc:number = 2;
-let useAutomove:boolean = false;
-let moveThreshold:number = 150;
-
-const healTaunt:number = 2;
-
-export { damageType, critMultiplier, playerMax, playerSparse, playerSparseInc, useAutomove, moveThreshold, healTaunt };

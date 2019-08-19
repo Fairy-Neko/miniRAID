@@ -1,6 +1,6 @@
 /** @module Core */
 
-export default class BattleMonitor
+export class BattleMonitor
 {
     
 }

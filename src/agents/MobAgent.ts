@@ -6,10 +6,11 @@
  * @preferred
  */
 
-import { MobListener } from "../core/DataBackend";
-import Mob from "../Mob";
+// import { MobListener } from "../core/DataBackend";
+import { Mob } from "../Mob";
+import { MobListener } from "../core/MobListener";
 
-export default class MobAgent extends MobListener
+export class MobAgent extends MobListener
 {
     constructor(parentMob:Mob)
     {

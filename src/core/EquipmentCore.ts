@@ -1,7 +1,11 @@
 /** @module Core */
 
-import { MobListener, MobData } from './DataBackend'
-import Mob from '../Mob';
+// import * as Modules from './ModuleProxy'
+// import { MobListener, MobData } from './Modules'
+// import { MobListener, MobData } from './DataBackend'
+import {Mob} from '../Mob';
+import { MobListener } from './MobListener';
+import { MobData } from './MobData';
 
 export enum EquipmentType
 {
@@ -9,6 +13,11 @@ export enum EquipmentType
     Accessory,
     Armor,
     Weapon,
+}
+
+export enum EquipmentTag
+{
+    Equipment,
 }
 
 export class Equipable extends MobListener

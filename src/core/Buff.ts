@@ -1,9 +1,14 @@
 /** @module Core */
 
-import { Settings, HTMLToolTip } from "./mRTypes";
-import { MobListener, MobListenerType, MobData } from "./DataBackend";
+// import { MobListener, MobListenerType, MobData } from "./DataBackend";
+import { mRTypes } from "./mRTypes";
+import { MobListener } from "./MobListener";
+import { MobData } from "./MobData";
 
-export default class Buff extends MobListener
+console.log(mRTypes);
+console.log("Defination of Buff.ts");
+
+export class Buff extends MobListener
 {
     name: string;
     
@@ -22,9 +27,9 @@ export default class Buff extends MobListener
     popupColor: Phaser.Display.Color;
 
     source: MobData;
-    toolTip: HTMLToolTip;
+    toolTip: mRTypes.HTMLToolTip;
 
-    constructor(settings:Settings.Buff)
+    constructor(settings:mRTypes.Settings.Buff)
     {
         super();
     }

@@ -2,7 +2,8 @@
 
 import { Data } from "Phaser";
 import { stringify } from "querystring";
-import { FilterFunc, CompareFunc, FailCallback } from "../core/mRTypes";
+import { mRTypes } from "../core/mRTypes";
+// import { mRTypes } from "../core/ModuleProxy";
 
 interface QueryCache<T>
 {
@@ -12,7 +13,7 @@ interface QueryCache<T>
     result: Array<T>;
 }
 
-export default class QuerySet<T>
+export class QuerySet<T>
 {
     data: Set<T> | Map<string, T>;
     queries: Map<string, QueryCache<T>> = new Map<string, QueryCache<T>>();
@@ -64,8 +65,8 @@ export default class QuerySet<T>
      */
     addQuery(
         name: string,
-        filter?: FilterFunc<T>,
-        sort?:   CompareFunc<T>
+        filter?: mRTypes.FilterFunc<T>,
+        sort?:   mRTypes.CompareFunc<T>
     )
     {
         // Note that every time you call this will force the query to be refreshed even if it is the same query
@@ -84,7 +85,7 @@ export default class QuerySet<T>
      * @param failCallback Callback if the item was already in this QuerySet. This callback takes the item (inside the QuerySet) as input and returns whether the item in this QuerySet is modified or not by the callback function (e.g. buffs might want to +1 stack if already exists), and updates currentTimeStep if modification was done.
      * @returns If the item has been added (no duplicates).
      */
-    addItem(item: T, failCallback?: FailCallback<T>): boolean
+    addItem(item: T, failCallback?: mRTypes.FailCallback<T>): boolean
     {
         if(!this.keyFn)
         {
@@ -170,8 +171,8 @@ export default class QuerySet<T>
      * @param sort Compare function
      */
     liveQuery(
-        filter?: FilterFunc<T>,
-        sort?:   CompareFunc<T>) : Array<T>
+        filter?: mRTypes.FilterFunc<T>,
+        sort?:   mRTypes.CompareFunc<T>) : Array<T>
     {
         let arr = Array.from<T>(this.data.values());
         

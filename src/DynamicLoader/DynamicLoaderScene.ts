@@ -1,7 +1,7 @@
 /** @module DynamicLoader */
 
 import * as Phaser from 'Phaser'
-import DraggableScene from '../UI/DraggableScene'
+import {DraggableScene} from '../UI/DraggableScene'
 import * as DLO from './DynamicLoadObject'
 import * as Collections from 'typescript-collections'
 
@@ -17,7 +17,7 @@ interface DLResourceIO
     pool: DLResourcePool;
 }
 
-export default class DynamicLoaderScene extends DraggableScene
+export class DynamicLoaderScene extends DraggableScene
 {
     private static instance: DynamicLoaderScene;
 
@@ -34,7 +34,7 @@ export default class DynamicLoaderScene extends DraggableScene
 
         this.screenX = 10;
         this.screenY = 10;
-        this.sizeX = 200;
+        this.sizeX = 800;
         this.sizeY = 40;
     }
 
@@ -83,7 +83,9 @@ export default class DynamicLoaderScene extends DraggableScene
         }
         else
         {
-            this.label.setVisible(false);
+            // this.label.setVisible(false);
+            this.label.setVisible(true);
+            this.label.text = `(DEBUG MESSAGE) Dynamic loader idle ...`;
         }
 
         if(this.queue.length > 0)

@@ -1,8 +1,8 @@
 /** @module DynamicLoader */
 
-import DynamicLoadObject from './DynamicLoadObject'
+import {DynamicLoadObject} from './DynamicLoadObject'
 import * as dl from './DynamicLoadObject'
-import DynamicLoaderScene from './DynamicLoaderScene';
+import {DynamicLoaderScene} from './DynamicLoaderScene';
 
 interface DSAnimCache
 {
@@ -10,7 +10,7 @@ interface DSAnimCache
     startFrame: number;
 }
 
-export default class dSprite extends Phaser.GameObjects.Sprite implements DynamicLoadObject
+export class dSprite extends Phaser.GameObjects.Sprite implements DynamicLoadObject
 {
     loadComplete: boolean;
     resources: dl.ResourceRequirements[];

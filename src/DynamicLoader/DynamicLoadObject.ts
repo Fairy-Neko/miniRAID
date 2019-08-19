@@ -9,7 +9,7 @@ export interface ResourceRequirements
     callback: (key:string, type:string, fileObj:any) => void;
 }
 
-export default interface DynamicLoadObject
+export interface DynamicLoadObject
 {
     loadComplete: boolean;
     resources: ResourceRequirements[];

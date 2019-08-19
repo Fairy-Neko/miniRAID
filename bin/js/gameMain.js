@@ -1,12 +1,10 @@
+"use strict";
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
     if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
     result["default"] = mod;
     return result;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 /**
  * @module Events
@@ -223,14 +221,13 @@ define("UI/DraggableScene", ["require", "exports"], function (require, exports) 
         update(time, dt) {
         }
     }
-    exports.default = DraggableScene;
+    exports.DraggableScene = DraggableScene;
 });
 /** @module DynamicLoader */
 define("DynamicLoader/DynamicLoaderScene", ["require", "exports", "UI/DraggableScene"], function (require, exports, DraggableScene_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    DraggableScene_1 = __importDefault(DraggableScene_1);
-    class DynamicLoaderScene extends DraggableScene_1.default {
+    class DynamicLoaderScene extends DraggableScene_1.DraggableScene {
         constructor() {
             super({ key: 'DynamicLoaderScene' });
             this.queue = [];
@@ -239,7 +236,7 @@ define("DynamicLoader/DynamicLoaderScene", ["require", "exports", "UI/DraggableS
             this.pools = new Map();
             this.screenX = 10;
             this.screenY = 10;
-            this.sizeX = 200;
+            this.sizeX = 800;
             this.sizeY = 40;
         }
         preload() {
@@ -276,7 +273,9 @@ define("DynamicLoader/DynamicLoaderScene", ["require", "exports", "UI/DraggableS
                 this.label.text = `Loading ... [${(this.scene.scene.load.progress / 1.0 * 100.0).toFixed(1)}]`;
             }
             else {
-                this.label.setVisible(false);
+                // this.label.setVisible(false);
+                this.label.setVisible(true);
+                this.label.text = `(DEBUG MESSAGE) Dynamic loader idle ...`;
             }
             if (this.queue.length > 0) {
                 for (let i = 0; i < this.queue.length; i++) {
@@ -338,13 +337,12 @@ define("DynamicLoader/DynamicLoaderScene", ["require", "exports", "UI/DraggableS
             return DynamicLoaderScene.instance;
         }
     }
-    exports.default = DynamicLoaderScene;
+    exports.DynamicLoaderScene = DynamicLoaderScene;
 });
 /** @module DynamicLoader */
 define("DynamicLoader/dSprite", ["require", "exports", "DynamicLoader/DynamicLoaderScene"], function (require, exports, DynamicLoaderScene_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    DynamicLoaderScene_1 = __importDefault(DynamicLoaderScene_1);
     class dSprite extends Phaser.GameObjects.Sprite {
         constructor(scene, x, y, texture, subsTexture, frame) {
             var textureToLoad;
@@ -370,7 +368,7 @@ define("DynamicLoader/dSprite", ["require", "exports", "DynamicLoader/DynamicLoa
             if (texture == 'default') {
                 this.setVisible(false);
             }
-            DynamicLoaderScene_1.default.getSingleton().loadMultiple(this.resources);
+            DynamicLoaderScene_1.DynamicLoaderScene.getSingleton().loadMultiple(this.resources);
         }
         fetchChildren() {
             return [];
@@ -396,38 +394,124 @@ define("DynamicLoader/dSprite", ["require", "exports", "DynamicLoader/DynamicLoa
             return this;
         }
     }
-    exports.default = dSprite;
+    exports.dSprite = dSprite;
 });
-/** @module Core */
-define("core/InventoryCore", ["require", "exports"], function (require, exports) {
+/** @module DynamicLoader */
+define("DynamicLoader/dPhysSprite", ["require", "exports", "DynamicLoader/DynamicLoaderScene"], function (require, exports, DynamicLoaderScene_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    class Inventory {
-        constructor() {
+    class dPhysSprite extends Phaser.Physics.Arcade.Sprite {
+        constructor(scene, x, y, texture, subsTexture, frame) {
+            var textureToLoad;
+            var frameToLoad;
+            if (!scene.textures.exists(texture)) {
+                textureToLoad = texture;
+                frameToLoad = frame;
+                texture = subsTexture;
+                frame = 0;
+            }
+            if (!texture) {
+                texture = 'default';
+            }
+            super(scene, x, y, texture, frame);
+            // Since we cannot put "super" to the very beginning ...
+            this.resources = [];
+            this.currentAnim = { 'key': '', 'startFrame': 0 };
+            if (textureToLoad) {
+                this.resources.push({ 'key': textureToLoad, 'metadata': {}, 'callback': this.onLoadComplete.bind(this) });
+                this.textureToLoad = textureToLoad;
+                this.frameToLoad = frameToLoad;
+            }
+            if (texture == 'default') {
+                this.setVisible(false);
+            }
+            DynamicLoaderScene_2.DynamicLoaderScene.getSingleton().loadMultiple(this.resources);
+        }
+        fetchChildren() {
+            return [];
+        }
+        onLoadComplete(key, type, fileObj) {
+            if (key == this.textureToLoad) {
+                this.loadComplete = true;
+                this.setTexture(this.textureToLoad, this.frameToLoad);
+                // Play cached animation
+                if (this.currentAnim.key) {
+                    this.play(this.currentAnim.key, true, this.currentAnim.startFrame);
+                }
+                this.setVisible(true);
+            }
+        }
+        // override to allow play() calls when not loaded (not sure if without this it will work or not, never tried)
+        play(key, ignoreIfPlaying, startFrame) {
+            this.currentAnim.key = key;
+            this.currentAnim.startFrame = startFrame;
+            if (this.loadComplete == true) {
+                super.play(key, ignoreIfPlaying, startFrame);
+            }
+            return this;
         }
     }
-    exports.Inventory = Inventory;
-    class Item {
-        constructor() {
-        }
-    }
-    exports.Item = Item;
+    exports.dPhysSprite = dPhysSprite;
 });
-/** @module Core */
-define("core/Buff", ["require", "exports", "core/DataBackend"], function (require, exports, DataBackend_1) {
+define("core/SpellData", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    class Buff extends DataBackend_1.MobListener {
+    /**
+     * Data backend for spells.
+     * This is different from Spell outside databackend, this is only for spells could cast by mob (& player).
+     * And this is the data "backend" for spells, they don't have any renderable and physics body.
+     * When used, they create a Spell in the game world, and reset cooldown time etc.
+     */
+    class SpellData {
         constructor(settings) {
-            super();
+            // CD (sec)
+            this.coolDown = settings.coolDown || 10.0;
+            this.manaCost = settings.manaCost || 0;
+            this.name = settings.name || "Spell";
+            // Available when init
+            this.coolDownRemain = 0;
+            this.globalCoolDown = 0;
+            // priority should be calculated on the fly
+            this.priority = 0;
+            this.available = true;
+            this.isChannel = false;
+            this.isCast = false;
+            this.castTime = 0;
+            this.channelTime = 0;
         }
-        /**
-         * Addes one stack of itself.
-         */
-        addStack() {
+        update(mob, dt) {
+            if (this.coolDownRemain >= 0) {
+                this.coolDownRemain -= dt * 0.001;
+            }
+            this.available = this.isAvailable(mob);
+            this.onUpdate(mob, dt);
+        }
+        onUpdate(mob, dt) { }
+        onCast(mob, target) { }
+        onChanneling(mob, target, dt) { }
+        preCast(mob, target) {
+            if (this.available && mob.data.canCastSpell() && mob.data.hasMana(this.getManaCost(mob))) {
+                return true;
+            }
+            return false;
+        }
+        cast(mob, target) {
+            if (this.available && mob.data.useMana(this.getManaCost(mob))) {
+                this.coolDownRemain = this.coolDown;
+                this.onCast(mob, target);
+            }
+        }
+        forceCast(mob, target) {
+            this.onCast(mob, target);
+        }
+        isAvailable(mob) {
+            return (this.coolDownRemain <= 0);
+        }
+        getManaCost(mob) {
+            return this.manaCost;
         }
     }
-    exports.default = Buff;
+    exports.SpellData = SpellData;
 });
 /** @module Struct */
 define("Structs/QuerySet", ["require", "exports"], function (require, exports) {
@@ -557,68 +641,31 @@ define("Structs/QuerySet", ["require", "exports"], function (require, exports) {
             return arr;
         }
     }
-    exports.default = QuerySet;
+    exports.QuerySet = QuerySet;
 });
 /** @module Core */
-define("core/GameData", ["require", "exports"], function (require, exports) {
+define("core/InventoryCore", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const damageType = {
-        slash: "physical",
-        knock: "physical",
-        pierce: "physical",
-        fire: "elemental",
-        ice: "elemental",
-        water: "elemental",
-        nature: "elemental",
-        wind: "elemental",
-        thunder: "elemental",
-        // Let them just add 0 (as themselves when calculating) for convinence
-        light: "pure",
-        physical: "pure",
-        elemental: "pure",
-        heal: "pure",
-        pure: "pure",
-    };
-    exports.damageType = damageType;
-    const critMultiplier = {
-        slash: 2.0,
-        knock: 1.6,
-        pierce: 2.5,
-        fire: 2.0,
-        ice: 2.0,
-        water: 1.6,
-        nature: 2.0,
-        wind: 2.5,
-        thunder: 2.5,
-        light: 1.6,
-        heal: 2.0,
-    };
-    exports.critMultiplier = critMultiplier;
-    const playerMax = 8;
-    exports.playerMax = playerMax;
-    let playerSparse = 12;
-    exports.playerSparse = playerSparse;
-    let playerSparseInc = 2;
-    exports.playerSparseInc = playerSparseInc;
-    let useAutomove = false;
-    exports.useAutomove = useAutomove;
-    let moveThreshold = 150;
-    exports.moveThreshold = moveThreshold;
-    const healTaunt = 2;
-    exports.healTaunt = healTaunt;
+    class Inventory {
+        constructor() {
+        }
+    }
+    exports.Inventory = Inventory;
+    class Item {
+        constructor() {
+        }
+    }
+    exports.Item = Item;
 });
 /** @module Core */
-define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/InventoryCore", "core/mRTypes", "core/Buff", "Structs/QuerySet", "core/GameData"], function (require, exports, EventSystem, InventoryCore_1, mRTypes, Buff_1, QuerySet_1, GameData) {
+define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/InventoryCore"], function (require, exports, EventSystem, InventoryCore_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     EventSystem = __importStar(EventSystem);
-    mRTypes = __importStar(mRTypes);
-    Buff_1 = __importDefault(Buff_1);
-    QuerySet_1 = __importDefault(QuerySet_1);
-    GameData = __importStar(GameData);
     class DataBackend {
         constructor() {
+            this.eventSystem = new EventSystem.EventSystem();
             // Save all available players (characters).
             // Character mobs (sprites) will be spawned by PlayerSpawnPoint,
             // playerList[0:playerCount-1] will be spawned. (e.g. 4 player map = the first 4 players in list)    
@@ -657,7 +704,75 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
             return this.mobCount;
         }
     }
-    exports.default = DataBackend;
+    exports.DataBackend = DataBackend;
+});
+/** @module Core */
+define("core/Buff", ["require", "exports", "core/mRTypes", "core/MobListener"], function (require, exports, mRTypes_1, MobListener_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    console.log(mRTypes_1.mRTypes);
+    console.log("Defination of Buff.ts");
+    class Buff extends MobListener_1.MobListener {
+        constructor(settings) {
+            super();
+        }
+        /**
+         * Addes one stack of itself.
+         */
+        addStack() {
+        }
+    }
+    exports.Buff = Buff;
+});
+/** @module Core */
+define("core/GameData", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var GameData;
+    (function (GameData) {
+        GameData.damageType = {
+            slash: "physical",
+            knock: "physical",
+            pierce: "physical",
+            fire: "elemental",
+            ice: "elemental",
+            water: "elemental",
+            nature: "elemental",
+            wind: "elemental",
+            thunder: "elemental",
+            // Let them just add 0 (as themselves when calculating) for convinence
+            light: "pure",
+            physical: "pure",
+            elemental: "pure",
+            heal: "pure",
+            pure: "pure",
+        };
+        GameData.critMultiplier = {
+            slash: 2.0,
+            knock: 1.6,
+            pierce: 2.5,
+            fire: 2.0,
+            ice: 2.0,
+            water: 1.6,
+            nature: 2.0,
+            wind: 2.5,
+            thunder: 2.5,
+            light: 1.6,
+            heal: 2.0,
+        };
+        GameData.playerMax = 8;
+        GameData.playerSparse = 12;
+        GameData.playerSparseInc = 2;
+        GameData.useAutomove = false;
+        GameData.moveThreshold = 150;
+        GameData.healTaunt = 2;
+    })(GameData = exports.GameData || (exports.GameData = {}));
+});
+/** @module Core */
+define("core/MobData", ["require", "exports", "core/mRTypes", "Events/EventSystem", "core/EquipmentCore", "Structs/QuerySet", "core/MobListener", "core/DataBackend", "core/Buff", "core/GameData"], function (require, exports, mRTypes_2, EventSystem, EquipmentCore_1, QuerySet_1, MobListener_2, DataBackend_1, Buff_1, GameData_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    EventSystem = __importStar(EventSystem);
     /*
     Idle (canCastSpell):
         globalCDRemain <= 0
@@ -698,7 +813,7 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
     */
     class MobData extends EventSystem.EventElement {
         constructor(settings) {
-            super(DataBackend.getSingleton().eventSystem);
+            super(DataBackend_1.DataBackend.getSingleton().eventSystem);
             this.inControl = false;
             this.name = settings.name || "noname";
             // this.position = {x: this.body.left, y: this.body.top};
@@ -822,11 +937,11 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
             this.beingAttack = 0;
             this.healPriority = false;
             // A Specific identify name only for this mob
-            this.ID = DataBackend.getSingleton().getID();
+            this.ID = DataBackend_1.DataBackend.getSingleton().getID();
             // ref for MobListeners (buffs, agent, weapons, armor, ...)
             /** test */
-            this.listeners = new QuerySet_1.default();
-            this.listeners.addQuery('buff', (arg) => (arg.type == MobListenerType.Buff), undefined);
+            this.listeners = new QuerySet_1.QuerySet();
+            this.listeners.addQuery('buff', (arg) => (arg.type == MobListener_2.MobListenerType.Buff), undefined);
             this.listeners.addQuery('priority', undefined, (l, r) => (r.priority - l.priority));
             // buff list, only for rendering UI
             // buffs are actually plain mob listeners
@@ -861,7 +976,7 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
             if (this.parentMob) {
                 return this.parentMob.getEquipableTags(equipmentType);
             }
-            return ["equipment"];
+            return [EquipmentCore_1.EquipmentTag.Equipment];
         }
         // To be continued - dataBackend.js:301
         updateMobBackend(mob, dt) {
@@ -943,7 +1058,7 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
         }
         addBuff(buff) {
             this.addListener(buff, buff.source, (arg) => {
-                if (arg instanceof Buff_1.default) {
+                if (arg instanceof Buff_1.Buff) {
                     if (arg.stackable === true) {
                         arg.addStack();
                         // arg.emit('added', undefined, this, arg.source);
@@ -956,7 +1071,7 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
             return this.listeners.has(buff);
         }
         findBuffIncludesName(buffname) {
-            return this.listeners.liveQuery((arg) => (arg instanceof Buff_1.default && arg.name.includes(buffname)), undefined);
+            return this.listeners.liveQuery((arg) => (arg instanceof Buff_1.Buff && arg.name.includes(buffname)), undefined);
         }
         addListener(listener, source, callback) {
             if (this.listeners.addItem(listener, callback)) {
@@ -1122,7 +1237,7 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
                 // 20pts of power = 100% more damage
                 if (damageInfo.source) {
                     damageInfo.value[dmgType] = Math.ceil(damageInfo.value[dmgType] *
-                        (Math.pow(1.0353, damageInfo.source.battleStats.attackPower[GameData.damageType[dmgType]] +
+                        (Math.pow(1.0353, damageInfo.source.battleStats.attackPower[GameData_1.GameData.damageType[dmgType]] +
                             damageInfo.source.battleStats.attackPower[dmgType])));
                 }
                 // damage% = 0.9659 ^ resist
@@ -1130,11 +1245,11 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
                 // which will reach 50% damage reducement at 20 points.
                 // TODO: it should all correspond to current level (resist based on source level, atkPower based on target level, same as healing)
                 damageInfo.value[dmgType] = Math.ceil(damageInfo.value[dmgType] *
-                    (Math.pow(0.9659, this.battleStats.resist[GameData.damageType[dmgType]] +
+                    (Math.pow(0.9659, this.battleStats.resist[GameData_1.GameData.damageType[dmgType]] +
                         this.battleStats.resist[dmgType])));
                 // Apply criticals
                 damageInfo.value[dmgType] = Math.ceil(damageInfo.value[dmgType] *
-                    (damageInfo.isCrit ? GameData.critMultiplier[dmgType] : 1.0));
+                    (damageInfo.isCrit ? GameData_1.GameData.critMultiplier[dmgType] : 1.0));
             }
             // Let everyone know what is happening
             // damageObj.damage = finalDmg;
@@ -1144,7 +1259,7 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
             }
             // Decrese HP
             // Check if I am dead
-            let realDmg = mRTypes.LeafTypesZERO;
+            let realDmg = mRTypes_2.mRTypes.LeafTypesZERO;
             for (let dmg in damageInfo.value) {
                 realDmg[dmg] += Math.min(this.currentHealth, damageInfo.value[dmg]);
                 this.currentHealth -= realDmg[dmg];
@@ -1191,7 +1306,7 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
             healInfo.value.heal = Math.ceil(healInfo.value.heal *
                 (Math.pow(0.9659, this.battleStats.resist.heal)));
             healInfo.value.heal = Math.ceil(healInfo.value.heal
-                * (healInfo.isCrit ? GameData.critMultiplier.heal : 1.0));
+                * (healInfo.isCrit ? GameData_1.GameData.critMultiplier.heal : 1.0));
             // calculate overHealing using current HP and max HP.
             let realHeal = Math.min(healInfo.target.maxHealth - healInfo.target.currentHealth, healInfo.value.heal);
             healInfo.overdeal.heal = healInfo.value.heal - realHeal;
@@ -1240,6 +1355,61 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
         }
     }
     exports.MobData = MobData;
+});
+/** @module Core */
+define("core/EquipmentCore", ["require", "exports", "core/MobListener"], function (require, exports, MobListener_3) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var EquipmentType;
+    (function (EquipmentType) {
+        EquipmentType[EquipmentType["All"] = 0] = "All";
+        EquipmentType[EquipmentType["Accessory"] = 1] = "Accessory";
+        EquipmentType[EquipmentType["Armor"] = 2] = "Armor";
+        EquipmentType[EquipmentType["Weapon"] = 3] = "Weapon";
+    })(EquipmentType = exports.EquipmentType || (exports.EquipmentType = {}));
+    var EquipmentTag;
+    (function (EquipmentTag) {
+        EquipmentTag[EquipmentTag["Equipment"] = 0] = "Equipment";
+    })(EquipmentTag = exports.EquipmentTag || (exports.EquipmentTag = {}));
+    class Equipable extends MobListener_3.MobListener {
+        constructor() {
+            super();
+        }
+    }
+    exports.Equipable = Equipable;
+    class Armor extends Equipable {
+    }
+    exports.Armor = Armor;
+    class Weapon extends Equipable {
+        isInRange(mob, target) {
+            throw new Error("Method not implemented.");
+        }
+        grabTargets(mob) {
+            return [];
+        }
+        attack(source, target) {
+            throw new Error("Method not implemented.");
+        }
+    }
+    exports.Weapon = Weapon;
+    class Accessory extends Equipable {
+    }
+    exports.Accessory = Accessory;
+});
+/** @module Core */
+define("core/mRTypes", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var mRTypes;
+    (function (mRTypes) {
+        mRTypes.LeafTypesZERO = { fire: 0, water: 0, ice: 0, wind: 0, nature: 0, light: 0, thunder: 0, slash: 0, pierce: 0, knock: 0, heal: 0 };
+    })(mRTypes = exports.mRTypes || (exports.mRTypes = {}));
+});
+/** @module Core */
+define("core/MobListener", ["require", "exports", "core/DataBackend", "Events/EventSystem"], function (require, exports, DataBackend_2, EventSystem) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    EventSystem = __importStar(EventSystem);
     var MobListenerType;
     (function (MobListenerType) {
         MobListenerType[MobListenerType["Buff"] = 0] = "Buff";
@@ -1255,7 +1425,7 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
     })(MobListenerType = exports.MobListenerType || (exports.MobListenerType = {}));
     class MobListener extends EventSystem.EventElement {
         constructor() {
-            super(DataBackend.getSingleton().eventSystem);
+            super(DataBackend_2.DataBackend.getSingleton().eventSystem);
             this.enabled = true;
             this.isOver = false;
             this.focusList = new Set();
@@ -1342,156 +1512,6 @@ define("core/DataBackend", ["require", "exports", "Events/EventSystem", "core/In
         onDeath(damageInfo) { return false; }
     }
     exports.MobListener = MobListener;
-    /**
-     * Data backend for spells.
-     * This is different from Spell outside databackend, this is only for spells could cast by mob (& player).
-     * And this is the data "backend" for spells, they don't have any renderable and physics body.
-     * When used, they create a Spell in the game world, and reset cooldown time etc.
-     */
-    class SpellData {
-        constructor(settings) {
-            // CD (sec)
-            this.coolDown = settings.coolDown || 10.0;
-            this.manaCost = settings.manaCost || 0;
-            this.name = settings.name || "Spell";
-            // Available when init
-            this.coolDownRemain = 0;
-            this.globalCoolDown = 0;
-            // priority should be calculated on the fly
-            this.priority = 0;
-            this.available = true;
-            this.isChannel = false;
-            this.isCast = false;
-            this.castTime = 0;
-            this.channelTime = 0;
-        }
-        update(mob, dt) {
-            if (this.coolDownRemain >= 0) {
-                this.coolDownRemain -= dt * 0.001;
-            }
-            this.available = this.isAvailable(mob);
-            this.onUpdate(mob, dt);
-        }
-        onUpdate(mob, dt) { }
-        onCast(mob, target) { }
-        onChanneling(mob, target, dt) { }
-        preCast(mob, target) {
-            if (this.available && mob.data.canCastSpell() && mob.data.hasMana(this.getManaCost(mob))) {
-                return true;
-            }
-            return false;
-        }
-        cast(mob, target) {
-            if (this.available && mob.data.useMana(this.getManaCost(mob))) {
-                this.coolDownRemain = this.coolDown;
-                this.onCast(mob, target);
-            }
-        }
-        forceCast(mob, target) {
-            this.onCast(mob, target);
-        }
-        isAvailable(mob) {
-            return (this.coolDownRemain <= 0);
-        }
-        getManaCost(mob) {
-            return this.manaCost;
-        }
-    }
-    exports.SpellData = SpellData;
-});
-/** @module Core */
-define("core/EquipmentCore", ["require", "exports", "core/DataBackend"], function (require, exports, DataBackend_2) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var EquipmentType;
-    (function (EquipmentType) {
-        EquipmentType[EquipmentType["All"] = 0] = "All";
-        EquipmentType[EquipmentType["Accessory"] = 1] = "Accessory";
-        EquipmentType[EquipmentType["Armor"] = 2] = "Armor";
-        EquipmentType[EquipmentType["Weapon"] = 3] = "Weapon";
-    })(EquipmentType = exports.EquipmentType || (exports.EquipmentType = {}));
-    class Equipable extends DataBackend_2.MobListener {
-        constructor() {
-            super();
-        }
-    }
-    exports.Equipable = Equipable;
-    class Armor extends Equipable {
-    }
-    exports.Armor = Armor;
-    class Weapon extends Equipable {
-        isInRange(mob, target) {
-            throw new Error("Method not implemented.");
-        }
-        grabTargets(mob) {
-            return [];
-        }
-        attack(source, target) {
-            throw new Error("Method not implemented.");
-        }
-    }
-    exports.Weapon = Weapon;
-    class Accessory extends Equipable {
-    }
-    exports.Accessory = Accessory;
-});
-/** @module DynamicLoader */
-define("DynamicLoader/dPhysSprite", ["require", "exports", "DynamicLoader/DynamicLoaderScene"], function (require, exports, DynamicLoaderScene_2) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    DynamicLoaderScene_2 = __importDefault(DynamicLoaderScene_2);
-    class dPhysSprite extends Phaser.Physics.Arcade.Sprite {
-        constructor(scene, x, y, texture, subsTexture, frame) {
-            var textureToLoad;
-            var frameToLoad;
-            if (!scene.textures.exists(texture)) {
-                textureToLoad = texture;
-                frameToLoad = frame;
-                texture = subsTexture;
-                frame = 0;
-            }
-            if (!texture) {
-                texture = 'default';
-            }
-            super(scene, x, y, texture, frame);
-            // Since we cannot put "super" to the very beginning ...
-            this.resources = [];
-            this.currentAnim = { 'key': '', 'startFrame': 0 };
-            if (textureToLoad) {
-                this.resources.push({ 'key': textureToLoad, 'metadata': {}, 'callback': this.onLoadComplete.bind(this) });
-                this.textureToLoad = textureToLoad;
-                this.frameToLoad = frameToLoad;
-            }
-            if (texture == 'default') {
-                this.setVisible(false);
-            }
-            DynamicLoaderScene_2.default.getSingleton().loadMultiple(this.resources);
-        }
-        fetchChildren() {
-            return [];
-        }
-        onLoadComplete(key, type, fileObj) {
-            if (key == this.textureToLoad) {
-                this.loadComplete = true;
-                this.setTexture(this.textureToLoad, this.frameToLoad);
-                // Play cached animation
-                if (this.currentAnim.key) {
-                    this.play(this.currentAnim.key, true, this.currentAnim.startFrame);
-                }
-                this.setVisible(true);
-            }
-        }
-        // override to allow play() calls when not loaded (not sure if without this it will work or not, never tried)
-        play(key, ignoreIfPlaying, startFrame) {
-            this.currentAnim.key = key;
-            this.currentAnim.startFrame = startFrame;
-            if (this.loadComplete == true) {
-                super.play(key, ignoreIfPlaying, startFrame);
-            }
-            return this;
-        }
-    }
-    exports.default = dPhysSprite;
 });
 /**
  * Agents are used to control the action of mobs (players, enemies). They are also MobListeners so that they could handle events like dealDamage etc.
@@ -1500,29 +1520,176 @@ define("DynamicLoader/dPhysSprite", ["require", "exports", "DynamicLoader/Dynami
  * @module Agent
  * @preferred
  */
-define("agents/MobAgent", ["require", "exports", "core/DataBackend"], function (require, exports, DataBackend_3) {
+define("agents/MobAgent", ["require", "exports", "core/MobListener"], function (require, exports, MobListener_4) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    class MobAgent extends DataBackend_3.MobListener {
+    class MobAgent extends MobListener_4.MobListener {
         constructor(parentMob) {
             super();
         }
         updateMob(mob, dt) { }
     }
-    exports.default = MobAgent;
+    exports.MobAgent = MobAgent;
 });
-/** @module Core */
-define("core/mRTypes", ["require", "exports"], function (require, exports) {
+/** @module Agent */
+define("agents/PlayerAgents", ["require", "exports", "agents/Modules", "Mob", "core/GameData"], function (require, exports, Modules_1, Mob_1, GameData_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.LeafTypesZERO = { fire: 0, water: 0, ice: 0, wind: 0, nature: 0, light: 0, thunder: 0, slash: 0, pierce: 0, knock: 0, heal: 0 };
+    class PlayerAgentBase extends Modules_1.MobAgent {
+        constructor(parentMob) {
+            super(parentMob);
+        }
+        setTargetPos(player, position, dt) { }
+        setTargetMob(player, target, dt) { }
+    }
+    exports.PlayerAgentBase = PlayerAgentBase;
+    class Simple extends PlayerAgentBase {
+        constructor(parentMob) {
+            super(parentMob);
+            // Will the player move automatically (to nearest mob) if it is free ?
+            this.autoMove = GameData_2.GameData.useAutomove;
+            // this.autoMove = true;
+            // idleCount will count down from idleFrame if player is in idle (-1 / frame) to smooth the animation.
+            // Only if idleCount = 0, the player will be "idle".
+            // idleFrame is seperated for targeting Mob (which may move = need more smooth)
+            // and targeting a static position (don't move and need high precision)
+            // WTF? I cannot understood what have I wrote ...
+            this.idleFrameMob = 10;
+            this.idleFramePos = 0;
+            this.idleCount = 0;
+            this.speedFriction = 0.9;
+            // TODO: smooth when hit world object ?
+        }
+        updateMob(player, dt) {
+            this.autoMove = GameData_2.GameData.useAutomove;
+            this.footPos = new Phaser.Math.Vector2(player.sprite.x, player.sprite.y);
+            if (Mob_1.Mob.checkAlive(player) === true) {
+                if (typeof this.targetPos !== "undefined") {
+                    if (this.targetPos.distance(this.footPos) > 1.5) {
+                        let velocity = this.targetPos.clone().subtract(this.footPos).normalize().scale(player.data.getMovingSpeed() * dt);
+                        player.sprite.setVelocity(velocity.x, velocity.y);
+                        this.isMoving = true;
+                        // Reset the anim counter
+                        this.idleCount = this.idleFramePos;
+                    }
+                    else {
+                        this.targetPos = undefined;
+                        this.isMoving = false;
+                    }
+                }
+                else if (Mob_1.Mob.checkAlive(this.targetMob) == true) {
+                    // we need move to goin the range of our current weapon
+                    if (player.data.currentWeapon.isInRange(player, this.targetMob) == false) {
+                        let targetPos = new Phaser.Math.Vector2(this.targetMob.sprite.x, this.targetMob.sprite.y);
+                        let velocity = targetPos.subtract(this.footPos).normalize().scale(player.data.getMovingSpeed() * dt);
+                        player.sprite.setVelocity(velocity.x, velocity.y);
+                        this.isMoving = true;
+                        // Reset the anim counter
+                        this.idleCount = this.idleFrameMob;
+                    }
+                    // and then we don't move anymore.
+                    else {
+                        this.targetMob = undefined;
+                        this.isMoving = false;
+                    }
+                }
+                else {
+                    // We lose the target.
+                    this.targetPos = undefined;
+                    this.targetMob = undefined;
+                    this.isMoving = false;
+                }
+                if (this.isMoving === true) {
+                    // Fix our face direction when moving
+                    if (player.sprite.body.velocity.x > 0) {
+                        player.sprite.flipX = true;
+                    }
+                    else {
+                        player.sprite.flipX = false;
+                    }
+                    if (!(player.sprite.anims.currentAnim && player.sprite.anims.currentAnim.key == player.moveAnim)) {
+                        player.sprite.play(player.moveAnim);
+                    }
+                }
+                else {
+                    // Count the frames
+                    if (this.idleCount > 0) {
+                        this.idleCount--;
+                        // Also smooth the speed
+                        player.sprite.setVelocity(player.sprite.body.velocity.x * this.speedFriction, player.sprite.body.velocity.y * this.speedFriction);
+                    }
+                    else {
+                        player.sprite.setVelocity(0, 0);
+                        if (!(player.sprite.anims.currentAnim && player.sprite.anims.currentAnim.key == player.idleAnim)) {
+                            player.sprite.play(player.idleAnim);
+                        }
+                    }
+                    if (this.autoMove === true) {
+                        if (player.data.currentWeapon) {
+                            let targetList = player.data.currentWeapon.grabTargets(player);
+                            if (targetList.length > 0) {
+                                this.setTargetMob(player, targetList[0], dt);
+                            }
+                        }
+                    }
+                }
+                // Attack !
+                // Todo: attack single time for multi targets, they should add same amount of weapon gauge (basically)
+                if (player.doAttack(dt) === true) {
+                    let targets = player.data.currentWeapon.grabTargets(player);
+                    if (targets.length > 0) {
+                        for (var target of targets.values()) {
+                            if (player.data.currentWeapon.isInRange(player, target)) {
+                                if (player.data.currentMana > player.data.currentWeapon.manaCost) {
+                                    player.data.currentMana -= player.data.currentWeapon.manaCost;
+                                    player.data.currentWeapon.attack(player, target);
+                                }
+                            }
+                        }
+                    }
+                }
+                // Use any spells available
+                for (let spell in player.data.spells) {
+                    if (player.data.spells.hasOwnProperty(spell)) {
+                        if (this.isMoving == false) {
+                            if (player.data.spells[spell].available) {
+                                player.data.cast(player, null, player.data.spells[spell]);
+                            }
+                        }
+                    }
+                }
+            }
+            // YOU DIED !
+            else {
+                this.isMoving = false;
+                player.sprite.setVelocity(0, 0);
+                player.sprite.flipX = false;
+                player.sprite.play(player.deadAnim);
+            }
+        }
+        setTargetPos(player, position) {
+            console.log(position);
+            this.targetPos = position;
+        }
+        setTargetMob(player, mob, dt) {
+            this.targetMob = mob;
+        }
+    }
+    exports.Simple = Simple;
+});
+define("agents/Modules", ["require", "exports", "agents/MobAgent", "agents/PlayerAgents"], function (require, exports, MobAgent_1, PlayerAgents_1) {
+    "use strict";
+    function __export(m) {
+        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    __export(MobAgent_1);
+    __export(PlayerAgents_1);
 });
 /** @module Core */
-define("core/UnitManager", ["require", "exports", "Mob", "core/GameData"], function (require, exports, Mob_1, GameData) {
+define("core/UnitManager", ["require", "exports", "Mob", "core/GameData"], function (require, exports, Mob_2, GameData_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    Mob_1 = __importDefault(Mob_1);
-    GameData = __importStar(GameData);
     class UnitManager {
         constructor(scene) {
             this.name = "Unit Manager";
@@ -1545,8 +1712,11 @@ define("core/UnitManager", ["require", "exports", "Mob", "core/GameData"], funct
             this.rotateKey = scene.input.keyboard.addKey('R');
             this.playerRotation = 0;
             //Add a rectangle to the scene
-            this.renderRect = scene.add.rectangle(0, 0, 0, 0, 0x90D7EC, 0.2);
-            scene.add.line(0, 200, 0, 0, 1000, 0, 0xFF0000);
+            this.renderContainer = scene.add.container(0, 0);
+            this.renderRect = new Phaser.GameObjects.Rectangle(scene, 0, 0, 0, 0, 0x90D7EC, 0.2);
+            this.renderContainer.add(this.renderRect);
+            this.renderContainer.add(new Phaser.GameObjects.Line(scene, 0, 200, 0, 0, 1000, 0, 0xFF0000));
+            this.renderContainer.depth = 100000;
             this.playerGroup = scene.physics.add.group();
             this.enemyGroup = scene.physics.add.group();
             this.allyGroup = scene.physics.add.group();
@@ -1574,9 +1744,10 @@ define("core/UnitManager", ["require", "exports", "Mob", "core/GameData"], funct
                 var maxX = Math.max(this.rectOrigin.x, this.rectTarget.x);
                 var maxY = Math.max(this.rectOrigin.y, this.rectTarget.y);
                 var playerCount = 0;
+                // console.log(this.player);
                 for (let player of this.player) {
-                    if (Mob_1.default.checkAlive(player)) {
-                        var pt = new Phaser.Math.Vector2(player.sprite.originX, player.sprite.originY);
+                    if (Mob_2.Mob.checkAlive(player)) {
+                        var pt = new Phaser.Math.Vector2(player.sprite.x, player.sprite.y);
                         // var frame = game.UI.unitFrameSlots.slots[playerCount];
                         // TODO: use box intersection instead of containsPoint
                         if (this.selectingRect.contains(pt.x, pt.y)) {
@@ -1639,7 +1810,7 @@ define("core/UnitManager", ["require", "exports", "Mob", "core/GameData"], funct
                 }
                 this.origin.set(pointer.x, pointer.y);
                 var playerNum = 0;
-                var playerSparse = GameData.playerSparse + GameData.playerSparseInc * this.selectedPlayerCount;
+                var playerSparse = GameData_3.GameData.playerSparse + GameData_3.GameData.playerSparseInc * this.selectedPlayerCount;
                 if (this.sparseKey.isDown) {
                     playerSparse = 60;
                 }
@@ -1651,7 +1822,7 @@ define("core/UnitManager", ["require", "exports", "Mob", "core/GameData"], funct
                 }
                 for (var player of this.player) {
                     if (player.data.inControl == true) {
-                        // player.agent.setTargetPos(player, this.origin.clone().add(new me.Vector2d(playerSparse, 0).rotate((playerNum + this.playerRotation) / this.selectedPlayerCount * 2 * Math.PI)));
+                        (player.agent).setTargetPos(player, this.origin.clone().add((new Phaser.Math.Vector2(0, 0)).setToPolar(((playerNum + this.playerRotation) / this.selectedPlayerCount * 2 * Math.PI), playerSparse)));
                         playerNum++;
                     }
                 }
@@ -1681,6 +1852,8 @@ define("core/UnitManager", ["require", "exports", "Mob", "core/GameData"], funct
             return true;
         }
         addPlayer(player) {
+            console.log("Added player:");
+            console.log(player);
             this.player.add(player);
             this.playerGroup.add(player.sprite);
         }
@@ -1698,7 +1871,7 @@ define("core/UnitManager", ["require", "exports", "Mob", "core/GameData"], funct
             var result = [];
             for (var unit of targetSet) {
                 // TODO: how to do with raise skills ?
-                if ((containsDead || Mob_1.default.checkAlive(unit)) && availableTest(unit) === true) {
+                if ((containsDead || Mob_2.Mob.checkAlive(unit)) && availableTest(unit) === true) {
                     result.push(unit);
                 }
             }
@@ -1748,8 +1921,8 @@ define("core/UnitManager", ["require", "exports", "Mob", "core/GameData"], funct
         }
         static sortNearest(position) {
             return (a, b) => {
-                return (new Phaser.Math.Vector2(a.sprite.originX, a.sprite.originY).distance(position)
-                    - new Phaser.Math.Vector2(b.sprite.originX, b.sprite.originY).distance(position));
+                return (new Phaser.Math.Vector2(a.sprite.x, a.sprite.y).distance(position)
+                    - new Phaser.Math.Vector2(b.sprite.x, b.sprite.y).distance(position));
             };
         }
     }
@@ -1762,14 +1935,12 @@ define("core/UnitManager", ["require", "exports", "Mob", "core/GameData"], funct
     };
     UnitManager.IDENTITY = (a, b) => 0;
     UnitManager.NOOP = (a) => true;
-    exports.default = UnitManager;
+    exports.UnitManager = UnitManager;
 });
 /** @module GameEntity */
-define("Mob", ["require", "exports", "core/mRTypes", "core/UnitManager"], function (require, exports, mRTypes, UnitManager_1) {
+define("Mob", ["require", "exports", "core/mRTypes", "core/UnitManager", "core/EquipmentCore"], function (require, exports, mRTypes_3, UnitManager_1, EquipmentCore_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    mRTypes = __importStar(mRTypes);
-    UnitManager_1 = __importDefault(UnitManager_1);
     class Mob {
         constructor(settings) {
             this.sprite = settings.sprite;
@@ -1783,13 +1954,14 @@ define("Mob", ["require", "exports", "core/mRTypes", "core/UnitManager"], functi
             this.isPlayer = settings.isPlayer;
             if (this.isPlayer === true) {
                 // Is player
-                UnitManager_1.default.getCurrent().addPlayer(this);
+                UnitManager_1.UnitManager.getCurrent().addPlayer(this);
             }
             else {
                 // Is enemy
-                UnitManager_1.default.getCurrent().addEnemy(this);
+                UnitManager_1.UnitManager.getCurrent().addEnemy(this);
             }
             this.sprite.setGravity(0, 0);
+            this.data = settings.backendData;
             if (settings.agent) {
                 this.agent = new settings.agent(this);
             }
@@ -1798,7 +1970,16 @@ define("Mob", ["require", "exports", "core/mRTypes", "core/UnitManager"], functi
             // HPBar
         }
         update(dt) {
-            this.sprite.x += dt / 1000.0 * 10;
+            // this.sprite.x += dt / 1000.0 * 10;
+            if (this.sprite.body.velocity.length() > 0) {
+                this.data.isMoving = true;
+            }
+            else {
+                this.data.isMoving = false;
+            }
+            this.data.updateMobBackend(this, dt);
+            // Physics update?
+            this.agent.updateMob(this, dt);
         }
         doAttack(dt) {
             if (typeof this.data.currentWeapon === "undefined") {
@@ -1817,7 +1998,7 @@ define("Mob", ["require", "exports", "core/mRTypes", "core/UnitManager"], functi
             return false;
         }
         getEquipableTags(equipmentType) {
-            return ["equipment"];
+            return [EquipmentCore_2.EquipmentTag.Equipment];
         }
         // Will be called when a buff is going to affect the mob.
         // If anything some object with buff ability (e.g. fireball can fire sth up) hits has method receiveBuff(),
@@ -1879,7 +2060,7 @@ define("Mob", ["require", "exports", "core/mRTypes", "core/UnitManager"], functi
                 'isCrit': _damageInfo.isCrit,
                 'isAvoid': _damageInfo.isAvoid,
                 'isBlock': _damageInfo.isBlock,
-                'overdeal': mRTypes.LeafTypesZERO
+                'overdeal': mRTypes_3.mRTypes.LeafTypesZERO
             };
             // The actual damage calculate and event trigger moved into backend
             // If mob dead finally, this.data.alive will become false
@@ -1965,7 +2146,7 @@ define("Mob", ["require", "exports", "core/mRTypes", "core/UnitManager"], functi
                 'isCrit': _healInfo.isCrit,
                 'isAvoid': _healInfo.isAvoid,
                 'isBlock': _healInfo.isBlock,
-                'overdeal': mRTypes.LeafTypesZERO
+                'overdeal': mRTypes_3.mRTypes.LeafTypesZERO
             };
             this.data.receiveHeal(healInfo);
             // Show popUp text with overhealing hint
@@ -2031,26 +2212,32 @@ define("Mob", ["require", "exports", "core/mRTypes", "core/UnitManager"], functi
             }
         }
         static checkExist(mob) {
-            return (mob == null);
+            return (mob != null);
         }
         static checkAlive(mob) {
             return (Mob.checkExist(mob) && (mob.data.alive === true));
         }
     }
-    exports.default = Mob;
+    exports.Mob = Mob;
 });
 /** @module GameScene */
-define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "Mob", "core/UnitManager", "DynamicLoader/dPhysSprite"], function (require, exports, Events, Phaser, Mob_2, UnitManager_2, dPhysSprite_1) {
+define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "Mob", "DynamicLoader/dPhysSprite", "agents/PlayerAgents", "core/UnitManager", "core/MobData"], function (require, exports, Events, Phaser, Mob_3, dPhysSprite_1, PlayerAgents, UnitManager_2, MobData_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     Events = __importStar(Events);
     Phaser = __importStar(Phaser);
-    Mob_2 = __importDefault(Mob_2);
-    UnitManager_2 = __importDefault(UnitManager_2);
-    dPhysSprite_1 = __importDefault(dPhysSprite_1);
+    PlayerAgents = __importStar(PlayerAgents);
     class ExampleScene extends Phaser.Scene {
         constructor() {
-            super({ key: 'ExampleScene' });
+            super({
+                key: 'ExampleScene',
+                physics: {
+                    default: 'arcade',
+                    'arcade': {
+                        debug: true,
+                    }
+                }
+            });
             this.logo_scale = 0.5;
             this.eventSystem = new Events.EventSystem();
             this.objs = [];
@@ -2063,21 +2250,27 @@ define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "M
             this.height = this.sys.game.canvas.height;
             this.load.image('Grass_Overworld', 'assets/tilemaps/tiles/overworld_tileset_grass.png');
             this.load.tilemapTiledJSON('overworld', 'assets/tilemaps/Overworld_tst.json');
-            // this.load.spritesheet('elf', 'assets/forestElfMyst.png', {frameWidth: 32, frameHeight: 32, endFrame: 3});
+            this.load.spritesheet('elf', 'assets/forestElfMyst.png', { frameWidth: 32, frameHeight: 32, endFrame: 3 });
         }
         create() {
+            UnitManager_2.UnitManager.resetScene(this);
+            this.unitMgr = UnitManager_2.UnitManager.getCurrent();
             this.map = this.make.tilemap({ key: 'overworld' });
             this.tiles = this.map.addTilesetImage('Grass_Overworld', 'Grass_Overworld');
             this.terrainLayer = this.map.createStaticLayer('Terrain', this.tiles, 0, 0);
-            // this.anims.create({key: 'move', frames: this.anims.generateFrameNumbers('elf', {start: 0, end: 3, first: 0}), frameRate: 8, repeat: -1});
+            this.anims.create({ key: 'move', frames: this.anims.generateFrameNumbers('elf', { start: 0, end: 3, first: 0 }), frameRate: 8, repeat: -1 });
             // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
-            let girl = new Mob_2.default({
-                'sprite': new dPhysSprite_1.default(this, 100, 200, 'char_sheet_forestelf_myst'),
-                'moveAnim': ''
+            let girl = new Mob_3.Mob({
+                'sprite': new dPhysSprite_1.dPhysSprite(this, 100, 200, 'char_sheet_forestelf_myst'),
+                'idleAnim': 'move',
+                'moveAnim': 'move',
+                'deadAnim': 'move',
+                'isPlayer': true,
+                'backendData': new MobData_1.MobData({ name: 'testMob' }),
+                'agent': PlayerAgents.Simple,
             });
             this.alive.push(girl);
             this.add.existing(girl.sprite);
-            this.unitMgr = new UnitManager_2.default(this);
         }
         update(time, dt) {
             for (let m of this.alive) {
@@ -2086,180 +2279,41 @@ define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "M
             this.unitMgr.update(dt);
         }
     }
-    exports.default = ExampleScene;
+    exports.ExampleScene = ExampleScene;
 });
 /** @module GameScene */
 define("SimpleGame", ["require", "exports", "ExampleScene", "DynamicLoader/DynamicLoaderScene"], function (require, exports, ExampleScene_1, DynamicLoaderScene_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    ExampleScene_1 = __importDefault(ExampleScene_1);
-    DynamicLoaderScene_3 = __importDefault(DynamicLoaderScene_3);
     class InitPhaser {
         static initGame() {
             let config = {
                 type: Phaser.AUTO,
                 width: 1024,
                 height: 640,
-                scene: [ExampleScene_1.default],
+                scene: [ExampleScene_1.ExampleScene],
                 banner: true,
                 title: 'Playground',
                 url: 'https://updatestage.littlegames.app',
                 version: '-1.0',
+                parent: 'GameFrame',
             };
             this.gameRef = new Phaser.Game(config);
-            this.gameRef.scene.add('DynamicLoaderScene', DynamicLoaderScene_3.default.getSingleton(), true);
+            this.gameRef.scene.add('DynamicLoaderScene', DynamicLoaderScene_3.DynamicLoaderScene.getSingleton(), true);
         }
     }
-    exports.default = InitPhaser;
+    exports.InitPhaser = InitPhaser;
     InitPhaser.initGame();
 });
-/** @module Agent */
-define("agents/PlayerAgents", ["require", "exports", "agents/MobAgent", "Mob", "core/GameData"], function (require, exports, MobAgent_1, Mob_3, GameData) {
+define("DynamicLoader/Modules", ["require", "exports", "DynamicLoader/dPhysSprite", "DynamicLoader/dSprite", "DynamicLoader/DynamicLoaderScene"], function (require, exports, dPhysSprite_2, dSprite_1, DynamicLoaderScene_4) {
     "use strict";
+    function __export(m) {
+        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    }
     Object.defineProperty(exports, "__esModule", { value: true });
-    MobAgent_1 = __importDefault(MobAgent_1);
-    Mob_3 = __importDefault(Mob_3);
-    GameData = __importStar(GameData);
-    class PlayerAgentBase extends MobAgent_1.default {
-        constructor(parentMob) {
-            super(parentMob);
-        }
-        setTargetPos(player, position, dt) { }
-        setTargetMob(player, target, dt) { }
-    }
-    exports.PlayerAgentBase = PlayerAgentBase;
-    class Simple extends PlayerAgentBase {
-        constructor(parentMob) {
-            super(parentMob);
-            // Will the player move automatically (to nearest mob) if it is free ?
-            this.autoMove = GameData.useAutomove;
-            // this.autoMove = true;
-            // idleCount will count down from idleFrame if player is in idle (-1 / frame) to smooth the animation.
-            // Only if idleCount = 0, the player will be "idle".
-            // idleFrame is seperated for targeting Mob (which may move = need more smooth)
-            // and targeting a static position (don't move and need high precision)
-            // WTF? I cannot understood what have I wrote ...
-            this.idleFrameMob = 10;
-            this.idleFramePos = 0;
-            this.idleCount = 0;
-            this.speedFriction = 0.9;
-            // TODO: smooth when hit world object ?
-        }
-        updateMob(player, dt) {
-            this.autoMove = GameData.useAutomove;
-            this.footPos = new Phaser.Math.Vector2(player.sprite.originX, player.sprite.originY);
-            if (Mob_3.default.checkAlive(player) === true) {
-                if (typeof this.targetPos !== "undefined") {
-                    if (this.targetPos.distance(this.footPos) > 1.5) {
-                        let velocity = this.targetPos.subtract(this.footPos).normalize().scale(player.data.getMovingSpeed() * dt);
-                        player.sprite.setVelocity(velocity.x, velocity.y);
-                        this.isMoving = true;
-                        // Reset the anim counter
-                        this.idleCount = this.idleFramePos;
-                    }
-                    else {
-                        this.targetPos = undefined;
-                        this.isMoving = false;
-                    }
-                }
-                else if (Mob_3.default.checkAlive(this.targetMob) == true) {
-                    // we need move to goin the range of our current weapon
-                    if (player.data.currentWeapon.isInRange(player, this.targetMob) == false) {
-                        let targetPos = new Phaser.Math.Vector2(this.targetMob.sprite.originX, this.targetMob.sprite.originY);
-                        let velocity = targetPos.subtract(this.footPos).normalize().scale(player.data.getMovingSpeed() * dt);
-                        player.sprite.setVelocity(velocity.x, velocity.y);
-                        this.isMoving = true;
-                        // Reset the anim counter
-                        this.idleCount = this.idleFrameMob;
-                    }
-                    // and then we don't move anymore.
-                    else {
-                        this.targetMob = undefined;
-                        this.isMoving = false;
-                    }
-                }
-                else {
-                    // We lose the target.
-                    this.targetPos = undefined;
-                    this.targetMob = undefined;
-                    this.isMoving = false;
-                }
-                if (this.isMoving === true) {
-                    // Fix our face direction when moving
-                    if (player.sprite.body.velocity.x > 0) {
-                        player.sprite.flipX = true;
-                    }
-                    else {
-                        player.sprite.flipX = false;
-                    }
-                    if (!(player.sprite.anims.currentAnim.key == player.moveAnim)) {
-                        player.sprite.play(player.moveAnim);
-                    }
-                }
-                else {
-                    // Count the frames
-                    if (this.idleCount > 0) {
-                        this.idleCount--;
-                        // Also smooth the speed
-                        player.sprite.setVelocity(player.sprite.body.velocity.x * this.speedFriction, player.sprite.body.velocity.y * this.speedFriction);
-                    }
-                    else {
-                        player.sprite.setVelocity(0, 0);
-                        if (!(player.sprite.anims.currentAnim.key == player.idleAnim)) {
-                            player.sprite.play(player.idleAnim);
-                        }
-                    }
-                    if (this.autoMove === true) {
-                        if (player.data.currentWeapon) {
-                            let targetList = player.data.currentWeapon.grabTargets(player);
-                            if (targetList.length > 0) {
-                                this.setTargetMob(player, targetList[0], dt);
-                            }
-                        }
-                    }
-                }
-                // Attack !
-                // Todo: attack single time for multi targets, they should add same amount of weapon gauge (basically)
-                if (player.doAttack(dt) === true) {
-                    let targets = player.data.currentWeapon.grabTargets(player);
-                    if (targets.length > 0) {
-                        for (var target of targets.values()) {
-                            if (player.data.currentWeapon.isInRange(player, target)) {
-                                if (player.data.currentMana > player.data.currentWeapon.manaCost) {
-                                    player.data.currentMana -= player.data.currentWeapon.manaCost;
-                                    player.data.currentWeapon.attack(player, target);
-                                }
-                            }
-                        }
-                    }
-                }
-                // Use any spells available
-                for (let spell in player.data.spells) {
-                    if (player.data.spells.hasOwnProperty(spell)) {
-                        if (this.isMoving == false) {
-                            if (player.data.spells[spell].available) {
-                                player.data.cast(player, null, player.data.spells[spell]);
-                            }
-                        }
-                    }
-                }
-            }
-            // YOU DIED !
-            else {
-                this.isMoving = false;
-                player.sprite.setVelocity(0, 0);
-                player.sprite.flipX = false;
-                player.sprite.play(player.deadAnim);
-            }
-        }
-        setTargetPos(player, position, dt) {
-            this.targetPos = position;
-        }
-        setTargetMob(player, mob, dt) {
-            this.targetMob = mob;
-        }
-    }
-    exports.Simple = Simple;
+    __export(dPhysSprite_2);
+    __export(dSprite_1);
+    __export(DynamicLoaderScene_4);
 });
 /** @module Core */
 define("core/BattleMonitor", ["require", "exports"], function (require, exports) {
@@ -2267,6 +2321,21 @@ define("core/BattleMonitor", ["require", "exports"], function (require, exports)
     Object.defineProperty(exports, "__esModule", { value: true });
     class BattleMonitor {
     }
-    exports.default = BattleMonitor;
+    exports.BattleMonitor = BattleMonitor;
 });
+// /** @module Core */
+// /**
+//  * Usea proxy exporting module to tackle cyclic dependencies.
+//  * 
+//  * Example
+//  * A, B holds references to each other
+//  */
+// export * from './mRTypes'
+// export * from './DataBackend'
+// export * from './EquipmentCore'
+// export * from './Buff'
+// export * from './BattleMonitor'
+// export * from './GameData'
+// export * from './InventoryCore'
+// export * from './UnitManager'
 //# sourceMappingURL=gameMain.js.map

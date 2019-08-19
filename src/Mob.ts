@@ -1,16 +1,17 @@
 /** @module GameEntity */
 
-import dSprite from './DynamicLoader/dSprite'
-import * as mRTypes from './core/mRTypes'
-import { MobData } from './core/DataBackend';
-import dPhysSprite from './DynamicLoader/dPhysSprite';
-import MobAgent from './agents/MobAgent'
+import {dSprite} from './DynamicLoader/dSprite'
+// import {MobData, Buff, EquipmentType, EquipmentTag, UnitManager, mRTypes} from './core/ModuleProxy'
+import {dPhysSprite} from './DynamicLoader/dPhysSprite';
 import { Game } from 'Phaser';
-import Buff from './core/Buff';
-import { EquipmentType } from './core/EquipmentCore';
-import UnitManager from './core/UnitManager';
+import { MobAgent } from './agents/MobAgent';
+import { MobData } from './core/MobData';
+import { mRTypes } from './core/mRTypes';
+import { UnitManager } from './core/UnitManager';
+import { EquipmentType, EquipmentTag } from './core/EquipmentCore';
+import { Buff } from './core/Buff';
 
-export default class Mob
+export class Mob
 {
     sprite:dPhysSprite;
     moveAnim:string;
@@ -50,6 +51,8 @@ export default class Mob
         
         this.sprite.setGravity(0, 0);
 
+        this.data = settings.backendData;
+
         if(settings.agent)
         {
             this.agent = new settings.agent(this);
@@ -63,7 +66,21 @@ export default class Mob
 
     update(dt:number)
     {
-        this.sprite.x += dt / 1000.0 * 10;
+        // this.sprite.x += dt / 1000.0 * 10;
+        if(this.sprite.body.velocity.length() > 0)
+        {
+            this.data.isMoving = true;
+        }
+        else
+        {
+            this.data.isMoving = false;
+        }
+
+        this.data.updateMobBackend(this, dt);
+        
+        // Physics update?
+
+        this.agent.updateMob(this, dt);
     }
 
     doAttack(dt:number):boolean
@@ -92,9 +109,9 @@ export default class Mob
         return false;
     }
 
-    getEquipableTags(equipmentType:EquipmentType):string[]
+    getEquipableTags(equipmentType:EquipmentType):EquipmentTag[]
     {
-        return ["equipment"];
+        return [EquipmentTag.Equipment];
     }
     
     // Will be called when a buff is going to affect the mob.
@@ -359,7 +376,7 @@ export default class Mob
 
     static checkExist(mob?:Mob):boolean
     {
-        return (mob == null);
+        return (mob != null);
     }
 
     static checkAlive(mob?:Mob):boolean

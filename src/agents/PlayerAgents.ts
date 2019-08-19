@@ -1,8 +1,8 @@
 /** @module Agent */
 
-import MobAgent from "./MobAgent";
-import Mob from "../Mob";
-import * as GameData from "../core/GameData"
+import {MobAgent} from "./Modules";
+import {Mob} from "../Mob";
+import { GameData } from "../core/GameData";
 
 export class PlayerAgentBase extends MobAgent
 {
@@ -54,7 +54,7 @@ export class Simple extends PlayerAgentBase
     updateMob(player:Mob, dt:number)
     {
         this.autoMove = GameData.useAutomove;
-        this.footPos = new Phaser.Math.Vector2(player.sprite.originX, player.sprite.originY);
+        this.footPos = new Phaser.Math.Vector2(player.sprite.x, player.sprite.y);
 
         if(Mob.checkAlive(player) === true)
         {
@@ -62,7 +62,7 @@ export class Simple extends PlayerAgentBase
             {
                 if(this.targetPos.distance(this.footPos) > 1.5)
                 {
-                    let velocity = this.targetPos.subtract(this.footPos).normalize().scale(player.data.getMovingSpeed() * dt);
+                    let velocity = this.targetPos.clone().subtract(this.footPos).normalize().scale(player.data.getMovingSpeed() * dt);
                     player.sprite.setVelocity(velocity.x, velocity.y);
         
                     this.isMoving = true;
@@ -82,7 +82,7 @@ export class Simple extends PlayerAgentBase
                 // we need move to goin the range of our current weapon
                 if(player.data.currentWeapon.isInRange(player, this.targetMob) == false)
                 {
-                    let targetPos = new Phaser.Math.Vector2(this.targetMob.sprite.originX, this.targetMob.sprite.originY);
+                    let targetPos = new Phaser.Math.Vector2(this.targetMob.sprite.x, this.targetMob.sprite.y);
                     let velocity = targetPos.subtract(this.footPos).normalize().scale(player.data.getMovingSpeed() * dt);
                     player.sprite.setVelocity(velocity.x, velocity.y);
 
@@ -120,7 +120,7 @@ export class Simple extends PlayerAgentBase
                     player.sprite.flipX = false;
                 }
 
-                if(!(player.sprite.anims.currentAnim.key == player.moveAnim))
+                if(!(player.sprite.anims.currentAnim && player.sprite.anims.currentAnim.key == player.moveAnim))
                 {
                     player.sprite.play(player.moveAnim);
                 }
@@ -139,7 +139,7 @@ export class Simple extends PlayerAgentBase
                 {
                     player.sprite.setVelocity(0, 0);
 
-                    if(!(player.sprite.anims.currentAnim.key == player.idleAnim))
+                    if(!(player.sprite.anims.currentAnim && player.sprite.anims.currentAnim.key == player.idleAnim))
                     {
                         player.sprite.play(player.idleAnim);
                     }
@@ -205,8 +205,9 @@ export class Simple extends PlayerAgentBase
         }
     }
 
-    setTargetPos(player:Mob, position:Phaser.Math.Vector2, dt:number)
+    setTargetPos(player:Mob, position:Phaser.Math.Vector2)
     {
+        console.log(position);
         this.targetPos = position;
     }
 

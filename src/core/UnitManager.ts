@@ -1,12 +1,11 @@
 /** @module Core */
 
-import { MobData } from "./DataBackend";
-import Mob from "../Mob";
-import * as GameData from "./GameData"
-import { CompareFunc, FilterFunc } from "./mRTypes";
-import { SortFunction } from "shelljs";
+import { Mob } from "../Mob";
+import { mRTypes } from "./mRTypes";
+import { GameData } from "./GameData"
+import { PlayerAgentBase, Simple } from "../agents/Modules";
 
-export default class UnitManager
+export class UnitManager
 {
     name: string;
 
@@ -33,6 +32,7 @@ export default class UnitManager
     enemyGroup: Phaser.Physics.Arcade.Group;
     allyGroup: Phaser.Physics.Arcade.Group;
     thirdGroup: Phaser.Physics.Arcade.Group;
+    renderContainer: Phaser.GameObjects.Container;
 
     constructor(scene:Phaser.Scene)
     {
@@ -63,8 +63,11 @@ export default class UnitManager
         this.playerRotation = 0;
 
         //Add a rectangle to the scene
-        this.renderRect = scene.add.rectangle(0, 0, 0, 0, 0x90D7EC, 0.2);
-        scene.add.line(0, 200, 0, 0, 1000, 0, 0xFF0000);
+        this.renderContainer = scene.add.container(0, 0);
+        this.renderRect = new Phaser.GameObjects.Rectangle(scene, 0, 0, 0, 0, 0x90D7EC, 0.2);
+        this.renderContainer.add(this.renderRect);
+        this.renderContainer.add(new Phaser.GameObjects.Line(scene, 0, 200, 0, 0, 1000, 0, 0xFF0000));
+        this.renderContainer.depth = 100000;
 
         this.playerGroup = scene.physics.add.group();
         this.enemyGroup = scene.physics.add.group();
@@ -106,11 +109,12 @@ export default class UnitManager
             var maxY = Math.max(this.rectOrigin.y, this.rectTarget.y);
 
             var playerCount = 0;
+            // console.log(this.player);
             for(let player of this.player)
             {
                 if(Mob.checkAlive(player))
                 {
-                    var pt = new Phaser.Math.Vector2(player.sprite.originX, player.sprite.originY);
+                    var pt = new Phaser.Math.Vector2(player.sprite.x, player.sprite.y);
                     // var frame = game.UI.unitFrameSlots.slots[playerCount];
 
                     // TODO: use box intersection instead of containsPoint
@@ -218,7 +222,12 @@ export default class UnitManager
             {
                 if(player.data.inControl == true)
                 {
-                    // player.agent.setTargetPos(player, this.origin.clone().add(new me.Vector2d(playerSparse, 0).rotate((playerNum + this.playerRotation) / this.selectedPlayerCount * 2 * Math.PI)));
+                    (<Simple>(player.agent)).setTargetPos(
+                        player, 
+                        this.origin.clone().add(
+                            (new Phaser.Math.Vector2(0, 0)).setToPolar(((playerNum + this.playerRotation) / this.selectedPlayerCount * 2 * Math.PI), playerSparse) 
+                        )
+                    );
                     playerNum++;
                 }
             }
@@ -264,6 +273,8 @@ export default class UnitManager
 
     addPlayer(player:Mob)
     {
+        console.log("Added player:");
+        console.log(player);
         this.player.add(player);
         this.playerGroup.add(player.sprite);
     }
@@ -284,7 +295,7 @@ export default class UnitManager
         this.enemy.delete(enemy);
     }
 
-    _getUnitList(targetSet:Set<Mob>, sortMethod:CompareFunc<Mob>, availableTest:FilterFunc<Mob>, containsDead:boolean = false)
+    _getUnitList(targetSet:Set<Mob>, sortMethod:mRTypes.CompareFunc<Mob>, availableTest:mRTypes.FilterFunc<Mob>, containsDead:boolean = false)
     {
         var result = [];
 
@@ -305,7 +316,7 @@ export default class UnitManager
     // You will get a list that:
     // * The list was sorted using sortMethod,
     // * The list will contain units only if they have passed availableTest. (availableTest(unit) returns true)
-    getPlayerList(sortMethod:CompareFunc<Mob>, availableTest:FilterFunc<Mob>, containsDead:boolean = false)
+    getPlayerList(sortMethod:mRTypes.CompareFunc<Mob>, availableTest:mRTypes.FilterFunc<Mob>, containsDead:boolean = false)
     {
         sortMethod = sortMethod || function(a, b) {return 0;};
         availableTest = availableTest || function(a) {return true;};
@@ -313,7 +324,7 @@ export default class UnitManager
         return this._getUnitList(this.player, sortMethod, availableTest, containsDead);
     }
 
-    getPlayerListWithDead(sortMethod:CompareFunc<Mob>, availableTest:FilterFunc<Mob>)
+    getPlayerListWithDead(sortMethod:mRTypes.CompareFunc<Mob>, availableTest:mRTypes.FilterFunc<Mob>)
     {
         sortMethod = sortMethod || function(a, b) {return 0;};
         availableTest = availableTest || function(a) {return true;};
@@ -321,7 +332,7 @@ export default class UnitManager
         return this._getUnitList(this.player, sortMethod, availableTest, true);
     }
 
-    getEnemyList(sortMethod:CompareFunc<Mob>, availableTest:FilterFunc<Mob>)
+    getEnemyList(sortMethod:mRTypes.CompareFunc<Mob>, availableTest:mRTypes.FilterFunc<Mob>)
     {
         sortMethod = sortMethod || function(a, b) {return 0;};
         availableTest = availableTest || function(a) {return true;};
@@ -329,7 +340,7 @@ export default class UnitManager
         return this._getUnitList(this.enemy, sortMethod, availableTest);
     }
 
-    getUnitList(sortMethod:CompareFunc<Mob>, availableTest:FilterFunc<Mob>, isPlayer:boolean = false)
+    getUnitList(sortMethod:mRTypes.CompareFunc<Mob>, availableTest:mRTypes.FilterFunc<Mob>, isPlayer:boolean = false)
     {
         if(isPlayer === true)
         {
@@ -341,7 +352,7 @@ export default class UnitManager
         }
     }
 
-    getUnitListAll(sortMethod:CompareFunc<Mob>, availableTest:FilterFunc<Mob>)
+    getUnitListAll(sortMethod:mRTypes.CompareFunc<Mob>, availableTest:mRTypes.FilterFunc<Mob>)
     {
         sortMethod = sortMethod || function(a, b) {return 0;};
         availableTest = availableTest || function(a) {return true;};
@@ -369,12 +380,12 @@ export default class UnitManager
         return result.slice(0, Math.min(count, result.length));
     }
 
-    static sortByHealth:CompareFunc<Mob> = (a:Mob, b:Mob) =>
+    static sortByHealth:mRTypes.CompareFunc<Mob> = (a:Mob, b:Mob) =>
     {
         return a.data.currentHealth - b.data.currentHealth;
     };
 
-    static sortByHealthPercentage:CompareFunc<Mob> = (a:Mob, b:Mob) =>
+    static sortByHealthPercentage:mRTypes.CompareFunc<Mob> = (a:Mob, b:Mob) =>
     {
         return (
             ((a.data.currentHealth / a.data.maxHealth) - 0.4 * (a.data.healPriority ? 1.0 : 0.0)) - 
@@ -382,18 +393,18 @@ export default class UnitManager
         );
     };
 
-    static sortNearest(position:Phaser.Math.Vector2):CompareFunc<Mob>
+    static sortNearest(position:Phaser.Math.Vector2):mRTypes.CompareFunc<Mob>
     {
         return (a:Mob, b:Mob) => {
             return (
-                new Phaser.Math.Vector2(a.sprite.originX, a.sprite.originY).distance(position)
-              - new Phaser.Math.Vector2(b.sprite.originX, b.sprite.originY).distance(position)
+                new Phaser.Math.Vector2(a.sprite.x, a.sprite.y).distance(position)
+              - new Phaser.Math.Vector2(b.sprite.x, b.sprite.y).distance(position)
             );
         }
     }
 
-    static IDENTITY:CompareFunc<Mob> = (a:Mob, b:Mob) => 0;
-    static NOOP:FilterFunc<Mob> = (a:Mob) => true;
+    static IDENTITY:mRTypes.CompareFunc<Mob> = (a:Mob, b:Mob) => 0;
+    static NOOP:mRTypes.FilterFunc<Mob> = (a:Mob) => true;
 
     // // Boardcast the method targeted target with args to any listeners of any mobs that focused on the target.
     // boardcast: function(method, target, args)

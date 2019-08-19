@@ -2,7 +2,7 @@
  * @module UI
  */
 
-export default class DraggableScene extends Phaser.Scene
+export class DraggableScene extends Phaser.Scene
 {
     screenX: number;
     screenY: number;
