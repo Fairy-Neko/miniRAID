@@ -2,6 +2,7 @@
 
 import {ExampleScene} from './ExampleScene'
 import {DynamicLoaderScene} from './DynamicLoader/DynamicLoaderScene'
+import { PopUpManager } from './UI/PopUpManager';
 
 export class InitPhaser 
 {
@@ -24,6 +25,7 @@ export class InitPhaser
 
         this.gameRef = new Phaser.Game(config);
         this.gameRef.scene.add('DynamicLoaderScene', DynamicLoaderScene.getSingleton(), true);
+        this.gameRef.scene.add('PopupManagerScene', PopUpManager.getSingleton(), true);
     }
 }
 

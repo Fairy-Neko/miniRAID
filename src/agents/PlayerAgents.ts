@@ -54,7 +54,7 @@ export class Simple extends PlayerAgentBase
     updateMob(player:Mob, dt:number)
     {
         this.autoMove = GameData.useAutomove;
-        this.footPos = new Phaser.Math.Vector2(player.sprite.x, player.sprite.y);
+        this.footPos = new Phaser.Math.Vector2(player.x, player.y);
 
         if(Mob.checkAlive(player) === true)
         {
@@ -62,8 +62,8 @@ export class Simple extends PlayerAgentBase
             {
                 if(this.targetPos.distance(this.footPos) > 1.5)
                 {
-                    let velocity = this.targetPos.clone().subtract(this.footPos).normalize().scale(player.data.getMovingSpeed() * dt);
-                    player.sprite.setVelocity(velocity.x, velocity.y);
+                    let velocity = this.targetPos.clone().subtract(this.footPos).normalize().scale(player.mobData.getMovingSpeed() * dt);
+                    player.setVelocity(velocity.x, velocity.y);
         
                     this.isMoving = true;
 
@@ -80,11 +80,11 @@ export class Simple extends PlayerAgentBase
             else if(Mob.checkAlive(this.targetMob) == true)
             {
                 // we need move to goin the range of our current weapon
-                if(player.data.currentWeapon.isInRange(player, this.targetMob) == false)
+                if(player.mobData.currentWeapon.isInRange(player, this.targetMob) == false)
                 {
-                    let targetPos = new Phaser.Math.Vector2(this.targetMob.sprite.x, this.targetMob.sprite.y);
-                    let velocity = targetPos.subtract(this.footPos).normalize().scale(player.data.getMovingSpeed() * dt);
-                    player.sprite.setVelocity(velocity.x, velocity.y);
+                    let targetPos = new Phaser.Math.Vector2(this.targetMob.x, this.targetMob.y);
+                    let velocity = targetPos.subtract(this.footPos).normalize().scale(player.mobData.getMovingSpeed() * dt);
+                    player.setVelocity(velocity.x, velocity.y);
 
                     this.isMoving = true;
 
@@ -111,18 +111,18 @@ export class Simple extends PlayerAgentBase
             if(this.isMoving === true)
             {
                 // Fix our face direction when moving
-                if(player.sprite.body.velocity.x > 0)
+                if(player.body.velocity.x > 0)
                 {
-                    player.sprite.flipX = true;
+                    player.flipX = true;
                 }
                 else
                 {
-                    player.sprite.flipX = false;
+                    player.flipX = false;
                 }
 
-                if(!(player.sprite.anims.currentAnim && player.sprite.anims.currentAnim.key == player.moveAnim))
+                if(!(player.anims.currentAnim && player.anims.currentAnim.key == player.moveAnim))
                 {
-                    player.sprite.play(player.moveAnim);
+                    player.play(player.moveAnim);
                 }
             }
             else
@@ -133,23 +133,23 @@ export class Simple extends PlayerAgentBase
                     this.idleCount --;
 
                     // Also smooth the speed
-                    player.sprite.setVelocity(player.sprite.body.velocity.x * this.speedFriction, player.sprite.body.velocity.y * this.speedFriction);
+                    player.setVelocity(player.body.velocity.x * this.speedFriction, player.body.velocity.y * this.speedFriction);
                 }
                 else
                 {
-                    player.sprite.setVelocity(0, 0);
+                    player.setVelocity(0, 0);
 
-                    if(!(player.sprite.anims.currentAnim && player.sprite.anims.currentAnim.key == player.idleAnim))
+                    if(!(player.anims.currentAnim && player.anims.currentAnim.key == player.idleAnim))
                     {
-                        player.sprite.play(player.idleAnim);
+                        player.play(player.idleAnim);
                     }
                 }
 
                 if(this.autoMove === true)
                 {
-                    if(player.data.currentWeapon)
+                    if(player.mobData.currentWeapon)
                     {
-                        let targetList = player.data.currentWeapon.grabTargets(player);
+                        let targetList = player.mobData.currentWeapon.grabTargets(player);
                         if(targetList.length > 0)
                         {
                             this.setTargetMob(player, targetList[0], dt);
@@ -162,17 +162,17 @@ export class Simple extends PlayerAgentBase
             // Todo: attack single time for multi targets, they should add same amount of weapon gauge (basically)
             if(player.doAttack(dt) === true)
             {
-                let targets = player.data.currentWeapon.grabTargets(player);
+                let targets = player.mobData.currentWeapon.grabTargets(player);
                 if(targets.length > 0)
                 {
                     for(var target of targets.values())
                     {
-                        if(player.data.currentWeapon.isInRange(player, target))
+                        if(player.mobData.currentWeapon.isInRange(player, target))
                         {
-                            if(player.data.currentMana > player.data.currentWeapon.manaCost)
+                            if(player.mobData.currentMana > player.mobData.currentWeapon.manaCost)
                             {
-                                player.data.currentMana -= player.data.currentWeapon.manaCost;
-                                player.data.currentWeapon.attack(player, target);
+                                player.mobData.currentMana -= player.mobData.currentWeapon.manaCost;
+                                player.mobData.currentWeapon.attack(player, target);
                             }
                         }
                     }
@@ -180,15 +180,15 @@ export class Simple extends PlayerAgentBase
             }
 
             // Use any spells available
-            for(let spell in player.data.spells)
+            for(let spell in player.mobData.spells)
             {
-                if(player.data.spells.hasOwnProperty(spell))
+                if(player.mobData.spells.hasOwnProperty(spell))
                 {
                     if(this.isMoving == false)
                     {
-                        if(player.data.spells[spell].available)
+                        if(player.mobData.spells[spell].available)
                         {
-                            player.data.cast(player, null, player.data.spells[spell])
+                            player.mobData.cast(player, null, player.mobData.spells[spell])
                         }
                     }
                 }
@@ -198,10 +198,10 @@ export class Simple extends PlayerAgentBase
         else
         {
             this.isMoving = false;
-            player.sprite.setVelocity(0, 0)
-            player.sprite.flipX = false;
+            player.setVelocity(0, 0)
+            player.flipX = false;
 
-            player.sprite.play(player.deadAnim);
+            player.play(player.deadAnim);
         }
     }
 

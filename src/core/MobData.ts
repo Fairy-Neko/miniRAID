@@ -489,7 +489,7 @@ export class MobData extends EventSystem.EventElement
     cast(mob: Mob, target: Mob | Phaser.Math.Vector2, spell: SpellData)
     {
         // Check if ready to cast
-        if(mob.data.canCastSpell() == false || spell.preCast(mob, target) == false)
+        if(mob.mobData.canCastSpell() == false || spell.preCast(mob, target) == false)
         {
             return;
         }
@@ -498,33 +498,33 @@ export class MobData extends EventSystem.EventElement
         // May combined into readyToCast().
 
         // Start GCD Timer
-        mob.data.globalCDRemain = spell.globalCoolDown / mob.data.modifiers.spellSpeed;
+        mob.mobData.globalCDRemain = spell.globalCoolDown / mob.mobData.modifiers.spellSpeed;
 
         if(spell.isCast == true)
         {
             // Start casting
-            mob.data.inCasting = true;
-            mob.data.castTime = spell.castTime / mob.data.modifiers.spellSpeed;
-            mob.data.castRemain = mob.data.castTime;
-            mob.data.currentSpell = spell;
+            mob.mobData.inCasting = true;
+            mob.mobData.castTime = spell.castTime / mob.mobData.modifiers.spellSpeed;
+            mob.mobData.castRemain = mob.mobData.castTime;
+            mob.mobData.currentSpell = spell;
         }
         else
         {
-            mob.data.finishCast(mob, target, spell);
+            mob.mobData.finishCast(mob, target, spell);
         }
     }
 
     finishCast(mob: Mob, target: Mob | Phaser.Math.Vector2, spell: SpellData)
     {
-        mob.data.inCasting = false;
+        mob.mobData.inCasting = false;
 
         if(spell.isChannel == true)
         {
             // Start channeling
-            mob.data.inChanneling = true;
-            mob.data.channelTimeFactor = mob.data.modifiers.spellSpeed;
-            mob.data.channelTime = spell.channelTime / mob.data.channelTimeFactor;
-            mob.data.channelRemain = mob.data.channelTime;
+            mob.mobData.inChanneling = true;
+            mob.mobData.channelTimeFactor = mob.mobData.modifiers.spellSpeed;
+            mob.mobData.channelTime = spell.channelTime / mob.mobData.channelTimeFactor;
+            mob.mobData.channelRemain = mob.mobData.channelTime;
         }
 
         spell.cast(mob, target);

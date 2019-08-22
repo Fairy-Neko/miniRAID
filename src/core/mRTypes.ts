@@ -70,8 +70,6 @@ export namespace mRTypes
 
         export interface Mob
         {
-            sprite:   dPhysSprite;
-            
             moveAnim: string;
             idleAnim: string;
             deadAnim: string;

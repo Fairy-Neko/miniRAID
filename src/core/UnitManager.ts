@@ -114,13 +114,13 @@ export class UnitManager
             {
                 if(Mob.checkAlive(player))
                 {
-                    var pt = new Phaser.Math.Vector2(player.sprite.x, player.sprite.y);
+                    var pt = new Phaser.Math.Vector2(player.x, player.y);
                     // var frame = game.UI.unitFrameSlots.slots[playerCount];
 
                     // TODO: use box intersection instead of containsPoint
                     if(this.selectingRect.contains(pt.x, pt.y))
                     {
-                        player.data.inControl = true;
+                        player.mobData.inControl = true;
                     }
                     // else if(this.selectingRect.containsPoint(frame.pos.x - minX, frame.pos.y - minY))
                     // {
@@ -128,7 +128,7 @@ export class UnitManager
                     // }
                     else
                     {
-                        player.data.inControl = false;
+                        player.mobData.inControl = false;
                     }
                 }
                 playerCount++;
@@ -192,7 +192,7 @@ export class UnitManager
             this.selectedPlayerCount = 0;
             for(var player of this.player)
             {
-                if(player.data.inControl == true)
+                if(player.mobData.inControl == true)
                 {
                     this.selectedPlayerCount += 1;
                 }
@@ -220,7 +220,7 @@ export class UnitManager
 
             for(var player of this.player)
             {
-                if(player.data.inControl == true)
+                if(player.mobData.inControl == true)
                 {
                     (<Simple>(player.agent)).setTargetPos(
                         player, 
@@ -276,13 +276,13 @@ export class UnitManager
         console.log("Added player:");
         console.log(player);
         this.player.add(player);
-        this.playerGroup.add(player.sprite);
+        this.playerGroup.add(player);
     }
 
     addEnemy(enemy:Mob)
     {
         this.enemy.add(enemy);
-        this.enemyGroup.add(enemy.sprite);
+        this.enemyGroup.add(enemy);
     }
 
     removePlayer(player:Mob)
@@ -382,14 +382,14 @@ export class UnitManager
 
     static sortByHealth:mRTypes.CompareFunc<Mob> = (a:Mob, b:Mob) =>
     {
-        return a.data.currentHealth - b.data.currentHealth;
+        return a.mobData.currentHealth - b.mobData.currentHealth;
     };
 
     static sortByHealthPercentage:mRTypes.CompareFunc<Mob> = (a:Mob, b:Mob) =>
     {
         return (
-            ((a.data.currentHealth / a.data.maxHealth) - 0.4 * (a.data.healPriority ? 1.0 : 0.0)) - 
-            ((b.data.currentHealth / b.data.maxHealth) - 0.4 * (b.data.healPriority ? 1.0 : 0.0))
+            ((a.mobData.currentHealth / a.mobData.maxHealth) - 0.4 * (a.mobData.healPriority ? 1.0 : 0.0)) - 
+            ((b.mobData.currentHealth / b.mobData.maxHealth) - 0.4 * (b.mobData.healPriority ? 1.0 : 0.0))
         );
     };
 
@@ -397,8 +397,8 @@ export class UnitManager
     {
         return (a:Mob, b:Mob) => {
             return (
-                new Phaser.Math.Vector2(a.sprite.x, a.sprite.y).distance(position)
-              - new Phaser.Math.Vector2(b.sprite.x, b.sprite.y).distance(position)
+                new Phaser.Math.Vector2(a.x, a.y).distance(position)
+              - new Phaser.Math.Vector2(b.x, b.y).distance(position)
             );
         }
     }

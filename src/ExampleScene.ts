@@ -7,6 +7,7 @@ import {dPhysSprite} from './DynamicLoader/dPhysSprite';
 import * as PlayerAgents from './agents/PlayerAgents';
 import { UnitManager } from './core/UnitManager';
 import { MobData } from './core/MobData';
+import { PopUpManager } from './UI/PopUpManager';
 
 export class ExampleScene extends Phaser.Scene 
 {
@@ -25,7 +26,6 @@ export class ExampleScene extends Phaser.Scene
     map:Phaser.Tilemaps.Tilemap;
     tiles:Phaser.Tilemaps.Tileset;
 
-    alive:Mob[] = [];
     unitMgr: UnitManager;
 
     constructor() 
@@ -65,8 +65,7 @@ export class ExampleScene extends Phaser.Scene
         this.anims.create({key: 'move', frames: this.anims.generateFrameNumbers('elf', {start: 0, end: 3, first: 0}), frameRate: 8, repeat: -1});
 
         // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
-        let girl = new Mob({
-            'sprite': new dPhysSprite(this, 100, 200, 'char_sheet_forestelf_myst'),
+        let girl = new Mob(this, 100, 200, 'char_sheet_forestelf_myst', {
             'idleAnim': 'move',
             'moveAnim': 'move',
             'deadAnim': 'move',
@@ -74,17 +73,18 @@ export class ExampleScene extends Phaser.Scene
             'backendData': new MobData({name: 'testMob'}),
             'agent': PlayerAgents.Simple,
         });
-        this.alive.push(girl);
-        this.add.existing(girl.sprite);
+        this.add.existing(girl);
     }
 
     update(time:number, dt:number)
     {
-        for(let m of this.alive)
-        {
-            m.update(dt);
-        }
+        this.children.each((item: Phaser.GameObjects.GameObject) => {item.update(dt);});
 
-        this.unitMgr.update(dt);
+        this.unitMgr.update(dt / 1000.0);
+
+        for(let i = 0; i < 3; i++)
+        {
+            PopUpManager.getSingleton().addText('test', 1.0, 128 * (Math.random() * 2 - 1), -256, 0.0, 512, Math.random() * 500 + 100, Math.random() * 300 + 100);
+        }
     }
 }

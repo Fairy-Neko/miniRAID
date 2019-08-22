@@ -65,7 +65,7 @@ export class SpellData
 
     preCast(mob:Mob, target:Mob|Phaser.Math.Vector2)
     {
-        if(this.available && mob.data.canCastSpell() && mob.data.hasMana(this.getManaCost(mob)))
+        if(this.available && mob.mobData.canCastSpell() && mob.mobData.hasMana(this.getManaCost(mob)))
         {
             return true;
         }
@@ -75,7 +75,7 @@ export class SpellData
 
     cast(mob:Mob, target:Mob|Phaser.Math.Vector2)
     {
-        if(this.available && mob.data.useMana(this.getManaCost(mob)))
+        if(this.available && mob.mobData.useMana(this.getManaCost(mob)))
         {
             this.coolDownRemain = this.coolDown;
             this.onCast(mob, target);

@@ -3,7 +3,7 @@
 import {dSprite} from './DynamicLoader/dSprite'
 // import {MobData, Buff, EquipmentType, EquipmentTag, UnitManager, mRTypes} from './core/ModuleProxy'
 import {dPhysSprite} from './DynamicLoader/dPhysSprite';
-import { Game } from 'Phaser';
+import { Game, Scene } from 'Phaser';
 import { MobAgent } from './agents/MobAgent';
 import { MobData } from './core/MobData';
 import { mRTypes } from './core/mRTypes';
@@ -11,22 +11,28 @@ import { UnitManager } from './core/UnitManager';
 import { EquipmentType, EquipmentTag } from './core/EquipmentCore';
 import { Buff } from './core/Buff';
 
-export class Mob
+export class Mob extends dPhysSprite
 {
-    sprite:dPhysSprite;
     moveAnim:string;
     idleAnim:string;
     deadAnim:string;
 
-    data:MobData;
+    mobData:MobData;
     isPlayer: boolean;
     agent: MobAgent;
     attackCounter: number;
 
-    constructor(settings:mRTypes.Settings.Mob)
+    constructor(
+        scene:Scene,
+        x:number, y:number, 
+        sprite:string,
+        settings:mRTypes.Settings.Mob,
+        subsprite?:string, 
+        frame?:string | number)
     {
-        this.sprite = settings.sprite;
-        this.sprite.setOrigin(0.5, 0.8);
+        super(scene, x, y, sprite, subsprite, frame);
+
+        this.setOrigin(0.5, 0.8);
 
         this.moveAnim = settings.moveAnim;
         this.idleAnim = settings.idleAnim;
@@ -34,7 +40,7 @@ export class Mob
 
         if(this.idleAnim)
         {
-            this.sprite.play(this.idleAnim);
+            this.play(this.idleAnim);
         }
 
         this.isPlayer = settings.isPlayer;
@@ -49,16 +55,16 @@ export class Mob
             UnitManager.getCurrent().addEnemy(this);
         }
         
-        this.sprite.setGravity(0, 0);
+        this.setGravity(0, 0);
 
-        this.data = settings.backendData;
+        this.mobData = settings.backendData;
 
         if(settings.agent)
         {
             this.agent = new settings.agent(this);
         }
 
-        this.data.addListener(this.agent);
+        this.mobData.addListener(this.agent);
         this.attackCounter = 0;
 
         // HPBar
@@ -67,16 +73,16 @@ export class Mob
     update(dt:number)
     {
         // this.sprite.x += dt / 1000.0 * 10;
-        if(this.sprite.body.velocity.length() > 0)
+        if(this.body.velocity.length() > 0)
         {
-            this.data.isMoving = true;
+            this.mobData.isMoving = true;
         }
         else
         {
-            this.data.isMoving = false;
+            this.mobData.isMoving = false;
         }
 
-        this.data.updateMobBackend(this, dt);
+        this.mobData.updateMobBackend(this, dt);
         
         // Physics update?
 
@@ -85,19 +91,19 @@ export class Mob
 
     doAttack(dt:number):boolean
     {
-        if(typeof this.data.currentWeapon === "undefined")
+        if(typeof this.mobData.currentWeapon === "undefined")
         {
             return false;
         }
 
         this.attackCounter += dt * 0.001;
 
-        if(this.data.canCastSpell() == false)
+        if(this.mobData.canCastSpell() == false)
         {
             return false;
         }
 
-        if(this.attackCounter > (this.data.getAttackSpeed()))
+        if(this.attackCounter > (this.mobData.getAttackSpeed()))
         {
             // This will cause mutiple attacks if attackspeed increases.
             // this.attackCounter -= this.data.getAttackSpeed();
@@ -142,12 +148,12 @@ export class Mob
             // Set source if not
             if(typeof buff.source === "undefined")
             {
-                buff.source = source.data;
+                buff.source = source.mobData;
             }
 
             // Call backend to add the buff.
             // Actually, for the backend, a buff is same as a plain listener (this.data.addListener(listener)).
-            this.data.addBuff(buff);
+            this.mobData.addBuff(buff);
 
             // Initial popUp
             if(popUp == true)
@@ -187,8 +193,8 @@ export class Mob
         }
 
         let damageInfo:mRTypes.DamageHeal = {
-            'source' : _damageInfo.source.data,
-            'target' : this.data,
+            'source' : _damageInfo.source.mobData,
+            'target' : this.mobData,
             'spell'  : _damageInfo.spell,
             'value'  : _damageInfo.value,
             'isCrit' : _damageInfo.isCrit,
@@ -199,7 +205,7 @@ export class Mob
 
         // The actual damage calculate and event trigger moved into backend
         // If mob dead finally, this.data.alive will become false
-        this.data.receiveDamage(damageInfo);
+        this.mobData.receiveDamage(damageInfo);
 
         // It does not hit !
         if(damageInfo.isAvoid)
@@ -264,7 +270,7 @@ export class Mob
         // However, it should also check if self dead here
         // since it should remove the renderable (actual object) from the scene and mob list
         // Check if I am alive
-        if(this.data.alive == false)
+        if(this.mobData.alive == false)
         {
             this.die(_damageInfo.source, damageInfo);
         }
@@ -291,8 +297,8 @@ export class Mob
 
         // Same as above
         let healInfo:mRTypes.DamageHeal = {
-            'source' : _healInfo.source.data,
-            'target' : this.data,
+            'source' : _healInfo.source.mobData,
+            'target' : this.mobData,
             'spell'  : _healInfo.spell,
             'value'  : _healInfo.value,
             'isCrit' : _healInfo.isCrit,
@@ -301,7 +307,7 @@ export class Mob
             'overdeal': mRTypes.LeafTypesZERO
         };
 
-        this.data.receiveHeal(healInfo);
+        this.mobData.receiveHeal(healInfo);
 
         // Show popUp text with overhealing hint
         if(_healInfo.popUp == true && (healInfo.value.heal + healInfo.overdeal.heal) > 0)
@@ -356,11 +362,11 @@ export class Mob
 
     die(source?:Mob, damage?:mRTypes.DamageHeal)
     {
-        this.data.die(damage);
+        this.mobData.die(damage);
 
         // this.body.collisionType = me.collision.types.NO_OBJECT;
 
-        if(this.data.isPlayer === true)
+        if(this.mobData.isPlayer === true)
         {
             // Don't remove it, keep it dead
             // game.units.removePlayer(this);
@@ -381,6 +387,6 @@ export class Mob
 
     static checkAlive(mob?:Mob):boolean
     {
-        return (Mob.checkExist(mob) && (mob.data.alive === true));
+        return (Mob.checkExist(mob) && (mob.mobData.alive === true));
     }
 }
