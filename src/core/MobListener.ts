@@ -28,6 +28,9 @@ export class MobListener extends EventSystem.EventElement
     enabled: boolean = true;
     isOver: boolean = false;
     type: MobListenerType;
+    cooldownMax: number;
+    cooldown: number;
+    isReady: boolean;
 
     constructor()
     {
@@ -35,6 +38,10 @@ export class MobListener extends EventSystem.EventElement
         this.focusList = new Set();
         this.priority = 0;
         this.enabled = true;
+
+        this.cooldownMax = 0.0;
+        this.cooldown = 0.0;
+        this.isReady = true;
 
         // let tst = new MobData({'name': 'test'});
         // this.listen(tst, 'dealDamage', this.isReadyWrapper(this.onDealDamage));
@@ -51,7 +58,17 @@ export class MobListener extends EventSystem.EventElement
         };
     }
 
-    update(dt:number)
+    focus(mob:MobData)
+    {
+
+    }
+
+    unfocus(mob:MobData)
+    {
+        
+    }
+
+    update(self:MobData, dt:number)
     {
         for(let mob of this.focusList)
         {
@@ -59,6 +76,13 @@ export class MobListener extends EventSystem.EventElement
             // {
                 // this.focusList.delete(mob);
             // }
+        }
+
+        this.cooldown += dt;
+        if(this.cooldown > (this.cooldownMax))
+        {
+            this.cooldown = 0;
+            this.isReady = false;
         }
     }
 

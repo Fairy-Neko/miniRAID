@@ -365,6 +365,10 @@ export class MobData extends EventSystem.EventElement
                 // this.buffList.delete(buff);
                 this.removeListener(listener);
             }
+            else
+            {
+                listener.update(this, dt);
+            }
         }
 
         // Mana Regen
@@ -538,6 +542,7 @@ export class MobData extends EventSystem.EventElement
     onStatChange(listener: MobListener)
     {
         this.calcStats(this.parentMob);
+        this.currentWeapon.cooldownMax = this.getAttackSpeed(); // Set attack speed
     }
 
     calcStats(mob: Mob)

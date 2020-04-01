@@ -51,7 +51,7 @@ export class Weapon extends Equipable
         return [];
     }
 
-    attack(source: Mob, target: Mob)
+    attack(source: Mob, target: Array<Mob>)
     {
         throw new Error("Method not implemented.");
     }

@@ -293,7 +293,10 @@ define("DynamicLoader/DynamicLoaderScene", ["require", "exports", "UI/DraggableS
                             console.log(`[DynamicLoader] Loading resource ${item.key} as type ${resource.type}`);
                             resource.key = item.key;
                             IOObj.load.apply(this.scene.scene.load, [resource]);
-                            this.pending.set(item.key, item);
+                            this.pending.set(item.key, [item]);
+                        }
+                        else {
+                            this.pending.get(item.key).push(item);
                         }
                     }
                     else {
@@ -321,7 +324,9 @@ define("DynamicLoader/DynamicLoaderScene", ["require", "exports", "UI/DraggableS
                 // Maybe we don't want to get it again for performance ...
                 let resource = self.assetList[key];
                 let IOObj = self.pools.get(resource.type);
-                value.callback(key, resource.type, IOObj.pool.get(key));
+                value.forEach(element => {
+                    element.callback(key, resource.type, IOObj.pool.get(key));
+                });
             });
             // Again, we are done so goodbye
             this.pending.clear();
@@ -1005,6 +1010,9 @@ define("core/MobData", ["require", "exports", "core/mRTypes", "Events/EventSyste
                     // this.buffList.delete(buff);
                     this.removeListener(listener);
                 }
+                else {
+                    listener.update(this, dt);
+                }
             }
             // Mana Regen
             if (typeof this.currentWeapon !== "undefined") {
@@ -1127,6 +1135,7 @@ define("core/MobData", ["require", "exports", "core/mRTypes", "Events/EventSyste
          */
         onStatChange(listener) {
             this.calcStats(this.parentMob);
+            this.currentWeapon.cooldownMax = this.getAttackSpeed(); // Set attack speed
         }
         calcStats(mob) {
             // TODO: Stats calculation:
@@ -1431,6 +1440,9 @@ define("core/MobListener", ["require", "exports", "core/DataBackend", "Events/Ev
             this.focusList = new Set();
             this.priority = 0;
             this.enabled = true;
+            this.cooldownMax = 0.0;
+            this.cooldown = 0.0;
+            this.isReady = true;
             // let tst = new MobData({'name': 'test'});
             // this.listen(tst, 'dealDamage', this.isReadyWrapper(this.onDealDamage));
         }
@@ -1442,12 +1454,21 @@ define("core/MobListener", ["require", "exports", "core/DataBackend", "Events/Ev
                 }
             };
         }
-        update(dt) {
+        focus(mob) {
+        }
+        unfocus(mob) {
+        }
+        update(self, dt) {
             for (let mob of this.focusList) {
                 // if(!Mob.checkExist(mob))
                 // {
                 // this.focusList.delete(mob);
                 // }
+            }
+            this.cooldown += dt;
+            if (this.cooldown > (this.cooldownMax)) {
+                this.cooldown = 0;
+                this.isReady = false;
             }
         }
         // N.B.
@@ -1636,16 +1657,19 @@ define("agents/PlayerAgents", ["require", "exports", "agents/Modules", "Mob", "c
                 // Attack !
                 // Todo: attack single time for multi targets, they should add same amount of weapon gauge (basically)
                 if (player.doAttack(dt) === true) {
-                    let targets = player.mobData.currentWeapon.grabTargets(player);
+                    console.log("canAttack");
+                    let targets = player.mobData.currentWeapon.grabTargets(player); // This will ensure that targets are within the range
                     if (targets.length > 0) {
-                        for (var target of targets.values()) {
-                            if (player.mobData.currentWeapon.isInRange(player, target)) {
-                                if (player.mobData.currentMana > player.mobData.currentWeapon.manaCost) {
-                                    player.mobData.currentMana -= player.mobData.currentWeapon.manaCost;
-                                    player.mobData.currentWeapon.attack(player, target);
-                                }
-                            }
+                        // for(var target of targets.values())
+                        // {
+                        // if(player.mobData.currentWeapon.isInRange(player, targets))
+                        // {
+                        if (player.mobData.currentMana > player.mobData.currentWeapon.manaCost) {
+                            player.mobData.currentMana -= player.mobData.currentWeapon.manaCost;
+                            player.mobData.currentWeapon.attack(player, targets);
                         }
+                        // }
+                        // }
                     }
                 }
                 // Use any spells available
@@ -1985,17 +2009,10 @@ define("Mob", ["require", "exports", "DynamicLoader/dPhysSprite", "core/mRTypes"
             if (typeof this.mobData.currentWeapon === "undefined") {
                 return false;
             }
-            this.attackCounter += dt * 0.001;
             if (this.mobData.canCastSpell() == false) {
                 return false;
             }
-            if (this.attackCounter > (this.mobData.getAttackSpeed())) {
-                // This will cause mutiple attacks if attackspeed increases.
-                // this.attackCounter -= this.data.getAttackSpeed();
-                this.attackCounter = 0;
-                return true;
-            }
-            return false;
+            return this.mobData.currentWeapon.isReady;
         }
         getEquipableTags(equipmentType) {
             return [EquipmentCore_2.EquipmentTag.Equipment];
@@ -2289,7 +2306,7 @@ define("UI/PopUpManager", ["require", "exports", "Phaser"], function (require, e
     exports.PopUpManager = PopUpManager;
 });
 /** @module GameScene */
-define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "Mob", "agents/PlayerAgents", "core/UnitManager", "core/MobData", "UI/PopUpManager"], function (require, exports, Events, Phaser, Mob_3, PlayerAgents, UnitManager_2, MobData_1, PopUpManager_1) {
+define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "Mob", "agents/PlayerAgents", "core/UnitManager", "core/MobData"], function (require, exports, Events, Phaser, Mob_3, PlayerAgents, UnitManager_2, MobData_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     Events = __importStar(Events);
@@ -2332,23 +2349,33 @@ define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "M
                 'moveAnim': 'move',
                 'deadAnim': 'move',
                 'isPlayer': true,
-                'backendData': new MobData_1.MobData({ name: 'testMob' }),
+                'backendData': new MobData_1.MobData({ name: 'testGirl' }),
                 'agent': PlayerAgents.Simple,
             });
             this.add.existing(girl);
+            let woodlog = new Mob_3.Mob(this, 300, 200, 'char_sheet_forestelf_myst', {
+                'idleAnim': 'move',
+                'moveAnim': 'move',
+                'deadAnim': 'move',
+                'isPlayer': false,
+                'backendData': new MobData_1.MobData({ name: 'woodLog' }),
+                'agent': PlayerAgents.Simple,
+            });
+            this.add.existing(woodlog);
         }
         update(time, dt) {
             this.children.each((item) => { item.update(dt); });
             this.unitMgr.update(dt / 1000.0);
-            for (let i = 0; i < 3; i++) {
-                PopUpManager_1.PopUpManager.getSingleton().addText('test', 1.0, 128 * (Math.random() * 2 - 1), -256, 0.0, 512, Math.random() * 500 + 100, Math.random() * 300 + 100);
-            }
+            // for(let i = 0; i < 3; i++)
+            // {
+            //     PopUpManager.getSingleton().addText('test', 1.0, 128 * (Math.random() * 2 - 1), -256, 0.0, 512, Math.random() * 500 + 100, Math.random() * 300 + 100);
+            // }
         }
     }
     exports.ExampleScene = ExampleScene;
 });
 /** @module GameScene */
-define("SimpleGame", ["require", "exports", "ExampleScene", "DynamicLoader/DynamicLoaderScene", "UI/PopUpManager"], function (require, exports, ExampleScene_1, DynamicLoaderScene_3, PopUpManager_2) {
+define("SimpleGame", ["require", "exports", "ExampleScene", "DynamicLoader/DynamicLoaderScene", "UI/PopUpManager"], function (require, exports, ExampleScene_1, DynamicLoaderScene_3, PopUpManager_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class InitPhaser {
@@ -2366,7 +2393,7 @@ define("SimpleGame", ["require", "exports", "ExampleScene", "DynamicLoader/Dynam
             };
             this.gameRef = new Phaser.Game(config);
             this.gameRef.scene.add('DynamicLoaderScene', DynamicLoaderScene_3.DynamicLoaderScene.getSingleton(), true);
-            this.gameRef.scene.add('PopupManagerScene', PopUpManager_2.PopUpManager.getSingleton(), true);
+            this.gameRef.scene.add('PopupManagerScene', PopUpManager_1.PopUpManager.getSingleton(), true);
         }
     }
     exports.InitPhaser = InitPhaser;

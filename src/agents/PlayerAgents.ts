@@ -162,20 +162,21 @@ export class Simple extends PlayerAgentBase
             // Todo: attack single time for multi targets, they should add same amount of weapon gauge (basically)
             if(player.doAttack(dt) === true)
             {
-                let targets = player.mobData.currentWeapon.grabTargets(player);
+                console.log("canAttack");
+                let targets = player.mobData.currentWeapon.grabTargets(player); // This will ensure that targets are within the range
                 if(targets.length > 0)
                 {
-                    for(var target of targets.values())
+                    // for(var target of targets.values())
+                    // {
+                    // if(player.mobData.currentWeapon.isInRange(player, targets))
+                    // {
+                    if(player.mobData.currentMana > player.mobData.currentWeapon.manaCost)
                     {
-                        if(player.mobData.currentWeapon.isInRange(player, target))
-                        {
-                            if(player.mobData.currentMana > player.mobData.currentWeapon.manaCost)
-                            {
-                                player.mobData.currentMana -= player.mobData.currentWeapon.manaCost;
-                                player.mobData.currentWeapon.attack(player, target);
-                            }
-                        }
+                        player.mobData.currentMana -= player.mobData.currentWeapon.manaCost;
+                        player.mobData.currentWeapon.attack(player, targets);
                     }
+                    // }
+                    // }
                 }
             }
 

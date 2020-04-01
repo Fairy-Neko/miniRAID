@@ -24,7 +24,7 @@ export class DynamicLoaderScene extends DraggableScene
     assetList: any;
     label: Phaser.GameObjects.Text;
     queue: DLO.ResourceRequirements[] = [];
-    pending: Map<string, DLO.ResourceRequirements> = new Map();
+    pending: Map<string, DLO.ResourceRequirements[]> = new Map();
     isLoading: boolean = false;
     pools: Map<string, DLResourceIO> = new Map();
 
@@ -111,7 +111,11 @@ export class DynamicLoaderScene extends DraggableScene
                         console.log(`[DynamicLoader] Loading resource ${item.key} as type ${resource.type}`);
                         resource.key = item.key;
                         IOObj.load.apply(this.scene.scene.load, [resource]);
-                        this.pending.set(item.key, item);
+                        this.pending.set(item.key, [item]);
+                    }
+                    else
+                    {
+                        this.pending.get(item.key).push(item);
                     }
                 }
                 else
@@ -146,13 +150,15 @@ export class DynamicLoaderScene extends DraggableScene
         // Since we are done for all pending requests
         let self = this;
         this.pending.forEach(
-            function(value:DLO.ResourceRequirements, key:string, map:Map<string, DLO.ResourceRequirements>)
+            function(value:DLO.ResourceRequirements[], key:string, map:Map<string, DLO.ResourceRequirements[]>)
             {
                 // Maybe we don't want to get it again for performance ...
                 let resource = self.assetList[key];
                 let IOObj = self.pools.get(resource.type);
                 
-                value.callback(key, resource.type, IOObj.pool.get(key));
+                value.forEach(element => {
+                    element.callback(key, resource.type, IOObj.pool.get(key));
+                });
             }
         );
 

@@ -8,3 +8,10 @@ or if you forgot the `--recursive`, run `git submodule update --init --recursive
 4. The compiled javascript and html files will be in `bin/` and a HTML `bin/index.html`.  
 
 You can view the docs under `docs/index.html`.
+
+### TODOs
+
+* (OK) Add cooldown timer related things (1 timer is okay) to MobListener base class
+* Move attack speed timer from Mob to Weapon (using MobListener cooldown timer API)
+* Let MobListener able to listen to MobListeners (e.g. char listen to weapon, team buff listen to all player's weapon)
+* Let testGirl attack the woodLog with a fireball (which applies a burnt debuff) !

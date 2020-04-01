@@ -70,10 +70,20 @@ export class ExampleScene extends Phaser.Scene
             'moveAnim': 'move',
             'deadAnim': 'move',
             'isPlayer': true,
-            'backendData': new MobData({name: 'testMob'}),
+            'backendData': new MobData({name: 'testGirl'}),
             'agent': PlayerAgents.Simple,
         });
         this.add.existing(girl);
+
+        let woodlog = new Mob(this, 300, 200, 'char_sheet_forestelf_myst', {
+            'idleAnim': 'move',
+            'moveAnim': 'move',
+            'deadAnim': 'move',
+            'isPlayer': false,
+            'backendData': new MobData({name: 'woodLog'}),
+            'agent': PlayerAgents.Simple,
+        });
+        this.add.existing(woodlog);
     }
 
     update(time:number, dt:number)
@@ -82,9 +92,9 @@ export class ExampleScene extends Phaser.Scene
 
         this.unitMgr.update(dt / 1000.0);
 
-        for(let i = 0; i < 3; i++)
-        {
-            PopUpManager.getSingleton().addText('test', 1.0, 128 * (Math.random() * 2 - 1), -256, 0.0, 512, Math.random() * 500 + 100, Math.random() * 300 + 100);
-        }
+        // for(let i = 0; i < 3; i++)
+        // {
+        //     PopUpManager.getSingleton().addText('test', 1.0, 128 * (Math.random() * 2 - 1), -256, 0.0, 512, Math.random() * 500 + 100, Math.random() * 300 + 100);
+        // }
     }
 }

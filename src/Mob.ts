@@ -96,23 +96,12 @@ export class Mob extends dPhysSprite
             return false;
         }
 
-        this.attackCounter += dt * 0.001;
-
         if(this.mobData.canCastSpell() == false)
         {
             return false;
         }
 
-        if(this.attackCounter > (this.mobData.getAttackSpeed()))
-        {
-            // This will cause mutiple attacks if attackspeed increases.
-            // this.attackCounter -= this.data.getAttackSpeed();
-            
-            this.attackCounter = 0;
-            return true;
-        }
-
-        return false;
+        return this.mobData.currentWeapon.isReady;
     }
 
     getEquipableTags(equipmentType:EquipmentType):EquipmentTag[]
