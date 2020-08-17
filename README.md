@@ -8,7 +8,12 @@ or if you forgot the `--recursive`, run `git submodule update --init --recursive
 4. The compiled javascript and html files will be in `bin/` and a HTML `bin/index.html`.  
 
 You can view the docs under `docs/index.html`.  
-To generate the docs, first install `typedoc` then `npx typedoc` under the root folder.
+To generate the docs, first install `typedoc` then `npx typedoc` under the root folder.  
+
+### Github Pages
+
+* https://betairylia.github.io/miniRAID_phaser/bin/ to play the game
+* https://betairylia.github.io/miniRAID_phaser/docs/ for documentations.
 
 ### TODOs
 
