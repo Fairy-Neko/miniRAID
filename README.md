@@ -12,8 +12,8 @@ To generate the docs, first install `typedoc` then `npx typedoc` under the root 
 
 ### Github Pages
 
-* https://betairylia.github.io/miniRAID_phaser/bin/ to play the game
-* https://betairylia.github.io/miniRAID_phaser/docs/ for documentations.
+* [https://betairylia.github.io/miniRAID_phaser/bin/](https://betairylia.github.io/miniRAID_phaser/bin/) to play the game
+* [https://betairylia.github.io/miniRAID_phaser/docs/](https://betairylia.github.io/miniRAID_phaser/docs/) for documentations.
 
 ### TODOs
 
