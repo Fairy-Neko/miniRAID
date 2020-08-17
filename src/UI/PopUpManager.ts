@@ -72,17 +72,17 @@ export class PopUpManager extends Scene
 
     addText(
         text:string, 
+        posX:number = 100,
+        posY:number = 100,
+        color:Phaser.Display.Color = new Phaser.Display.Color(255, 255, 255, 255),
         time:number = 1.0, 
         velX:number = -64, 
         velY:number = -256, // jumping speed
         accX:number = 0.0,   // gravity
         accY:number = 512,// gravity
-        posX:number = 100,
-        posY:number = 100,
-        color:Phaser.Display.Color = new Phaser.Display.Color(255, 255, 255, 255)
     )
     {
-        let txt = new PopupText(this, posX, posY, text, {'color': color.rgba}, time, velX, velY, accX, accY);
+        let txt = new PopupText(this, posX, posY, text, {'color': color.rgba, 'fontSize': '12px'}, time, velX, velY, accX, accY);
         this.add.existing(txt);
     }
 

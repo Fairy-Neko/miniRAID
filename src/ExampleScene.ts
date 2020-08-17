@@ -8,6 +8,7 @@ import * as PlayerAgents from './agents/PlayerAgents';
 import { UnitManager } from './core/UnitManager';
 import { MobData } from './core/MobData';
 import { PopUpManager } from './UI/PopUpManager';
+import { CometWand } from './Weapons/Stuff';
 
 export class ExampleScene extends Phaser.Scene 
 {
@@ -69,19 +70,21 @@ export class ExampleScene extends Phaser.Scene
             'idleAnim': 'move',
             'moveAnim': 'move',
             'deadAnim': 'move',
-            'isPlayer': true,
-            'backendData': new MobData({name: 'testGirl'}),
+            'backendData': new MobData({name: 'testGirl', 'isPlayer': true}),
             'agent': PlayerAgents.Simple,
         });
+        girl.mobData.weaponRight = new CometWand();
+        girl.mobData.currentWeapon = girl.mobData.weaponRight;
+        girl.mobData.addListener(girl.mobData.weaponRight);
         this.add.existing(girl);
 
         let woodlog = new Mob(this, 300, 200, 'char_sheet_forestelf_myst', {
             'idleAnim': 'move',
             'moveAnim': 'move',
             'deadAnim': 'move',
-            'isPlayer': false,
-            'backendData': new MobData({name: 'woodLog'}),
-            'agent': PlayerAgents.Simple,
+            'backendData': new MobData({name: 'woodLog', 'isPlayer': false}),
+            // 'agent': PlayerAgents.Simple,
+            'agent': null,
         });
         this.add.existing(woodlog);
     }
@@ -94,7 +97,7 @@ export class ExampleScene extends Phaser.Scene
 
         // for(let i = 0; i < 3; i++)
         // {
-        //     PopUpManager.getSingleton().addText('test', 1.0, 128 * (Math.random() * 2 - 1), -256, 0.0, 512, Math.random() * 500 + 100, Math.random() * 300 + 100);
+        //     PopUpManager.getSingleton().addText('test', Math.random() * 500 + 100, Math.random() * 300 + 100, new Phaser.Display.Color(255, 255, 255, 255), 1.0, 128 * (Math.random() * 2 - 1), -256, 0.0, 512);
         // }
     }
 }

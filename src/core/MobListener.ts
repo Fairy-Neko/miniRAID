@@ -21,6 +21,7 @@ export enum MobListenerType
     Characteristics,
 }
 
+// onXXX event functions are optional - just register them and use if necessary. By default events will not be connected with the onXXX methods.
 export class MobListener extends EventSystem.EventElement
 {
     focusList: Set<MobData>;
@@ -31,6 +32,7 @@ export class MobListener extends EventSystem.EventElement
     cooldownMax: number;
     cooldown: number;
     isReady: boolean;
+    parentMob: MobData;
 
     constructor()
     {
@@ -68,6 +70,7 @@ export class MobListener extends EventSystem.EventElement
         
     }
 
+    // Will only be triggered by parent mob.
     update(self:MobData, dt:number)
     {
         for(let mob of this.focusList)
@@ -78,11 +81,17 @@ export class MobListener extends EventSystem.EventElement
             // }
         }
 
-        this.cooldown += dt;
-        if(this.cooldown > (this.cooldownMax))
+        if(this.isReady == false)
         {
-            this.cooldown = 0;
-            this.isReady = false;
+            this.cooldown += dt;
+        }
+        
+        if(this.cooldown >= (this.cooldownMax))
+        {
+            // this.cooldown = 0;
+            // this.isReady = false; // <-- This is the original version. Why did I wrote this ?
+        
+            this.isReady = true;
         }
     }
 
@@ -102,10 +111,16 @@ export class MobListener extends EventSystem.EventElement
 
     // When this listener was added to the mob by source
     // Buffs will also be triggered when new stack comes.
-    onAdded(mob:MobData, source:MobData) {}
+    onAdded(mob:MobData, source:MobData) 
+    {
+        this.parentMob = mob;
+    }
 
-    // When this listener was removed from the mob by source
-    onRemoved(mob:MobData, source:MobData) {}
+    // When this listener was removed from the mob by source. By default this will remove the listener from the eventsystem.
+    onRemoved(mob:MobData, source:MobData) 
+    {
+        this.discard();
+    }
 
     // Be triggered when the mob is attacking.
     // This is triggered before the mob's attack.
@@ -128,9 +143,13 @@ export class MobListener extends EventSystem.EventElement
     onRender(mob:Mob, scene:Phaser.Scene) {}
     onFrontEndDestroy(mob:Mob, scene:Phaser.Scene) {}
 
-    // Be triggered when the mob is updating.
-    // This will be triggered before onStatCalculation.
-    // e.g. reduce remain time, etc.
+    /**
+     * Be triggered when the mob is updating, not to be confused with "MobListener.update()".
+     * This will be triggered before "onStatCalculation".
+     * @param mob the mob that updates
+     * @param dt deltaTime in secs
+     * @event
+     */
     onUpdate(mob:MobData, dt:number) {}
 
     /** 

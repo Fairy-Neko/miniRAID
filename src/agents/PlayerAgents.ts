@@ -1,8 +1,9 @@
 /** @module Agent */
 
-import {MobAgent} from "./Modules";
-import {Mob} from "../Mob";
+import { MobAgent } from "./Modules";
+import { Mob } from "../Mob";
 import { GameData } from "../core/GameData";
+import { UnitManager } from "../core/UnitManager";
 
 export class PlayerAgentBase extends MobAgent
 {
@@ -29,6 +30,7 @@ export class Simple extends PlayerAgentBase
 
     footPos: Phaser.Math.Vector2;
     isMoving: boolean;
+    unitMgr: UnitManager;
 
     constructor(parentMob:Mob)
     {
@@ -48,6 +50,8 @@ export class Simple extends PlayerAgentBase
         this.idleCount = 0;
         this.speedFriction = 0.9;
 
+        this.unitMgr = UnitManager.getCurrent();
+
         // TODO: smooth when hit world object ?
     }
 
@@ -62,7 +66,7 @@ export class Simple extends PlayerAgentBase
             {
                 if(this.targetPos.distance(this.footPos) > 1.5)
                 {
-                    let velocity = this.targetPos.clone().subtract(this.footPos).normalize().scale(player.mobData.getMovingSpeed() * dt);
+                    let velocity = this.targetPos.clone().subtract(this.footPos).normalize().scale(player.mobData.getMovingSpeed());
                     player.setVelocity(velocity.x, velocity.y);
         
                     this.isMoving = true;
@@ -83,7 +87,7 @@ export class Simple extends PlayerAgentBase
                 if(player.mobData.currentWeapon.isInRange(player, this.targetMob) == false)
                 {
                     let targetPos = new Phaser.Math.Vector2(this.targetMob.x, this.targetMob.y);
-                    let velocity = targetPos.subtract(this.footPos).normalize().scale(player.mobData.getMovingSpeed() * dt);
+                    let velocity = targetPos.subtract(this.footPos).normalize().scale(player.mobData.getMovingSpeed());
                     player.setVelocity(velocity.x, velocity.y);
 
                     this.isMoving = true;

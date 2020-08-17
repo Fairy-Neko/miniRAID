@@ -164,7 +164,7 @@ export class MobData extends EventSystem.EventElement
             resourceCost: settings.resourceCost || 1.0,
         };
 
-        this.baseSpeed = settings.baseSpeed || 2.0;
+        this.baseSpeed = settings.baseSpeed || 80.0;
         this.baseAttackSpeed = settings.baseAttackSpeed || 20.0;
 
         this.isMoving = false;
@@ -200,6 +200,7 @@ export class MobData extends EventSystem.EventElement
                 wind: 0,
                 thunder: 0,
                 light: 0,
+                dark: 0,
 
                 heal: 0,
             },
@@ -219,6 +220,7 @@ export class MobData extends EventSystem.EventElement
                 wind: 0,
                 thunder: 0,
                 light: 0,
+                dark: 0,
 
                 heal: 0, 
             },
@@ -356,7 +358,7 @@ export class MobData extends EventSystem.EventElement
         }
 
         // Update all listeners
-        this.updateListeners(this, 'onUpdate', this, dt);
+        this.updateListeners(this, 'update', this, dt);
         for (let listener of this.listeners.getAll())
         {
             if(listener.isOver == true)
@@ -471,7 +473,8 @@ export class MobData extends EventSystem.EventElement
         if(this.listeners.addItem(listener, callback))
         {
             this.listen(listener, 'statChange', (arg:MobListener) => this.onStatChange(arg));
-            listener.emit('add', undefined, this, source);
+            // listener.emit('add', undefined, this, source);
+            listener.onAdded(this, source);
         }
     }
 
@@ -485,7 +488,8 @@ export class MobData extends EventSystem.EventElement
         // TODO: Who removed this listener ?
         if(this.listeners.removeItem(listener))
         {
-            listener.emit('remove', undefined, this, source);
+            // listener.emit('remove', undefined, this, source);
+            listener.onRemoved(this, source);
             this.unlistenAll(listener);
         }
     }
@@ -541,8 +545,7 @@ export class MobData extends EventSystem.EventElement
      */
     onStatChange(listener: MobListener)
     {
-        this.calcStats(this.parentMob);
-        this.currentWeapon.cooldownMax = this.getAttackSpeed(); // Set attack speed
+        this.calcStats(this.parentMob); // Listeners were notified inside this method.
     }
 
     calcStats(mob: Mob)
@@ -555,7 +558,7 @@ export class MobData extends EventSystem.EventElement
         }
 
         // 2. Add equipment base stats to self by listener.calcBaseStats()
-        this.updateListeners(this, 'onBaseStatCalculation', this);        
+        this.updateListeners(this, 'baseStatCalculation', this);        
 
         // 3. Reset battle stats
         this.battleStats = {
@@ -574,6 +577,7 @@ export class MobData extends EventSystem.EventElement
                 wind: 0,
                 thunder: 0,
                 light: 0,
+                dark: 0,
 
                 heal: 0,
             },
@@ -593,6 +597,7 @@ export class MobData extends EventSystem.EventElement
                 wind: 0,
                 thunder: 0,
                 light: 0,
+                dark: 0,
 
                 heal: 0, 
             },
@@ -639,8 +644,8 @@ export class MobData extends EventSystem.EventElement
         // Actually, those steps were combined in a single call,
         // as the calculation step of each class will happen in their player classes,
         // which should be the first called listener in updateListeners().
-        this.updateListeners(this, 'onStatCalculation', this);
-        this.updateListeners(this, 'onStatCalculationFinish', this);
+        this.updateListeners(this, 'statCalculation', this);
+        this.updateListeners(this, 'statCalculationFinish', this);
 
         // 5. Finish
         this.maxHealth = Math.ceil(this.maxHealth);
@@ -678,36 +683,33 @@ export class MobData extends EventSystem.EventElement
         // then set isAvoid to false. You can also pop some text when you add the extra damage.
 
         // Do the calculation
-        for(var dmgType in damageInfo.value)
+        // damage% = 1.0353 ^ power
+        // 20pts of power = 100% more damage
+        if(damageInfo.source)
         {
-            // damage% = 1.0353 ^ power
-            // 20pts of power = 100% more damage
-            if(damageInfo.source)
-            {
-                damageInfo.value[dmgType] = Math.ceil(
-                    damageInfo.value[dmgType] * 
-                    (Math.pow(
-                        1.0353,
-                        damageInfo.source.battleStats.attackPower[GameData.damageType[dmgType]] +
-                        damageInfo.source.battleStats.attackPower[dmgType])));
-            }
-
-            // damage% = 0.9659 ^ resist
-            // This is, every 1 point of resist reduces corresponding damage by 3.41%, 
-            // which will reach 50% damage reducement at 20 points.
-            // TODO: it should all correspond to current level (resist based on source level, atkPower based on target level, same as healing)
-            damageInfo.value[dmgType] = Math.ceil(
-                damageInfo.value[dmgType] * 
+            damageInfo.value = Math.ceil(
+                damageInfo.value * 
                 (Math.pow(
-                    0.9659, 
-                    this.battleStats.resist[GameData.damageType[dmgType]] + 
-                    this.battleStats.resist[dmgType])));
-
-            // Apply criticals
-            damageInfo.value[dmgType] = Math.ceil( 
-                damageInfo.value[dmgType] * 
-                (damageInfo.isCrit ? GameData.critMultiplier[dmgType] : 1.0));
+                    1.0353,
+                    damageInfo.source.battleStats.attackPower[GameData.damageType[damageInfo.type]] +
+                    damageInfo.source.battleStats.attackPower[damageInfo.type])));
         }
+
+        // damage% = 0.9659 ^ resist
+        // This is, every 1 point of resist reduces corresponding damage by 3.41%, 
+        // which will reach 50% damage reducement at 20 points.
+        // TODO: it should all correspond to current level (resist based on source level, atkPower based on target level, same as healing)
+        damageInfo.value = Math.ceil(
+            damageInfo.value * 
+            (Math.pow(
+                0.9659, 
+                this.battleStats.resist[GameData.damageType[damageInfo.type]] + 
+                this.battleStats.resist[damageInfo.type])));
+
+        // Apply criticals
+        damageInfo.value = Math.ceil( 
+            damageInfo.value * 
+            (damageInfo.isCrit ? GameData.critMultiplier[damageInfo.type] : 1.0));
 
         // Let everyone know what is happening
         // damageObj.damage = finalDmg;
@@ -720,15 +722,12 @@ export class MobData extends EventSystem.EventElement
 
         // Decrese HP
         // Check if I am dead
-        let realDmg : mRTypes.LeafTypes<number> = mRTypes.LeafTypesZERO;
-        for(let dmg in damageInfo.value)
-        {
-            realDmg[dmg] += Math.min(this.currentHealth, damageInfo.value[dmg]);
-            this.currentHealth -= realDmg[dmg];
-            damageInfo.overdeal[dmg] = damageInfo.value[dmg] - realDmg[dmg];
-            damageInfo.value[dmg] = realDmg[dmg];
-            // game.data.monitor.addDamage(damageInfo.value[dmg], dmg, damageInfo.source, damageInfo.target, damageInfo.isCrit, damageInfo.spell);
-        }
+        let realDmg : number = 0;
+        realDmg += Math.min(this.currentHealth, damageInfo.value);
+        this.currentHealth -= realDmg;
+        damageInfo.overdeal = damageInfo.value - realDmg;
+        damageInfo.value = realDmg;
+        // game.data.monitor.addDamage(damageInfo.value[dmg], dmg, damageInfo.source, damageInfo.target, damageInfo.isCrit, damageInfo.spell);
 
         if(this.currentHealth <= 0)
         {
@@ -774,8 +773,8 @@ export class MobData extends EventSystem.EventElement
 
         if(healInfo.source)
         {
-            healInfo.value.heal = Math.ceil(
-                healInfo.value.heal * 
+            healInfo.value = Math.ceil(
+                healInfo.value * 
                 (Math.pow(
                     1.0353,
                     healInfo.source.battleStats.attackPower.heal)));
@@ -784,21 +783,21 @@ export class MobData extends EventSystem.EventElement
         // damage% = 0.9659 ^ resist
         // This is, every 1 point of resist reduces corresponding damage by 3.41%, 
         // which will reach 50% damage reducement at 20 points.
-        healInfo.value.heal = Math.ceil(
-            healInfo.value.heal * 
+        healInfo.value = Math.ceil(
+            healInfo.value * 
             (Math.pow(
                 0.9659,
                 this.battleStats.resist.heal)));
         
-        healInfo.value.heal = Math.ceil(
-            healInfo.value.heal 
+        healInfo.value = Math.ceil(
+            healInfo.value 
             * ( healInfo.isCrit ? GameData.critMultiplier.heal : 1.0 )
         );
 
         // calculate overHealing using current HP and max HP.
-        let realHeal = Math.min(healInfo.target.maxHealth - healInfo.target.currentHealth, healInfo.value.heal);
-        healInfo.overdeal.heal = healInfo.value.heal - realHeal;
-        healInfo.value.heal = realHeal;
+        let realHeal = Math.min(healInfo.target.maxHealth - healInfo.target.currentHealth, healInfo.value);
+        healInfo.overdeal = healInfo.value - realHeal;
+        healInfo.value = realHeal;
 
         // Let buffs and agents know what is happening
         this.updateListeners(healInfo.target, 'receiveHealFinal', healInfo);
@@ -808,10 +807,10 @@ export class MobData extends EventSystem.EventElement
         }
 
         // Increase the HP.
-        this.currentHealth += healInfo.value.heal;
+        this.currentHealth += healInfo.value;
         // game.data.monitor.addHeal(healInfo.value.heal, healInfo.overdeal.heal, healInfo.source, healInfo.target, healInfo.isCrit, healInfo.spell);
 
-        return healInfo.value.heal;
+        return healInfo.value;
     }
 
     // Function used to tell buffs and agents what was going on

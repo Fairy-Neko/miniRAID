@@ -18,6 +18,7 @@ export namespace GameData
     
         // Let them just add 0 (as themselves when calculating) for convinence
         light: "pure",
+        dark: "pure",
         physical: "pure",
         elemental: "pure",
         heal: "pure",
@@ -35,6 +36,7 @@ export namespace GameData
         wind: 2.5,
         thunder: 2.5,
         light: 1.6,
+        dark: 1.6,
         heal: 2.0,
     }
     

@@ -76,7 +76,6 @@ export namespace mRTypes
 
             backendData: MobData.MobData;
             
-            isPlayer: boolean;
             agent: AgentConstructor;
         }
     }
@@ -84,6 +83,7 @@ export namespace mRTypes
     export type FilterFunc<T> = (arg: T) => boolean;
     export type CompareFunc<T> = (lhs: T, rhs: T) => number;
     export type FailCallback<T> = (arg: T) => boolean;
+    export type weaponGaugeFunc<T> = (arg: T) => number;
 
     export interface MobConstructor
     {
@@ -134,6 +134,7 @@ export namespace mRTypes
         wind: T;
         thunder: T;
         light: T;
+        dark: T;
 
         heal: T;
 
@@ -145,6 +146,7 @@ export namespace mRTypes
         slash: T;
         knock: T;
         pierce: T;
+
         fire: T;
         ice: T;
         water: T;
@@ -152,22 +154,25 @@ export namespace mRTypes
         wind: T;
         thunder: T;
         light: T;
+        dark: T;
+
         heal: T;
 
         [index:string] : T;
     }
 
-    export const LeafTypesZERO:LeafTypes<number> = {fire:0, water:0, ice:0, wind:0, nature:0, light:0, thunder:0, slash:0, pierce:0, knock:0, heal:0};
+    export const LeafTypesZERO:LeafTypes<number> = {fire:0, water:0, ice:0, wind:0, nature:0, light:0, thunder:0, slash:0, pierce:0, knock:0, dark:0, heal:0};
 
     export interface DamageHeal
     {
         source?: MobData.MobData;
         target: MobData.MobData;
-        value: LeafTypes<number>;
-        overdeal: LeafTypes<number>;
-        isCrit: boolean;
-        isAvoid: boolean;
-        isBlock: boolean;
+        value: number;
+        type: string;
+        overdeal?: number;
+        isCrit?: boolean;
+        isAvoid?: boolean;
+        isBlock?: boolean;
         spell?: SpellData;
     }
 
@@ -175,13 +180,13 @@ export namespace mRTypes
     {
         source?: Mob;
         target: Mob;
-        value: LeafTypes<number>;
-        overdeal: LeafTypes<number>;
-        isCrit: boolean;
-        isAvoid: boolean;
-        isBlock: boolean;
+        value: number;
+        type: string;
+        isCrit?: boolean;
+        isAvoid?: boolean;
+        isBlock?: boolean;
         spell?: SpellData;
-        popUp: boolean;
+        popUp?: boolean;
     }
 
     export interface BattleStats
@@ -217,5 +222,27 @@ export namespace mRTypes
     {
         title: string;
         text: string;
+    }
+}
+
+export namespace Consts
+{
+    export const ElementColors : {[index: string]: Phaser.Display.Color} =
+    {
+        slash  : Phaser.Display.Color.HexStringToColor("#ffffff"),
+        knock  : Phaser.Display.Color.HexStringToColor("#ffffff"),
+        pierce : Phaser.Display.Color.HexStringToColor("#ffffff"),
+        
+        fire   : Phaser.Display.Color.HexStringToColor("#ffa342"),
+        ice    : Phaser.Display.Color.HexStringToColor("#72ffe2"),
+        water  : Phaser.Display.Color.HexStringToColor("#5b8fff"),
+        nature : Phaser.Display.Color.HexStringToColor("#b1ed1a"),
+        wind   : Phaser.Display.Color.HexStringToColor("#aaffc8"),
+        thunder: Phaser.Display.Color.HexStringToColor("#fffb21"),
+        light  : Phaser.Display.Color.HexStringToColor("#fffbd1"),
+        dark   : Phaser.Display.Color.HexStringToColor("#8d47bf"),
+        
+        miss   : Phaser.Display.Color.HexStringToColor("#ff19e0"),
+        heal   : Phaser.Display.Color.HexStringToColor("#66f95c"),
     }
 }

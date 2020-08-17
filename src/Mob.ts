@@ -6,10 +6,11 @@ import {dPhysSprite} from './DynamicLoader/dPhysSprite';
 import { Game, Scene } from 'Phaser';
 import { MobAgent } from './agents/MobAgent';
 import { MobData } from './core/MobData';
-import { mRTypes } from './core/mRTypes';
+import { mRTypes, Consts } from './core/mRTypes';
 import { UnitManager } from './core/UnitManager';
 import { EquipmentType, EquipmentTag } from './core/EquipmentCore';
 import { Buff } from './core/Buff';
+import { PopUpManager } from './UI/PopUpManager';
 
 export class Mob extends dPhysSprite
 {
@@ -34,6 +35,8 @@ export class Mob extends dPhysSprite
 
         this.setOrigin(0.5, 0.8);
 
+        this.mobData = settings.backendData;
+
         this.moveAnim = settings.moveAnim;
         this.idleAnim = settings.idleAnim;
         this.deadAnim = settings.deadAnim;
@@ -43,7 +46,7 @@ export class Mob extends dPhysSprite
             this.play(this.idleAnim);
         }
 
-        this.isPlayer = settings.isPlayer;
+        this.isPlayer = this.mobData.isPlayer;
         if(this.isPlayer === true)
         {
             // Is player
@@ -57,14 +60,12 @@ export class Mob extends dPhysSprite
         
         this.setGravity(0, 0);
 
-        this.mobData = settings.backendData;
-
         if(settings.agent)
         {
             this.agent = new settings.agent(this);
+            this.mobData.addListener(this.agent);
         }
 
-        this.mobData.addListener(this.agent);
         this.attackCounter = 0;
 
         // HPBar
@@ -72,6 +73,7 @@ export class Mob extends dPhysSprite
 
     update(dt:number)
     {
+        dt = dt / 1000.0;
         // this.sprite.x += dt / 1000.0 * 10;
         if(this.body.velocity.length() > 0)
         {
@@ -86,7 +88,10 @@ export class Mob extends dPhysSprite
         
         // Physics update?
 
-        this.agent.updateMob(this, dt);
+        if(this.agent)
+        {
+            this.agent.updateMob(this, dt);
+        }
     }
 
     doAttack(dt:number):boolean
@@ -155,6 +160,31 @@ export class Mob extends dPhysSprite
         return true;
     }
 
+    fillDHF(_damageInfo:mRTypes.DamageHeal_FrontEnd):mRTypes.DamageHeal_FrontEnd
+    {
+        if(_damageInfo.isAvoid == undefined)
+        {
+            _damageInfo.isAvoid = false;
+        }
+
+        if(_damageInfo.isCrit == undefined)
+        {
+            _damageInfo.isCrit = false;
+        }
+
+        if(_damageInfo.isBlock == undefined)
+        {
+            _damageInfo.isBlock = false;
+        }
+
+        if(_damageInfo.popUp == undefined)
+        {
+            _damageInfo.popUp = true;
+        }
+
+        return _damageInfo;
+    }
+
     // Same as receiveBuff(),
     // this method will be used to receive damage from any object.
     // this method will also trigger events for listeners, and let them modify the damage.
@@ -181,6 +211,9 @@ export class Mob extends dPhysSprite
             return false;
         }
 
+        // Fill optional slots with their default values.
+        _damageInfo = this.fillDHF(_damageInfo);
+
         let damageInfo:mRTypes.DamageHeal = {
             'source' : _damageInfo.source.mobData,
             'target' : this.mobData,
@@ -189,7 +222,9 @@ export class Mob extends dPhysSprite
             'isCrit' : _damageInfo.isCrit,
             'isAvoid': _damageInfo.isAvoid,
             'isBlock': _damageInfo.isBlock,
-            'overdeal': mRTypes.LeafTypesZERO
+            'type'   : _damageInfo.type,
+            // 'type'   : _damageInfo.type,
+            'overdeal': 0,
         };
 
         // The actual damage calculate and event trigger moved into backend
@@ -199,61 +234,44 @@ export class Mob extends dPhysSprite
         // It does not hit !
         if(damageInfo.isAvoid)
         {            
-            throw new Error("Please implement popup");
-            
-            // if(damageInfo.popUp == true)
-            // {
-            //     var popUpPos = this.getRenderPos(0.5, 0.0);
-            //     game.UI.popupMgr.addText({
-            //         text: "MISS",
-            //         color: game.data.damageColor.miss,
-            //         posX: popUpPos.x,
-            //         posY: popUpPos.y,
-            //     });
-            // }
+            if(_damageInfo.popUp == true)
+            {
+                var popUpPos = this.getTopCenter();
+                PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, Consts.ElementColors['miss']);
+            }
 
             return false;
         }
 
         // Mob itself only do rendering popUp texts
-        for(var dmgType in damageInfo.value)
+        if(_damageInfo.popUp == true && damageInfo.value > 0)
         {
-            if(_damageInfo.popUp == true && damageInfo.value[dmgType] > 0)
-            {
-                throw new Error("Please implement popup");
-        
-                // var popUpPos = this.getRenderPos(0.5, 0.0);
-                // game.UI.popupMgr.addText({
-                //     text: damageInfo.damage[dmgType].toString() + (damageInfo.isCrit ? " !" : ""),
-                //     color: game.data.damageColor[dmgType],
-                //     posX: popUpPos.x,
-                //     posY: popUpPos.y,
-                // });
-                
-                // // popUp texts on unit frames
-                // // fade from the edge of currentHealth to the left
-                // if(this.data.isPlayer)
-                // {
-                //     for(var i = 0; i < game.units.getPlayerListWithDead().length; i++)
-                //     {
-                //         if(this === game.units.getPlayerListWithDead()[i])
-                //         {
-                //             popUpPos = game.UI.unitFrameSlots.slots[i].pos;
-                //             game.UI.popupMgr.addText({
-                //                 text: "-" + damageInfo.damage[dmgType].toString(),
-                //                 time: 0.75,
-                //                 color: game.data.damageColor[dmgType],
-                //                 posX: popUpPos.x + 126,// * (this.data.currentHealth / this.data.maxHealth), // Maybe this is better ? (or cannot see if sudden death)
-                //                 posY: popUpPos.y - 10,
-                //                 velX: -256,
-                //                 velY: 0.0,
-                //                 accX: 384,
-                //                 accY: 0.0,
-                //             });
-                //         }
-                //     }
-                // }
-            }
+            var popUpPos = this.getTopCenter();
+            PopUpManager.getSingleton().addText(damageInfo.value.toString() + (damageInfo.isCrit ? " !" : ""), popUpPos.x, popUpPos.y, Consts.ElementColors[damageInfo.type]);
+            
+            // // popUp texts on unit frames
+            // // fade from the edge of currentHealth to the left
+            // if(this.data.isPlayer)
+            // {
+            //     for(var i = 0; i < game.units.getPlayerListWithDead().length; i++)
+            //     {
+            //         if(this === game.units.getPlayerListWithDead()[i])
+            //         {
+            //             popUpPos = game.UI.unitFrameSlots.slots[i].pos;
+            //             game.UI.popupMgr.addText({
+            //                 text: "-" + damageInfo.damage[dmgType].toString(),
+            //                 time: 0.75,
+            //                 color: game.data.damageColor[dmgType],
+            //                 posX: popUpPos.x + 126,// * (this.data.currentHealth / this.data.maxHealth), // Maybe this is better ? (or cannot see if sudden death)
+            //                 posY: popUpPos.y - 10,
+            //                 velX: -256,
+            //                 velY: 0.0,
+            //                 accX: 384,
+            //                 accY: 0.0,
+            //             });
+            //         }
+            //     }
+            // }
         }
 
         // However, it should also check if self dead here
@@ -284,6 +302,9 @@ export class Mob extends dPhysSprite
             return false;
         }
 
+        // Fill optional slots with their default values.
+        _healInfo = this.fillDHF(_healInfo);
+
         // Same as above
         let healInfo:mRTypes.DamageHeal = {
             'source' : _healInfo.source.mobData,
@@ -293,16 +314,15 @@ export class Mob extends dPhysSprite
             'isCrit' : _healInfo.isCrit,
             'isAvoid': _healInfo.isAvoid,
             'isBlock': _healInfo.isBlock,
-            'overdeal': mRTypes.LeafTypesZERO
+            'type'   : 'heal',
+            'overdeal': 0
         };
 
         this.mobData.receiveHeal(healInfo);
 
         // Show popUp text with overhealing hint
-        if(_healInfo.popUp == true && (healInfo.value.heal + healInfo.overdeal.heal) > 0)
+        if(_healInfo.popUp == true && (healInfo.value + healInfo.overdeal) > 0)
         {
-            throw new Error("Please implement popup");
-
             // var popUpPos = this.getRenderPos(0.5, 0.0);
             // if(healInfo.heal.over > 0)
             // {
@@ -324,6 +344,17 @@ export class Mob extends dPhysSprite
             //         posY: popUpPos.y,
             //     });
             // }
+
+            var popUpPos = this.getTopCenter();
+            if(healInfo.overdeal > 0)
+            {
+                PopUpManager.getSingleton().addText(healInfo.value.toString() + (healInfo.isCrit ? " !" : "") + " <" + healInfo.overdeal.toString(), popUpPos.x, popUpPos.y, Consts.ElementColors['heal']);
+            }
+            else
+            {
+                PopUpManager.getSingleton().addText(healInfo.value.toString() + (healInfo.isCrit ? " !" : ""), popUpPos.x, popUpPos.y, Consts.ElementColors['heal']);
+            }
+
             // // popUp texts on unit frames
             // // fade from left to the the edge of currentHealth
             // if(this.data.isPlayer && healInfo.heal.real > 0){
@@ -362,11 +393,17 @@ export class Mob extends dPhysSprite
         }
         else
         {
-            throw new Error("Remove the mob here");
+            // throw new Error("Remove the mob here");
+            console.log(this.mobData.name + " has DEAD!")
             // me.game.world.removeChild(this.HPBar);
             // game.units.removeEnemy(this);
             // me.game.world.removeChild(this);
         }
+    }
+
+    footPos() : Phaser.Math.Vector2
+    {
+        return new Phaser.Math.Vector2(this.x, this.y);
     }
 
     static checkExist(mob?:Mob):boolean

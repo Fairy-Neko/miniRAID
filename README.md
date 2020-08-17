@@ -7,7 +7,8 @@ or if you forgot the `--recursive`, run `git submodule update --init --recursive
 3. `tsc` to run the typescript compiler. It will keep running and detect any changes, which will trigger a re-compile.  
 4. The compiled javascript and html files will be in `bin/` and a HTML `bin/index.html`.  
 
-You can view the docs under `docs/index.html`.
+You can view the docs under `docs/index.html`.  
+To generate the docs, first install `typedoc` then `npx typedoc` under the root folder.
 
 ### TODOs
 

@@ -1,7 +1,6 @@
 /** @module Struct */
 
 import { Data } from "Phaser";
-import { stringify } from "querystring";
 import { mRTypes } from "../core/mRTypes";
 // import { mRTypes } from "../core/ModuleProxy";
 

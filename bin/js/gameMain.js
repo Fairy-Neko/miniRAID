@@ -136,70 +136,78 @@ define("Events/EventSystem", ["require", "exports", "typescript-collections"], f
     }
     exports.EventSystem = EventSystem;
 });
-// Example usage
-// Create //
-// let tween = this.tweens.add({
-//                 targets: this.logo,
-//                 scaleX: { value: 1.0, duration: 2000, ease: 'Back.easeInOut' },
-//                 scaleY: { value: 1.0, duration: 2000, ease: 'Back.easeInOut' },
-//                 yoyo: true,
-//                 repeat: -1
-//                 });
-// for (var i:number = 0; i < 4000; i++)
-// {
-//     var tmpText = this.add.text(16 + (i % 40) * 20, 16 + Math.floor(i / 40) * 20, '哇哦', {fontSize: '9px'});
-// }
-// console.log('Building event system...')
-// // Init event system
-// // 50x {1 Main -> 9 Sub}
-// // this.num = 5000; // <-- This still runs at 60 FPS! with the update operation 7.88ms. Although the starting process is quite long (around 2min). This system is strong!
-// this.num = 500;
-// for(var i = 0; i < this.num * 10; i++)
-// {
-//     this.objs.push(new Events.EventElement(this.eventSystem));
-// }
-// // Create relationships
-// for(var i = 0; i < this.num * 10; i++)
-// {
-//     if(i % 10 >= 0)
-//     {
-//         this.objs[i].listen(this.objs[Math.floor(i / 10) * 10], 'update', (mob, dt) => {return 0;});
-//         this.objs[i].listen(this.objs[Math.floor(i / 10) * 10], 'onDamageReceived', (mob, src, dmg, hit, crit) => {/*console.log(dmg);*/});
-//         this.objs[i].listen(this.objs[Math.floor(i / 10) * 10], 'onDead', (mob, lastHit) => {return 0;});
-//         for(var j = 0; j < this.num; j++)
-//         {
-//             if(Math.random() < 0.5)
-//             {
-//                 this.objs[i].listen(this.objs[j * 10], 'onDamageReceived', (mob, src, dmg, hit, crit) => {/*console.log(dmg);*/})
-//             }
-//         }
-//     }
-//     if(i % 1000 == 0)
-//     {
-//         console.log(i / 10);
-//     }
-// }
-// Update //
-// this.cnt ++;
-// if(this.cnt > 20)
-// {
-//     console.log(1000.0 / dt);
-//     this.cnt = 0;
-// }
-// this.logo_scale = time / 10000.0;
-// this.logo.setScale(this.logo_scale, this.logo_scale);
-// this.ground_rt.scale -= 0.01;
-// this.ground_rt.draw(this.mesh0);
-// for(var i = 0; i < this.num; i++)
-// {
-//     this.objs[i * 10].emit('update', this.objs[i * 10], dt);
-//     if(Math.random() < 0.6)
-//     {
-//         var src = Math.floor(Math.random() * this.num);
-//         var dmg = Math.random() * 100.0;
-//         this.objs[i * 10].emit('onDamageReceived', this.objs[i * 10], src, dmg, true, false);
-//     }
-// }
+/* Example usage
+                                        // Create //
+let tween = this.tweens.add({
+                targets: this.logo,
+                scaleX: { value: 1.0, duration: 2000, ease: 'Back.easeInOut' },
+                scaleY: { value: 1.0, duration: 2000, ease: 'Back.easeInOut' },
+                yoyo: true,
+                repeat: -1
+                });
+
+for (var i:number = 0; i < 4000; i++)
+{
+    var tmpText = this.add.text(16 + (i % 40) * 20, 16 + Math.floor(i / 40) * 20, '哇哦', {fontSize: '9px'});
+}
+
+console.log('Building event system...')
+// Init event system
+// 50x {1 Main -> 9 Sub}
+// this.num = 5000; // <-- This still runs at 60 FPS! with the update operation 7.88ms. Although the starting process is quite long (around 2min). This system is strong!
+this.num = 500;
+for(var i = 0; i < this.num * 10; i++)
+{
+    this.objs.push(new Events.EventElement(this.eventSystem));
+}
+
+// Create relationships
+for(var i = 0; i < this.num * 10; i++)
+{
+    if(i % 10 >= 0)
+    {
+        this.objs[i].listen(this.objs[Math.floor(i / 10) * 10], 'update', (mob, dt) => {return 0;});
+        this.objs[i].listen(this.objs[Math.floor(i / 10) * 10], 'onDamageReceived', (mob, src, dmg, hit, crit) => {console.log(dmg);});
+        this.objs[i].listen(this.objs[Math.floor(i / 10) * 10], 'onDead', (mob, lastHit) => {return 0;});
+        for(var j = 0; j < this.num; j++)
+        {
+            if(Math.random() < 0.5)
+            {
+                this.objs[i].listen(this.objs[j * 10], 'onDamageReceived', (mob, src, dmg, hit, crit) => {console.log(dmg);})
+            }
+        }
+    }
+
+    if(i % 1000 == 0)
+    {
+        console.log(i / 10);
+    }
+}
+
+                                        Update //
+this.cnt ++;
+if(this.cnt > 20)
+{
+    console.log(1000.0 / dt);
+    this.cnt = 0;
+}
+this.logo_scale = time / 10000.0;
+this.logo.setScale(this.logo_scale, this.logo_scale);
+
+this.ground_rt.scale -= 0.01;
+this.ground_rt.draw(this.mesh0);
+
+for(var i = 0; i < this.num; i++)
+{
+    this.objs[i * 10].emit('update', this.objs[i * 10], dt);
+    if(Math.random() < 0.6)
+    {
+        var src = Math.floor(Math.random() * this.num);
+        var dmg = Math.random() * 100.0;
+        this.objs[i * 10].emit('onDamageReceived', this.objs[i * 10], src, dmg, true, false);
+    }
+}
+*/ 
 /** @module DynamicLoader */
 define("DynamicLoader/DynamicLoadObject", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -747,6 +755,7 @@ define("core/GameData", ["require", "exports"], function (require, exports) {
             thunder: "elemental",
             // Let them just add 0 (as themselves when calculating) for convinence
             light: "pure",
+            dark: "pure",
             physical: "pure",
             elemental: "pure",
             heal: "pure",
@@ -763,6 +772,7 @@ define("core/GameData", ["require", "exports"], function (require, exports) {
             wind: 2.5,
             thunder: 2.5,
             light: 1.6,
+            dark: 1.6,
             heal: 2.0,
         };
         GameData.playerMax = 8;
@@ -774,7 +784,7 @@ define("core/GameData", ["require", "exports"], function (require, exports) {
     })(GameData = exports.GameData || (exports.GameData = {}));
 });
 /** @module Core */
-define("core/MobData", ["require", "exports", "core/mRTypes", "Events/EventSystem", "core/EquipmentCore", "Structs/QuerySet", "core/MobListener", "core/DataBackend", "core/Buff", "core/GameData"], function (require, exports, mRTypes_2, EventSystem, EquipmentCore_1, QuerySet_1, MobListener_2, DataBackend_1, Buff_1, GameData_1) {
+define("core/MobData", ["require", "exports", "Events/EventSystem", "core/EquipmentCore", "Structs/QuerySet", "core/MobListener", "core/DataBackend", "core/Buff", "core/GameData"], function (require, exports, EventSystem, EquipmentCore_1, QuerySet_1, MobListener_2, DataBackend_1, Buff_1, GameData_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     EventSystem = __importStar(EventSystem);
@@ -853,7 +863,7 @@ define("core/MobData", ["require", "exports", "core/mRTypes", "Events/EventSyste
                 spellSpeed: settings.spellSpeed || 1.0,
                 resourceCost: settings.resourceCost || 1.0,
             };
-            this.baseSpeed = settings.baseSpeed || 2.0;
+            this.baseSpeed = settings.baseSpeed || 80.0;
             this.baseAttackSpeed = settings.baseAttackSpeed || 20.0;
             this.isMoving = false;
             this.globalCDRemain = 0;
@@ -882,6 +892,7 @@ define("core/MobData", ["require", "exports", "core/mRTypes", "Events/EventSyste
                     wind: 0,
                     thunder: 0,
                     light: 0,
+                    dark: 0,
                     heal: 0,
                 },
                 attackPower: {
@@ -898,6 +909,7 @@ define("core/MobData", ["require", "exports", "core/mRTypes", "Events/EventSyste
                     wind: 0,
                     thunder: 0,
                     light: 0,
+                    dark: 0,
                     heal: 0,
                 },
                 // Write a helper to get hit / avoid / crit percentage from current level and parameters ?
@@ -1003,7 +1015,7 @@ define("core/MobData", ["require", "exports", "core/mRTypes", "Events/EventSyste
                 this.updateListeners(this, 'switchWeapon', this, this.currentWeapon);
             }
             // Update all listeners
-            this.updateListeners(this, 'onUpdate', this, dt);
+            this.updateListeners(this, 'update', this, dt);
             for (let listener of this.listeners.getAll()) {
                 if (listener.isOver == true) {
                     //this buff is over. delete it from the list.
@@ -1084,7 +1096,8 @@ define("core/MobData", ["require", "exports", "core/mRTypes", "Events/EventSyste
         addListener(listener, source, callback) {
             if (this.listeners.addItem(listener, callback)) {
                 this.listen(listener, 'statChange', (arg) => this.onStatChange(arg));
-                listener.emit('add', undefined, this, source);
+                // listener.emit('add', undefined, this, source);
+                listener.onAdded(this, source);
             }
         }
         removeListener(listener, source) {
@@ -1093,7 +1106,8 @@ define("core/MobData", ["require", "exports", "core/mRTypes", "Events/EventSyste
             }
             // TODO: Who removed this listener ?
             if (this.listeners.removeItem(listener)) {
-                listener.emit('remove', undefined, this, source);
+                // listener.emit('remove', undefined, this, source);
+                listener.onRemoved(this, source);
                 this.unlistenAll(listener);
             }
         }
@@ -1134,8 +1148,7 @@ define("core/MobData", ["require", "exports", "core/mRTypes", "Events/EventSyste
          * @event
          */
         onStatChange(listener) {
-            this.calcStats(this.parentMob);
-            this.currentWeapon.cooldownMax = this.getAttackSpeed(); // Set attack speed
+            this.calcStats(this.parentMob); // Listeners were notified inside this method.
         }
         calcStats(mob) {
             // TODO: Stats calculation:
@@ -1144,7 +1157,7 @@ define("core/MobData", ["require", "exports", "core/mRTypes", "Events/EventSyste
                 this.baseStats[stat] = this.baseStatsFundemental[stat];
             }
             // 2. Add equipment base stats to self by listener.calcBaseStats()
-            this.updateListeners(this, 'onBaseStatCalculation', this);
+            this.updateListeners(this, 'baseStatCalculation', this);
             // 3. Reset battle stats
             this.battleStats = {
                 resist: {
@@ -1161,6 +1174,7 @@ define("core/MobData", ["require", "exports", "core/mRTypes", "Events/EventSyste
                     wind: 0,
                     thunder: 0,
                     light: 0,
+                    dark: 0,
                     heal: 0,
                 },
                 attackPower: {
@@ -1177,6 +1191,7 @@ define("core/MobData", ["require", "exports", "core/mRTypes", "Events/EventSyste
                     wind: 0,
                     thunder: 0,
                     light: 0,
+                    dark: 0,
                     heal: 0,
                 },
                 // Write a helper to get hit / avoid / crit percentage from current level and parameters ?
@@ -1214,8 +1229,8 @@ define("core/MobData", ["require", "exports", "core/mRTypes", "Events/EventSyste
             // Actually, those steps were combined in a single call,
             // as the calculation step of each class will happen in their player classes,
             // which should be the first called listener in updateListeners().
-            this.updateListeners(this, 'onStatCalculation', this);
-            this.updateListeners(this, 'onStatCalculationFinish', this);
+            this.updateListeners(this, 'statCalculation', this);
+            this.updateListeners(this, 'statCalculationFinish', this);
             // 5. Finish
             this.maxHealth = Math.ceil(this.maxHealth);
             this.currentHealth = Math.max(0, Math.ceil(this.healthRatio * this.maxHealth));
@@ -1241,25 +1256,23 @@ define("core/MobData", ["require", "exports", "core/mRTypes", "Events/EventSyste
             // you should let it change the damage at onDealDamage() when isAvoid == true. (e.g. set other to 0 and add extra damage)
             // then set isAvoid to false. You can also pop some text when you add the extra damage.
             // Do the calculation
-            for (var dmgType in damageInfo.value) {
-                // damage% = 1.0353 ^ power
-                // 20pts of power = 100% more damage
-                if (damageInfo.source) {
-                    damageInfo.value[dmgType] = Math.ceil(damageInfo.value[dmgType] *
-                        (Math.pow(1.0353, damageInfo.source.battleStats.attackPower[GameData_1.GameData.damageType[dmgType]] +
-                            damageInfo.source.battleStats.attackPower[dmgType])));
-                }
-                // damage% = 0.9659 ^ resist
-                // This is, every 1 point of resist reduces corresponding damage by 3.41%, 
-                // which will reach 50% damage reducement at 20 points.
-                // TODO: it should all correspond to current level (resist based on source level, atkPower based on target level, same as healing)
-                damageInfo.value[dmgType] = Math.ceil(damageInfo.value[dmgType] *
-                    (Math.pow(0.9659, this.battleStats.resist[GameData_1.GameData.damageType[dmgType]] +
-                        this.battleStats.resist[dmgType])));
-                // Apply criticals
-                damageInfo.value[dmgType] = Math.ceil(damageInfo.value[dmgType] *
-                    (damageInfo.isCrit ? GameData_1.GameData.critMultiplier[dmgType] : 1.0));
+            // damage% = 1.0353 ^ power
+            // 20pts of power = 100% more damage
+            if (damageInfo.source) {
+                damageInfo.value = Math.ceil(damageInfo.value *
+                    (Math.pow(1.0353, damageInfo.source.battleStats.attackPower[GameData_1.GameData.damageType[damageInfo.type]] +
+                        damageInfo.source.battleStats.attackPower[damageInfo.type])));
             }
+            // damage% = 0.9659 ^ resist
+            // This is, every 1 point of resist reduces corresponding damage by 3.41%, 
+            // which will reach 50% damage reducement at 20 points.
+            // TODO: it should all correspond to current level (resist based on source level, atkPower based on target level, same as healing)
+            damageInfo.value = Math.ceil(damageInfo.value *
+                (Math.pow(0.9659, this.battleStats.resist[GameData_1.GameData.damageType[damageInfo.type]] +
+                    this.battleStats.resist[damageInfo.type])));
+            // Apply criticals
+            damageInfo.value = Math.ceil(damageInfo.value *
+                (damageInfo.isCrit ? GameData_1.GameData.critMultiplier[damageInfo.type] : 1.0));
             // Let everyone know what is happening
             // damageObj.damage = finalDmg;
             this.updateListeners(damageInfo.target, 'receiveDamageFinal', damageInfo);
@@ -1268,14 +1281,12 @@ define("core/MobData", ["require", "exports", "core/mRTypes", "Events/EventSyste
             }
             // Decrese HP
             // Check if I am dead
-            let realDmg = mRTypes_2.mRTypes.LeafTypesZERO;
-            for (let dmg in damageInfo.value) {
-                realDmg[dmg] += Math.min(this.currentHealth, damageInfo.value[dmg]);
-                this.currentHealth -= realDmg[dmg];
-                damageInfo.overdeal[dmg] = damageInfo.value[dmg] - realDmg[dmg];
-                damageInfo.value[dmg] = realDmg[dmg];
-                // game.data.monitor.addDamage(damageInfo.value[dmg], dmg, damageInfo.source, damageInfo.target, damageInfo.isCrit, damageInfo.spell);
-            }
+            let realDmg = 0;
+            realDmg += Math.min(this.currentHealth, damageInfo.value);
+            this.currentHealth -= realDmg;
+            damageInfo.overdeal = damageInfo.value - realDmg;
+            damageInfo.value = realDmg;
+            // game.data.monitor.addDamage(damageInfo.value[dmg], dmg, damageInfo.source, damageInfo.target, damageInfo.isCrit, damageInfo.spell);
             if (this.currentHealth <= 0) {
                 // Let everyone know what is happening
                 this.updateListeners(damageInfo.target, 'death', damageInfo);
@@ -1306,29 +1317,29 @@ define("core/MobData", ["require", "exports", "core/mRTypes", "Events/EventSyste
             // _finalHeal: total amount of healing (real + over)
             // healInfo.value = healInfo.heal.real;
             if (healInfo.source) {
-                healInfo.value.heal = Math.ceil(healInfo.value.heal *
+                healInfo.value = Math.ceil(healInfo.value *
                     (Math.pow(1.0353, healInfo.source.battleStats.attackPower.heal)));
             }
             // damage% = 0.9659 ^ resist
             // This is, every 1 point of resist reduces corresponding damage by 3.41%, 
             // which will reach 50% damage reducement at 20 points.
-            healInfo.value.heal = Math.ceil(healInfo.value.heal *
+            healInfo.value = Math.ceil(healInfo.value *
                 (Math.pow(0.9659, this.battleStats.resist.heal)));
-            healInfo.value.heal = Math.ceil(healInfo.value.heal
+            healInfo.value = Math.ceil(healInfo.value
                 * (healInfo.isCrit ? GameData_1.GameData.critMultiplier.heal : 1.0));
             // calculate overHealing using current HP and max HP.
-            let realHeal = Math.min(healInfo.target.maxHealth - healInfo.target.currentHealth, healInfo.value.heal);
-            healInfo.overdeal.heal = healInfo.value.heal - realHeal;
-            healInfo.value.heal = realHeal;
+            let realHeal = Math.min(healInfo.target.maxHealth - healInfo.target.currentHealth, healInfo.value);
+            healInfo.overdeal = healInfo.value - realHeal;
+            healInfo.value = realHeal;
             // Let buffs and agents know what is happening
             this.updateListeners(healInfo.target, 'receiveHealFinal', healInfo);
             if (healInfo.source) {
                 healInfo.source.updateListeners(healInfo.source, 'dealHealFinal', healInfo);
             }
             // Increase the HP.
-            this.currentHealth += healInfo.value.heal;
+            this.currentHealth += healInfo.value;
             // game.data.monitor.addHeal(healInfo.value.heal, healInfo.overdeal.heal, healInfo.source, healInfo.target, healInfo.isCrit, healInfo.spell);
-            return healInfo.value.heal;
+            return healInfo.value;
         }
         // Function used to tell buffs and agents what was going on
         // when damage and heal happens. They can modify them.
@@ -1375,14 +1386,35 @@ define("core/EquipmentCore", ["require", "exports", "core/MobListener"], functio
         EquipmentType[EquipmentType["Accessory"] = 1] = "Accessory";
         EquipmentType[EquipmentType["Armor"] = 2] = "Armor";
         EquipmentType[EquipmentType["Weapon"] = 3] = "Weapon";
+        EquipmentType[EquipmentType["Unknown"] = 4] = "Unknown";
     })(EquipmentType = exports.EquipmentType || (exports.EquipmentType = {}));
+    var WeaponType;
+    (function (WeaponType) {
+        WeaponType[WeaponType["Stuff"] = 0] = "Stuff";
+        WeaponType[WeaponType["Unknown"] = 1] = "Unknown";
+    })(WeaponType = exports.WeaponType || (exports.WeaponType = {}));
+    var WeaponSubType;
+    (function (WeaponSubType) {
+        WeaponSubType[WeaponSubType["Common"] = 0] = "Common";
+    })(WeaponSubType = exports.WeaponSubType || (exports.WeaponSubType = {}));
     var EquipmentTag;
     (function (EquipmentTag) {
         EquipmentTag[EquipmentTag["Equipment"] = 0] = "Equipment";
     })(EquipmentTag = exports.EquipmentTag || (exports.EquipmentTag = {}));
     class Equipable extends MobListener_3.MobListener {
-        constructor() {
+        constructor(eqType = EquipmentType.Unknown) {
             super();
+            this.eqType = eqType;
+        }
+        syncStats(mob) { }
+        onAdded(mob, source) {
+            super.onAdded(mob, source);
+            this.syncStats(mob);
+            this.listen(mob, 'statCalculationFinish', this.onStatCalculationFinish);
+        }
+        onStatCalculationFinish(mob) {
+            super.onStatCalculationFinish(mob);
+            this.syncStats(mob);
         }
     }
     exports.Equipable = Equipable;
@@ -1390,13 +1422,38 @@ define("core/EquipmentCore", ["require", "exports", "core/MobListener"], functio
     }
     exports.Armor = Armor;
     class Weapon extends Equipable {
+        constructor() {
+            super(EquipmentType.Weapon);
+            this.wpType = WeaponType.Unknown;
+            this.wpsubType = WeaponSubType.Common;
+            this.weaponGauge = 0;
+        }
         isInRange(mob, target) {
             throw new Error("Method not implemented.");
         }
         grabTargets(mob) {
             return [];
         }
-        attack(source, target) {
+        triggerCD() {
+            this.isReady = false;
+            this.cooldown = 0;
+        }
+        attack(source, target, triggerCD = true) {
+            this.isReadyWrapper(() => {
+                this._weaponAttack(source, target);
+                if (triggerCD) {
+                    this.triggerCD();
+                }
+            })();
+        }
+        syncStats(mob) {
+            this.cooldownMax = mob.getAttackSpeed();
+        }
+        onAdded(mob, source) {
+            super.onAdded(mob, source);
+            console.log("be added to " + mob.name);
+        }
+        _weaponAttack(source, target) {
             throw new Error("Method not implemented.");
         }
     }
@@ -1411,8 +1468,26 @@ define("core/mRTypes", ["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     var mRTypes;
     (function (mRTypes) {
-        mRTypes.LeafTypesZERO = { fire: 0, water: 0, ice: 0, wind: 0, nature: 0, light: 0, thunder: 0, slash: 0, pierce: 0, knock: 0, heal: 0 };
+        mRTypes.LeafTypesZERO = { fire: 0, water: 0, ice: 0, wind: 0, nature: 0, light: 0, thunder: 0, slash: 0, pierce: 0, knock: 0, dark: 0, heal: 0 };
     })(mRTypes = exports.mRTypes || (exports.mRTypes = {}));
+    var Consts;
+    (function (Consts) {
+        Consts.ElementColors = {
+            slash: Phaser.Display.Color.HexStringToColor("#ffffff"),
+            knock: Phaser.Display.Color.HexStringToColor("#ffffff"),
+            pierce: Phaser.Display.Color.HexStringToColor("#ffffff"),
+            fire: Phaser.Display.Color.HexStringToColor("#ffa342"),
+            ice: Phaser.Display.Color.HexStringToColor("#72ffe2"),
+            water: Phaser.Display.Color.HexStringToColor("#5b8fff"),
+            nature: Phaser.Display.Color.HexStringToColor("#b1ed1a"),
+            wind: Phaser.Display.Color.HexStringToColor("#aaffc8"),
+            thunder: Phaser.Display.Color.HexStringToColor("#fffb21"),
+            light: Phaser.Display.Color.HexStringToColor("#fffbd1"),
+            dark: Phaser.Display.Color.HexStringToColor("#8d47bf"),
+            miss: Phaser.Display.Color.HexStringToColor("#ff19e0"),
+            heal: Phaser.Display.Color.HexStringToColor("#66f95c"),
+        };
+    })(Consts = exports.Consts || (exports.Consts = {}));
 });
 /** @module Core */
 define("core/MobListener", ["require", "exports", "core/DataBackend", "Events/EventSystem"], function (require, exports, DataBackend_2, EventSystem) {
@@ -1432,6 +1507,7 @@ define("core/MobListener", ["require", "exports", "core/DataBackend", "Events/Ev
         /** Job characteristics modifier, e.g. ForestElfMyth, FloraFairy, etc. */
         MobListenerType[MobListenerType["Characteristics"] = 6] = "Characteristics";
     })(MobListenerType = exports.MobListenerType || (exports.MobListenerType = {}));
+    // onXXX event functions are optional - just register them and use if necessary. By default events will not be connected with the onXXX methods.
     class MobListener extends EventSystem.EventElement {
         constructor() {
             super(DataBackend_2.DataBackend.getSingleton().eventSystem);
@@ -1458,6 +1534,7 @@ define("core/MobListener", ["require", "exports", "core/DataBackend", "Events/Ev
         }
         unfocus(mob) {
         }
+        // Will only be triggered by parent mob.
         update(self, dt) {
             for (let mob of this.focusList) {
                 // if(!Mob.checkExist(mob))
@@ -1465,10 +1542,13 @@ define("core/MobListener", ["require", "exports", "core/DataBackend", "Events/Ev
                 // this.focusList.delete(mob);
                 // }
             }
-            this.cooldown += dt;
-            if (this.cooldown > (this.cooldownMax)) {
-                this.cooldown = 0;
-                this.isReady = false;
+            if (this.isReady == false) {
+                this.cooldown += dt;
+            }
+            if (this.cooldown >= (this.cooldownMax)) {
+                // this.cooldown = 0;
+                // this.isReady = false; // <-- This is the original version. Why did I wrote this ?
+                this.isReady = true;
             }
         }
         // N.B.
@@ -1485,9 +1565,13 @@ define("core/MobListener", ["require", "exports", "core/DataBackend", "Events/Ev
         onStatCalculationFinish(mob) { }
         // When this listener was added to the mob by source
         // Buffs will also be triggered when new stack comes.
-        onAdded(mob, source) { }
-        // When this listener was removed from the mob by source
-        onRemoved(mob, source) { }
+        onAdded(mob, source) {
+            this.parentMob = mob;
+        }
+        // When this listener was removed from the mob by source. By default this will remove the listener from the eventsystem.
+        onRemoved(mob, source) {
+            this.discard();
+        }
         // Be triggered when the mob is attacking.
         // This is triggered before the mob's attack.
         onAttack(mob) { }
@@ -1504,7 +1588,7 @@ define("core/MobListener", ["require", "exports", "core/DataBackend", "Events/Ev
         onFrontEndUpdate(mob, dt) { }
         onRender(mob, scene) { }
         onFrontEndDestroy(mob, scene) { }
-        // Be triggered when the mob is updating.
+        // Be triggered when the mob is updating, not to be confused with "MobListener.update()".
         // This will be triggered before onStatCalculation.
         // e.g. reduce remain time, etc.
         onUpdate(mob, dt) { }
@@ -1553,7 +1637,7 @@ define("agents/MobAgent", ["require", "exports", "core/MobListener"], function (
     exports.MobAgent = MobAgent;
 });
 /** @module Agent */
-define("agents/PlayerAgents", ["require", "exports", "agents/Modules", "Mob", "core/GameData"], function (require, exports, Modules_1, Mob_1, GameData_2) {
+define("agents/PlayerAgents", ["require", "exports", "agents/Modules", "Mob", "core/GameData", "core/UnitManager"], function (require, exports, Modules_1, Mob_1, GameData_2, UnitManager_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class PlayerAgentBase extends Modules_1.MobAgent {
@@ -1579,6 +1663,7 @@ define("agents/PlayerAgents", ["require", "exports", "agents/Modules", "Mob", "c
             this.idleFramePos = 0;
             this.idleCount = 0;
             this.speedFriction = 0.9;
+            this.unitMgr = UnitManager_1.UnitManager.getCurrent();
             // TODO: smooth when hit world object ?
         }
         updateMob(player, dt) {
@@ -1587,7 +1672,7 @@ define("agents/PlayerAgents", ["require", "exports", "agents/Modules", "Mob", "c
             if (Mob_1.Mob.checkAlive(player) === true) {
                 if (typeof this.targetPos !== "undefined") {
                     if (this.targetPos.distance(this.footPos) > 1.5) {
-                        let velocity = this.targetPos.clone().subtract(this.footPos).normalize().scale(player.mobData.getMovingSpeed() * dt);
+                        let velocity = this.targetPos.clone().subtract(this.footPos).normalize().scale(player.mobData.getMovingSpeed());
                         player.setVelocity(velocity.x, velocity.y);
                         this.isMoving = true;
                         // Reset the anim counter
@@ -1602,7 +1687,7 @@ define("agents/PlayerAgents", ["require", "exports", "agents/Modules", "Mob", "c
                     // we need move to goin the range of our current weapon
                     if (player.mobData.currentWeapon.isInRange(player, this.targetMob) == false) {
                         let targetPos = new Phaser.Math.Vector2(this.targetMob.x, this.targetMob.y);
-                        let velocity = targetPos.subtract(this.footPos).normalize().scale(player.mobData.getMovingSpeed() * dt);
+                        let velocity = targetPos.subtract(this.footPos).normalize().scale(player.mobData.getMovingSpeed());
                         player.setVelocity(velocity.x, velocity.y);
                         this.isMoving = true;
                         // Reset the anim counter
@@ -1950,6 +2035,7 @@ define("core/UnitManager", ["require", "exports", "Mob", "core/GameData"], funct
             };
         }
     }
+    exports.UnitManager = UnitManager;
     UnitManager.sortByHealth = (a, b) => {
         return a.mobData.currentHealth - b.mobData.currentHealth;
     };
@@ -1959,41 +2045,108 @@ define("core/UnitManager", ["require", "exports", "Mob", "core/GameData"], funct
     };
     UnitManager.IDENTITY = (a, b) => 0;
     UnitManager.NOOP = (a) => true;
-    exports.UnitManager = UnitManager;
+});
+define("UI/PopUpManager", ["require", "exports", "Phaser"], function (require, exports, Phaser_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class PopupText extends Phaser.GameObjects.Text {
+        constructor(scene, x, y, text, style, time = 1.0, velX = -64, velY = -256, accX = 0.0, accY = 512.0) {
+            super(scene, x, y, text, style);
+            this.time = time;
+            this.velX = velX;
+            this.velY = velY;
+            this.accX = accX;
+            this.accY = accY;
+            this.dead = false;
+        }
+        update(dt) {
+            // perhaps we don't need this?
+            super.update();
+            this.time -= dt;
+            if (this.time < 0) {
+                this.dead = true;
+                return;
+            }
+            this.x += this.velX * dt;
+            this.y += this.velY * dt;
+            this.velX += this.accX * dt;
+            this.velY += this.accY * dt;
+            this.alpha = this.time;
+        }
+    }
+    exports.PopupText = PopupText;
+    class PopUpManager extends Phaser_1.Scene {
+        static getSingleton() {
+            if (!PopUpManager.instance) {
+                PopUpManager.instance = new PopUpManager({ key: 'PopupManagerScene' });
+                console.log("registering dynamic loader...");
+            }
+            return PopUpManager.instance;
+        }
+        create() {
+            this.textList = new Set();
+        }
+        addText(text, posX = 100, posY = 100, color = new Phaser.Display.Color(255, 255, 255, 255), time = 1.0, velX = -64, velY = -256, // jumping speed
+        accX = 0.0, // gravity
+        accY = 512) {
+            let txt = new PopupText(this, posX, posY, text, { 'color': color.rgba, 'fontSize': '12px' }, time, velX, velY, accX, accY);
+            this.add.existing(txt);
+        }
+        update(time, dt) {
+            this.children.each((item) => {
+                item.update(dt / 1000.0);
+                if (item instanceof PopupText) {
+                    if (item.dead) {
+                        item.destroy();
+                    }
+                }
+            });
+            // for(let txt of this.textList)
+            // {
+            //     txt.update(dt);
+            //     if(txt.dead)
+            //     {
+            //         this.textList.delete(txt);
+            //     }
+            // }
+        }
+    }
+    exports.PopUpManager = PopUpManager;
 });
 /** @module GameEntity */
-define("Mob", ["require", "exports", "DynamicLoader/dPhysSprite", "core/mRTypes", "core/UnitManager", "core/EquipmentCore"], function (require, exports, dPhysSprite_1, mRTypes_3, UnitManager_1, EquipmentCore_2) {
+define("Mob", ["require", "exports", "DynamicLoader/dPhysSprite", "core/mRTypes", "core/UnitManager", "core/EquipmentCore", "UI/PopUpManager"], function (require, exports, dPhysSprite_1, mRTypes_2, UnitManager_2, EquipmentCore_2, PopUpManager_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Mob extends dPhysSprite_1.dPhysSprite {
         constructor(scene, x, y, sprite, settings, subsprite, frame) {
             super(scene, x, y, sprite, subsprite, frame);
             this.setOrigin(0.5, 0.8);
+            this.mobData = settings.backendData;
             this.moveAnim = settings.moveAnim;
             this.idleAnim = settings.idleAnim;
             this.deadAnim = settings.deadAnim;
             if (this.idleAnim) {
                 this.play(this.idleAnim);
             }
-            this.isPlayer = settings.isPlayer;
+            this.isPlayer = this.mobData.isPlayer;
             if (this.isPlayer === true) {
                 // Is player
-                UnitManager_1.UnitManager.getCurrent().addPlayer(this);
+                UnitManager_2.UnitManager.getCurrent().addPlayer(this);
             }
             else {
                 // Is enemy
-                UnitManager_1.UnitManager.getCurrent().addEnemy(this);
+                UnitManager_2.UnitManager.getCurrent().addEnemy(this);
             }
             this.setGravity(0, 0);
-            this.mobData = settings.backendData;
             if (settings.agent) {
                 this.agent = new settings.agent(this);
+                this.mobData.addListener(this.agent);
             }
-            this.mobData.addListener(this.agent);
             this.attackCounter = 0;
             // HPBar
         }
         update(dt) {
+            dt = dt / 1000.0;
             // this.sprite.x += dt / 1000.0 * 10;
             if (this.body.velocity.length() > 0) {
                 this.mobData.isMoving = true;
@@ -2003,7 +2156,9 @@ define("Mob", ["require", "exports", "DynamicLoader/dPhysSprite", "core/mRTypes"
             }
             this.mobData.updateMobBackend(this, dt);
             // Physics update?
-            this.agent.updateMob(this, dt);
+            if (this.agent) {
+                this.agent.updateMob(this, dt);
+            }
         }
         doAttack(dt) {
             if (typeof this.mobData.currentWeapon === "undefined") {
@@ -2048,6 +2203,21 @@ define("Mob", ["require", "exports", "DynamicLoader/dPhysSprite", "core/mRTypes"
             }
             return true;
         }
+        fillDHF(_damageInfo) {
+            if (_damageInfo.isAvoid == undefined) {
+                _damageInfo.isAvoid = false;
+            }
+            if (_damageInfo.isCrit == undefined) {
+                _damageInfo.isCrit = false;
+            }
+            if (_damageInfo.isBlock == undefined) {
+                _damageInfo.isBlock = false;
+            }
+            if (_damageInfo.popUp == undefined) {
+                _damageInfo.popUp = true;
+            }
+            return _damageInfo;
+        }
         // Same as receiveBuff(),
         // this method will be used to receive damage from any object.
         // this method will also trigger events for listeners, and let them modify the damage.
@@ -2069,6 +2239,8 @@ define("Mob", ["require", "exports", "DynamicLoader/dPhysSprite", "core/mRTypes"
             if (Mob.checkAlive(this) == false) {
                 return false;
             }
+            // Fill optional slots with their default values.
+            _damageInfo = this.fillDHF(_damageInfo);
             let damageInfo = {
                 'source': _damageInfo.source.mobData,
                 'target': this.mobData,
@@ -2077,61 +2249,48 @@ define("Mob", ["require", "exports", "DynamicLoader/dPhysSprite", "core/mRTypes"
                 'isCrit': _damageInfo.isCrit,
                 'isAvoid': _damageInfo.isAvoid,
                 'isBlock': _damageInfo.isBlock,
-                'overdeal': mRTypes_3.mRTypes.LeafTypesZERO
+                'type': _damageInfo.type,
+                // 'type'   : _damageInfo.type,
+                'overdeal': 0,
             };
             // The actual damage calculate and event trigger moved into backend
             // If mob dead finally, this.data.alive will become false
             this.mobData.receiveDamage(damageInfo);
             // It does not hit !
             if (damageInfo.isAvoid) {
-                throw new Error("Please implement popup");
-                // if(damageInfo.popUp == true)
-                // {
-                //     var popUpPos = this.getRenderPos(0.5, 0.0);
-                //     game.UI.popupMgr.addText({
-                //         text: "MISS",
-                //         color: game.data.damageColor.miss,
-                //         posX: popUpPos.x,
-                //         posY: popUpPos.y,
-                //     });
-                // }
+                if (_damageInfo.popUp == true) {
+                    var popUpPos = this.getTopCenter();
+                    PopUpManager_1.PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, mRTypes_2.Consts.ElementColors['miss']);
+                }
                 return false;
             }
             // Mob itself only do rendering popUp texts
-            for (var dmgType in damageInfo.value) {
-                if (_damageInfo.popUp == true && damageInfo.value[dmgType] > 0) {
-                    throw new Error("Please implement popup");
-                    // var popUpPos = this.getRenderPos(0.5, 0.0);
-                    // game.UI.popupMgr.addText({
-                    //     text: damageInfo.damage[dmgType].toString() + (damageInfo.isCrit ? " !" : ""),
-                    //     color: game.data.damageColor[dmgType],
-                    //     posX: popUpPos.x,
-                    //     posY: popUpPos.y,
-                    // });
-                    // // popUp texts on unit frames
-                    // // fade from the edge of currentHealth to the left
-                    // if(this.data.isPlayer)
-                    // {
-                    //     for(var i = 0; i < game.units.getPlayerListWithDead().length; i++)
-                    //     {
-                    //         if(this === game.units.getPlayerListWithDead()[i])
-                    //         {
-                    //             popUpPos = game.UI.unitFrameSlots.slots[i].pos;
-                    //             game.UI.popupMgr.addText({
-                    //                 text: "-" + damageInfo.damage[dmgType].toString(),
-                    //                 time: 0.75,
-                    //                 color: game.data.damageColor[dmgType],
-                    //                 posX: popUpPos.x + 126,// * (this.data.currentHealth / this.data.maxHealth), // Maybe this is better ? (or cannot see if sudden death)
-                    //                 posY: popUpPos.y - 10,
-                    //                 velX: -256,
-                    //                 velY: 0.0,
-                    //                 accX: 384,
-                    //                 accY: 0.0,
-                    //             });
-                    //         }
-                    //     }
-                    // }
-                }
+            if (_damageInfo.popUp == true && damageInfo.value > 0) {
+                var popUpPos = this.getTopCenter();
+                PopUpManager_1.PopUpManager.getSingleton().addText(damageInfo.value.toString() + (damageInfo.isCrit ? " !" : ""), popUpPos.x, popUpPos.y, mRTypes_2.Consts.ElementColors[damageInfo.type]);
+                // // popUp texts on unit frames
+                // // fade from the edge of currentHealth to the left
+                // if(this.data.isPlayer)
+                // {
+                //     for(var i = 0; i < game.units.getPlayerListWithDead().length; i++)
+                //     {
+                //         if(this === game.units.getPlayerListWithDead()[i])
+                //         {
+                //             popUpPos = game.UI.unitFrameSlots.slots[i].pos;
+                //             game.UI.popupMgr.addText({
+                //                 text: "-" + damageInfo.damage[dmgType].toString(),
+                //                 time: 0.75,
+                //                 color: game.data.damageColor[dmgType],
+                //                 posX: popUpPos.x + 126,// * (this.data.currentHealth / this.data.maxHealth), // Maybe this is better ? (or cannot see if sudden death)
+                //                 posY: popUpPos.y - 10,
+                //                 velX: -256,
+                //                 velY: 0.0,
+                //                 accX: 384,
+                //                 accY: 0.0,
+                //             });
+                //         }
+                //     }
+                // }
             }
             // However, it should also check if self dead here
             // since it should remove the renderable (actual object) from the scene and mob list
@@ -2154,6 +2313,8 @@ define("Mob", ["require", "exports", "DynamicLoader/dPhysSprite", "core/mRTypes"
             if (Mob.checkAlive(this) == false) {
                 return false;
             }
+            // Fill optional slots with their default values.
+            _healInfo = this.fillDHF(_healInfo);
             // Same as above
             let healInfo = {
                 'source': _healInfo.source.mobData,
@@ -2163,12 +2324,12 @@ define("Mob", ["require", "exports", "DynamicLoader/dPhysSprite", "core/mRTypes"
                 'isCrit': _healInfo.isCrit,
                 'isAvoid': _healInfo.isAvoid,
                 'isBlock': _healInfo.isBlock,
-                'overdeal': mRTypes_3.mRTypes.LeafTypesZERO
+                'type': 'heal',
+                'overdeal': 0
             };
             this.mobData.receiveHeal(healInfo);
             // Show popUp text with overhealing hint
-            if (_healInfo.popUp == true && (healInfo.value.heal + healInfo.overdeal.heal) > 0) {
-                throw new Error("Please implement popup");
+            if (_healInfo.popUp == true && (healInfo.value + healInfo.overdeal) > 0) {
                 // var popUpPos = this.getRenderPos(0.5, 0.0);
                 // if(healInfo.heal.over > 0)
                 // {
@@ -2190,6 +2351,13 @@ define("Mob", ["require", "exports", "DynamicLoader/dPhysSprite", "core/mRTypes"
                 //         posY: popUpPos.y,
                 //     });
                 // }
+                var popUpPos = this.getTopCenter();
+                if (healInfo.overdeal > 0) {
+                    PopUpManager_1.PopUpManager.getSingleton().addText(healInfo.value.toString() + (healInfo.isCrit ? " !" : "") + " <" + healInfo.overdeal.toString(), popUpPos.x, popUpPos.y, mRTypes_2.Consts.ElementColors['heal']);
+                }
+                else {
+                    PopUpManager_1.PopUpManager.getSingleton().addText(healInfo.value.toString() + (healInfo.isCrit ? " !" : ""), popUpPos.x, popUpPos.y, mRTypes_2.Consts.ElementColors['heal']);
+                }
                 // // popUp texts on unit frames
                 // // fade from left to the the edge of currentHealth
                 // if(this.data.isPlayer && healInfo.heal.real > 0){
@@ -2222,11 +2390,15 @@ define("Mob", ["require", "exports", "DynamicLoader/dPhysSprite", "core/mRTypes"
                 // game.units.removePlayer(this);
             }
             else {
-                throw new Error("Remove the mob here");
+                // throw new Error("Remove the mob here");
+                console.log(this.mobData.name + " has DEAD!");
                 // me.game.world.removeChild(this.HPBar);
                 // game.units.removeEnemy(this);
                 // me.game.world.removeChild(this);
             }
+        }
+        footPos() {
+            return new Phaser.Math.Vector2(this.x, this.y);
         }
         static checkExist(mob) {
             return (mob != null);
@@ -2237,76 +2409,44 @@ define("Mob", ["require", "exports", "DynamicLoader/dPhysSprite", "core/mRTypes"
     }
     exports.Mob = Mob;
 });
-define("UI/PopUpManager", ["require", "exports", "Phaser"], function (require, exports, Phaser_1) {
+/** @module Weapons */
+define("Weapons/Stuff", ["require", "exports", "core/EquipmentCore", "core/UnitManager"], function (require, exports, EquipmentCore_3, UnitManager_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    class PopupText extends Phaser.GameObjects.Text {
-        constructor(scene, x, y, text, style, time = 1.0, velX = -64, velY = -256, accX = 0.0, accY = 512.0) {
-            super(scene, x, y, text, style);
-            this.time = time;
-            this.velX = velX;
-            this.velY = velY;
-            this.accX = accX;
-            this.accY = accY;
-            this.dead = false;
+    class CometWand extends EquipmentCore_3.Weapon {
+        constructor() {
+            super();
+            this.name = "Comet Wand";
+            this.wpType = EquipmentCore_3.WeaponType.Stuff;
+            this.wpsubType = EquipmentCore_3.WeaponSubType.Common;
+            this.mainElement = 'ice';
+            this.baseAttackMin = 6;
+            this.baseAttackMax = 18;
+            this.baseAttackSpeed = 1.5;
+            this.targetCount = 1;
+            this.activeRange = 200;
+            this.manaCost = 0;
+            this.manaRegen = 0;
+            this.weaponGaugeMax = 25;
+            this.weaponGaugeIncreasement = function (mob) { return mob.baseStats.mag; };
         }
-        update(dt) {
-            // perhaps we don't need this?
-            super.update();
-            this.time -= dt;
-            if (this.time < 0) {
-                this.dead = true;
-                return;
-            }
-            this.x += this.velX * dt;
-            this.y += this.velY * dt;
-            this.velX += this.accX * dt;
-            this.velY += this.accY * dt;
-            this.alpha = this.time;
-        }
-    }
-    exports.PopupText = PopupText;
-    class PopUpManager extends Phaser_1.Scene {
-        static getSingleton() {
-            if (!PopUpManager.instance) {
-                PopUpManager.instance = new PopUpManager({ key: 'PopupManagerScene' });
-                console.log("registering dynamic loader...");
-            }
-            return PopUpManager.instance;
-        }
-        create() {
-            this.textList = new Set();
-        }
-        addText(text, time = 1.0, velX = -64, velY = -256, // jumping speed
-        accX = 0.0, // gravity
-        accY = 512, // gravity
-        posX = 100, posY = 100, color = new Phaser.Display.Color(255, 255, 255, 255)) {
-            let txt = new PopupText(this, posX, posY, text, { 'color': color.rgba }, time, velX, velY, accX, accY);
-            this.add.existing(txt);
-        }
-        update(time, dt) {
-            this.children.each((item) => {
-                item.update(dt / 1000.0);
-                if (item instanceof PopupText) {
-                    if (item.dead) {
-                        item.destroy();
-                    }
-                }
+        _weaponAttack(source, target) {
+            let targetMob = target[0];
+            targetMob.receiveDamage({
+                'source': source,
+                'target': targetMob,
+                'value': 1,
+                'type': 'ice',
             });
-            // for(let txt of this.textList)
-            // {
-            //     txt.update(dt);
-            //     if(txt.dead)
-            //     {
-            //         this.textList.delete(txt);
-            //     }
-            // }
+        }
+        grabTargets(mob) {
+            return UnitManager_3.UnitManager.getCurrent().getNearest(mob.footPos(), !mob.mobData.isPlayer, this.targetCount);
         }
     }
-    exports.PopUpManager = PopUpManager;
+    exports.CometWand = CometWand;
 });
 /** @module GameScene */
-define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "Mob", "agents/PlayerAgents", "core/UnitManager", "core/MobData"], function (require, exports, Events, Phaser, Mob_3, PlayerAgents, UnitManager_2, MobData_1) {
+define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "Mob", "agents/PlayerAgents", "core/UnitManager", "core/MobData", "Weapons/Stuff"], function (require, exports, Events, Phaser, Mob_3, PlayerAgents, UnitManager_4, MobData_1, Stuff_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     Events = __importStar(Events);
@@ -2337,8 +2477,8 @@ define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "M
             this.load.spritesheet('elf', 'assets/forestElfMyst.png', { frameWidth: 32, frameHeight: 32, endFrame: 3 });
         }
         create() {
-            UnitManager_2.UnitManager.resetScene(this);
-            this.unitMgr = UnitManager_2.UnitManager.getCurrent();
+            UnitManager_4.UnitManager.resetScene(this);
+            this.unitMgr = UnitManager_4.UnitManager.getCurrent();
             this.map = this.make.tilemap({ key: 'overworld' });
             this.tiles = this.map.addTilesetImage('Grass_Overworld', 'Grass_Overworld');
             this.terrainLayer = this.map.createStaticLayer('Terrain', this.tiles, 0, 0);
@@ -2348,18 +2488,20 @@ define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "M
                 'idleAnim': 'move',
                 'moveAnim': 'move',
                 'deadAnim': 'move',
-                'isPlayer': true,
-                'backendData': new MobData_1.MobData({ name: 'testGirl' }),
+                'backendData': new MobData_1.MobData({ name: 'testGirl', 'isPlayer': true }),
                 'agent': PlayerAgents.Simple,
             });
+            girl.mobData.weaponRight = new Stuff_1.CometWand();
+            girl.mobData.currentWeapon = girl.mobData.weaponRight;
+            girl.mobData.addListener(girl.mobData.weaponRight);
             this.add.existing(girl);
             let woodlog = new Mob_3.Mob(this, 300, 200, 'char_sheet_forestelf_myst', {
                 'idleAnim': 'move',
                 'moveAnim': 'move',
                 'deadAnim': 'move',
-                'isPlayer': false,
-                'backendData': new MobData_1.MobData({ name: 'woodLog' }),
-                'agent': PlayerAgents.Simple,
+                'backendData': new MobData_1.MobData({ name: 'woodLog', 'isPlayer': false }),
+                // 'agent': PlayerAgents.Simple,
+                'agent': null,
             });
             this.add.existing(woodlog);
         }
@@ -2368,14 +2510,14 @@ define("ExampleScene", ["require", "exports", "Events/EventSystem", "Phaser", "M
             this.unitMgr.update(dt / 1000.0);
             // for(let i = 0; i < 3; i++)
             // {
-            //     PopUpManager.getSingleton().addText('test', 1.0, 128 * (Math.random() * 2 - 1), -256, 0.0, 512, Math.random() * 500 + 100, Math.random() * 300 + 100);
+            //     PopUpManager.getSingleton().addText('test', Math.random() * 500 + 100, Math.random() * 300 + 100, new Phaser.Display.Color(255, 255, 255, 255), 1.0, 128 * (Math.random() * 2 - 1), -256, 0.0, 512);
             // }
         }
     }
     exports.ExampleScene = ExampleScene;
 });
 /** @module GameScene */
-define("SimpleGame", ["require", "exports", "ExampleScene", "DynamicLoader/DynamicLoaderScene", "UI/PopUpManager"], function (require, exports, ExampleScene_1, DynamicLoaderScene_3, PopUpManager_1) {
+define("SimpleGame", ["require", "exports", "ExampleScene", "DynamicLoader/DynamicLoaderScene", "UI/PopUpManager"], function (require, exports, ExampleScene_1, DynamicLoaderScene_3, PopUpManager_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class InitPhaser {
@@ -2393,7 +2535,7 @@ define("SimpleGame", ["require", "exports", "ExampleScene", "DynamicLoader/Dynam
             };
             this.gameRef = new Phaser.Game(config);
             this.gameRef.scene.add('DynamicLoaderScene', DynamicLoaderScene_3.DynamicLoaderScene.getSingleton(), true);
-            this.gameRef.scene.add('PopupManagerScene', PopUpManager_1.PopUpManager.getSingleton(), true);
+            this.gameRef.scene.add('PopupManagerScene', PopUpManager_2.PopUpManager.getSingleton(), true);
         }
     }
     exports.InitPhaser = InitPhaser;
@@ -2416,6 +2558,11 @@ define("core/BattleMonitor", ["require", "exports"], function (require, exports)
     class BattleMonitor {
     }
     exports.BattleMonitor = BattleMonitor;
+});
+/** @module Helper */
+define("core/Helper", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
 });
 // /** @module Core */
 // /**
