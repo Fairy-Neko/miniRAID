@@ -1,13 +1,12 @@
 /** @module Weapons */
 
-import { Weapon, WeaponType, WeaponSubType } from '../core/EquipmentCore'
-import { mRTypes } from '../core/mRTypes'
-import { MobData } from '../core/MobData';
-import { Mob } from '../Mob';
-import { UnitManager } from '../core/UnitManager';
-import { Spell, SpellFlags } from '../GameObjects/Spell';
-import { Projectile } from '../GameObjects/Projectile';
-import { getRandomInt } from '../core/Helper';
+import { Weapon, WeaponType, WeaponSubType } from '../Engine/Core/EquipmentCore'
+import { MobData } from '../Engine/Core/MobData';
+import { Mob } from '../Engine/GameObjects/Mob';
+import { UnitManager } from '../Engine/Core/UnitManager';
+import { Spell, SpellFlags } from '../Engine/GameObjects/Spell';
+import { Projectile } from '../Engine/GameObjects/Projectile';
+import { getRandomInt } from '../Engine/Core/Helper';
 
 export class CometWand extends Weapon
 {
@@ -39,7 +38,7 @@ export class CometWand extends Weapon
     {
         let targetMob = target[0];
         new Projectile(source.x, source.y, 'img_iced_fx', {
-            'info': { 'name': this.name, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.isDamage]) },
+            'info': { 'name': this.name, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },
             'source': source,
             'target': targetMob,
             'speed': 250,

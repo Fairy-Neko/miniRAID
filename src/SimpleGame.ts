@@ -1,25 +1,25 @@
 /** @module GameScene */
 
-import {BattleScene} from './scenes/BattleScene'
-import {DynamicLoaderScene} from './DynamicLoader/DynamicLoaderScene'
-import { PopUpManager } from './UI/PopUpManager';
+import { TestScene } from './TestScene'
+import { DynamicLoaderScene } from './Engine/DynamicLoader/DynamicLoaderScene'
+import { PopUpManager } from './Engine/UI/PopUpManager';
 
 export class InitPhaser 
 {
-    static gameRef:Phaser.Game;
+    static gameRef: Phaser.Game;
 
     public static initGame() 
     {
-        let config:Phaser.Types.Core.GameConfig = 
+        let config: Phaser.Types.Core.GameConfig =
         {
             type: Phaser.AUTO,
             width: 1024,
             height: 640,
-            scene: [BattleScene],
+            scene: [TestScene],
             banner: true,
-            title: 'Playground',
+            title: 'miniRAID',
             url: 'https://updatestage.littlegames.app',
-            version: '-1.0',
+            version: 'er. CoreDev',
             parent: 'GameFrame',
         }
 

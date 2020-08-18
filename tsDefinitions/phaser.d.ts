@@ -1,22 +1,24 @@
-declare type DataEachCallback = (parent: any, key: string, value: any, ...args: any[])=>void;
+declare type DataEachCallback = (parent: any, key: string, value: any, ...args: any[]) => void;
 
-declare type ContentLoadedCallback = ()=>void;
+declare type ContentLoadedCallback = () => void;
 
-declare type CreateCallback = (bob: Phaser.GameObjects.Bob, index: integer)=>void;
+declare type CreateCallback = (bob: Phaser.GameObjects.Bob, index: integer) => void;
 
-declare type EachContainerCallback<I> = (item: any, ...args: any[])=>void;
+declare type EachContainerCallback<I> = (item: any, ...args: any[]) => void;
 
-declare type LightForEach = (light: Phaser.GameObjects.Light)=>void;
+declare type LightForEach = (light: Phaser.GameObjects.Light) => void;
 
 /**
  * A custom function that will be responsible for wrapping the text.
  */
-declare type TextStyleWordWrapCallback = (text: string, textObject: Phaser.GameObjects.Text)=>void;
+declare type TextStyleWordWrapCallback = (text: string, textObject: Phaser.GameObjects.Text) => void;
 
-declare type CenterFunction = (triangle: Phaser.Geom.Triangle)=>void;
+declare type CenterFunction = (triangle: Phaser.Geom.Triangle) => void;
 
-declare namespace Phaser {
-    namespace Actions {
+declare namespace Phaser
+{
+    namespace Actions
+    {
         /**
          * Takes an array of Game Objects, or any objects that have a public `angle` property,
          * and then adds the given value to each of their `angle` properties.
@@ -627,7 +629,8 @@ declare namespace Phaser {
 
     }
 
-    namespace Animations {
+    namespace Animations
+    {
         /**
          * A Frame based Animation.
          * 
@@ -637,7 +640,8 @@ declare namespace Phaser {
          * Game Objects have the Animation Component, which are like playheads to global Animations (these objects)
          * So multiple Game Objects can have playheads all pointing to this one Animation instance.
          */
-        class Animation extends Phaser.Events.EventEmitter {
+        class Animation extends Phaser.Events.EventEmitter
+        {
             /**
              * 
              * @param manager A reference to the global Animation Manager
@@ -858,7 +862,8 @@ declare namespace Phaser {
          * 
          * AnimationFrames are generated automatically by the Animation class.
          */
-        class AnimationFrame {
+        class AnimationFrame
+        {
             /**
              * 
              * @param textureKey The key of the Texture this AnimationFrame uses.
@@ -941,7 +946,8 @@ declare namespace Phaser {
          * 
          * Sprites and other Game Objects get the data they need from the AnimationManager.
          */
-        class AnimationManager extends Phaser.Events.EventEmitter {
+        class AnimationManager extends Phaser.Events.EventEmitter
+        {
             /**
              * 
              * @param game A reference to the Phaser.Game instance.
@@ -1102,7 +1108,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Events {
+        namespace Events
+        {
             /**
              * The Add Animation Event.
              * 
@@ -1290,7 +1297,8 @@ declare namespace Phaser {
 
     }
 
-    namespace Cache {
+    namespace Cache
+    {
         /**
          * The BaseCache is a base Cache class that can be used for storing references to any kind of data.
          * 
@@ -1298,7 +1306,8 @@ declare namespace Phaser {
          * 
          * Keys are string-based.
          */
-        class BaseCache {
+        class BaseCache
+        {
             /**
              * The Map in which the cache objects are stored.
              * 
@@ -1368,7 +1377,8 @@ declare namespace Phaser {
          * it has loaded. The manager itself doesn't store any files, but instead owns multiple BaseCache
          * instances, one per type of file. You can also add your own custom caches.
          */
-        class CacheManager {
+        class CacheManager
+        {
             /**
              * 
              * @param game A reference to the Phaser.Game instance that owns this CacheManager.
@@ -1441,7 +1451,7 @@ declare namespace Phaser {
              * An object that contains your own custom BaseCache entries.
              * Add to this via the `addCustom` method.
              */
-            custom: {[key: string]: Phaser.Cache.BaseCache};
+            custom: { [key: string]: Phaser.Cache.BaseCache };
 
             /**
              * Add your own custom Cache for storing your own files.
@@ -1458,7 +1468,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Events {
+        namespace Events
+        {
             /**
              * The Cache Add Event.
              * 
@@ -1477,8 +1488,10 @@ declare namespace Phaser {
 
     }
 
-    namespace Cameras {
-        namespace Scene2D {
+    namespace Cameras
+    {
+        namespace Scene2D
+        {
             /**
              * A Base Camera class.
              * 
@@ -1506,7 +1519,8 @@ declare namespace Phaser {
              * you to isolate special effects as needed. Therefore the 'since' values for properties of this class relate
              * to when they were added to the Camera class.
              */
-            class BaseCamera extends Phaser.Events.EventEmitter implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.Visible {
+            class BaseCamera extends Phaser.Events.EventEmitter implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.Visible
+            {
                 /**
                  * 
                  * @param x The x position of the Camera, relative to the top-left of the game canvas.
@@ -2120,7 +2134,8 @@ declare namespace Phaser {
              * 
              * A Camera also has built-in special effects including Fade, Flash and Camera Shake.
              */
-            class Camera extends Phaser.Cameras.Scene2D.BaseCamera implements Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.Tint {
+            class Camera extends Phaser.Cameras.Scene2D.BaseCamera implements Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.Tint
+            {
                 /**
                  * 
                  * @param x The x position of the Camera, relative to the top-left of the game canvas.
@@ -2739,7 +2754,8 @@ declare namespace Phaser {
              * 
              * A Camera also has built-in special effects including Fade, Flash, Camera Shake, Pan and Zoom.
              */
-            class CameraManager {
+            class CameraManager
+            {
                 /**
                  * 
                  * @param scene The Scene that owns the Camera Manager plugin.
@@ -2924,7 +2940,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Effects {
+            namespace Effects
+            {
                 /**
                  * A Camera Fade effect.
                  * 
@@ -2936,7 +2953,8 @@ declare namespace Phaser {
                  * The effect will dispatch several events on the Camera itself and you can also specify an `onUpdate` callback,
                  * which is invoked each frame for the duration of the effect, if required.
                  */
-                class Fade {
+                class Fade
+                {
                     /**
                      * 
                      * @param camera The camera this effect is acting upon.
@@ -3040,7 +3058,8 @@ declare namespace Phaser {
                  * The effect will dispatch several events on the Camera itself and you can also specify an `onUpdate` callback,
                  * which is invoked each frame for the duration of the effect, if required.
                  */
-                class Flash {
+                class Flash
+                {
                     /**
                      * 
                      * @param camera The camera this effect is acting upon.
@@ -3130,7 +3149,8 @@ declare namespace Phaser {
                  * The effect will dispatch several events on the Camera itself and you can also specify an `onUpdate` callback,
                  * which is invoked each frame for the duration of the effect if required.
                  */
-                class Pan {
+                class Pan
+                {
                     /**
                      * 
                      * @param camera The camera this effect is acting upon.
@@ -3228,7 +3248,8 @@ declare namespace Phaser {
                  * The effect will dispatch several events on the Camera itself and you can also specify an `onUpdate` callback,
                  * which is invoked each frame for the duration of the effect if required.
                  */
-                class Shake {
+                class Shake
+                {
                     /**
                      * 
                      * @param camera The camera this effect is acting upon.
@@ -3311,7 +3332,8 @@ declare namespace Phaser {
                  * The effect will dispatch several events on the Camera itself and you can also specify an `onUpdate` callback,
                  * which is invoked each frame for the duration of the effect if required.
                  */
-                class Zoom {
+                class Zoom
+                {
                     /**
                      * 
                      * @param camera The camera this effect is acting upon.
@@ -3393,7 +3415,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Events {
+            namespace Events
+            {
                 /**
                  * The Destroy Camera Event.
                  * 
@@ -3517,7 +3540,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Controls {
+        namespace Controls
+        {
             /**
              * A Fixed Key Camera Control.
              * 
@@ -3536,7 +3560,8 @@ declare namespace Phaser {
              * 
              * You must call the `update` method of this controller every frame.
              */
-            class FixedKeyControl {
+            class FixedKeyControl
+            {
                 /**
                  * 
                  * @param config The Fixed Key Control configuration object.
@@ -3653,7 +3678,8 @@ declare namespace Phaser {
              * 
              * You must call the `update` method of this controller every frame.
              */
-            class SmoothedKeyControl {
+            class SmoothedKeyControl
+            {
                 /**
                  * 
                  * @param config The Smoothed Key Control configuration object.
@@ -3835,7 +3861,8 @@ declare namespace Phaser {
      * You should generally avoid accessing any of the systems created by Game, and instead use those
      * made available to you via the Phaser.Scene Systems class instead.
      */
-    class Game {
+    class Game
+    {
         /**
          * 
          * @param GameConfig The configuration object for your Phaser Game instance.
@@ -4081,11 +4108,13 @@ declare namespace Phaser {
 
     }
 
-    namespace Core {
+    namespace Core
+    {
         /**
          * The active game configuration settings, parsed from a {@link Phaser.Types.Core.GameConfig} object.
          */
-        class Config {
+        class Config
+        {
             /**
              * 
              * @param GameConfig The configuration object for your Phaser Game instance.
@@ -4505,7 +4534,8 @@ declare namespace Phaser {
          */
         function DebugHeader(game: Phaser.Game): void;
 
-        namespace Events {
+        namespace Events
+        {
             /**
              * The Game Blur Event.
              * 
@@ -4632,7 +4662,8 @@ declare namespace Phaser {
         /**
          * [description]
          */
-        class TimeStep {
+        class TimeStep
+        {
             /**
              * 
              * @param game A reference to the Phaser.Game instance that owns this Time Step.
@@ -4864,14 +4895,16 @@ declare namespace Phaser {
 
     }
 
-    namespace Create {
+    namespace Create
+    {
         /**
          * [description]
          * @param config [description]
          */
         function GenerateTexture(config: Phaser.Types.Create.GenerateTextureConfig): HTMLCanvasElement;
 
-        namespace Palettes {
+        namespace Palettes
+        {
             /**
              * A 16 color palette by [Arne](http://androidarts.com/palette/16pal.htm)
              */
@@ -4901,11 +4934,13 @@ declare namespace Phaser {
 
     }
 
-    namespace Curves {
+    namespace Curves
+    {
         /**
          * A higher-order Bézier curve constructed of four points.
          */
-        class CubicBezier extends Phaser.Curves.Curve {
+        class CubicBezier extends Phaser.Curves.Curve
+        {
             /**
              * 
              * @param p0 Start point, or an array of point pairs.
@@ -4979,7 +5014,8 @@ declare namespace Phaser {
          * 
          * Based on the three.js Curve classes created by [zz85](http://www.lab4games.net/zz85/blog)
          */
-        class Curve {
+        class Curve
+        {
             /**
              * 
              * @param type [description]
@@ -5132,7 +5168,8 @@ declare namespace Phaser {
          * 
          * See https://en.wikipedia.org/wiki/Elliptic_curve for more details.
          */
-        class Ellipse extends Phaser.Curves.Curve {
+        class Ellipse extends Phaser.Curves.Curve
+        {
             /**
              * 
              * @param x The x coordinate of the ellipse, or an Ellipse Curve configuration object. Default 0.
@@ -5279,7 +5316,8 @@ declare namespace Phaser {
         /**
          * A LineCurve is a "curve" comprising exactly two points (a line segment).
          */
-        class Line extends Phaser.Curves.Curve {
+        class Line extends Phaser.Curves.Curve
+        {
             /**
              * 
              * @param p0 The first endpoint.
@@ -5359,7 +5397,8 @@ declare namespace Phaser {
         /**
          * A MoveTo Curve is a very simple curve consisting of only a single point. Its intended use is to move the ending point in a Path.
          */
-        class MoveTo {
+        class MoveTo
+        {
             /**
              * 
              * @param x `x` pixel coordinate.
@@ -5415,7 +5454,8 @@ declare namespace Phaser {
          * A Curve in a Path does not have to start where the previous Curve ends - that is to say, a Path does not
          * have to be an uninterrupted curve. Only the order of the Curves influences the actual points on the Path.
          */
-        class Path {
+        class Path
+        {
             /**
              * 
              * @param x The X coordinate of the Path's starting point or a {@link Phaser.Types.Curves.JSONPath}. Default 0.
@@ -5626,7 +5666,8 @@ declare namespace Phaser {
         /**
          * [description]
          */
-        class QuadraticBezier extends Phaser.Curves.Curve {
+        class QuadraticBezier extends Phaser.Curves.Curve
+        {
             /**
              * 
              * @param p0 Start point, or an array of point pairs.
@@ -5692,7 +5733,8 @@ declare namespace Phaser {
         /**
          * [description]
          */
-        class Spline extends Phaser.Curves.Curve {
+        class Spline extends Phaser.Curves.Curve
+        {
             /**
              * 
              * @param points [description]
@@ -5751,13 +5793,15 @@ declare namespace Phaser {
 
     }
 
-    namespace Data {
+    namespace Data
+    {
         /**
          * The Data Manager Component features a means to store pieces of data specific to a Game Object, System or Plugin.
          * You can then search, query it, and retrieve the data. The parent must either extend EventEmitter,
          * or have a property called `events` that is an instance of it.
          */
-        class DataManager {
+        class DataManager
+        {
             /**
              * 
              * @param parent The object that this DataManager belongs to.
@@ -5778,7 +5822,7 @@ declare namespace Phaser {
             /**
              * The data list.
              */
-            list: {[key: string]:  any};
+            list: { [key: string]: any };
 
             /**
              * The public values list. You can use this to access anything you have stored
@@ -5800,7 +5844,7 @@ declare namespace Phaser {
              * Do not modify this object directly. Adding properties directly to this object will not
              * emit any events. Always use `DataManager.set` to create new items the first time around.
              */
-            values: {[key: string]:  any};
+            values: { [key: string]: any };
 
             /**
              * Retrieves the value for the given key, or undefined if it doesn't exist.
@@ -5831,13 +5875,13 @@ declare namespace Phaser {
             /**
              * Retrieves all data values in a new object.
              */
-            getAll(): {[key: string]:  any};
+            getAll(): { [key: string]: any };
 
             /**
              * Queries the DataManager for the values of keys matching the given regular expression.
              * @param search A regular expression object. If a non-RegExp object obj is passed, it is implicitly converted to a RegExp by using new RegExp(obj).
              */
-            query(search: RegExp): {[key: string]:  any};
+            query(search: RegExp): { [key: string]: any };
 
             /**
              * Sets a value for the given key. If the key doesn't already exist in the Data Manager then it is created.
@@ -5893,7 +5937,7 @@ declare namespace Phaser {
              * @param data The data to merge.
              * @param overwrite Whether to overwrite existing data. Defaults to true. Default true.
              */
-            merge(data: {[key: string]:  any}, overwrite?: boolean): Phaser.Data.DataManager;
+            merge(data: { [key: string]: any }, overwrite?: boolean): Phaser.Data.DataManager;
 
             /**
              * Remove the value for the given key.
@@ -5960,7 +6004,8 @@ declare namespace Phaser {
          * You can then search, query it, and retrieve the data. The parent must either extend EventEmitter,
          * or have a property called `events` that is an instance of it.
          */
-        class DataManagerPlugin extends Phaser.Data.DataManager {
+        class DataManagerPlugin extends Phaser.Data.DataManager
+        {
             /**
              * 
              * @param scene A reference to the Scene that this DataManager belongs to.
@@ -5985,7 +6030,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Events {
+        namespace Events
+        {
             /**
              * The Change Data Event.
              * 
@@ -6035,7 +6081,8 @@ declare namespace Phaser {
 
     }
 
-    namespace Device {
+    namespace Device
+    {
         /**
          * Determines the audio playback capabilities of the device running this Phaser Game instance.
          * These values are read-only and populated during the boot sequence of the game.
@@ -6429,8 +6476,10 @@ declare namespace Phaser {
         canvasFeatures: Phaser.Device.CanvasFeatures;
     };
 
-    namespace Display {
-        namespace Align {
+    namespace Display
+    {
+        namespace Align
+        {
             /**
              * A constant representing a top-left alignment or position.
              */
@@ -6496,7 +6545,8 @@ declare namespace Phaser {
              */
             const BOTTOM_RIGHT: integer;
 
-            namespace In {
+            namespace In
+            {
                 /**
                  * Takes given Game Object and aligns it so that it is positioned in the bottom center of the other.
                  * @param gameObject The Game Object that will be positioned.
@@ -6591,7 +6641,8 @@ declare namespace Phaser {
 
             }
 
-            namespace To {
+            namespace To
+            {
                 /**
                  * Takes given Game Object and aligns it so that it is positioned next to the bottom center position of the other.
                  * @param gameObject The Game Object that will be positioned.
@@ -6704,7 +6755,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Bounds {
+        namespace Bounds
+        {
             /**
              * Positions the Game Object so that it is centered on the given coordinates.
              * @param gameObject The Game Object that will be re-positioned.
@@ -6809,8 +6861,10 @@ declare namespace Phaser {
 
         }
 
-        namespace Canvas {
-            namespace CanvasInterpolation {
+        namespace Canvas
+        {
+            namespace CanvasInterpolation
+            {
                 /**
                  * Sets the CSS image-rendering property on the given canvas to be 'crisp' (aka 'optimize contrast' on webkit).
                  * @param canvas The canvas object to have the style set on.
@@ -6833,7 +6887,8 @@ declare namespace Phaser {
              * This singleton is instantiated as soon as Phaser loads, before a Phaser.Game instance has even been created.
              * Which means all instances of Phaser Games on the same page can share the one single pool.
              */
-            namespace CanvasPool {
+            namespace CanvasPool
+            {
                 /**
                  * Creates a new Canvas DOM element, or pulls one from the pool if free.
                  * @param parent The parent of the Canvas object.
@@ -6895,7 +6950,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Smoothing {
+            namespace Smoothing
+            {
                 /**
                  * Gets the Smoothing Enabled vendor prefix being used on the given context, or null if not set.
                  * @param context The canvas context to check.
@@ -6947,8 +7003,10 @@ declare namespace Phaser {
 
         }
 
-        namespace Color {
-            namespace Interpolate {
+        namespace Color
+        {
+            namespace Interpolate
+            {
                 /**
                  * Interpolates between the two given color ranges over the length supplied.
                  * @param r1 Red value.
@@ -6989,7 +7047,8 @@ declare namespace Phaser {
         /**
          * The Color class holds a single color value and allows for easy modification and reading of it.
          */
-        class Color {
+        class Color
+        {
             /**
              * 
              * @param red The red color value. A number between 0 and 255. Default 0.
@@ -7311,7 +7370,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Masks {
+        namespace Masks
+        {
             /**
              * A Bitmap Mask combines the alpha (opacity) of a masked pixel with the alpha of another pixel.
              * Unlike the Geometry Mask, which is a clipping path, a Bitmap Mask behaves like an alpha mask,
@@ -7338,7 +7398,8 @@ declare namespace Phaser {
              * visible. Adding the underlying Game Object to a Scene will not cause any problems - it will
              * render as a normal Game Object and will also serve as a mask.
              */
-            class BitmapMask {
+            class BitmapMask
+            {
                 /**
                  * 
                  * @param scene The Scene which this Bitmap Mask will be used in.
@@ -7463,7 +7524,8 @@ declare namespace Phaser {
              * in front of all masked objects which has its own visual properties and, naturally, respects the camera's
              * visual properties, but isn't affected by and doesn't follow the masked objects by itself.
              */
-            class GeometryMask {
+            class GeometryMask
+            {
                 /**
                  * 
                  * @param scene This parameter is not used.
@@ -7563,7 +7625,8 @@ declare namespace Phaser {
          * Default fragment and vertex source is used if not provided in the constructor, setting-up a basic shader,
          * suitable for debug rendering.
          */
-        class BaseShader {
+        class BaseShader
+        {
             /**
              * 
              * @param key The key of this shader. Must be unique within the shader cache.
@@ -7597,7 +7660,8 @@ declare namespace Phaser {
 
     }
 
-    namespace DOM {
+    namespace DOM
+    {
         /**
          * Adds the given element to the DOM. If a parent is provided the element is added as a child of the parent, providing it was able to access it.
          * If no parent was given it falls back to using `document.body`.
@@ -7654,7 +7718,8 @@ declare namespace Phaser {
          * Abstracts away the use of RAF or setTimeOut for the core game update loop.
          * This is invoked automatically by the Phaser.Game instance.
          */
-        class RequestAnimationFrame {
+        class RequestAnimationFrame
+        {
             /**
              * True if RequestAnimationFrame is running, otherwise false.
              */
@@ -7718,11 +7783,13 @@ declare namespace Phaser {
 
     }
 
-    namespace Events {
+    namespace Events
+    {
         /**
          * EventEmitter is a Scene Systems plugin compatible version of eventemitter3.
          */
-        class EventEmitter {
+        class EventEmitter
+        {
             /**
              * Removes all listeners.
              */
@@ -7812,10 +7879,12 @@ declare namespace Phaser {
     /**
      * Phaser Blend Modes to CSS Blend Modes Map.
      */
-    enum CSSBlendModes {
+    enum CSSBlendModes
+    {
     }
 
-    namespace GameObjects {
+    namespace GameObjects
+    {
         /**
          * BitmapText objects work by taking a texture file and an XML or JSON file that describes the font structure.
          * 
@@ -7843,7 +7912,8 @@ declare namespace Phaser {
          * For most use cases it is recommended to use XML. If you wish to use JSON, the formatting should be equal to the result of
          * converting a valid XML file through the popular X2JS library. An online tool for conversion can be found here: http://codebeautify.org/xmltojson
          */
-        class DynamicBitmapText extends Phaser.GameObjects.BitmapText {
+        class DynamicBitmapText extends Phaser.GameObjects.BitmapText
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. It can only belong to one Scene at any given time.
@@ -8540,7 +8610,8 @@ declare namespace Phaser {
 
         }
 
-        namespace RetroFont {
+        namespace RetroFont
+        {
             /**
              * Text Set 1 =  !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~
              */
@@ -8627,7 +8698,8 @@ declare namespace Phaser {
          * For most use cases it is recommended to use XML. If you wish to use JSON, the formatting should be equal to the result of
          * converting a valid XML file through the popular X2JS library. An online tool for conversion can be found here: {@link http://codebeautify.org/xmltojson|http://codebeautify.org/xmltojson}
          */
-        class BitmapText extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Texture, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible {
+        class BitmapText extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Texture, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. It can only belong to one Scene at any given time.
@@ -9431,7 +9503,8 @@ declare namespace Phaser {
          * If you have a need to blast a large volume of frames around the screen then Blitter objects are well worth
          * investigating. They are especially useful for using as a base for your own special effects systems.
          */
-        class Blitter extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.Texture, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible {
+        class Blitter extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.Texture, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. It can only belong to one Scene at any given time.
@@ -10068,7 +10141,8 @@ declare namespace Phaser {
          * You can manipulate Bob objects directly from your game code, but the creation and destruction of them should be
          * handled via the Blitter parent.
          */
-        class Bob {
+        class Bob
+        {
             /**
              * 
              * @param blitter The parent Blitter object is responsible for updating this Bob.
@@ -10217,12 +10291,14 @@ declare namespace Phaser {
          */
         function BuildGameObjectAnimation(sprite: Phaser.GameObjects.Sprite, config: object): Phaser.GameObjects.Sprite;
 
-        namespace Components {
+        namespace Components
+        {
             /**
              * Provides methods used for setting the alpha properties of a Game Object.
              * Should be applied as a mixin and not used directly.
              */
-            interface Alpha {
+            interface Alpha
+            {
                 /**
                  * Clears all alpha values associated with this Game Object.
                  * 
@@ -10269,7 +10345,8 @@ declare namespace Phaser {
                 alphaBottomRight: number;
             }
 
-            interface Animation {
+            interface Animation
+            {
                 /**
                  * The Game Object to which this animation controller belongs.
                  */
@@ -10553,7 +10630,8 @@ declare namespace Phaser {
              * Provides methods used for setting the blend mode of a Game Object.
              * Should be applied as a mixin and not used directly.
              */
-            interface BlendMode {
+            interface BlendMode
+            {
                 /**
                  * Sets the Blend Mode being used by this Game Object.
                  * 
@@ -10605,7 +10683,8 @@ declare namespace Phaser {
              * Provides methods used for calculating and setting the size of a non-Frame based Game Object.
              * Should be applied as a mixin and not used directly.
              */
-            interface ComputedSize {
+            interface ComputedSize
+            {
                 /**
                  * The native (un-scaled) width of this Game Object.
                  * 
@@ -10665,7 +10744,8 @@ declare namespace Phaser {
             /**
              * Provides methods used for getting and setting the texture of a Game Object.
              */
-            interface Crop {
+            interface Crop
+            {
                 /**
                  * The Texture this Game Object is using to render with.
                  */
@@ -10714,7 +10794,8 @@ declare namespace Phaser {
              * Provides methods used for setting the depth of a Game Object.
              * Should be applied as a mixin and not used directly.
              */
-            interface Depth {
+            interface Depth
+            {
                 /**
                  * The depth of this Game Object within the Scene.
                  * 
@@ -10746,7 +10827,8 @@ declare namespace Phaser {
              * Provides methods used for visually flipping a Game Object.
              * Should be applied as a mixin and not used directly.
              */
-            interface Flip {
+            interface Flip
+            {
                 /**
                  * The horizontally flipped state of the Game Object.
                  * 
@@ -10809,7 +10891,8 @@ declare namespace Phaser {
              * Provides methods used for obtaining the bounds of a Game Object.
              * Should be applied as a mixin and not used directly.
              */
-            interface GetBounds {
+            interface GetBounds
+            {
                 /**
                  * Gets the center coordinate of this Game Object, regardless of origin.
                  * The returned point is calculated in local space and does not factor in any parent containers
@@ -10883,7 +10966,8 @@ declare namespace Phaser {
             /**
              * Provides methods used for getting and setting the mask of a Game Object.
              */
-            interface Mask {
+            interface Mask
+            {
                 /**
                  * The Mask this Game Object is using during render.
                  */
@@ -10944,7 +11028,8 @@ declare namespace Phaser {
              * Display values contain the calculated pixel values.
              * Should be applied as a mixin and not used directly.
              */
-            interface Origin {
+            interface Origin
+            {
                 /**
                  * The horizontal origin of this Game Object.
                  * The origin maps the relationship between the size and position of the Game Object.
@@ -11001,7 +11086,8 @@ declare namespace Phaser {
              * Provides methods used for managing a Game Object following a Path.
              * Should be applied as a mixin and not used directly.
              */
-            interface PathFollower {
+            interface PathFollower
+            {
                 /**
                  * The Path this PathFollower is following. It can only follow one Path at a time.
                  */
@@ -11064,7 +11150,8 @@ declare namespace Phaser {
             /**
              * Provides methods used for setting the WebGL rendering pipeline of a Game Object.
              */
-            interface Pipeline {
+            interface Pipeline
+            {
                 /**
                  * The initial WebGL pipeline of this Game Object.
                  */
@@ -11097,7 +11184,8 @@ declare namespace Phaser {
             /**
              * Provides methods used for getting and setting the Scroll Factor of a Game Object.
              */
-            interface ScrollFactor {
+            interface ScrollFactor
+            {
                 /**
                  * The horizontal scroll factor of this Game Object.
                  * 
@@ -11159,7 +11247,8 @@ declare namespace Phaser {
             /**
              * Provides methods used for getting and setting the size of a Game Object.
              */
-            interface Size {
+            interface Size
+            {
                 /**
                  * The native (un-scaled) width of this Game Object.
                  * 
@@ -11232,7 +11321,8 @@ declare namespace Phaser {
             /**
              * Provides methods used for getting and setting the texture of a Game Object.
              */
-            interface Texture {
+            interface Texture
+            {
                 /**
                  * The Texture this Game Object is using to render with.
                  */
@@ -11268,7 +11358,8 @@ declare namespace Phaser {
             /**
              * Provides methods used for getting and setting the texture of a Game Object.
              */
-            interface TextureCrop {
+            interface TextureCrop
+            {
                 /**
                  * The Texture this Game Object is using to render with.
                  */
@@ -11339,7 +11430,8 @@ declare namespace Phaser {
              * Provides methods used for setting the tint of a Game Object.
              * Should be applied as a mixin and not used directly.
              */
-            interface Tint {
+            interface Tint
+            {
                 /**
                  * Fill or additive?
                  */
@@ -11429,13 +11521,15 @@ declare namespace Phaser {
              * 
              * This is typically extended further by Game Object specific implementations.
              */
-            interface ToJSON {
+            interface ToJSON
+            {
             }
 
             /**
              * Provides methods used for getting and setting the position, scale and rotation of a Game Object.
              */
-            interface Transform {
+            interface Transform
+            {
                 /**
                  * The x position of this Game Object.
                  */
@@ -11571,7 +11665,8 @@ declare namespace Phaser {
              * | 0 | 0 | 1  |
              * ```
              */
-            class TransformMatrix {
+            class TransformMatrix
+            {
                 /**
                  * 
                  * @param a The Scale X value. Default 1.
@@ -11827,7 +11922,8 @@ declare namespace Phaser {
              * Provides methods used for setting the visibility of a Game Object.
              * Should be applied as a mixin and not used directly.
              */
-            interface Visible {
+            interface Visible
+            {
                 /**
                  * The visible state of the Game Object.
                  * 
@@ -11880,7 +11976,8 @@ declare namespace Phaser {
          * flexible manner as those not within them. In short, don't use them for the sake of it. You pay a small cost
          * every time you create one, try to structure your game around avoiding that where possible.
          */
-        class Container extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.ComputedSize, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible {
+        class Container extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.ComputedSize, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -12864,7 +12961,8 @@ declare namespace Phaser {
          * UI. The choice is up to you, just remember that you're dealing with standard HTML and CSS floating over the top
          * of your game, and should treat it accordingly.
          */
-        class DOMElement extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible {
+        class DOMElement extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -13642,7 +13740,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Events {
+        namespace Events
+        {
             /**
              * The Game Object Destroy Event.
              * 
@@ -13671,7 +13770,8 @@ declare namespace Phaser {
          * Although this object has lots of properties such as Alpha, Blend Mode and Tint, none of
          * them are used during rendering unless you take advantage of them in your own render code.
          */
-        class Extern extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.Texture, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible {
+        class Extern extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.Texture, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -14349,7 +14449,8 @@ declare namespace Phaser {
          * You don't create GameObjects directly and they cannot be added to the display list.
          * Instead, use them as the base for your own custom classes.
          */
-        class GameObject extends Phaser.Events.EventEmitter {
+        class GameObject extends Phaser.Events.EventEmitter
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs.
@@ -14656,7 +14757,8 @@ declare namespace Phaser {
          * Game Objects directly register themselves with the Creator and inject their own creation
          * methods into the class.
          */
-        class GameObjectCreator {
+        class GameObjectCreator
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object Factory belongs.
@@ -14851,7 +14953,8 @@ declare namespace Phaser {
          * Game Objects directly register themselves with the Factory and inject their own creation
          * methods into the class.
          */
-        class GameObjectFactory {
+        class GameObjectFactory
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object Factory belongs.
@@ -15627,7 +15730,8 @@ declare namespace Phaser {
          * As you can tell, Graphics objects are a bit of a trade-off. While they are extremely useful, you need to be careful
          * in their complexity and quantity of them in your game.
          */
-        class Graphics extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible, Phaser.GameObjects.Components.ScrollFactor {
+        class Graphics extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible, Phaser.GameObjects.Components.ScrollFactor
+        {
             /**
              * 
              * @param scene The Scene to which this Graphics object belongs.
@@ -16583,7 +16687,8 @@ declare namespace Phaser {
          * 
          * Groups themselves aren't displayable, and can't be positioned, rotated, scaled, or hidden.
          */
-        class Group {
+        class Group
+        {
             /**
              * 
              * @param scene The scene this group belongs to.
@@ -16935,7 +17040,8 @@ declare namespace Phaser {
          * events and physics bodies, or be tweened, tinted or scrolled. The main difference between an
          * Image and a Sprite is that you cannot animate an Image as they do not have the Animation component.
          */
-        class Image extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.TextureCrop, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible {
+        class Image extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.TextureCrop, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -17825,7 +17931,8 @@ declare namespace Phaser {
          * 
          * They can also simply be used to represent a point light for your own purposes.
          */
-        class Light {
+        class Light
+        {
             /**
              * 
              * @param x The horizontal position of the light.
@@ -17937,7 +18044,8 @@ declare namespace Phaser {
          * 
          * Affects the rendering of Game Objects using the `Light2D` pipeline.
          */
-        class LightsManager {
+        class LightsManager
+        {
             /**
              * The pool of Lights.
              * 
@@ -18067,7 +18175,8 @@ declare namespace Phaser {
          * sprite.setPipeline('Light2D');
          * ```
          */
-        class LightsPlugin extends Phaser.GameObjects.LightsManager {
+        class LightsPlugin extends Phaser.GameObjects.LightsManager
+        {
             /**
              * 
              * @param scene The Scene that this Lights Plugin belongs to.
@@ -18101,7 +18210,8 @@ declare namespace Phaser {
         /**
          * A Mesh Game Object.
          */
-        class Mesh extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.Texture, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible, Phaser.GameObjects.Components.ScrollFactor {
+        class Mesh extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.Texture, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible, Phaser.GameObjects.Components.ScrollFactor
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -18716,13 +18826,15 @@ declare namespace Phaser {
 
         }
 
-        namespace Particles {
+        namespace Particles
+        {
             /**
              * A Particle Emitter property.
              * 
              * Facilitates changing Particle properties as they are emitted and throughout their lifetime.
              */
-            class EmitterOp {
+            class EmitterOp
+            {
                 /**
                  * 
                  * @param config Settings for the Particle Emitter that owns this property.
@@ -18919,7 +19031,8 @@ declare namespace Phaser {
              * 
              * This simulates the effect of gravity over large distances (as between planets, for example).
              */
-            class GravityWell {
+            class GravityWell
+            {
                 /**
                  * 
                  * @param x The x coordinate of the Gravity Well, in world space. Default 0.
@@ -18969,7 +19082,8 @@ declare namespace Phaser {
              * A Particle is a simple Game Object controlled by a Particle Emitter and Manager, and rendered by the Manager.
              * It uses its own lightweight physics system, and can interact only with its Emitter's bounds and zones.
              */
-            class Particle {
+            class Particle
+            {
                 /**
                  * 
                  * @param emitter The Emitter to which this Particle belongs.
@@ -19138,7 +19252,8 @@ declare namespace Phaser {
              * A particle emitter represents a single particle stream.
              * It controls a pool of {@link Phaser.GameObjects.Particles.Particle Particles} and is controlled by a {@link Phaser.GameObjects.Particles.ParticleEmitterManager Particle Emitter Manager}.
              */
-            class ParticleEmitter implements Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Visible {
+            class ParticleEmitter implements Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Visible
+            {
                 /**
                  * 
                  * @param manager The Emitter Manager this Emitter belongs to.
@@ -19917,7 +20032,8 @@ declare namespace Phaser {
             /**
              * A Particle Emitter Manager creates and controls {@link Phaser.GameObjects.Particles.ParticleEmitter Particle Emitters} and {@link Phaser.GameObjects.Particles.GravityWell Gravity Wells}.
              */
-            class ParticleEmitterManager extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible {
+            class ParticleEmitterManager extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible
+            {
                 /**
                  * 
                  * @param scene The Scene to which this Emitter Manager belongs.
@@ -20328,7 +20444,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Zones {
+            namespace Zones
+            {
                 /**
                  * A Death Zone.
                  * 
@@ -20337,7 +20454,8 @@ declare namespace Phaser {
                  * The zone consists of a `source` which could be a Geometric shape, such as a Rectangle or Ellipse, or your own
                  * object as long as it includes a `contains` method for which the Particles can be tested against.
                  */
-                class DeathZone {
+                class DeathZone
+                {
                     /**
                      * 
                      * @param source An object instance that has a `contains` method that returns a boolean when given `x` and `y` arguments.
@@ -20368,7 +20486,8 @@ declare namespace Phaser {
                 /**
                  * A zone that places particles on a shape's edges.
                  */
-                class EdgeZone {
+                class EdgeZone
+                {
                     /**
                      * 
                      * @param source An object instance with a `getPoints(quantity, stepRate)` method returning an array of points.
@@ -20439,7 +20558,8 @@ declare namespace Phaser {
                 /**
                  * A zone that places particles randomly within a shape's area.
                  */
-                class RandomZone {
+                class RandomZone
+                {
                     /**
                      * 
                      * @param source An object instance with a `getRandomPoint(point)` method.
@@ -20475,7 +20595,8 @@ declare namespace Phaser {
          * to finish, forwards or backwards, or from any given point on the Path to its end. They can optionally rotate
          * to face the direction of the path, be offset from the path coordinates or rotate independently of the Path.
          */
-        class PathFollower extends Phaser.GameObjects.Sprite implements Phaser.GameObjects.Components.PathFollower {
+        class PathFollower extends Phaser.GameObjects.Sprite implements Phaser.GameObjects.Components.PathFollower
+        {
             /**
              * 
              * @param scene The Scene to which this PathFollower belongs.
@@ -21470,7 +21591,8 @@ declare namespace Phaser {
          * You can manipulate the corner points of the quad via the getters and setters such as `topLeftX`, and also
          * change their alpha and color values. The quad itself can be moved by adjusting the `x` and `y` properties.
          */
-        class Quad extends Phaser.GameObjects.Mesh {
+        class Quad extends Phaser.GameObjects.Mesh
+        {
             /**
              * 
              * @param scene The Scene to which this Quad belongs.
@@ -22188,7 +22310,8 @@ declare namespace Phaser {
          * is a technical limitation of WebGL. To get around it, create your shape as a texture in an art package, then draw that
          * to the Render Texture.
          */
-        class RenderTexture extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.ComputedSize, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible {
+        class RenderTexture extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.ComputedSize, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -23274,7 +23397,8 @@ declare namespace Phaser {
          * use these Game Objects sparingly. If you need to have a fully batched custom shader, then please look at using
          * a custom pipeline instead. However, for background or special masking effects, they are extremely effective.
          */
-        class Shader extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.ComputedSize, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible {
+        class Shader extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.ComputedSize, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -24006,7 +24130,8 @@ declare namespace Phaser {
          * you to control how smooth the shape renders in WebGL, by controlling the number of iterations
          * that take place during construction.
          */
-        class Arc extends Phaser.GameObjects.Shape {
+        class Arc extends Phaser.GameObjects.Shape
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -24724,7 +24849,8 @@ declare namespace Phaser {
          * that take place during construction. Increase and decrease the default value for smoother, or more
          * jagged, shapes.
          */
-        class Curve extends Phaser.GameObjects.Shape {
+        class Curve extends Phaser.GameObjects.Shape
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -25397,7 +25523,8 @@ declare namespace Phaser {
          * that take place during construction. Increase and decrease the default value for smoother, or more
          * jagged, shapes.
          */
-        class Ellipse extends Phaser.GameObjects.Shape {
+        class Ellipse extends Phaser.GameObjects.Shape
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -26063,7 +26190,8 @@ declare namespace Phaser {
          * in the given color. If you specify an outline color with an alpha of zero, then it will draw
          * the cells spaced out, but without the lines between them.
          */
-        class Grid extends Phaser.GameObjects.Shape {
+        class Grid extends Phaser.GameObjects.Shape
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -26814,7 +26942,8 @@ declare namespace Phaser {
          * You cannot view an IsoBox from under-neath, however you can change the 'angle' by setting
          * the `projection` property.
          */
-        class IsoBox extends Phaser.GameObjects.Shape {
+        class IsoBox extends Phaser.GameObjects.Shape
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -27534,7 +27663,8 @@ declare namespace Phaser {
          * the `projection` property. The `reversed` property controls if the IsoTriangle is rendered upside
          * down or not.
          */
-        class IsoTriangle extends Phaser.GameObjects.Shape {
+        class IsoTriangle extends Phaser.GameObjects.Shape
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -28268,7 +28398,8 @@ declare namespace Phaser {
          * Be aware that as with all Game Objects the default origin is 0.5. If you need to draw a Line
          * between two points and want the x1/y1 values to match the x/y values, then set the origin to 0.
          */
-        class Line extends Phaser.GameObjects.Shape {
+        class Line extends Phaser.GameObjects.Shape
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -28960,7 +29091,8 @@ declare namespace Phaser {
          * By default the `x` and `y` coordinates of this Shape refer to the center of it. However, depending
          * on the coordinates of the points provided, the final shape may be rendered offset from its origin.
          */
-        class Polygon extends Phaser.GameObjects.Shape {
+        class Polygon extends Phaser.GameObjects.Shape
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -29620,7 +29752,8 @@ declare namespace Phaser {
          * 
          * You can change the size of the rectangle by changing the `width` and `height` properties.
          */
-        class Rectangle extends Phaser.GameObjects.Shape {
+        class Rectangle extends Phaser.GameObjects.Shape
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -30267,7 +30400,8 @@ declare namespace Phaser {
          * The Shape Game Object is a base class for the various different shapes, such as the Arc, Star or Polygon.
          * You cannot add a Shape directly to your Scene, it is meant as a base for your own custom Shape classes.
          */
-        class Shape extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.ComputedSize, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible {
+        class Shape extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.ComputedSize, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -31022,7 +31156,8 @@ declare namespace Phaser {
          * You can also control the inner and outer radius, which is how 'long' each point of the star is.
          * Modify these values to create more interesting shapes.
          */
-        class Star extends Phaser.GameObjects.Shape {
+        class Star extends Phaser.GameObjects.Shape
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -31714,7 +31849,8 @@ declare namespace Phaser {
          * position of each point of these lines. The triangle is always closed and cannot have an open
          * face. If you require that, consider using a Polygon instead.
          */
-        class Triangle extends Phaser.GameObjects.Shape {
+        class Triangle extends Phaser.GameObjects.Shape
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -32383,7 +32519,8 @@ declare namespace Phaser {
          * As such, Sprites take a fraction longer to process and have a larger API footprint due to the Animation
          * Component. If you do not require animation then you can safely use Images to replace Sprites in all cases.
          */
-        class Sprite extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.TextureCrop, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible {
+        class Sprite extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.TextureCrop, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -33328,7 +33465,8 @@ declare namespace Phaser {
          * Text objects in your game. If you run into performance issues you would be better off using Bitmap Text
          * instead, as it benefits from batching and avoids expensive Canvas API calls.
          */
-        class Text extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.ComputedSize, Phaser.GameObjects.Components.Crop, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible {
+        class Text extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.ComputedSize, Phaser.GameObjects.Components.Crop, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -34526,7 +34664,8 @@ declare namespace Phaser {
          * accessed via the `Text.style` property. You do not normally need to
          * instantiate one yourself.
          */
-        class TextStyle {
+        class TextStyle
+        {
             /**
              * 
              * @param text The Text object that this TextStyle is styling.
@@ -34894,7 +35033,8 @@ declare namespace Phaser {
          * pixel art graphics. If you notice it and it becomes an issue, the only way to avoid it is to ensure that you
          * provide POT textures for Tile Sprites.
          */
-        class TileSprite extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.ComputedSize, Phaser.GameObjects.Components.Crop, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible {
+        class TileSprite extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.ComputedSize, Phaser.GameObjects.Components.Crop, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Mask, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -35855,7 +35995,8 @@ declare namespace Phaser {
          * 
          * Some or all of these Game Objects may also be part of the Scene's [Display List]{@link Phaser.GameObjects.DisplayList}, for Rendering.
          */
-        class UpdateList {
+        class UpdateList
+        {
             /**
              * 
              * @param scene The Scene that the Update List belongs to.
@@ -35936,7 +36077,8 @@ declare namespace Phaser {
          * non-displaying Game Objects.
          * The default origin is 0.5, the center of the Zone, the same as with Game Objects.
          */
-        class Zone extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Visible {
+        class Zone extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Visible
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs.
@@ -36398,7 +36540,8 @@ declare namespace Phaser {
 
     }
 
-    namespace Geom {
+    namespace Geom
+    {
         /**
          * A Circle object.
          * 
@@ -36406,7 +36549,8 @@ declare namespace Phaser {
          * It is not a Game Object, in that you cannot add it to the display list, and it has no texture.
          * To render a Circle you should look at the capabilities of the Graphics class.
          */
-        class Circle {
+        class Circle
+        {
             /**
              * 
              * @param x The x position of the center of the circle. Default 0.
@@ -36634,7 +36778,8 @@ declare namespace Phaser {
          * It is not a Game Object, in that you cannot add it to the display list, and it has no texture.
          * To render an Ellipse you should look at the capabilities of the Graphics class.
          */
-        class Ellipse {
+        class Ellipse
+        {
             /**
              * 
              * @param x The x position of the center of the ellipse. Default 0.
@@ -36875,7 +37020,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Intersects {
+        namespace Intersects
+        {
             /**
              * Checks if two Circles intersect.
              * @param circleA The first Circle to check for intersection.
@@ -37095,7 +37241,8 @@ declare namespace Phaser {
         /**
          * Defines a Line segment, a part of a line between two endpoints.
          */
-        class Line {
+        class Line
+        {
             /**
              * 
              * @param x1 The x coordinate of the lines starting point. Default 0.
@@ -37416,7 +37563,8 @@ declare namespace Phaser {
         /**
          * Defines a Point in 2D space, with an x and y component.
          */
-        class Point {
+        class Point
+        {
             /**
              * 
              * @param x The x coordinate of this Point. Default 0.
@@ -37556,7 +37704,8 @@ declare namespace Phaser {
          * It is not a Game Object, in that you cannot add it to the display list, and it has no texture.
          * To render a Polygon you should look at the capabilities of the Graphics class.
          */
-        class Polygon {
+        class Polygon
+        {
             /**
              * 
              * @param points List of points defining the perimeter of this Polygon. Several formats are supported: 
@@ -37685,7 +37834,8 @@ declare namespace Phaser {
         /**
          * Encapsulates a 2D rectangle defined by its corner point in the top-left and its extends in x (width) and y (height)
          */
-        class Rectangle {
+        class Rectangle
+        {
             /**
              * 
              * @param x The X coordinate of the top left corner of the Rectangle. Default 0.
@@ -38126,7 +38276,8 @@ declare namespace Phaser {
          * The first two arguments specify the first point, the middle two arguments
          * specify the second point, and the last two arguments specify the third point.
          */
-        class Triangle {
+        class Triangle
+        {
             /**
              * 
              * @param x1 `x` coordinate of the first point. Default 0.
@@ -38440,7 +38591,8 @@ declare namespace Phaser {
 
     }
 
-    namespace Input {
+    namespace Input
+    {
         /**
          * The mouse pointer is being held down.
          */
@@ -38507,7 +38659,8 @@ declare namespace Phaser {
          */
         function CreatePixelPerfectHandler(textureManager: Phaser.Textures.TextureManager, alphaTolerance: integer): Function;
 
-        namespace Events {
+        namespace Events
+        {
             /**
              * The Input Plugin Boot Event.
              * 
@@ -39205,12 +39358,14 @@ declare namespace Phaser {
 
         }
 
-        namespace Gamepad {
+        namespace Gamepad
+        {
             /**
              * Contains information about a specific Gamepad Axis.
              * Axis objects are created automatically by the Gamepad as they are needed.
              */
-            class Axis {
+            class Axis
+            {
                 /**
                  * 
                  * @param pad A reference to the Gamepad that this Axis belongs to.
@@ -39260,7 +39415,8 @@ declare namespace Phaser {
              * Contains information about a specific button on a Gamepad.
              * Button objects are created automatically by the Gamepad as they are needed.
              */
-            class Button {
+            class Button
+            {
                 /**
                  * 
                  * @param pad A reference to the Gamepad that this Button belongs to.
@@ -39306,7 +39462,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Configs {
+            namespace Configs
+            {
                 /**
                  * Tatar SNES USB Controller Gamepad Configuration.
                  * USB Gamepad  (STANDARD GAMEPAD Vendor: 0079 Product: 0011)
@@ -39326,7 +39483,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Events {
+            namespace Events
+            {
                 /**
                  * The Gamepad Button Down Event.
                  * 
@@ -39407,7 +39565,8 @@ declare namespace Phaser {
              * 
              * These are created, updated and managed by the Gamepad Plugin.
              */
-            class Gamepad extends Phaser.Events.EventEmitter {
+            class Gamepad extends Phaser.Events.EventEmitter
+            {
                 /**
                  * 
                  * @param manager A reference to the Gamepad Plugin.
@@ -39667,7 +39826,8 @@ declare namespace Phaser {
              * https://www.smashingmagazine.com/2015/11/gamepad-api-in-web-games/
              * http://html5gamepad.com/
              */
-            class GamepadPlugin extends Phaser.Events.EventEmitter {
+            class GamepadPlugin extends Phaser.Events.EventEmitter
+            {
                 /**
                  * 
                  * @param sceneInputPlugin A reference to the Scene Input Plugin that the KeyboardPlugin belongs to.
@@ -39785,7 +39945,8 @@ declare namespace Phaser {
          * should be considered private. Instead, you should use the Input Plugin, which is a Scene level system, responsible
          * for dealing with all input events for a Scene.
          */
-        class InputManager {
+        class InputManager
+        {
             /**
              * 
              * @param game The Game instance that owns the Input Manager.
@@ -40040,7 +40201,8 @@ declare namespace Phaser {
          * 
          * Please also see the Input examples and tutorials for further information.
          */
-        class InputPlugin extends Phaser.Events.EventEmitter {
+        class InputPlugin extends Phaser.Events.EventEmitter
+        {
             /**
              * 
              * @param scene A reference to the Scene that this Input Plugin is responsible for.
@@ -40534,7 +40696,8 @@ declare namespace Phaser {
 
         }
 
-        namespace InputPluginCache {
+        namespace InputPluginCache
+        {
             /**
              * Static method called directly by the Core internal Plugins.
              * Key is a reference used to get the plugin from the plugins object (i.e. InputPlugin)
@@ -40560,7 +40723,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Keyboard {
+        namespace Keyboard
+        {
             /**
              * A KeyCombo will listen for a specific string of keys from the Keyboard, and when it receives them
              * it will emit a `keycombomatch` event from the Keyboard Manager.
@@ -40588,7 +40752,8 @@ declare namespace Phaser {
              * this.input.keyboard.createCombo('PHASER');
              * ```
              */
-            class KeyCombo {
+            class KeyCombo
+            {
                 /**
                  * 
                  * @param keyboardPlugin A reference to the Keyboard Plugin.
@@ -40674,7 +40839,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Events {
+            namespace Events
+            {
                 /**
                  * The Global Key Down Event.
                  * 
@@ -40808,7 +40974,8 @@ declare namespace Phaser {
              * You do not need to create this class directly, the Input Manager will create an instance of it automatically if keyboard
              * input has been enabled in the Game Config.
              */
-            class KeyboardManager {
+            class KeyboardManager
+            {
                 /**
                  * 
                  * @param inputManager A reference to the Input Manager.
@@ -41013,7 +41180,8 @@ declare namespace Phaser {
              * For example the Chrome extension vimium is known to disable Phaser from using the D key, while EverNote disables the backtick key.
              * And there are others. So, please check your extensions before opening Phaser issues about keys that don't work.
              */
-            class KeyboardPlugin extends Phaser.Events.EventEmitter {
+            class KeyboardPlugin extends Phaser.Events.EventEmitter
+            {
                 /**
                  * 
                  * @param sceneInputPlugin A reference to the Scene Input Plugin that the KeyboardPlugin belongs to.
@@ -41301,7 +41469,8 @@ declare namespace Phaser {
              * A generic Key object which can be passed to the Process functions (and so on)
              * keycode must be an integer
              */
-            class Key extends Phaser.Events.EventEmitter {
+            class Key extends Phaser.Events.EventEmitter
+            {
                 /**
                  * 
                  * @param plugin The Keyboard Plugin instance that owns this Key object.
@@ -41441,7 +41610,8 @@ declare namespace Phaser {
             /**
              * Keyboard Codes.
              */
-            namespace KeyCodes {
+            namespace KeyCodes
+            {
                 /**
                  * The BACKSPACE key.
                  */
@@ -41934,7 +42104,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Mouse {
+        namespace Mouse
+        {
             /**
              * The Mouse Manager is a helper class that belongs to the Input Manager.
              * 
@@ -41942,7 +42113,8 @@ declare namespace Phaser {
              * 
              * You do not need to create this class directly, the Input Manager will create an instance of it automatically.
              */
-            class MouseManager {
+            class MouseManager
+            {
                 /**
                  * 
                  * @param inputManager A reference to the Input Manager.
@@ -42105,7 +42277,8 @@ declare namespace Phaser {
          * input related events that the Input Plugin emits, so you can reference properties from it directly in your
          * callbacks.
          */
-        class Pointer {
+        class Pointer
+        {
             /**
              * 
              * @param manager A reference to the Input Manager.
@@ -42524,7 +42697,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Touch {
+        namespace Touch
+        {
             /**
              * The Touch Manager is a helper class that belongs to the Input Manager.
              * 
@@ -42532,7 +42706,8 @@ declare namespace Phaser {
              * 
              * You do not need to create this class directly, the Input Manager will create an instance of it automatically.
              */
-            class TouchManager {
+            class TouchManager
+            {
                 /**
                  * 
                  * @param inputManager A reference to the Input Manager.
@@ -42641,7 +42816,8 @@ declare namespace Phaser {
 
     }
 
-    namespace Loader {
+    namespace Loader
+    {
         /**
          * The Loader is idle.
          */
@@ -42717,7 +42893,8 @@ declare namespace Phaser {
          */
         var FILE_POPULATED: integer;
 
-        namespace Events {
+        namespace Events
+        {
             /**
              * The Loader Plugin Add File Event.
              * 
@@ -42854,7 +43031,8 @@ declare namespace Phaser {
          * The base File class used by all File Types that the Loader can support.
          * You shouldn't create an instance of a File directly, but should extend it with your own class, setting a custom type and processing methods.
          */
-        class File {
+        class File
+        {
             /**
              * 
              * @param loader The Loader that is going to load this File.
@@ -43054,7 +43232,8 @@ declare namespace Phaser {
 
         }
 
-        namespace FileTypes {
+        namespace FileTypes
+        {
             /**
              * A single Animation JSON File suitable for loading by the Loader.
              * 
@@ -43062,7 +43241,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#animation.
              */
-            class AnimationJSONFile extends Phaser.Loader.File {
+            class AnimationJSONFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43095,7 +43275,8 @@ declare namespace Phaser {
              * 
              * https://www.codeandweb.com/texturepacker/tutorials/how-to-create-sprite-sheets-for-phaser3?source=photonstorm
              */
-            class AtlasJSONFile extends Phaser.Loader.MultiFile {
+            class AtlasJSONFile extends Phaser.Loader.MultiFile
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43121,7 +43302,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#atlasXML.
              */
-            class AtlasXMLFile extends Phaser.Loader.MultiFile {
+            class AtlasXMLFile extends Phaser.Loader.MultiFile
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43147,7 +43329,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#audio.
              */
-            class AudioFile extends Phaser.Loader.File {
+            class AudioFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43173,7 +43356,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#audioSprite.
              */
-            class AudioSpriteFile extends Phaser.Loader.MultiFile {
+            class AudioSpriteFile extends Phaser.Loader.MultiFile
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43206,7 +43390,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#binary.
              */
-            class BinaryFile extends Phaser.Loader.File {
+            class BinaryFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43232,7 +43417,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#bitmapFont.
              */
-            class BitmapFontFile extends Phaser.Loader.MultiFile {
+            class BitmapFontFile extends Phaser.Loader.MultiFile
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43258,7 +43444,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#css.
              */
-            class CSSFile extends Phaser.Loader.File {
+            class CSSFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43283,7 +43470,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#glsl.
              */
-            class GLSLFile extends Phaser.Loader.File {
+            class GLSLFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43332,7 +43520,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#audio.
              */
-            class HTML5AudioFile extends Phaser.Loader.File {
+            class HTML5AudioFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43373,7 +43562,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#html.
              */
-            class HTMLFile extends Phaser.Loader.File {
+            class HTMLFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43398,7 +43588,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#htmlTexture.
              */
-            class HTMLTextureFile extends Phaser.Loader.File {
+            class HTMLTextureFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43430,7 +43621,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#image.
              */
-            class ImageFile extends Phaser.Loader.File {
+            class ImageFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43461,7 +43653,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#json.
              */
-            class JSONFile extends Phaser.Loader.File {
+            class JSONFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43487,7 +43680,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#multiatlas.
              */
-            class MultiAtlasFile extends Phaser.Loader.MultiFile {
+            class MultiAtlasFile extends Phaser.Loader.MultiFile
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43520,7 +43714,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#scripts.
              */
-            class MultiScriptFile extends Phaser.Loader.MultiFile {
+            class MultiScriptFile extends Phaser.Loader.MultiFile
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43544,7 +43739,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#pack.
              */
-            class PackFile extends Phaser.Loader.File {
+            class PackFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43570,7 +43766,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#plugin.
              */
-            class PluginFile extends Phaser.Loader.File {
+            class PluginFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43597,7 +43794,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#sceneFile.
              */
-            class SceneFile extends Phaser.Loader.File {
+            class SceneFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43627,7 +43825,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#scenePlugin.
              */
-            class ScenePluginFile extends Phaser.Loader.File {
+            class ScenePluginFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43654,7 +43853,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#script.
              */
-            class ScriptFile extends Phaser.Loader.File {
+            class ScriptFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43679,7 +43879,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#spritesheet.
              */
-            class SpriteSheetFile extends Phaser.Loader.File {
+            class SpriteSheetFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43704,7 +43905,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#svg.
              */
-            class SVGFile extends Phaser.Loader.File {
+            class SVGFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43735,7 +43937,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#text.
              */
-            class TextFile extends Phaser.Loader.File {
+            class TextFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43760,7 +43963,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#tilemapCSV.
              */
-            class TilemapCSVFile extends Phaser.Loader.File {
+            class TilemapCSVFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43790,7 +43994,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#tilemapImpact.
              */
-            class TilemapImpactFile extends Phaser.Loader.File {
+            class TilemapImpactFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43814,7 +44019,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#tilemapTiledJSON.
              */
-            class TilemapJSONFile extends Phaser.Loader.File {
+            class TilemapJSONFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43838,7 +44044,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#unityAtlas.
              */
-            class UnityAtlasFile extends Phaser.Loader.MultiFile {
+            class UnityAtlasFile extends Phaser.Loader.MultiFile
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43864,7 +44071,8 @@ declare namespace Phaser {
              * 
              * For documentation about what all the arguments and configuration options mean please see Phaser.Loader.LoaderPlugin#xml.
              */
-            class XMLFile extends Phaser.Loader.File {
+            class XMLFile extends Phaser.Loader.File
+            {
                 /**
                  * 
                  * @param loader A reference to the Loader that is responsible for this file.
@@ -43884,7 +44092,8 @@ declare namespace Phaser {
 
         }
 
-        namespace FileTypesManager {
+        namespace FileTypesManager
+        {
             /**
              * Static method called when a LoaderPlugin is created.
              * 
@@ -43942,7 +44151,8 @@ declare namespace Phaser {
          * when it's instantiated. You can create your own custom file types by extending either the File or MultiFile classes.
          * See those files for more details.
          */
-        class LoaderPlugin extends Phaser.Events.EventEmitter {
+        class LoaderPlugin extends Phaser.Events.EventEmitter
+        {
             /**
              * 
              * @param scene The Scene which owns this Loader instance.
@@ -46449,7 +46659,8 @@ declare namespace Phaser {
          * 
          * You shouldn't create an instance of a MultiFile directly, but should extend it with your own class, setting a custom type and processing methods.
          */
-        class MultiFile {
+        class MultiFile
+        {
             /**
              * 
              * @param loader The Loader that is going to load this File.
@@ -46545,8 +46756,10 @@ declare namespace Phaser {
 
     }
 
-    namespace Math {
-        namespace Angle {
+    namespace Math
+    {
+        namespace Angle
+        {
             /**
              * Find the angle of a segment from (x1, y1) -> (x2, y2).
              * @param x1 The x coordinate of the first point.
@@ -46750,7 +46963,8 @@ declare namespace Phaser {
          */
         function Difference(a: number, b: number): number;
 
-        namespace Distance {
+        namespace Distance
+        {
             /**
              * Calculate the distance between two sets of coordinates (points).
              * @param x1 The x coordinate of the first point.
@@ -46781,8 +46995,10 @@ declare namespace Phaser {
 
         }
 
-        namespace Easing {
-            namespace Back {
+        namespace Easing
+        {
+            namespace Back
+            {
                 /**
                  * Back ease-in.
                  * @param v The value to be tweened.
@@ -46806,7 +47022,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Bounce {
+            namespace Bounce
+            {
                 /**
                  * Bounce ease-in.
                  * @param v The value to be tweened.
@@ -46827,7 +47044,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Circular {
+            namespace Circular
+            {
                 /**
                  * Circular ease-in.
                  * @param v The value to be tweened.
@@ -46848,7 +47066,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Cubic {
+            namespace Cubic
+            {
                 /**
                  * Cubic ease-in.
                  * @param v The value to be tweened.
@@ -46869,7 +47088,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Elastic {
+            namespace Elastic
+            {
                 /**
                  * Elastic ease-in.
                  * @param v The value to be tweened.
@@ -46896,7 +47116,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Expo {
+            namespace Expo
+            {
                 /**
                  * Exponential ease-in.
                  * @param v The value to be tweened.
@@ -46917,7 +47138,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Linear {
+            namespace Linear
+            {
                 /**
                  * Linear easing (no variation).
                  * @param v The value to be tweened.
@@ -46926,7 +47148,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Quadratic {
+            namespace Quadratic
+            {
                 /**
                  * Quadratic ease-in.
                  * @param v The value to be tweened.
@@ -46947,7 +47170,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Quartic {
+            namespace Quartic
+            {
                 /**
                  * Quartic ease-in.
                  * @param v The value to be tweened.
@@ -46968,7 +47192,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Quintic {
+            namespace Quintic
+            {
                 /**
                  * Quintic ease-in.
                  * @param v The value to be tweened.
@@ -46989,7 +47214,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Sine {
+            namespace Sine
+            {
                 /**
                  * Sinusoidal ease-in.
                  * @param v The value to be tweened.
@@ -47010,7 +47236,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Stepped {
+            namespace Stepped
+            {
                 /**
                  * Stepped easing.
                  * @param v The value to be tweened.
@@ -47053,7 +47280,8 @@ declare namespace Phaser {
          */
         function FromPercent(percent: number, min: number, max?: number): number;
 
-        namespace Fuzzy {
+        namespace Fuzzy
+        {
             /**
              * Calculate the fuzzy ceiling of the given value.
              * @param value The value.
@@ -47107,7 +47335,8 @@ declare namespace Phaser {
          */
         function GetSpeed(distance: number, time: integer): number;
 
-        namespace Interpolation {
+        namespace Interpolation
+        {
             /**
              * A bezier interpolation method.
              * @param v The input array of values to interpolate between.
@@ -47193,7 +47422,8 @@ declare namespace Phaser {
          * 
          * Defaults to the identity matrix when instantiated.
          */
-        class Matrix3 {
+        class Matrix3
+        {
             /**
              * 
              * @param m Optional Matrix3 to copy values from.
@@ -47302,7 +47532,8 @@ declare namespace Phaser {
         /**
          * A four-dimensional matrix.
          */
-        class Matrix4 {
+        class Matrix4
+        {
             /**
              * 
              * @param m Optional Matrix4 to copy values from.
@@ -47568,7 +47799,8 @@ declare namespace Phaser {
          */
         function Percent(value: number, min: number, max?: number, upperMax?: number): number;
 
-        namespace Pow2 {
+        namespace Pow2
+        {
             /**
              * Returns the nearest power of 2 to the given `value`.
              * @param value The value.
@@ -47594,7 +47826,8 @@ declare namespace Phaser {
         /**
          * A quaternion.
          */
-        class Quaternion {
+        class Quaternion
+        {
             /**
              * 
              * @param x The x component.
@@ -47788,7 +48021,8 @@ declare namespace Phaser {
          * If you create your own instance of this class you should provide a seed for it.
          * If no seed is given it will use a 'random' one based on Date.now.
          */
-        class RandomDataGenerator {
+        class RandomDataGenerator
+        {
             /**
              * 
              * @param seeds The seeds to use for the random number generator.
@@ -48047,7 +48281,8 @@ declare namespace Phaser {
          */
         function SmoothStep(x: number, min: number, max: number): number;
 
-        namespace Snap {
+        namespace Snap
+        {
             /**
              * Snap a value to nearest grid slice, using ceil.
              * 
@@ -48104,7 +48339,8 @@ declare namespace Phaser {
          * 
          * A two-component vector.
          */
-        class Vector2 {
+        class Vector2
+        {
             /**
              * 
              * @param x The x component, or an object with `x` and `y` properties.
@@ -48333,7 +48569,8 @@ declare namespace Phaser {
          * 
          * A three-component vector.
          */
-        class Vector3 {
+        class Vector3
+        {
             /**
              * 
              * @param x The x component.
@@ -48600,7 +48837,8 @@ declare namespace Phaser {
          * 
          * A four-component vector.
          */
-        class Vector4 {
+        class Vector4
+        {
             /**
              * 
              * @param x The x component.
@@ -48781,9 +49019,11 @@ declare namespace Phaser {
     /**
      * The root types namespace.
      */
-    namespace Types {
-        namespace Actions {
-            type CallCallback = (item: Phaser.GameObjects.GameObject)=>void;
+    namespace Types
+    {
+        namespace Actions
+        {
+            type CallCallback = (item: Phaser.GameObjects.GameObject) => void;
 
             type GridAlignConfig = {
                 /**
@@ -48820,7 +49060,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Animations {
+        namespace Animations
+        {
             type Animation = {
                 /**
                  * The key that the animation will be associated with. i.e. sprite.animations.play(key)
@@ -49024,8 +49265,10 @@ declare namespace Phaser {
 
         }
 
-        namespace Cameras {
-            namespace Scene2D {
+        namespace Cameras
+        {
+            namespace Scene2D
+            {
                 type CameraConfig = {
                     /**
                      * The name of the Camera.
@@ -49093,15 +49336,15 @@ declare namespace Phaser {
                     "bounds.height"?: number;
                 };
 
-                type CameraFadeCallback = (camera: Phaser.Cameras.Scene2D.Camera, progress: number)=>void;
+                type CameraFadeCallback = (camera: Phaser.Cameras.Scene2D.Camera, progress: number) => void;
 
-                type CameraFlashCallback = (camera: Phaser.Cameras.Scene2D.Camera, progress: number)=>void;
+                type CameraFlashCallback = (camera: Phaser.Cameras.Scene2D.Camera, progress: number) => void;
 
-                type CameraPanCallback = (camera: Phaser.Cameras.Scene2D.Camera, progress: number, x: number, y: number)=>void;
+                type CameraPanCallback = (camera: Phaser.Cameras.Scene2D.Camera, progress: number, x: number, y: number) => void;
 
-                type CameraShakeCallback = (camera: Phaser.Cameras.Scene2D.Camera, progress: number)=>void;
+                type CameraShakeCallback = (camera: Phaser.Cameras.Scene2D.Camera, progress: number) => void;
 
-                type CameraZoomCallback = (camera: Phaser.Cameras.Scene2D.Camera, progress: number, zoom: number)=>void;
+                type CameraZoomCallback = (camera: Phaser.Cameras.Scene2D.Camera, progress: number, zoom: number) => void;
 
                 type JSONCamera = {
                     /**
@@ -49175,7 +49418,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Controls {
+            namespace Controls
+            {
                 type FixedKeyControlConfig = {
                     /**
                      * The Camera that this Control will update.
@@ -49262,7 +49506,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Core {
+        namespace Core
+        {
             /**
              * Config object containing various sound settings.
              */
@@ -49296,7 +49541,7 @@ declare namespace Phaser {
                 background?: string[];
             };
 
-            type BootCallback = (game: Phaser.Game)=>void;
+            type BootCallback = (game: Phaser.Game) => void;
 
             type CallbacksConfig = {
                 /**
@@ -49579,7 +49824,7 @@ declare namespace Phaser {
             /**
              * This callback type is completely empty, a no-operation.
              */
-            type NOOP = ()=>void;
+            type NOOP = () => void;
 
             type PhysicsConfig = {
                 /**
@@ -49752,7 +49997,7 @@ declare namespace Phaser {
                 fullscreenTarget?: HTMLElement | string;
             };
 
-            type TimeStepCallback = (time: number, average: number, interpolation: number)=>void;
+            type TimeStepCallback = (time: number, average: number, interpolation: number) => void;
 
             type TouchInputConfig = {
                 /**
@@ -49778,8 +50023,9 @@ declare namespace Phaser {
 
         }
 
-        namespace Create {
-            type GenerateTextureCallback = (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D)=>void;
+        namespace Create
+        {
+            type GenerateTextureCallback = (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) => void;
 
             type GenerateTextureConfig = {
                 /**
@@ -49889,7 +50135,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Curves {
+        namespace Curves
+        {
             type EllipseCurveConfig = {
                 /**
                  * The x coordinate of the ellipse.
@@ -50000,7 +50247,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Display {
+        namespace Display
+        {
             type ColorObject = {
                 /**
                  * The red color value in the range 0 to 255.
@@ -50056,8 +50304,10 @@ declare namespace Phaser {
 
         }
 
-        namespace GameObjects {
-            namespace BitmapText {
+        namespace GameObjects
+        {
+            namespace BitmapText
+            {
                 /**
                  * The font data for an individual character of a Bitmap Font.
                  * 
@@ -50103,7 +50353,7 @@ declare namespace Phaser {
                     /**
                      * Kerning values, keyed by character code.
                      */
-                    kerning: {[key: string]: number};
+                    kerning: { [key: string]: number };
                 };
 
                 /**
@@ -50129,7 +50379,7 @@ declare namespace Phaser {
                     /**
                      * The character data of the font, keyed by character code. Each character datum includes a position, size, offset and more.
                      */
-                    chars: {[key: number]:  Phaser.Types.GameObjects.BitmapText.BitmapFontCharacterData};
+                    chars: { [key: number]: Phaser.Types.GameObjects.BitmapText.BitmapFontCharacterData };
                 };
 
                 type BitmapTextConfig = Phaser.Types.GameObjects.GameObjectConfig & {
@@ -50197,7 +50447,7 @@ declare namespace Phaser {
                     data: any;
                 };
 
-                type DisplayCallback = (display: Phaser.Types.GameObjects.BitmapText.DisplayCallbackConfig)=>void;
+                type DisplayCallback = (display: Phaser.Types.GameObjects.BitmapText.DisplayCallbackConfig) => void;
 
                 /**
                  * The position and size of the Bitmap Text in global space, taking into account the Game Object's scale and world position.
@@ -50330,7 +50580,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Graphics {
+            namespace Graphics
+            {
                 /**
                  * Graphics fill style settings.
                  */
@@ -50412,8 +50663,9 @@ declare namespace Phaser {
 
             }
 
-            namespace Group {
-                type GroupCallback = (item: Phaser.GameObjects.GameObject)=>void;
+            namespace Group
+            {
+                type GroupCallback = (item: Phaser.GameObjects.GameObject) => void;
 
                 type GroupConfig = {
                     /**
@@ -50578,16 +50830,17 @@ declare namespace Phaser {
                     gridAlign?: false | Phaser.Types.Actions.GridAlignConfig;
                 };
 
-                type GroupMultipleCreateCallback = (items: Phaser.GameObjects.GameObject[])=>void;
+                type GroupMultipleCreateCallback = (items: Phaser.GameObjects.GameObject[]) => void;
 
             }
 
-            namespace Particles {
+            namespace Particles
+            {
                 type DeathZoneSource = {
                     contains: Phaser.Types.GameObjects.Particles.DeathZoneSourceCallback;
                 };
 
-                type DeathZoneSourceCallback = (x: number, y: number)=>void;
+                type DeathZoneSourceCallback = (x: number, y: number) => void;
 
                 type EdgeZoneSource = {
                     /**
@@ -50596,7 +50849,7 @@ declare namespace Phaser {
                     getPoints: Phaser.Types.GameObjects.Particles.EdgeZoneSourceCallback;
                 };
 
-                type EdgeZoneSourceCallback = (quantity: integer, stepRate?: number)=>void;
+                type EdgeZoneSourceCallback = (quantity: integer, stepRate?: number) => void;
 
                 type EmitterOpCustomEmitConfig = {
                     /**
@@ -50637,14 +50890,14 @@ declare namespace Phaser {
                 /**
                  * The returned value sets what the property will be at the START of the particle's life, on emit.
                  */
-                type EmitterOpOnEmitCallback = (particle: Phaser.GameObjects.Particles.Particle, key: string, value: number)=>void;
+                type EmitterOpOnEmitCallback = (particle: Phaser.GameObjects.Particles.Particle, key: string, value: number) => void;
 
                 type EmitterOpOnEmitType = number | number[] | Phaser.Types.GameObjects.Particles.EmitterOpOnEmitCallback | Phaser.Types.GameObjects.Particles.EmitterOpRandomConfig | Phaser.Types.GameObjects.Particles.EmitterOpRandomMinMaxConfig | Phaser.Types.GameObjects.Particles.EmitterOpRandomStartEndConfig | Phaser.Types.GameObjects.Particles.EmitterOpSteppedConfig | Phaser.Types.GameObjects.Particles.EmitterOpCustomEmitConfig;
 
                 /**
                  * The returned value updates the property for the duration of the particle's life.
                  */
-                type EmitterOpOnUpdateCallback = (particle: Phaser.GameObjects.Particles.Particle, key: string, t: number, value: number)=>void;
+                type EmitterOpOnUpdateCallback = (particle: Phaser.GameObjects.Particles.Particle, key: string, t: number, value: number) => void;
 
                 type EmitterOpOnUpdateType = Phaser.Types.GameObjects.Particles.EmitterOpOnUpdateCallback | Phaser.Types.GameObjects.Particles.EmitterOpEaseConfig | Phaser.Types.GameObjects.Particles.EmitterOpCustomUpdateConfig;
 
@@ -50731,7 +50984,7 @@ declare namespace Phaser {
                     gravity?: number;
                 };
 
-                type ParticleDeathCallback = (particle: Phaser.GameObjects.Particles.Particle)=>void;
+                type ParticleDeathCallback = (particle: Phaser.GameObjects.Particles.Particle) => void;
 
                 type ParticleEmitterBounds = {
                     /**
@@ -50771,7 +51024,7 @@ declare namespace Phaser {
                     h: number;
                 };
 
-                type ParticleEmitterCallback = (particle: Phaser.GameObjects.Particles.Particle, emitter: Phaser.GameObjects.Particles.ParticleEmitter)=>void;
+                type ParticleEmitterCallback = (particle: Phaser.GameObjects.Particles.Particle, emitter: Phaser.GameObjects.Particles.ParticleEmitter) => void;
 
                 type ParticleEmitterConfig = {
                     /**
@@ -51055,11 +51308,12 @@ declare namespace Phaser {
                     getRandomPoint: Phaser.Types.GameObjects.Particles.RandomZoneSourceCallback;
                 };
 
-                type RandomZoneSourceCallback = (point: Phaser.Math.Vector2)=>void;
+                type RandomZoneSourceCallback = (point: Phaser.Math.Vector2) => void;
 
             }
 
-            namespace PathFollower {
+            namespace PathFollower
+            {
                 /**
                  * Settings for a PathFollower.
                  */
@@ -51096,7 +51350,8 @@ declare namespace Phaser {
 
             }
 
-            namespace RenderTexture {
+            namespace RenderTexture
+            {
                 type RenderTextureConfig = {
                     /**
                      * The x coordinate of the RenderTextures position.
@@ -51126,7 +51381,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Sprite {
+            namespace Sprite
+            {
                 type SpriteConfig = Phaser.Types.GameObjects.GameObjectConfig & {
                     /**
                      * The key of the Texture this Game Object will use to render with, as stored in the Texture Manager.
@@ -51140,7 +51396,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Text {
+            namespace Text
+            {
                 /**
                  * Font metrics for a Text Style object.
                  */
@@ -51329,7 +51586,8 @@ declare namespace Phaser {
 
             }
 
-            namespace TileSprite {
+            namespace TileSprite
+            {
                 type TileSpriteConfig = Phaser.Types.GameObjects.GameObjectConfig & {
                     /**
                      * The x coordinate of the Tile Sprite.
@@ -51507,8 +51765,10 @@ declare namespace Phaser {
 
         }
 
-        namespace Input {
-            namespace Gamepad {
+        namespace Input
+        {
+            namespace Gamepad
+            {
                 /**
                  * The Gamepad object, as extracted from GamepadEvent.
                  */
@@ -51525,7 +51785,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Keyboard {
+            namespace Keyboard
+            {
                 type CursorKeys = {
                     /**
                      * A Key object mapping to the UP arrow key.
@@ -51553,7 +51814,7 @@ declare namespace Phaser {
                     shift?: Phaser.Input.Keyboard.Key;
                 };
 
-                type KeyboardKeydownCallback = (event: KeyboardEvent)=>void;
+                type KeyboardKeydownCallback = (event: KeyboardEvent) => void;
 
                 type KeyComboConfig = {
                     /**
@@ -51592,7 +51853,7 @@ declare namespace Phaser {
                 stopPropagation: Function;
             };
 
-            type HitAreaCallback = (hitArea: any, x: number, y: number, gameObject: Phaser.GameObjects.GameObject)=>void;
+            type HitAreaCallback = (hitArea: any, x: number, y: number, gameObject: Phaser.GameObjects.GameObject) => void;
 
             type InputConfiguration = {
                 /**
@@ -51725,8 +51986,10 @@ declare namespace Phaser {
 
         }
 
-        namespace Loader {
-            namespace FileTypes {
+        namespace Loader
+        {
+            namespace FileTypes
+            {
                 type AtlasJSONFileConfig = {
                     /**
                      * The key of the file. Must be unique within both the Loader and the Texture Manager.
@@ -52504,7 +52767,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Math {
+        namespace Math
+        {
             type SinCosTable = {
                 /**
                  * The sine value.
@@ -52533,8 +52797,10 @@ declare namespace Phaser {
 
         }
 
-        namespace Physics {
-            namespace Arcade {
+        namespace Physics
+        {
+            namespace Arcade
+            {
                 type ArcadeBodyBounds = {
                     /**
                      * The left edge.
@@ -52918,8 +53184,9 @@ declare namespace Phaser {
 
             }
 
-            namespace Impact {
-                type BodyUpdateCallback = (body: Phaser.Physics.Impact.Body)=>void;
+            namespace Impact
+            {
+                type BodyUpdateCallback = (body: Phaser.Physics.Impact.Body) => void;
 
                 type CollisionOptions = {
                     /**
@@ -53166,7 +53433,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Matter {
+            namespace Matter
+            {
                 type MatterBodyTileOptions = {
                     /**
                      * Whether or not the newly created body should be made static. This defaults to true since typically tiles should not be moved.
@@ -53344,7 +53612,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Plugins {
+        namespace Plugins
+        {
             type CorePluginContainer = {
                 /**
                  * The unique name of this plugin in the core plugin cache.
@@ -53396,9 +53665,11 @@ declare namespace Phaser {
 
         }
 
-        namespace Renderer {
-            namespace Snapshot {
-                type SnapshotCallback = (snapshot: Phaser.Display.Color | HTMLImageElement)=>void;
+        namespace Renderer
+        {
+            namespace Snapshot
+            {
+                type SnapshotCallback = (snapshot: Phaser.Display.Color | HTMLImageElement) => void;
 
                 type SnapshotState = {
                     /**
@@ -53439,7 +53710,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Scenes {
+        namespace Scenes
+        {
             type CreateSceneFromObjectConfig = {
                 /**
                  * See {@link Phaser.Scene#init}.
@@ -53530,11 +53802,11 @@ declare namespace Phaser {
                 /**
                  * Overwrites the default injection map for a scene.
                  */
-                map?: {[key: string]:  string};
+                map?: { [key: string]: string };
                 /**
                  * Extends the injection map for a scene.
                  */
-                mapAdd?: {[key: string]:  string};
+                mapAdd?: { [key: string]: string };
                 /**
                  * The physics configuration object for the Scene.
                  */
@@ -53601,7 +53873,7 @@ declare namespace Phaser {
                 /**
                  * The Scene's Injection Map.
                  */
-                map: {[key: string]:  string};
+                map: { [key: string]: string };
                 /**
                  * The physics configuration object for the Scene.
                  */
@@ -53618,7 +53890,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Sound {
+        namespace Sound
+        {
             /**
              * Audio sprite sound type.
              */
@@ -53646,7 +53919,7 @@ declare namespace Phaser {
                 data: ArrayBuffer | string;
             };
 
-            type EachActiveSoundCallback = (manager: Phaser.Sound.BaseSoundManager, sound: Phaser.Sound.BaseSound, index: number, sounds: Phaser.Sound.BaseSound[])=>void;
+            type EachActiveSoundCallback = (manager: Phaser.Sound.BaseSoundManager, sound: Phaser.Sound.BaseSound, index: number, sounds: Phaser.Sound.BaseSound[]) => void;
 
             /**
              * Config object containing various sound settings.
@@ -53706,7 +53979,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Textures {
+        namespace Textures
+        {
             /**
              * An object containing the position and color data for a single pixel in a CanvasTexture.
              */
@@ -53793,7 +54067,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Tilemaps {
+        namespace Tilemaps
+        {
             type FilteringOptions = {
                 /**
                  * If true, only return tiles that don't have -1 for an index.
@@ -54066,7 +54341,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Time {
+        namespace Time
+        {
             type TimerEventConfig = {
                 /**
                  * The delay after which the Timer Event should fire, in milliseconds.
@@ -54108,7 +54384,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Tweens {
+        namespace Tweens
+        {
             type TweenConfigDefaults = {
                 /**
                  * The object, or an array of objects, to run the tween on.
@@ -54156,9 +54433,9 @@ declare namespace Phaser {
                 flipY?: boolean;
             };
 
-            type GetEndCallback = (target: any, key: string, value: number)=>void;
+            type GetEndCallback = (target: any, key: string, value: number) => void;
 
-            type GetStartCallback = (target: any, key: string, value: number)=>void;
+            type GetStartCallback = (target: any, key: string, value: number) => void;
 
             type NumberTweenBuilderConfig = {
                 /**
@@ -54442,15 +54719,15 @@ declare namespace Phaser {
                 onCompleteParams?: any[];
             };
 
-            type TimelineOnCompleteCallback = (timeline: Phaser.Tweens.Timeline, ...param: any[])=>void;
+            type TimelineOnCompleteCallback = (timeline: Phaser.Tweens.Timeline, ...param: any[]) => void;
 
-            type TimelineOnLoopCallback = (timeline: Phaser.Tweens.Timeline, ...param: any[])=>void;
+            type TimelineOnLoopCallback = (timeline: Phaser.Tweens.Timeline, ...param: any[]) => void;
 
-            type TimelineOnStartCallback = (timeline: Phaser.Tweens.Timeline, ...param: any[])=>void;
+            type TimelineOnStartCallback = (timeline: Phaser.Tweens.Timeline, ...param: any[]) => void;
 
-            type TimelineOnUpdateCallback = (timeline: Phaser.Tweens.Timeline, ...param: any[])=>void;
+            type TimelineOnUpdateCallback = (timeline: Phaser.Tweens.Timeline, ...param: any[]) => void;
 
-            type TimelineOnYoyoCallback = (timeline: Phaser.Tweens.Timeline, ...param: any[])=>void;
+            type TimelineOnYoyoCallback = (timeline: Phaser.Tweens.Timeline, ...param: any[]) => void;
 
             type TweenBuilderConfig = {
                 /**
@@ -54520,7 +54797,7 @@ declare namespace Phaser {
                 /**
                  * The properties to tween.
                  */
-                props?: {[key: string]:  (number|string|Phaser.Types.Tweens.GetEndCallback|Phaser.Types.Tweens.TweenPropConfig)};
+                props?: { [key: string]: (number | string | Phaser.Types.Tweens.GetEndCallback | Phaser.Types.Tweens.TweenPropConfig) };
                 /**
                  * Use frames or milliseconds?
                  */
@@ -54725,17 +55002,17 @@ declare namespace Phaser {
                 repeatDelay: Function;
             };
 
-            type TweenOnCompleteCallback = (tween: Phaser.Tweens.Tween, targets: any[], ...param: any[])=>void;
+            type TweenOnCompleteCallback = (tween: Phaser.Tweens.Tween, targets: any[], ...param: any[]) => void;
 
-            type TweenOnLoopCallback = (tween: Phaser.Tweens.Tween, targets: any[], ...param: any[])=>void;
+            type TweenOnLoopCallback = (tween: Phaser.Tweens.Tween, targets: any[], ...param: any[]) => void;
 
-            type TweenOnRepeatCallback = (tween: Phaser.Tweens.Tween, target: any, ...param: any[])=>void;
+            type TweenOnRepeatCallback = (tween: Phaser.Tweens.Tween, target: any, ...param: any[]) => void;
 
-            type TweenOnStartCallback = (tween: Phaser.Tweens.Tween, targets: any[], ...param: any[])=>void;
+            type TweenOnStartCallback = (tween: Phaser.Tweens.Tween, targets: any[], ...param: any[]) => void;
 
-            type TweenOnUpdateCallback = (tween: Phaser.Tweens.Tween, target: any, ...param: any[])=>void;
+            type TweenOnUpdateCallback = (tween: Phaser.Tweens.Tween, target: any, ...param: any[]) => void;
 
-            type TweenOnYoyoCallback = (tween: Phaser.Tweens.Tween, target: any, ...param: any[])=>void;
+            type TweenOnYoyoCallback = (tween: Phaser.Tweens.Tween, target: any, ...param: any[]) => void;
 
             type TweenPropConfig = {
                 /**
@@ -54792,15 +55069,18 @@ declare namespace Phaser {
 
     }
 
-    namespace Physics {
-        namespace Arcade {
+    namespace Physics
+    {
+        namespace Arcade
+        {
             /**
              * An Arcade Physics Image is an Image with an Arcade Physics body and related components.
              * The body can be dynamic or static.
              * 
              * The main difference between an Arcade Image and an Arcade Sprite is that you cannot animate an Arcade Image.
              */
-            class Image extends Phaser.GameObjects.Image implements Phaser.Physics.Arcade.Components.Acceleration, Phaser.Physics.Arcade.Components.Angular, Phaser.Physics.Arcade.Components.Bounce, Phaser.Physics.Arcade.Components.Debug, Phaser.Physics.Arcade.Components.Drag, Phaser.Physics.Arcade.Components.Enable, Phaser.Physics.Arcade.Components.Friction, Phaser.Physics.Arcade.Components.Gravity, Phaser.Physics.Arcade.Components.Immovable, Phaser.Physics.Arcade.Components.Mass, Phaser.Physics.Arcade.Components.Size, Phaser.Physics.Arcade.Components.Velocity, Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.Texture, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible {
+            class Image extends Phaser.GameObjects.Image implements Phaser.Physics.Arcade.Components.Acceleration, Phaser.Physics.Arcade.Components.Angular, Phaser.Physics.Arcade.Components.Bounce, Phaser.Physics.Arcade.Components.Debug, Phaser.Physics.Arcade.Components.Drag, Phaser.Physics.Arcade.Components.Enable, Phaser.Physics.Arcade.Components.Friction, Phaser.Physics.Arcade.Components.Gravity, Phaser.Physics.Arcade.Components.Immovable, Phaser.Physics.Arcade.Components.Mass, Phaser.Physics.Arcade.Components.Size, Phaser.Physics.Arcade.Components.Velocity, Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.Texture, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible
+            {
                 /**
                  * 
                  * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -55998,7 +56278,8 @@ declare namespace Phaser {
              * The separation that stops two objects penetrating may create a new penetration against a different object. If you
              * require a high level of stability please consider using an alternative physics system, such as Matter.js.
              */
-            class ArcadePhysics {
+            class ArcadePhysics
+            {
                 /**
                  * 
                  * @param scene The Scene that this Plugin belongs to.
@@ -56258,7 +56539,8 @@ declare namespace Phaser {
              * The main difference between an Arcade Sprite and an Arcade Image is that you cannot animate an Arcade Image.
              * If you do not require animation then you can safely use Arcade Images instead of Arcade Sprites.
              */
-            class Sprite extends Phaser.GameObjects.Sprite implements Phaser.Physics.Arcade.Components.Acceleration, Phaser.Physics.Arcade.Components.Angular, Phaser.Physics.Arcade.Components.Bounce, Phaser.Physics.Arcade.Components.Debug, Phaser.Physics.Arcade.Components.Drag, Phaser.Physics.Arcade.Components.Enable, Phaser.Physics.Arcade.Components.Friction, Phaser.Physics.Arcade.Components.Gravity, Phaser.Physics.Arcade.Components.Immovable, Phaser.Physics.Arcade.Components.Mass, Phaser.Physics.Arcade.Components.Size, Phaser.Physics.Arcade.Components.Velocity, Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.Texture, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible {
+            class Sprite extends Phaser.GameObjects.Sprite implements Phaser.Physics.Arcade.Components.Acceleration, Phaser.Physics.Arcade.Components.Angular, Phaser.Physics.Arcade.Components.Bounce, Phaser.Physics.Arcade.Components.Debug, Phaser.Physics.Arcade.Components.Drag, Phaser.Physics.Arcade.Components.Enable, Phaser.Physics.Arcade.Components.Friction, Phaser.Physics.Arcade.Components.Gravity, Phaser.Physics.Arcade.Components.Immovable, Phaser.Physics.Arcade.Components.Mass, Phaser.Physics.Arcade.Components.Size, Phaser.Physics.Arcade.Components.Velocity, Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.Texture, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible
+            {
                 /**
                  * 
                  * @param scene The Scene to which this Game Object belongs. A Game Object can only belong to one Scene at a time.
@@ -57450,7 +57732,8 @@ declare namespace Phaser {
              * 
              * Its static counterpart is {@link Phaser.Physics.Arcade.StaticBody}.
              */
-            class Body {
+            class Body
+            {
                 /**
                  * 
                  * @param world The Arcade Physics simulation this Body belongs to.
@@ -58194,7 +58477,8 @@ declare namespace Phaser {
              * An Arcade Physics Collider will automatically check for collision, or overlaps, between two objects
              * every step. If a collision, or overlap, occurs it will invoke the given callbacks.
              */
-            class Collider {
+            class Collider
+            {
                 /**
                  * 
                  * @param world The Arcade physics World that will manage the collisions.
@@ -58272,11 +58556,13 @@ declare namespace Phaser {
 
             }
 
-            namespace Components {
+            namespace Components
+            {
                 /**
                  * Provides methods used for setting the acceleration properties of an Arcade Physics Body.
                  */
-                interface Acceleration {
+                interface Acceleration
+                {
                     /**
                      * Sets the body's horizontal and vertical acceleration. If the vertical acceleration value is not provided, the vertical acceleration is set to the same value as the horizontal acceleration.
                      * @param x The horizontal acceleration
@@ -58298,7 +58584,8 @@ declare namespace Phaser {
                 /**
                  * Provides methods used for setting the angular acceleration properties of an Arcade Physics Body.
                  */
-                interface Angular {
+                interface Angular
+                {
                     /**
                      * Sets the angular velocity of the body.
                      * 
@@ -58327,7 +58614,8 @@ declare namespace Phaser {
                 /**
                  * Provides methods used for setting the bounce properties of an Arcade Physics Body.
                  */
-                interface Bounce {
+                interface Bounce
+                {
                     /**
                      * Sets the bounce values of this body.
                      * 
@@ -58361,7 +58649,8 @@ declare namespace Phaser {
                 /**
                  * Provides methods used for setting the debug properties of an Arcade Physics Body.
                  */
-                interface Debug {
+                interface Debug
+                {
                     /**
                      * Sets the debug values of this body.
                      * 
@@ -58394,7 +58683,8 @@ declare namespace Phaser {
                 /**
                  * Provides methods used for setting the drag properties of an Arcade Physics Body.
                  */
-                interface Drag {
+                interface Drag
+                {
                     /**
                      * Sets the body's horizontal and vertical drag. If the vertical drag value is not provided, the vertical drag is set to the same value as the horizontal drag.
                      * 
@@ -58462,7 +58752,8 @@ declare namespace Phaser {
                 /**
                  * Provides methods used for setting the enable properties of an Arcade Physics Body.
                  */
-                interface Enable {
+                interface Enable
+                {
                     /**
                      * Enables this Game Object's Body.
                      * @param reset Also reset the Body and place it at (x, y).
@@ -58490,7 +58781,8 @@ declare namespace Phaser {
                 /**
                  * Sets the friction (e.g. the amount of velocity reduced over time) of the physics body when moving horizontally in the X axis. The higher than friction, the faster the body will slow down once force stops being applied to it.
                  */
-                interface Friction {
+                interface Friction
+                {
                     /**
                      * Sets the friction (e.g. the amount of velocity reduced over time) of the physics body when moving.
                      * The higher than friction, the faster the body will slow down once force stops being applied to it.
@@ -58516,7 +58808,8 @@ declare namespace Phaser {
                  * Provides methods for setting the gravity properties of an Arcade Physics Game Object.
                  * Should be applied as a mixin and not used directly.
                  */
-                interface Gravity {
+                interface Gravity
+                {
                     /**
                      * Set the X and Y values of the gravitational pull to act upon this Arcade Physics Game Object. Values can be positive or negative. Larger values result in a stronger effect.
                      * 
@@ -58540,7 +58833,8 @@ declare namespace Phaser {
                 /**
                  * Provides methods used for setting the immovable properties of an Arcade Physics Body.
                  */
-                interface Immovable {
+                interface Immovable
+                {
                     /**
                      * Sets Whether this Body can be moved by collisions with another Body.
                      * @param value Sets if this body can be moved by collisions with another Body. Default true.
@@ -58551,7 +58845,8 @@ declare namespace Phaser {
                 /**
                  * Provides methods used for setting the mass properties of an Arcade Physics Body.
                  */
-                interface Mass {
+                interface Mass
+                {
                     /**
                      * Sets the mass of the physics body
                      * @param value New value for the mass of the body.
@@ -58569,14 +58864,16 @@ declare namespace Phaser {
                  * If Arcade Physics is set to use the RTree (which it is by default) then the search for is extremely fast,
                  * otherwise the search is O(N) for Dynamic Bodies.
                  */
-                interface OverlapRect {
+                interface OverlapRect
+                {
                 }
 
                 /**
                  * Provides methods for setting the size of an Arcade Physics Game Object.
                  * Should be applied as a mixin and not used directly.
                  */
-                interface Size {
+                interface Size
+                {
                     /**
                      * Sets the body offset. This allows you to adjust the difference between the center of the body
                      * and the x and y coordinates of the parent Game Object.
@@ -58606,7 +58903,8 @@ declare namespace Phaser {
                  * 
                  * Should be applied as a mixin and not used directly.
                  */
-                interface Velocity {
+                interface Velocity
+                {
                     /**
                      * Sets the velocity of the Body.
                      * @param x The horizontal velocity of the body. Positive values move the body to the right, while negative values move it to the left.
@@ -58682,7 +58980,8 @@ declare namespace Phaser {
              */
             var FACING_RIGHT: number;
 
-            namespace Events {
+            namespace Events
+            {
                 /**
                  * The Arcade Physics World Collide Event.
                  * 
@@ -58787,7 +59086,8 @@ declare namespace Phaser {
              * The Arcade Physics Factory allows you to easily create Arcade Physics enabled Game Objects.
              * Objects that are created by this Factory are automatically added to the physics world.
              */
-            class Factory {
+            class Factory
+            {
                 /**
                  * 
                  * @param world The Arcade Physics World instance.
@@ -58922,7 +59222,8 @@ declare namespace Phaser {
              * 
              * Its static counterpart is {@link Phaser.Physics.Arcade.StaticGroup}.
              */
-            class Group extends Phaser.GameObjects.Group {
+            class Group extends Phaser.GameObjects.Group
+            {
                 /**
                  * 
                  * @param world The physics simulation.
@@ -59026,7 +59327,8 @@ declare namespace Phaser {
              * 
              * Its dynamic counterpart is {@link Phaser.Physics.Arcade.Body}.
              */
-            class StaticBody {
+            class StaticBody
+            {
                 /**
                  * 
                  * @param world The Arcade Physics simulation this Static Body belongs to.
@@ -59380,7 +59682,8 @@ declare namespace Phaser {
              * 
              * Its dynamic counterpart is {@link Phaser.Physics.Arcade.Group}.
              */
-            class StaticGroup extends Phaser.GameObjects.Group {
+            class StaticGroup extends Phaser.GameObjects.Group
+            {
                 /**
                  * 
                  * @param world The physics simulation.
@@ -59426,7 +59729,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Tilemap {
+            namespace Tilemap
+            {
                 /**
                  * A function to process the collision callbacks between a single tile and an Arcade Physics enabled Game Object.
                  * @param tile The Tile to process.
@@ -59500,7 +59804,8 @@ declare namespace Phaser {
              * 
              * An instance of the World belongs to a Phaser.Scene and is accessed via the property `physics.world`.
              */
-            class World extends Phaser.Events.EventEmitter {
+            class World extends Phaser.Events.EventEmitter
+            {
                 /**
                  * 
                  * @param scene The Scene to which this World instance belongs.
@@ -59526,7 +59831,7 @@ declare namespace Phaser {
                 /**
                  * Static Bodies marked for deletion.
                  */
-                pendingDestroy: Phaser.Structs.Set<(Phaser.Physics.Arcade.Body|Phaser.Physics.Arcade.StaticBody)>;
+                pendingDestroy: Phaser.Structs.Set<(Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody)>;
 
                 /**
                  * This simulation's collision processors.
@@ -60082,12 +60387,14 @@ declare namespace Phaser {
          * 
          * My thanks to Dominic Szablewski for his permission to support Impact in Phaser.
          */
-        namespace Impact {
+        namespace Impact
+        {
             /**
              * An Impact.js compatible physics body.
              * This re-creates the properties you'd get on an Entity and the math needed to update them.
              */
-            class Body {
+            class Body
+            {
                 /**
                  * 
                  * @param world [description]
@@ -60333,7 +60640,8 @@ declare namespace Phaser {
              * with other LITE or PASSIVE entities at all. The behavior for FIXED vs.
              * FIXED collisions is undefined.
              */
-            enum COLLIDES {
+            enum COLLIDES
+            {
                 /**
                  * Never collides.
                  */
@@ -60359,7 +60667,8 @@ declare namespace Phaser {
             /**
              * [description]
              */
-            class CollisionMap {
+            class CollisionMap
+            {
                 /**
                  * 
                  * @param tilesize [description] Default 32.
@@ -60440,12 +60749,14 @@ declare namespace Phaser {
 
             }
 
-            namespace Components {
+            namespace Components
+            {
                 /**
                  * The Impact Acceleration component.
                  * Should be applied as a mixin.
                  */
-                interface Acceleration {
+                interface Acceleration
+                {
                     /**
                      * Sets the horizontal acceleration of this body.
                      * @param x The amount of acceleration to apply.
@@ -60468,7 +60779,8 @@ declare namespace Phaser {
                  * The Impact Body Scale component.
                  * Should be applied as a mixin.
                  */
-                interface BodyScale {
+                interface BodyScale
+                {
                     /**
                      * Sets the size of the physics body.
                      * @param width The width of the body in pixels.
@@ -60487,7 +60799,8 @@ declare namespace Phaser {
                  * The Impact Body Type component.
                  * Should be applied as a mixin.
                  */
-                interface BodyType {
+                interface BodyType
+                {
                     /**
                      * [description]
                      */
@@ -60510,7 +60823,8 @@ declare namespace Phaser {
                  * The Impact Bounce component.
                  * Should be applied as a mixin.
                  */
-                interface Bounce {
+                interface Bounce
+                {
                     /**
                      * Sets the impact physics bounce, or restitution, value.
                      * @param value A value between 0 (no rebound) and 1 (full rebound)
@@ -60532,7 +60846,8 @@ declare namespace Phaser {
                  * The Impact Check Against component.
                  * Should be applied as a mixin.
                  */
-                interface CheckAgainst {
+                interface CheckAgainst
+                {
                     /**
                      * [description]
                      */
@@ -60563,7 +60878,8 @@ declare namespace Phaser {
                  * The Impact Collides component.
                  * Should be applied as a mixin.
                  */
-                interface Collides {
+                interface Collides
+                {
                     /**
                      * [description]
                      * @param callback [description]
@@ -60600,7 +60916,8 @@ declare namespace Phaser {
                  * The Impact Debug component.
                  * Should be applied as a mixin.
                  */
-                interface Debug {
+                interface Debug
+                {
                     /**
                      * [description]
                      * @param showBody [description]
@@ -60631,7 +60948,8 @@ declare namespace Phaser {
                  * The Impact Friction component.
                  * Should be applied as a mixin.
                  */
-                interface Friction {
+                interface Friction
+                {
                     /**
                      * [description]
                      * @param x [description]
@@ -60654,7 +60972,8 @@ declare namespace Phaser {
                  * The Impact Gravity component.
                  * Should be applied as a mixin.
                  */
-                interface Gravity {
+                interface Gravity
+                {
                     /**
                      * [description]
                      * @param value [description]
@@ -60670,7 +60989,8 @@ declare namespace Phaser {
                  * The Impact Offset component.
                  * Should be applied as a mixin.
                  */
-                interface Offset {
+                interface Offset
+                {
                     /**
                      * [description]
                      * @param x [description]
@@ -60685,7 +61005,8 @@ declare namespace Phaser {
                  * The Impact Set Game Object component.
                  * Should be applied as a mixin.
                  */
-                interface SetGameObject {
+                interface SetGameObject
+                {
                     /**
                      * [description]
                      * @param gameObject [description]
@@ -60702,7 +61023,8 @@ declare namespace Phaser {
                  * The Impact Velocity component.
                  * Should be applied as a mixin.
                  */
-                interface Velocity {
+                interface Velocity
+                {
                     /**
                      * Sets the horizontal velocity of the physics body.
                      * @param x The horizontal velocity value.
@@ -60729,7 +61051,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Events {
+            namespace Events
+            {
                 /**
                  * The Impact Physics World Collide Event.
                  * 
@@ -60763,7 +61086,8 @@ declare namespace Phaser {
              * The Impact Physics Factory allows you to easily create Impact Physics enabled Game Objects.
              * Objects that are created by this Factory are automatically added to the physics world.
              */
-            class Factory {
+            class Factory
+            {
                 /**
                  * 
                  * @param world A reference to the Impact Physics world.
@@ -60833,7 +61157,8 @@ declare namespace Phaser {
             /**
              * [description]
              */
-            class ImpactBody implements Phaser.Physics.Impact.Components.Acceleration, Phaser.Physics.Impact.Components.BodyScale, Phaser.Physics.Impact.Components.BodyType, Phaser.Physics.Impact.Components.Bounce, Phaser.Physics.Impact.Components.CheckAgainst, Phaser.Physics.Impact.Components.Collides, Phaser.Physics.Impact.Components.Debug, Phaser.Physics.Impact.Components.Friction, Phaser.Physics.Impact.Components.Gravity, Phaser.Physics.Impact.Components.Offset, Phaser.Physics.Impact.Components.SetGameObject, Phaser.Physics.Impact.Components.Velocity {
+            class ImpactBody implements Phaser.Physics.Impact.Components.Acceleration, Phaser.Physics.Impact.Components.BodyScale, Phaser.Physics.Impact.Components.BodyType, Phaser.Physics.Impact.Components.Bounce, Phaser.Physics.Impact.Components.CheckAgainst, Phaser.Physics.Impact.Components.Collides, Phaser.Physics.Impact.Components.Debug, Phaser.Physics.Impact.Components.Friction, Phaser.Physics.Impact.Components.Gravity, Phaser.Physics.Impact.Components.Offset, Phaser.Physics.Impact.Components.SetGameObject, Phaser.Physics.Impact.Components.Velocity
+            {
                 /**
                  * 
                  * @param world [description]
@@ -61133,7 +61458,8 @@ declare namespace Phaser {
              * events and physics bodies, or be tweened, tinted or scrolled. The main difference between an
              * Image and a Sprite is that you cannot animate an Image as they do not have the Animation component.
              */
-            class ImpactImage extends Phaser.GameObjects.Image implements Phaser.Physics.Impact.Components.Acceleration, Phaser.Physics.Impact.Components.BodyScale, Phaser.Physics.Impact.Components.BodyType, Phaser.Physics.Impact.Components.Bounce, Phaser.Physics.Impact.Components.CheckAgainst, Phaser.Physics.Impact.Components.Collides, Phaser.Physics.Impact.Components.Debug, Phaser.Physics.Impact.Components.Friction, Phaser.Physics.Impact.Components.Gravity, Phaser.Physics.Impact.Components.Offset, Phaser.Physics.Impact.Components.SetGameObject, Phaser.Physics.Impact.Components.Velocity, Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.Texture, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible {
+            class ImpactImage extends Phaser.GameObjects.Image implements Phaser.Physics.Impact.Components.Acceleration, Phaser.Physics.Impact.Components.BodyScale, Phaser.Physics.Impact.Components.BodyType, Phaser.Physics.Impact.Components.Bounce, Phaser.Physics.Impact.Components.CheckAgainst, Phaser.Physics.Impact.Components.Collides, Phaser.Physics.Impact.Components.Debug, Phaser.Physics.Impact.Components.Friction, Phaser.Physics.Impact.Components.Gravity, Phaser.Physics.Impact.Components.Offset, Phaser.Physics.Impact.Components.SetGameObject, Phaser.Physics.Impact.Components.Velocity, Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.Texture, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible
+            {
                 /**
                  * 
                  * @param world The physics world of the Impact physics system.
@@ -62296,7 +62622,8 @@ declare namespace Phaser {
             /**
              * [description]
              */
-            class ImpactPhysics {
+            class ImpactPhysics
+            {
                 /**
                  * 
                  * @param scene [description]
@@ -62356,7 +62683,8 @@ declare namespace Phaser {
              * As such, Sprites take a fraction longer to process and have a larger API footprint due to the Animation
              * Component. If you do not require animation then you can safely use Images to replace Sprites in all cases.
              */
-            class ImpactSprite extends Phaser.GameObjects.Sprite implements Phaser.Physics.Impact.Components.Acceleration, Phaser.Physics.Impact.Components.BodyScale, Phaser.Physics.Impact.Components.BodyType, Phaser.Physics.Impact.Components.Bounce, Phaser.Physics.Impact.Components.CheckAgainst, Phaser.Physics.Impact.Components.Collides, Phaser.Physics.Impact.Components.Debug, Phaser.Physics.Impact.Components.Friction, Phaser.Physics.Impact.Components.Gravity, Phaser.Physics.Impact.Components.Offset, Phaser.Physics.Impact.Components.SetGameObject, Phaser.Physics.Impact.Components.Velocity, Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.Texture, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible {
+            class ImpactSprite extends Phaser.GameObjects.Sprite implements Phaser.Physics.Impact.Components.Acceleration, Phaser.Physics.Impact.Components.BodyScale, Phaser.Physics.Impact.Components.BodyType, Phaser.Physics.Impact.Components.Bounce, Phaser.Physics.Impact.Components.CheckAgainst, Phaser.Physics.Impact.Components.Collides, Phaser.Physics.Impact.Components.Debug, Phaser.Physics.Impact.Components.Friction, Phaser.Physics.Impact.Components.Gravity, Phaser.Physics.Impact.Components.Offset, Phaser.Physics.Impact.Components.SetGameObject, Phaser.Physics.Impact.Components.Velocity, Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.Texture, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible
+            {
                 /**
                  * 
                  * @param world [description]
@@ -63551,7 +63879,8 @@ declare namespace Phaser {
              * with other LITE or PASSIVE entities at all. The behavior for FIXED vs.
              * FIXED collisions is undefined.
              */
-            enum TYPE {
+            enum TYPE
+            {
                 /**
                  * Collides with nothing.
                  */
@@ -63585,7 +63914,8 @@ declare namespace Phaser {
             /**
              * [description]
              */
-            class World extends Phaser.Events.EventEmitter {
+            class World extends Phaser.Events.EventEmitter
+            {
                 /**
                  * 
                  * @param scene The Scene to which this Impact World instance belongs.
@@ -63857,12 +64187,15 @@ declare namespace Phaser {
 
         }
 
-        namespace Matter {
-            namespace Components {
+        namespace Matter
+        {
+            namespace Components
+            {
                 /**
                  * A component to set restitution on objects.
                  */
-                interface Bounce {
+                interface Bounce
+                {
                     /**
                      * Sets the restitution on the physics object.
                      * @param value A Number that defines the restitution (elasticity) of the body. The value is always positive and is in the range (0, 1). A value of 0 means collisions may be perfectly inelastic and no bouncing may occur. A value of 0.8 means the body may bounce back with approximately 80% of its kinetic energy. Note that collision response is based on pairs of bodies, and that restitution values are combined with the following formula: `Math.max(bodyA.restitution, bodyB.restitution)`
@@ -63873,7 +64206,8 @@ declare namespace Phaser {
                 /**
                  * Contains methods for changing the collision filter of a Matter Body. Should be used as a mixin and not called directly.
                  */
-                interface Collision {
+                interface Collision
+                {
                     /**
                      * Sets the collision category of this Game Object's Matter Body. This number must be a power of two between 2^0 (= 1) and 2^31. Two bodies with different collision groups (see {@link #setCollisionGroup}) will only collide if their collision categories are included in their collision masks (see {@link #setCollidesWith}).
                      * @param value Unique category bitfield.
@@ -63894,7 +64228,8 @@ declare namespace Phaser {
                 /**
                  * A component to apply force to Matter.js bodies.
                  */
-                interface Force {
+                interface Force
+                {
                     /**
                      * Applies a force to a body.
                      * @param force A Vector that specifies the force to apply.
@@ -63931,7 +64266,8 @@ declare namespace Phaser {
                 /**
                  * Contains methods for changing the friction of a Game Object's Matter Body. Should be used a mixin, not called directly.
                  */
-                interface Friction {
+                interface Friction
+                {
                     /**
                      * Sets new friction values for this Game Object's Matter Body.
                      * @param value The new friction of the body, between 0 and 1, where 0 allows the Body to slide indefinitely, while 1 allows it to stop almost immediately after a force is applied.
@@ -63954,7 +64290,8 @@ declare namespace Phaser {
                 /**
                  * A component to manipulate world gravity for Matter.js bodies.
                  */
-                interface Gravity {
+                interface Gravity
+                {
                     /**
                      * A togglable function for ignoring world gravity in real-time on the current body.
                      * @param value Set to true to ignore the effect of world gravity, or false to not ignore it.
@@ -63965,7 +64302,8 @@ declare namespace Phaser {
                 /**
                  * Allows accessing the mass, density, and center of mass of a Matter-enabled Game Object. Should be used as a mixin and not directly.
                  */
-                interface Mass {
+                interface Mass
+                {
                     /**
                      * Sets the mass of the Game Object's Matter Body.
                      * @param value The new mass of the body.
@@ -63985,7 +64323,8 @@ declare namespace Phaser {
                 /**
                  * [description]
                  */
-                interface Sensor {
+                interface Sensor
+                {
                     /**
                      * [description]
                      * @param value [description]
@@ -64000,7 +64339,8 @@ declare namespace Phaser {
                 /**
                  * [description]
                  */
-                interface SetBody {
+                interface SetBody
+                {
                     /**
                      * Set the body on a Game Object to a rectangle.
                      * @param width Width of the rectangle.
@@ -64046,7 +64386,8 @@ declare namespace Phaser {
                 /**
                  * [description]
                  */
-                interface Sleep {
+                interface Sleep
+                {
                     /**
                      * [description]
                      * @param value [description] Default 60.
@@ -64073,7 +64414,8 @@ declare namespace Phaser {
                 /**
                  * [description]
                  */
-                interface Static {
+                interface Static
+                {
                     /**
                      * [description]
                      * @param value [description]
@@ -64088,7 +64430,8 @@ declare namespace Phaser {
                 /**
                  * Provides methods used for getting and setting the position, scale and rotation of a Game Object.
                  */
-                interface Transform {
+                interface Transform
+                {
                     /**
                      * The x position of this Game Object.
                      */
@@ -64145,7 +64488,8 @@ declare namespace Phaser {
                 /**
                  * [description]
                  */
-                interface Velocity {
+                interface Velocity
+                {
                     /**
                      * [description]
                      * @param value [description]
@@ -64171,7 +64515,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Events {
+            namespace Events
+            {
                 type AfterUpdateEvent = {
                     /**
                      * The Matter Engine `timing.timestamp` value for the event.
@@ -64400,7 +64745,8 @@ declare namespace Phaser {
             /**
              * The Matter Factory can create different types of bodies and them to a physics world.
              */
-            class Factory {
+            class Factory
+            {
                 /**
                  * 
                  * @param world The Matter World which this Factory adds to.
@@ -64707,7 +65053,8 @@ declare namespace Phaser {
              * events and physics bodies, or be tweened, tinted or scrolled. The main difference between an
              * Image and a Sprite is that you cannot animate an Image as they do not have the Animation component.
              */
-            class Image extends Phaser.GameObjects.Image implements Phaser.Physics.Matter.Components.Bounce, Phaser.Physics.Matter.Components.Collision, Phaser.Physics.Matter.Components.Force, Phaser.Physics.Matter.Components.Friction, Phaser.Physics.Matter.Components.Gravity, Phaser.Physics.Matter.Components.Mass, Phaser.Physics.Matter.Components.Sensor, Phaser.Physics.Matter.Components.SetBody, Phaser.Physics.Matter.Components.Sleep, Phaser.Physics.Matter.Components.Static, Phaser.Physics.Matter.Components.Transform, Phaser.Physics.Matter.Components.Velocity, Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.Texture, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible {
+            class Image extends Phaser.GameObjects.Image implements Phaser.Physics.Matter.Components.Bounce, Phaser.Physics.Matter.Components.Collision, Phaser.Physics.Matter.Components.Force, Phaser.Physics.Matter.Components.Friction, Phaser.Physics.Matter.Components.Gravity, Phaser.Physics.Matter.Components.Mass, Phaser.Physics.Matter.Components.Sensor, Phaser.Physics.Matter.Components.SetBody, Phaser.Physics.Matter.Components.Sleep, Phaser.Physics.Matter.Components.Static, Phaser.Physics.Matter.Components.Transform, Phaser.Physics.Matter.Components.Velocity, Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.Texture, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible
+            {
                 /**
                  * 
                  * @param world [description]
@@ -65824,7 +66171,8 @@ declare namespace Phaser {
             /**
              * [description]
              */
-            class MatterPhysics {
+            class MatterPhysics
+            {
                 /**
                  * 
                  * @param scene [description]
@@ -65948,7 +66296,8 @@ declare namespace Phaser {
              * As such, Sprites take a fraction longer to process and have a larger API footprint due to the Animation
              * Component. If you do not require animation then you can safely use Images to replace Sprites in all cases.
              */
-            class Sprite extends Phaser.GameObjects.Sprite implements Phaser.Physics.Matter.Components.Bounce, Phaser.Physics.Matter.Components.Collision, Phaser.Physics.Matter.Components.Force, Phaser.Physics.Matter.Components.Friction, Phaser.Physics.Matter.Components.Gravity, Phaser.Physics.Matter.Components.Mass, Phaser.Physics.Matter.Components.Sensor, Phaser.Physics.Matter.Components.SetBody, Phaser.Physics.Matter.Components.Sleep, Phaser.Physics.Matter.Components.Static, Phaser.Physics.Matter.Components.Transform, Phaser.Physics.Matter.Components.Velocity, Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.Texture, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible {
+            class Sprite extends Phaser.GameObjects.Sprite implements Phaser.Physics.Matter.Components.Bounce, Phaser.Physics.Matter.Components.Collision, Phaser.Physics.Matter.Components.Force, Phaser.Physics.Matter.Components.Friction, Phaser.Physics.Matter.Components.Gravity, Phaser.Physics.Matter.Components.Mass, Phaser.Physics.Matter.Components.Sensor, Phaser.Physics.Matter.Components.SetBody, Phaser.Physics.Matter.Components.Sleep, Phaser.Physics.Matter.Components.Static, Phaser.Physics.Matter.Components.Transform, Phaser.Physics.Matter.Components.Velocity, Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Size, Phaser.GameObjects.Components.Texture, Phaser.GameObjects.Components.Tint, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible
+            {
                 /**
                  * 
                  * @param world [description]
@@ -67074,7 +67423,8 @@ declare namespace Phaser {
              * Note: not all Tiled collision shapes are supported. See
              * Phaser.Physics.Matter.TileBody#setFromTileCollision for more information.
              */
-            class TileBody implements Phaser.Physics.Matter.Components.Bounce, Phaser.Physics.Matter.Components.Collision, Phaser.Physics.Matter.Components.Friction, Phaser.Physics.Matter.Components.Gravity, Phaser.Physics.Matter.Components.Mass, Phaser.Physics.Matter.Components.Sensor, Phaser.Physics.Matter.Components.Sleep, Phaser.Physics.Matter.Components.Static {
+            class TileBody implements Phaser.Physics.Matter.Components.Bounce, Phaser.Physics.Matter.Components.Collision, Phaser.Physics.Matter.Components.Friction, Phaser.Physics.Matter.Components.Gravity, Phaser.Physics.Matter.Components.Mass, Phaser.Physics.Matter.Components.Sensor, Phaser.Physics.Matter.Components.Sleep, Phaser.Physics.Matter.Components.Static
+            {
                 /**
                  * 
                  * @param world [description]
@@ -67251,7 +67601,8 @@ declare namespace Phaser {
              * Use PhysicsEditorParser.parseBody() to build a Matter body object, based on a physics data file
              * created and exported with PhysicsEditor (https://www.codeandweb.com/physicseditor).
              */
-            namespace PhysicsEditorParser {
+            namespace PhysicsEditorParser
+            {
                 /**
                  * Parses a body element exported by PhysicsEditor.
                  * @param x x position.
@@ -67287,7 +67638,8 @@ declare namespace Phaser {
              * You can adjust the stiffness, length and other properties of the constraint via
              * the `options` object on creation.
              */
-            class PointerConstraint {
+            class PointerConstraint
+            {
                 /**
                  * 
                  * @param scene A reference to the Scene to which this Pointer Constraint belongs.
@@ -67397,7 +67749,8 @@ declare namespace Phaser {
             /**
              * [description]
              */
-            class World extends Phaser.Events.EventEmitter {
+            class World extends Phaser.Events.EventEmitter
+            {
                 /**
                  * 
                  * @param scene The Scene to which this Matter World instance belongs.
@@ -67686,12 +68039,14 @@ declare namespace Phaser {
 
     }
 
-    namespace Plugins {
+    namespace Plugins
+    {
         /**
          * A Global Plugin is installed just once into the Game owned Plugin Manager.
          * It can listen for Game events and respond to them.
          */
-        class BasePlugin {
+        class BasePlugin
+        {
             /**
              * 
              * @param pluginManager A reference to the Plugin Manager.
@@ -67807,7 +68162,8 @@ declare namespace Phaser {
          */
         var DefaultScene: any[];
 
-        namespace PluginCache {
+        namespace PluginCache
+        {
             /**
              * Static method called directly by the Core internal Plugins.
              * Key is a reference used to get the plugin from the plugins object (i.e. InputPlugin)
@@ -67920,7 +68276,8 @@ declare namespace Phaser {
          * 
          * For information on creating your own plugin please see the Phaser 3 Plugin Template.
          */
-        class PluginManager {
+        class PluginManager
+        {
             /**
              * 
              * @param game The game instance that owns this Plugin Manager.
@@ -68177,7 +68534,8 @@ declare namespace Phaser {
          * It can listen for Scene events and respond to them.
          * It can map itself to a Scene property, or into the Scene Systems, or both.
          */
-        class ScenePlugin extends Phaser.Plugins.BasePlugin {
+        class ScenePlugin extends Phaser.Plugins.BasePlugin
+        {
             /**
              * 
              * @param scene A reference to the Scene that has installed this plugin.
@@ -68226,7 +68584,8 @@ declare namespace Phaser {
     /**
      * Phaser Blend Modes.
      */
-    enum BlendModes {
+    enum BlendModes
+    {
         /**
          * Skips the Blend Mode check in the renderer.
          */
@@ -68372,12 +68731,15 @@ declare namespace Phaser {
         XOR,
     }
 
-    namespace Renderer {
-        namespace Canvas {
+    namespace Renderer
+    {
+        namespace Canvas
+        {
             /**
              * The Canvas Renderer is responsible for managing 2D canvas rendering contexts, including the one used by the Game's canvas. It tracks the internal state of a given context and can renderer textured Game Objects to it, taking into account alpha, blending, and scaling.
              */
-            class CanvasRenderer {
+            class CanvasRenderer
+            {
                 /**
                  * 
                  * @param game The Phaser Game instance that owns this renderer.
@@ -68628,7 +68990,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Snapshot {
+        namespace Snapshot
+        {
             /**
              * Takes a snapshot of an area from the current frame displayed by a canvas.
              * 
@@ -68651,8 +69014,10 @@ declare namespace Phaser {
 
         }
 
-        namespace WebGL {
-            namespace Pipelines {
+        namespace WebGL
+        {
+            namespace Pipelines
+            {
                 /**
                  * BitmapMaskPipeline handles all bitmap masking rendering in WebGL. It works by using 
                  * sampling two texture on the fragment shader and using the fragment's alpha to clip the region.
@@ -68666,7 +69031,8 @@ declare namespace Phaser {
                  * - vertexCapacity: The amount of vertices that shall be allocated
                  * - vertexSize: The size of a single vertex in bytes.
                  */
-                class BitmapMaskPipeline extends Phaser.Renderer.WebGL.WebGLPipeline {
+                class BitmapMaskPipeline extends Phaser.Renderer.WebGL.WebGLPipeline
+                {
                     /**
                      * 
                      * @param config Used for overriding shader an pipeline properties if extending this pipeline.
@@ -68727,7 +69093,8 @@ declare namespace Phaser {
                  * Implements a model view projection matrices.
                  * Pipelines can implement this for doing 2D and 3D rendering.
                  */
-                interface ModelViewProjection {
+                interface ModelViewProjection
+                {
                     /**
                      * Dirty flag for checking if model matrix needs to be updated on GPU.
                      */
@@ -68865,7 +69232,8 @@ declare namespace Phaser {
                  * This pipeline extends TextureTintPipeline so it implements all it's rendering functions
                  * and batching system.
                  */
-                class ForwardDiffuseLightPipeline extends Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline {
+                class ForwardDiffuseLightPipeline extends Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline
+                {
                     /**
                      * 
                      * @param config The configuration of the pipeline, same as the {@link Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline}. The fragment shader will be replaced with the lighting shader.
@@ -68950,7 +69318,8 @@ declare namespace Phaser {
                  * - vertexCapacity: The amount of vertices that shall be allocated
                  * - vertexSize: The size of a single vertex in bytes.
                  */
-                class TextureTintPipeline extends Phaser.Renderer.WebGL.WebGLPipeline {
+                class TextureTintPipeline extends Phaser.Renderer.WebGL.WebGLPipeline
+                {
                     /**
                      * 
                      * @param config The configuration options for this Texture Tint Pipeline, as described above.
@@ -69246,7 +69615,8 @@ declare namespace Phaser {
 
             }
 
-            namespace Utils {
+            namespace Utils
+            {
                 /**
                  * Packs four floats on a range from 0.0 to 1.0 into a single Uint32
                  * @param r Red component in a range from 0.0 to 1.0
@@ -69319,7 +69689,8 @@ declare namespace Phaser {
              * Here you can find more information of how to describe an attribute:
              * - https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/vertexAttribPointer
              */
-            class WebGLPipeline {
+            class WebGLPipeline
+            {
                 /**
                  * 
                  * @param config The configuration object for this WebGL Pipeline, as described above.
@@ -69631,7 +70002,8 @@ declare namespace Phaser {
              * unexpected behavior. It's recommended that WebGL interaction is done through
              * WebGLRenderer and/or WebGLPipeline.
              */
-            class WebGLRenderer {
+            class WebGLRenderer
+            {
                 /**
                  * 
                  * @param game The Game instance which owns this WebGL Renderer.
@@ -70389,7 +70761,8 @@ declare namespace Phaser {
     /**
      * Phaser Scale Modes.
      */
-    enum ScaleModes {
+    enum ScaleModes
+    {
         /**
          * Default Scale Mode (Linear).
          */
@@ -70404,11 +70777,13 @@ declare namespace Phaser {
         NEAREST,
     }
 
-    namespace Scale {
+    namespace Scale
+    {
         /**
          * Phaser Scale Manager constants for centering the game canvas.
          */
-        enum Center {
+        enum Center
+        {
             /**
              * The game canvas is not centered within the parent by Phaser.
              * You can still center it yourself via CSS.
@@ -70450,7 +70825,8 @@ declare namespace Phaser {
         /**
          * Phaser Scale Manager constants for orientation.
          */
-        enum Orientation {
+        enum Orientation
+        {
             /**
              * A landscape orientation.
              */
@@ -70471,7 +70847,8 @@ declare namespace Phaser {
         /**
          * Phaser Scale Manager constants for the different scale modes available.
          */
-        enum ScaleModes {
+        enum ScaleModes
+        {
             /**
              * No scaling happens at all. The canvas is set to the size given in the game config and Phaser doesn't change it
              * again from that point on. If you change the canvas size, either via CSS, or directly via code, then you need
@@ -70513,7 +70890,8 @@ declare namespace Phaser {
         /**
          * Phaser Scale Manager constants for zoom modes.
          */
-        enum Zoom {
+        enum Zoom
+        {
             /**
              * The game canvas will not be zoomed by Phaser.
              */
@@ -70540,7 +70918,8 @@ declare namespace Phaser {
          */
         type ZoomType = Phaser.Scale.Zoom;
 
-        namespace Events {
+        namespace Events
+        {
             /**
              * The Scale Manager has successfully entered fullscreen mode.
              */
@@ -70673,7 +71052,8 @@ declare namespace Phaser {
          * great way to achieve a desktop-game like experience from the browser, but it does require a modern browser
          * to handle it. Some mobile browsers also support this.
          */
-        class ScaleManager extends Phaser.Events.EventEmitter {
+        class ScaleManager extends Phaser.Events.EventEmitter
+        {
             /**
              * 
              * @param game A reference to the Phaser.Game instance.
@@ -71212,7 +71592,8 @@ declare namespace Phaser {
 
     }
 
-    namespace Scenes {
+    namespace Scenes
+    {
         /**
          * Scene state.
          */
@@ -71263,7 +71644,8 @@ declare namespace Phaser {
          */
         var DESTROYED: integer;
 
-        namespace Events {
+        namespace Events
+        {
             /**
              * The Scene Systems Boot Event.
              * 
@@ -71565,7 +71947,8 @@ declare namespace Phaser {
          * The Scene Manager is a Game level system, responsible for creating, processing and updating all of the
          * Scenes in a Game instance.
          */
-        class SceneManager {
+        class SceneManager
+        {
             /**
              * 
              * @param game The Phaser.Game instance this Scene Manager belongs to.
@@ -71835,7 +72218,8 @@ declare namespace Phaser {
         /**
          * A proxy class to the Global Scene Manager.
          */
-        class ScenePlugin {
+        class ScenePlugin
+        {
             /**
              * 
              * @param scene The Scene that this ScenePlugin belongs to.
@@ -72113,7 +72497,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Settings {
+        namespace Settings
+        {
             /**
              * Takes a Scene configuration object and returns a fully formed System Settings object.
              * @param config The Scene configuration object used to create this Scene Settings.
@@ -72129,7 +72514,8 @@ declare namespace Phaser {
          * It is responsible for managing all of the plugins a Scene has running, including the display list, and
          * handling the update step and renderer. It also contains references to global systems belonging to Game.
          */
-        class Systems {
+        class Systems
+        {
             /**
              * 
              * @param scene The Scene that owns this Systems instance.
@@ -72435,7 +72821,8 @@ declare namespace Phaser {
     /**
      * A base Phaser.Scene class which can be extended for your own use.
      */
-    class Scene {
+    class Scene
+    {
         /**
          * 
          * @param config Scene specific configuration settings.
@@ -72603,11 +72990,13 @@ declare namespace Phaser {
 
     }
 
-    namespace Sound {
+    namespace Sound
+    {
         /**
          * Class containing all the shared state and behavior of a sound object, independent of the implementation.
          */
-        class BaseSound extends Phaser.Events.EventEmitter {
+        class BaseSound extends Phaser.Events.EventEmitter
+        {
             /**
              * 
              * @param manager Reference to the current sound manager instance.
@@ -72652,7 +73041,7 @@ declare namespace Phaser {
             /**
              * Object containing markers definitions.
              */
-            readonly markers: {[key: string]:  Phaser.Types.Sound.SoundMarker};
+            readonly markers: { [key: string]: Phaser.Types.Sound.SoundMarker };
 
             /**
              * Currently playing marker.
@@ -72740,7 +73129,8 @@ declare namespace Phaser {
          * 
          * There is a good guide to what's supported [here](https://developer.mozilla.org/en-US/Apps/Fundamentals/Audio_and_video_delivery/Cross-browser_audio_basics#Audio_Codec_Support).
          */
-        class BaseSoundManager extends Phaser.Events.EventEmitter {
+        class BaseSoundManager extends Phaser.Events.EventEmitter
+        {
             /**
              * 
              * @param game Reference to the current game instance.
@@ -72906,7 +73296,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Events {
+        namespace Events
+        {
             /**
              * The Sound Complete Event.
              * 
@@ -73240,7 +73631,8 @@ declare namespace Phaser {
         /**
          * HTML5 Audio implementation of the sound.
          */
-        class HTML5AudioSound extends Phaser.Sound.BaseSound {
+        class HTML5AudioSound extends Phaser.Sound.BaseSound
+        {
             /**
              * 
              * @param manager Reference to the current sound manager instance.
@@ -73373,7 +73765,8 @@ declare namespace Phaser {
         /**
          * HTML5AudioSoundManager
          */
-        class HTML5AudioSoundManager extends Phaser.Sound.BaseSoundManager {
+        class HTML5AudioSoundManager extends Phaser.Sound.BaseSoundManager
+        {
             /**
              * 
              * @param game Reference to the current game instance.
@@ -73475,7 +73868,8 @@ declare namespace Phaser {
          * minimal functionality and prevents Phaser projects that use audio from
          * breaking on devices that don't support any audio playback technologies.
          */
-        class NoAudioSound extends Phaser.Sound.BaseSound {
+        class NoAudioSound extends Phaser.Sound.BaseSound
+        {
             /**
              * 
              * @param manager Reference to the current sound manager instance.
@@ -73494,7 +73888,8 @@ declare namespace Phaser {
          * minimal functionality and prevents Phaser projects that use audio from
          * breaking on devices that don't support any audio playback technologies.
          */
-        class NoAudioSoundManager extends Phaser.Sound.BaseSoundManager {
+        class NoAudioSoundManager extends Phaser.Sound.BaseSoundManager
+        {
             /**
              * 
              * @param game Reference to the current game instance.
@@ -73514,7 +73909,8 @@ declare namespace Phaser {
         /**
          * Web Audio API implementation of the sound.
          */
-        class WebAudioSound extends Phaser.Sound.BaseSound {
+        class WebAudioSound extends Phaser.Sound.BaseSound
+        {
             /**
              * 
              * @param manager Reference to the current sound manager instance.
@@ -73653,7 +74049,8 @@ declare namespace Phaser {
         /**
          * Web Audio API implementation of the sound manager.
          */
-        class WebAudioSoundManager extends Phaser.Sound.BaseSoundManager {
+        class WebAudioSoundManager extends Phaser.Sound.BaseSoundManager
+        {
             /**
              * 
              * @param game Reference to the current game instance.
@@ -73730,7 +74127,8 @@ declare namespace Phaser {
 
     }
 
-    namespace Structs {
+    namespace Structs
+    {
         /**
          * List is a generic implementation of an ordered list which contains utility methods for retrieving, manipulating, and iterating items.
          */
@@ -74028,7 +74426,7 @@ declare namespace Phaser {
             /**
              * The entries in this Map.
              */
-            entries: {[key: string]:  V};
+            entries: { [key: string]: V };
 
             /**
              * The number of key / value pairs in this Map.
@@ -74167,7 +74565,8 @@ declare namespace Phaser {
          * 
          * rbush is forked from https://github.com/mourner/rbush by Vladimir Agafonkin
          */
-        class RTree {
+        class RTree
+        {
         }
 
         /**
@@ -74283,7 +74682,8 @@ declare namespace Phaser {
          * to a defined min-max range. You can also control the dominant axis. When dimensions are given to the Size component
          * that would cause it to exceed its min-max range, the dimensions are adjusted based on the dominant axis.
          */
-        class Size {
+        class Size
+        {
             /**
              * 
              * @param width The width of the Size component. Default 0.
@@ -74606,7 +75006,8 @@ declare namespace Phaser {
 
     }
 
-    namespace Textures {
+    namespace Textures
+    {
         /**
          * A Canvas Texture is a special kind of Texture that is backed by an HTML Canvas Element as its source.
          * 
@@ -74626,7 +75027,8 @@ declare namespace Phaser {
          * texture data as well. Forgetting to do this (i.e. by changing the canvas size directly from your code) could cause
          * graphical errors.
          */
-        class CanvasTexture extends Phaser.Textures.Texture {
+        class CanvasTexture extends Phaser.Textures.Texture
+        {
             /**
              * 
              * @param manager A reference to the Texture Manager this Texture belongs to.
@@ -74826,7 +75228,8 @@ declare namespace Phaser {
         /**
          * Filter Types.
          */
-        enum FilterMode {
+        enum FilterMode
+        {
             /**
              * Linear filter type.
              */
@@ -74837,7 +75240,8 @@ declare namespace Phaser {
             NEAREST,
         }
 
-        namespace Events {
+        namespace Events
+        {
             /**
              * The Texture Add Event.
              * 
@@ -74895,7 +75299,8 @@ declare namespace Phaser {
         /**
          * A Frame is a section of a Texture.
          */
-        class Frame {
+        class Frame
+        {
             /**
              * 
              * @param texture The Texture this Frame is a part of.
@@ -75160,7 +75565,8 @@ declare namespace Phaser {
          */
         const NEAREST: integer;
 
-        namespace Parsers {
+        namespace Parsers
+        {
         }
 
         /**
@@ -75177,7 +75583,8 @@ declare namespace Phaser {
          * 
          * Sprites and other Game Objects get the texture data they need from the TextureManager.
          */
-        class Texture {
+        class Texture
+        {
             /**
              * 
              * @param manager A reference to the Texture Manager this Texture belongs to.
@@ -75343,7 +75750,8 @@ declare namespace Phaser {
          * 
          * Access it via `scene.textures`.
          */
-        class TextureManager extends Phaser.Events.EventEmitter {
+        class TextureManager extends Phaser.Events.EventEmitter
+        {
             /**
              * 
              * @param game The Phaser.Game instance this Texture Manager belongs to.
@@ -75634,7 +76042,8 @@ declare namespace Phaser {
          * 
          * A Texture can contain multiple Texture Sources, which only happens when a multi-atlas is loaded.
          */
-        class TextureSource {
+        class TextureSource
+        {
             /**
              * 
              * @param texture The Texture this TextureSource belongs to.
@@ -75745,8 +76154,10 @@ declare namespace Phaser {
 
     }
 
-    namespace Tilemaps {
-        namespace Components {
+    namespace Tilemaps
+    {
+        namespace Components
+        {
         }
 
         /**
@@ -75759,7 +76170,8 @@ declare namespace Phaser {
          * 
          * Use this over a Static Tilemap Layer when you need those features.
          */
-        class DynamicTilemapLayer extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.ComputedSize, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible {
+        class DynamicTilemapLayer extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.ComputedSize, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.ScrollFactor, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs.
@@ -77014,7 +77426,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Formats {
+        namespace Formats
+        {
             /**
              * CSV Map Type
              */
@@ -77042,7 +77455,8 @@ declare namespace Phaser {
          * 
          * Image Collections are normally created automatically when Tiled data is loaded.
          */
-        class ImageCollection {
+        class ImageCollection
+        {
             /**
              * 
              * @param name The name of the image collection in the map data.
@@ -77123,7 +77537,8 @@ declare namespace Phaser {
          * etc. into this format. Tilemap, StaticTilemapLayer and DynamicTilemapLayer have a reference
          * to this data and use it to look up and perform operations on tiles.
          */
-        class LayerData {
+        class LayerData
+        {
             /**
              * 
              * @param config [description]
@@ -77237,7 +77652,8 @@ declare namespace Phaser {
          * format. A Tilemap object get a copy of this data and then unpacks the needed properties into
          * itself.
          */
-        class MapData {
+        class MapData
+        {
             /**
              * 
              * @param config The Map configuration object.
@@ -77359,7 +77775,8 @@ declare namespace Phaser {
          *    are ignored as well.
          *  - "draworder" is ignored.
          */
-        class ObjectLayer {
+        class ObjectLayer
+        {
             /**
              * 
              * @param config The data for the layer from the Tiled JSON object.
@@ -77419,8 +77836,10 @@ declare namespace Phaser {
 
         }
 
-        namespace Parsers {
-            namespace Impact {
+        namespace Parsers
+        {
+            namespace Impact
+            {
                 /**
                  * [description]
                  * @param json [description]
@@ -77500,7 +77919,8 @@ declare namespace Phaser {
              */
             function ParseCSV(name: string, data: string, tileWidth: integer, tileHeight: integer, insertNull: boolean): Phaser.Tilemaps.MapData;
 
-            namespace Tiled {
+            namespace Tiled
+            {
                 /**
                  * Copy properties from tileset to tiles.
                  * @param mapData [description]
@@ -77607,7 +78027,8 @@ declare namespace Phaser {
          * 
          * Use a Static Tilemap Layer instead of a Dynamic Tilemap Layer when you don't need tile manipulation features.
          */
-        class StaticTilemapLayer extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.ComputedSize, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible, Phaser.GameObjects.Components.ScrollFactor {
+        class StaticTilemapLayer extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.BlendMode, Phaser.GameObjects.Components.ComputedSize, Phaser.GameObjects.Components.Depth, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.GetBounds, Phaser.GameObjects.Components.Origin, Phaser.GameObjects.Components.Pipeline, Phaser.GameObjects.Components.Transform, Phaser.GameObjects.Components.Visible, Phaser.GameObjects.Components.ScrollFactor
+        {
             /**
              * 
              * @param scene The Scene to which this Game Object belongs.
@@ -78749,7 +79170,8 @@ declare namespace Phaser {
          * representation, so its position information is stored without factoring in scroll, layer
          * scale or layer position.
          */
-        class Tile implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.Visible {
+        class Tile implements Phaser.GameObjects.Components.Alpha, Phaser.GameObjects.Components.Flip, Phaser.GameObjects.Components.Visible
+        {
             /**
              * 
              * @param layer The LayerData object in the Tilemap that this tile belongs to.
@@ -79225,7 +79647,8 @@ declare namespace Phaser {
          * StaticTilemapLayer or DynamicTilemapLayer may have its own unique tile size that overrides
          * it.
          */
-        class Tilemap {
+        class Tilemap
+        {
             /**
              * 
              * @param scene The Scene to which this Tilemap belongs.
@@ -80208,7 +80631,8 @@ declare namespace Phaser {
          * A Tileset is a combination of an image containing the tiles and a container for data about
          * each tile.
          */
-        class Tileset {
+        class Tileset
+        {
             /**
              * 
              * @param name The name of the tileset in the map data.
@@ -80363,11 +80787,13 @@ declare namespace Phaser {
 
     }
 
-    namespace Time {
+    namespace Time
+    {
         /**
          * The Clock is a Scene plugin which creates and updates Timer Events for its Scene.
          */
-        class Clock {
+        class Clock
+        {
             /**
              * 
              * @param scene The Scene which owns this Clock.
@@ -80453,7 +80879,8 @@ declare namespace Phaser {
          * 
          * Because it's managed by a Clock, a Timer Event is based on game time, will be affected by its Clock's time scale, and will pause if its Clock pauses.
          */
-        class TimerEvent {
+        class TimerEvent
+        {
             /**
              * 
              * @param config The configuration for the Timer Event, including its delay and callback.
@@ -80574,8 +81001,10 @@ declare namespace Phaser {
 
     }
 
-    namespace Tweens {
-        namespace Builders {
+    namespace Tweens
+    {
+        namespace Builders
+        {
             /**
              * Retrieves the value of the given key from an object.
              * @param source The object to retrieve the value from.
@@ -80653,7 +81082,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Events {
+        namespace Events
+        {
             /**
              * The Timeline Complete Event.
              * 
@@ -80786,7 +81216,8 @@ declare namespace Phaser {
          * The Timeline updates all of its Tweens simultaneously. Its methods allow you to easily build a sequence
          * of Tweens (each one starting after the previous one) or run multiple Tweens at once during given parts of the Timeline.
          */
-        class Timeline extends Phaser.Events.EventEmitter {
+        class Timeline extends Phaser.Events.EventEmitter
+        {
             /**
              * 
              * @param manager The Tween Manager which owns this Timeline.
@@ -81128,7 +81559,8 @@ declare namespace Phaser {
          * on a duration and type of ease. They are rarely instantiated directly and instead should be
          * created via the TweenManager.
          */
-        class Tween {
+        class Tween
+        {
             /**
              * 
              * @param parent A reference to the parent of this Tween. Either the Tween Manager or a Tween Timeline instance.
@@ -81451,7 +81883,8 @@ declare namespace Phaser {
         /**
          * The Tween Manager is a default Scene Plugin which controls and updates Tweens and Timelines.
          */
-        class TweenManager {
+        class TweenManager
+        {
             /**
              * 
              * @param scene The Scene which owns this Tween Manager.
@@ -81612,8 +82045,10 @@ declare namespace Phaser {
 
     }
 
-    namespace Utils {
-        namespace Array {
+    namespace Utils
+    {
+        namespace Array
+        {
             /**
              * Adds the given item, or array of items, to the array.
              * 
@@ -81747,7 +82182,8 @@ declare namespace Phaser {
              */
             function GetRandom(array: any[], startIndex?: integer, length?: integer): any;
 
-            namespace Matrix {
+            namespace Matrix
+            {
                 /**
                  * Checks if an array can be used as a matrix.
                  * 
@@ -82060,7 +82496,8 @@ declare namespace Phaser {
              */
             function SpliceOne(array: any[], index: integer): any;
 
-            namespace StableSortFunctions {
+            namespace StableSortFunctions
+            {
                 /**
                  * Sort the input array and simply copy it back if the result isn't in the original array, which happens on an odd number of passes.
                  * @param arr The input array.
@@ -82090,7 +82527,8 @@ declare namespace Phaser {
 
         }
 
-        namespace Base64 {
+        namespace Base64
+        {
             /**
              * Converts an ArrayBuffer into a base64 string.
              * 
@@ -82118,7 +82556,8 @@ declare namespace Phaser {
          */
         function NOOP(): void;
 
-        namespace Objects {
+        namespace Objects
+        {
             /**
              * Shallow Object Clone. Will not clone nested objects.
              * @param obj the object from which to clone
@@ -82271,7 +82710,8 @@ declare namespace Phaser {
 
         }
 
-        namespace String {
+        namespace String
+        {
             /**
              * Takes a string and replaces instances of markers with values in the given array.
              * The markers take the form of `%1`, `%2`, etc. I.e.:
@@ -82367,7 +82807,8 @@ declare namespace Phaser {
      * 
      * For more details follow the Quick Start guide here: https://developers.facebook.com/docs/games/instant-games
      */
-    class FacebookInstantGamesPlugin extends Phaser.Events.EventEmitter {
+    class FacebookInstantGamesPlugin extends Phaser.Events.EventEmitter
+    {
         /**
          * 
          * @param game A reference to the Phaser.Game instance.
@@ -83121,7 +83562,8 @@ declare namespace Phaser {
      * You do not need to instantiate this class directly, it will be created when you use the
      * `getLeaderboard()` method of the main plugin.
      */
-    class FacebookInstantGamesLeaderboard {
+    class FacebookInstantGamesLeaderboard
+    {
         /**
          * 
          * @param plugin A reference to the Facebook Instant Games Plugin.
@@ -83228,24 +83670,27 @@ declare namespace Phaser {
 
 }
 
-declare type ArcadePhysicsCallback = (object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject)=>void;
+declare type ArcadePhysicsCallback = (object1: Phaser.GameObjects.GameObject, object2: Phaser.GameObjects.GameObject) => void;
 
-declare type CollideCallback = (body: Phaser.Physics.Impact.Body, other: Phaser.Physics.Impact.Body, axis: string)=>void;
+declare type CollideCallback = (body: Phaser.Physics.Impact.Body, other: Phaser.Physics.Impact.Body, axis: string) => void;
 
-declare namespace MatterJS {
+declare namespace MatterJS
+{
     /**
      * The `Matter.Body` module contains methods for creating and manipulating body models.
      * A `Matter.Body` is a rigid body that can be simulated by a `Matter.Engine`.
      * Factories for commonly used body configurations (such as rectangles, circles and other polygons) can be found in the module `Matter.Bodies`.
      */
-    class Body {
+    class Body
+    {
     }
 
     /**
      * The `Matter.Bodies` module contains factory methods for creating rigid body models 
      * with commonly used body configurations (such as rectangles, circles and other polygons).
      */
-    class Bodies {
+    class Bodies
+    {
     }
 
     /**
@@ -83254,7 +83699,8 @@ declare namespace MatterJS {
      * It is important to use the functions in this module to modify composites, rather than directly modifying their properties.
      * Note that the `Matter.World` object is also a type of `Matter.Composite` and as such all composite methods here can also operate on a `Matter.World`.
      */
-    class Composite {
+    class Composite
+    {
     }
 
     /**
@@ -83264,7 +83710,8 @@ declare namespace MatterJS {
      * It is important to use the functions in the `Matter.Composite` module to modify the world composite, rather than directly modifying its properties.
      * There are also a few methods here that alias those in `Matter.Composite` for easier readability.
      */
-    class World extends MatterJS.Composite {
+    class World extends MatterJS.Composite
+    {
     }
 
     /**
@@ -83272,14 +83719,16 @@ declare namespace MatterJS {
      * Constraints are used for specifying that a fixed distance must be maintained between two bodies (or a body and a fixed world-space position).
      * The stiffness of constraints can be modified to create springs or elastic.
      */
-    class Constraint {
+    class Constraint
+    {
     }
 
     /**
      * The `Matter.Engine` module contains methods for creating and manipulating engines.
      * An engine is a controller that manages updating the simulation of the world.
      */
-    class Engine {
+    class Engine
+    {
     }
 
     /**
@@ -83287,28 +83736,29 @@ declare namespace MatterJS {
      * A set of vertices is an array of `Matter.Vector` with additional indexing properties inserted by `Vertices.create`.
      * A `Matter.Body` maintains a set of vertices to represent the shape of the object (its convex hull).
      */
-    class Vertices {
+    class Vertices
+    {
     }
 
 }
 
-declare type WebGLContextCallback = (renderer: Phaser.Renderer.WebGL.WebGLRenderer)=>void;
+declare type WebGLContextCallback = (renderer: Phaser.Renderer.WebGL.WebGLRenderer) => void;
 
-declare type EachListCallback<I> = (item: I, ...args: any[])=>void;
+declare type EachListCallback<I> = (item: I, ...args: any[]) => void;
 
-declare type EachMapCallback<E> = (key: string, entry: E)=>void;
+declare type EachMapCallback<E> = (key: string, entry: E) => void;
 
-declare type EachSetCallback<E> = (entry: E, index: number)=>void;
+declare type EachSetCallback<E> = (entry: E, index: number) => void;
 
-declare type EachTextureCallback = (texture: Phaser.Textures.Texture, ...args: any[])=>void;
+declare type EachTextureCallback = (texture: Phaser.Textures.Texture, ...args: any[]) => void;
 
-declare type FindTileCallback = (value: Phaser.Tilemaps.Tile, index: integer, array: Phaser.Tilemaps.Tile[])=>void;
+declare type FindTileCallback = (value: Phaser.Tilemaps.Tile, index: integer, array: Phaser.Tilemaps.Tile[]) => void;
 
-declare type EachTileCallback = (value: Phaser.Tilemaps.Tile, index: integer, array: Phaser.Tilemaps.Tile[])=>void;
+declare type EachTileCallback = (value: Phaser.Tilemaps.Tile, index: integer, array: Phaser.Tilemaps.Tile[]) => void;
 
-declare type TilemapFilterCallback = (value: Phaser.GameObjects.GameObject, index: number, array: Phaser.GameObjects.GameObject[])=>void;
+declare type TilemapFilterCallback = (value: Phaser.GameObjects.GameObject, index: number, array: Phaser.GameObjects.GameObject[]) => void;
 
-declare type TilemapFindCallback = (value: Phaser.GameObjects.GameObject, index: number, array: Phaser.GameObjects.GameObject[])=>void;
+declare type TilemapFindCallback = (value: Phaser.GameObjects.GameObject, index: number, array: Phaser.GameObjects.GameObject[]) => void;
 
 /**
  * Extends the given `myClass` object's prototype with the properties of `definition`.
@@ -83329,7 +83779,8 @@ declare function mixin(myClass: Object, mixins: Object | Object[]): void;
 /**
  * Phaser.Class
  */
-declare class Class {
+declare class Class
+{
     /**
      * 
      * @param definition a dictionary of functions for the class
