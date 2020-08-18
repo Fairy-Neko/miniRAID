@@ -96,13 +96,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Mob<wbr>Constructor<span class="tsd-signature-symbol">(</span>settings<span class="tsd-signature-symbol">: </span><a href="src_core.mob.html" class="tsd-signature-type">Mob</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/src.mob.html" class="tsd-signature-type">Mob</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Mob<wbr>Constructor<span class="tsd-signature-symbol">(</span>settings<span class="tsd-signature-symbol">: </span><a href="src_core.mob.html" class="tsd-signature-type">Mob</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MobEntity</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/src/core/mRTypes.ts#L89">src/core/mRTypes.ts:89</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/core/mRTypes.ts#L113">src/core/mRTypes.ts:113</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -111,7 +111,7 @@
 									<h5>settings: <a href="src_core.mob.html" class="tsd-signature-type">Mob</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="../classes/src.mob.html" class="tsd-signature-type">Mob</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">MobEntity</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -133,6 +133,9 @@
 						<a href="../modules/src_events.html">src/<wbr>Events</a>
 					</li>
 					<li class=" tsd-kind-module">
+						<a href="../modules/src_gameobjects.html">src/<wbr>Game<wbr>Objects</a>
+					</li>
+					<li class=" tsd-kind-module">
 						<a href="../modules/src_structs.html">src/<wbr>Structs</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -149,6 +152,9 @@
 					</li>
 					<li class="current tsd-kind-namespace">
 						<a href="../modules/src_core.html">src/core</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/src_scenes.html">src/scenes</a>
 					</li>
 				</ul>
 			</nav>
@@ -203,10 +209,19 @@
 						<a href="src_core.mobspeedmodifiers.html" class="tsd-kind-icon">Mob<wbr>Speed<wbr>Modifiers</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
+						<a href="src_core.projectile.html" class="tsd-kind-icon">Projectile</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
+						<a href="src_core.spell.html" class="tsd-kind-icon">Spell</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
 						<a href="src_core.spelldata.html" class="tsd-kind-icon">Spell<wbr>Data</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
 						<a href="src_core.spelldictionary.html" class="tsd-kind-icon">Spell<wbr>Dictionary</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
+						<a href="src_core.spellinfo.html" class="tsd-kind-icon">Spell<wbr>Info</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace tsd-has-type-parameter">
 						<a href="../modules/src_core.html#comparefunc" class="tsd-kind-icon">Compare<wbr>Func</a>
@@ -265,11 +280,12 @@
 				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
-				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>

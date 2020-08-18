@@ -79,6 +79,9 @@
 								<span class="target">dPhysSprite</span>
 								<ul class="tsd-hierarchy">
 									<li>
+										<a href="src_gameobjects.spell.html" class="tsd-signature-type">Spell</a>
+									</li>
+									<li>
 										<a href="src.mob.html" class="tsd-signature-type">Mob</a>
 									</li>
 								</ul>
@@ -189,7 +192,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="src_dynamicloader.dphyssprite-1.html#scale" class="tsd-kind-icon">scale</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="src_dynamicloader.dphyssprite-1.html#scalex" class="tsd-kind-icon">scaleX</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="src_dynamicloader.dphyssprite-1.html#scaley" class="tsd-kind-icon">scaleY</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="src_dynamicloader.dphyssprite-1.html#scene" class="tsd-kind-icon">scene</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite"><a href="src_dynamicloader.dphyssprite-1.html#scene" class="tsd-kind-icon">scene</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="src_dynamicloader.dphyssprite-1.html#scrollfactorx" class="tsd-kind-icon">scroll<wbr>FactorX</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="src_dynamicloader.dphyssprite-1.html#scrollfactory" class="tsd-kind-icon">scroll<wbr>FactorY</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="src_dynamicloader.dphyssprite-1.html#state" class="tsd-kind-icon">state</a></li>
@@ -239,6 +242,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="src_dynamicloader.dphyssprite-1.html#getlocaltransformmatrix" class="tsd-kind-icon">get<wbr>Local<wbr>Transform<wbr>Matrix</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="src_dynamicloader.dphyssprite-1.html#getparentrotation" class="tsd-kind-icon">get<wbr>Parent<wbr>Rotation</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="src_dynamicloader.dphyssprite-1.html#getpipelinename" class="tsd-kind-icon">get<wbr>Pipeline<wbr>Name</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="src_dynamicloader.dphyssprite-1.html#getposition" class="tsd-kind-icon">get<wbr>Position</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-overwrite tsd-is-inherited"><a href="src_dynamicloader.dphyssprite-1.html#getrightcenter" class="tsd-kind-icon">get<wbr>Right<wbr>Center</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-overwrite tsd-is-inherited"><a href="src_dynamicloader.dphyssprite-1.html#gettopcenter" class="tsd-kind-icon">get<wbr>Top<wbr>Center</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-overwrite tsd-is-inherited"><a href="src_dynamicloader.dphyssprite-1.html#gettopleft" class="tsd-kind-icon">get<wbr>Top<wbr>Left</a></li>
@@ -350,28 +354,59 @@
 							<aside class="tsd-sources">
 								<p>Overrides Sprite.__constructor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/src/DynamicLoader/dPhysSprite.ts#L20">src/DynamicLoader/dPhysSprite.ts:20</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/DynamicLoader/dPhysSprite.ts#L22">src/DynamicLoader/dPhysSprite.ts:22</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>scene: <span class="tsd-signature-type">Scene</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>scene that this sprite belongs to</p>
+										</div>
+									</div>
 								</li>
 								<li>
 									<h5>x: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>x coordinate</p>
+										</div>
+									</div>
 								</li>
 								<li>
 									<h5>y: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>y coordinate</p>
+										</div>
+									</div>
 								</li>
 								<li>
 									<h5>texture: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>texture to load</p>
+										</div>
+									</div>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> subsTexture: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>Texture that can be used as a substitute when the real texture is loading.</p>
+										</div>
+									</div>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> frame: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">integer</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+										</div>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="src_dynamicloader.dphyssprite-1.html" class="tsd-signature-type">dPhysSprite</a></h4>
@@ -388,7 +423,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#active">active</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14400">tsDefinitions/phaser.d.ts:14400</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14400">tsDefinitions/phaser.d.ts:14400</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -407,7 +442,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#alpha">alpha</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#alpha">alpha</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56302">tsDefinitions/phaser.d.ts:56302</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56302">tsDefinitions/phaser.d.ts:56302</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -425,7 +460,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#alphabottomleft">alphaBottomLeft</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#alphabottomleft">alphaBottomLeft</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56320">tsDefinitions/phaser.d.ts:56320</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56320">tsDefinitions/phaser.d.ts:56320</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -443,7 +478,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#alphabottomright">alphaBottomRight</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#alphabottomright">alphaBottomRight</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56326">tsDefinitions/phaser.d.ts:56326</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56326">tsDefinitions/phaser.d.ts:56326</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -461,7 +496,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#alphatopleft">alphaTopLeft</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#alphatopleft">alphaTopLeft</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56308">tsDefinitions/phaser.d.ts:56308</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56308">tsDefinitions/phaser.d.ts:56308</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -479,7 +514,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#alphatopright">alphaTopRight</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#alphatopright">alphaTopRight</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56314">tsDefinitions/phaser.d.ts:56314</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56314">tsDefinitions/phaser.d.ts:56314</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -497,7 +532,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#angle">angle</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#angle">angle</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57034">tsDefinitions/phaser.d.ts:57034</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57034">tsDefinitions/phaser.d.ts:57034</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -515,7 +550,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#anims">anims</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L32400">tsDefinitions/phaser.d.ts:32400</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L32400">tsDefinitions/phaser.d.ts:32400</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -532,7 +567,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#blendmode">blendMode</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#blendmode">blendMode</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56349">tsDefinitions/phaser.d.ts:56349</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56349">tsDefinitions/phaser.d.ts:56349</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -563,7 +598,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#body">body</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#body">body</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56275">tsDefinitions/phaser.d.ts:56275</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56275">tsDefinitions/phaser.d.ts:56275</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -579,7 +614,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#camerafilter">cameraFilter</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14427">tsDefinitions/phaser.d.ts:14427</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14427">tsDefinitions/phaser.d.ts:14427</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -596,7 +631,7 @@
 					<div class="tsd-signature tsd-kind-icon">current<wbr>Anim<span class="tsd-signature-symbol">:</span> <a href="../interfaces/src_dynamicloader.dsanimcache.html" class="tsd-signature-type">DSAnimCache</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/src/DynamicLoader/dPhysSprite.ts#L20">src/DynamicLoader/dPhysSprite.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/DynamicLoader/dPhysSprite.ts#L20">src/DynamicLoader/dPhysSprite.ts:20</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -607,7 +642,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#data">data</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14413">tsDefinitions/phaser.d.ts:14413</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14413">tsDefinitions/phaser.d.ts:14413</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -625,7 +660,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#debugbodycolor">debugBodyColor</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57252">tsDefinitions/phaser.d.ts:57252</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57252">tsDefinitions/phaser.d.ts:57252</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -641,7 +676,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#debugshowbody">debugShowBody</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57242">tsDefinitions/phaser.d.ts:57242</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57242">tsDefinitions/phaser.d.ts:57242</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -657,7 +692,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#debugshowvelocity">debugShowVelocity</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57247">tsDefinitions/phaser.d.ts:57247</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57247">tsDefinitions/phaser.d.ts:57247</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -674,7 +709,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#defaultpipeline">defaultPipeline</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#defaultpipeline">defaultPipeline</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56662">tsDefinitions/phaser.d.ts:56662</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56662">tsDefinitions/phaser.d.ts:56662</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -691,7 +726,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#depth">depth</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#depth">depth</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56386">tsDefinitions/phaser.d.ts:56386</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56386">tsDefinitions/phaser.d.ts:56386</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -713,7 +748,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#displayheight">displayHeight</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#displayheight">displayHeight</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56785">tsDefinitions/phaser.d.ts:56785</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56785">tsDefinitions/phaser.d.ts:56785</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -732,7 +767,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#displayoriginx">displayOriginX</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#displayoriginx">displayOriginX</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56622">tsDefinitions/phaser.d.ts:56622</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56622">tsDefinitions/phaser.d.ts:56622</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -751,7 +786,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#displayoriginy">displayOriginY</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#displayoriginy">displayOriginY</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56629">tsDefinitions/phaser.d.ts:56629</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56629">tsDefinitions/phaser.d.ts:56629</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -770,7 +805,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#displaywidth">displayWidth</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#displaywidth">displayWidth</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56776">tsDefinitions/phaser.d.ts:56776</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56776">tsDefinitions/phaser.d.ts:56776</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -789,7 +824,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#flipx">flipX</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#flipx">flipX</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56409">tsDefinitions/phaser.d.ts:56409</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56409">tsDefinitions/phaser.d.ts:56409</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -809,7 +844,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#flipy">flipY</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#flipy">flipY</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56418">tsDefinitions/phaser.d.ts:56418</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56418">tsDefinitions/phaser.d.ts:56418</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -829,7 +864,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#frame">frame</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#frame">frame</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56833">tsDefinitions/phaser.d.ts:56833</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56833">tsDefinitions/phaser.d.ts:56833</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -844,7 +879,7 @@
 					<div class="tsd-signature tsd-kind-icon">frame<wbr>ToLoad<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">integer</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/src/DynamicLoader/dPhysSprite.ts#L19">src/DynamicLoader/dPhysSprite.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/DynamicLoader/dPhysSprite.ts#L19">src/DynamicLoader/dPhysSprite.ts:19</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -856,7 +891,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#height">height</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#height">height</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56767">tsDefinitions/phaser.d.ts:56767</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56767">tsDefinitions/phaser.d.ts:56767</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -875,7 +910,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#ignoredestroy">ignoreDestroy</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14446">tsDefinitions/phaser.d.ts:14446</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14446">tsDefinitions/phaser.d.ts:14446</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -894,7 +929,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#input">input</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14433">tsDefinitions/phaser.d.ts:14433</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14433">tsDefinitions/phaser.d.ts:14433</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -912,7 +947,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#iscropped">isCropped</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#iscropped">isCropped</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56840">tsDefinitions/phaser.d.ts:56840</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56840">tsDefinitions/phaser.d.ts:56840</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -931,7 +966,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#istinted">isTinted</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#istinted">isTinted</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56985">tsDefinitions/phaser.d.ts:56985</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56985">tsDefinitions/phaser.d.ts:56985</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -947,7 +982,7 @@
 					<aside class="tsd-sources">
 						<p>Implementation of <a href="../interfaces/src_dynamicloader.dynamicloadobject-1.html">DynamicLoadObject</a>.<a href="../interfaces/src_dynamicloader.dynamicloadobject-1.html#loadcomplete">loadComplete</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/src/DynamicLoader/dPhysSprite.ts#L15">src/DynamicLoader/dPhysSprite.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/DynamicLoader/dPhysSprite.ts#L15">src/DynamicLoader/dPhysSprite.ts:15</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -959,7 +994,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#mask">mask</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#mask">mask</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56547">tsDefinitions/phaser.d.ts:56547</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56547">tsDefinitions/phaser.d.ts:56547</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -975,7 +1010,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#name">name</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14393">tsDefinitions/phaser.d.ts:14393</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14393">tsDefinitions/phaser.d.ts:14393</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -993,7 +1028,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#originx">originX</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#originx">originX</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56607">tsDefinitions/phaser.d.ts:56607</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56607">tsDefinitions/phaser.d.ts:56607</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1013,7 +1048,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#originy">originY</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#originy">originY</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56615">tsDefinitions/phaser.d.ts:56615</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56615">tsDefinitions/phaser.d.ts:56615</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1032,7 +1067,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#parentcontainer">parentContainer</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14387">tsDefinitions/phaser.d.ts:14387</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14387">tsDefinitions/phaser.d.ts:14387</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1049,7 +1084,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#pipeline">pipeline</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#pipeline">pipeline</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56667">tsDefinitions/phaser.d.ts:56667</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56667">tsDefinitions/phaser.d.ts:56667</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1065,7 +1100,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#renderflags">renderFlags</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14420">tsDefinitions/phaser.d.ts:14420</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14420">tsDefinitions/phaser.d.ts:14420</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1083,7 +1118,7 @@
 					<aside class="tsd-sources">
 						<p>Implementation of <a href="../interfaces/src_dynamicloader.dynamicloadobject-1.html">DynamicLoadObject</a>.<a href="../interfaces/src_dynamicloader.dynamicloadobject-1.html#resources">resources</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/src/DynamicLoader/dPhysSprite.ts#L16">src/DynamicLoader/dPhysSprite.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/DynamicLoader/dPhysSprite.ts#L16">src/DynamicLoader/dPhysSprite.ts:16</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -1095,7 +1130,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#rotation">rotation</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#rotation">rotation</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57041">tsDefinitions/phaser.d.ts:57041</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57041">tsDefinitions/phaser.d.ts:57041</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1113,7 +1148,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#scale">scale</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#scale">scale</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57015">tsDefinitions/phaser.d.ts:57015</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57015">tsDefinitions/phaser.d.ts:57015</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1133,7 +1168,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#scalex">scaleX</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#scalex">scaleX</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57020">tsDefinitions/phaser.d.ts:57020</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57020">tsDefinitions/phaser.d.ts:57020</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1150,7 +1185,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#scaley">scaleY</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#scaley">scaleY</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57025">tsDefinitions/phaser.d.ts:57025</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57025">tsDefinitions/phaser.d.ts:57025</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1159,22 +1194,16 @@
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-overwrite">
 					<a name="scene" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagProtected">Protected</span> scene</h3>
+					<h3>scene</h3>
 					<div class="tsd-signature tsd-kind-icon">scene<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Scene</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#scene">scene</a></p>
+						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#scene">scene</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14364">tsDefinitions/phaser.d.ts:14364</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/DynamicLoader/dPhysSprite.ts#L22">src/DynamicLoader/dPhysSprite.ts:22</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The Scene to which this Game Object belongs.
-							Game Objects can only belong to one Scene.</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 					<a name="scrollfactorx" class="tsd-anchor"></a>
@@ -1184,7 +1213,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#scrollfactorx">scrollFactorX</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#scrollfactorx">scrollFactorX</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56709">tsDefinitions/phaser.d.ts:56709</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56709">tsDefinitions/phaser.d.ts:56709</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1211,7 +1240,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#scrollfactory">scrollFactorY</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#scrollfactory">scrollFactorY</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56728">tsDefinitions/phaser.d.ts:56728</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56728">tsDefinitions/phaser.d.ts:56728</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1237,7 +1266,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#state">state</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14382">tsDefinitions/phaser.d.ts:14382</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14382">tsDefinitions/phaser.d.ts:14382</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1258,7 +1287,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#tabindex">tabIndex</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14406">tsDefinitions/phaser.d.ts:14406</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14406">tsDefinitions/phaser.d.ts:14406</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1276,7 +1305,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#texture">texture</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#texture">texture</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56828">tsDefinitions/phaser.d.ts:56828</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56828">tsDefinitions/phaser.d.ts:56828</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1291,7 +1320,7 @@
 					<div class="tsd-signature tsd-kind-icon">texture<wbr>ToLoad<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/src/DynamicLoader/dPhysSprite.ts#L18">src/DynamicLoader/dPhysSprite.ts:18</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/DynamicLoader/dPhysSprite.ts#L18">src/DynamicLoader/dPhysSprite.ts:18</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -1303,7 +1332,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#tint">tint</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#tint">tint</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56980">tsDefinitions/phaser.d.ts:56980</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56980">tsDefinitions/phaser.d.ts:56980</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1320,7 +1349,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#tintbottomleft">tintBottomLeft</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#tintbottomleft">tintBottomLeft</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56969">tsDefinitions/phaser.d.ts:56969</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56969">tsDefinitions/phaser.d.ts:56969</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1338,7 +1367,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#tintbottomright">tintBottomRight</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#tintbottomright">tintBottomRight</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56975">tsDefinitions/phaser.d.ts:56975</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56975">tsDefinitions/phaser.d.ts:56975</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1356,7 +1385,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#tintfill">tintFill</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#tintfill">tintFill</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56898">tsDefinitions/phaser.d.ts:56898</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56898">tsDefinitions/phaser.d.ts:56898</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1373,7 +1402,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#tinttopleft">tintTopLeft</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#tinttopleft">tintTopLeft</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56957">tsDefinitions/phaser.d.ts:56957</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56957">tsDefinitions/phaser.d.ts:56957</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1391,7 +1420,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#tinttopright">tintTopRight</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#tinttopright">tintTopRight</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56963">tsDefinitions/phaser.d.ts:56963</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56963">tsDefinitions/phaser.d.ts:56963</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1408,7 +1437,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#type">type</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14370">tsDefinitions/phaser.d.ts:14370</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14370">tsDefinitions/phaser.d.ts:14370</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1426,7 +1455,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#visible">visible</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#visible">visible</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57135">tsDefinitions/phaser.d.ts:57135</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57135">tsDefinitions/phaser.d.ts:57135</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1444,7 +1473,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#w">w</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#w">w</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57006">tsDefinitions/phaser.d.ts:57006</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57006">tsDefinitions/phaser.d.ts:57006</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1461,7 +1490,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#width">width</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#width">width</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56758">tsDefinitions/phaser.d.ts:56758</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56758">tsDefinitions/phaser.d.ts:56758</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1481,7 +1510,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#x">x</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#x">x</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56990">tsDefinitions/phaser.d.ts:56990</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56990">tsDefinitions/phaser.d.ts:56990</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1498,7 +1527,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#y">y</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#y">y</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56995">tsDefinitions/phaser.d.ts:56995</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56995">tsDefinitions/phaser.d.ts:56995</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1515,7 +1544,7 @@
 						<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#z">z</a></p>
 						<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#z">z</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57001">tsDefinitions/phaser.d.ts:57001</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57001">tsDefinitions/phaser.d.ts:57001</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1532,7 +1561,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#render_mask">RENDER_MASK</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14647">tsDefinitions/phaser.d.ts:14647</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14647">tsDefinitions/phaser.d.ts:14647</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1555,7 +1584,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#addlistener">addListener</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L7774">tsDefinitions/phaser.d.ts:7774</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L7774">tsDefinitions/phaser.d.ts:7774</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1600,7 +1629,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#clearalpha">clearAlpha</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#clearalpha">clearAlpha</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56282">tsDefinitions/phaser.d.ts:56282</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56282">tsDefinitions/phaser.d.ts:56282</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1625,7 +1654,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#clearmask">clearMask</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#clearmask">clearMask</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56570">tsDefinitions/phaser.d.ts:56570</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56570">tsDefinitions/phaser.d.ts:56570</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1658,7 +1687,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#cleartint">clearTint</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#cleartint">clearTint</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56906">tsDefinitions/phaser.d.ts:56906</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56906">tsDefinitions/phaser.d.ts:56906</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1684,7 +1713,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#createbitmapmask">createBitmapMask</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#createbitmapmask">createBitmapMask</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56585">tsDefinitions/phaser.d.ts:56585</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56585">tsDefinitions/phaser.d.ts:56585</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1724,7 +1753,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#creategeometrymask">createGeometryMask</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#creategeometrymask">createGeometryMask</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56599">tsDefinitions/phaser.d.ts:56599</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56599">tsDefinitions/phaser.d.ts:56599</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1762,7 +1791,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#destroy">destroy</a></p>
 								<p>Overrides EventEmitter.destroy</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14642">tsDefinitions/phaser.d.ts:14642</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14642">tsDefinitions/phaser.d.ts:14642</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1801,7 +1830,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#disablebody">disableBody</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57335">tsDefinitions/phaser.d.ts:57335</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57335">tsDefinitions/phaser.d.ts:57335</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1839,7 +1868,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#disableinteractive">disableInteractive</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14576">tsDefinitions/phaser.d.ts:14576</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14576">tsDefinitions/phaser.d.ts:14576</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1866,7 +1895,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#emit">emit</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L7758">tsDefinitions/phaser.d.ts:7758</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L7758">tsDefinitions/phaser.d.ts:7758</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1904,7 +1933,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#enablebody">enableBody</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57328">tsDefinitions/phaser.d.ts:57328</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57328">tsDefinitions/phaser.d.ts:57328</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1960,7 +1989,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#eventnames">eventNames</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L7739">tsDefinitions/phaser.d.ts:7739</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L7739">tsDefinitions/phaser.d.ts:7739</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1983,7 +2012,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/src_dynamicloader.dynamicloadobject-1.html">DynamicLoadObject</a>.<a href="../interfaces/src_dynamicloader.dynamicloadobject-1.html#fetchchildren">fetchChildren</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/src/DynamicLoader/dPhysSprite.ts#L59">src/DynamicLoader/dPhysSprite.ts:59</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/DynamicLoader/dPhysSprite.ts#L72">src/DynamicLoader/dPhysSprite.ts:72</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/src_dynamicloader.dynamicloadobject-1.html" class="tsd-signature-type">DynamicLoadObject</a><span class="tsd-signature-symbol">[]</span></h4>
@@ -2002,7 +2031,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#getbottomcenter">getBottomCenter</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#getbottomcenter">getBottomCenter</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56527">tsDefinitions/phaser.d.ts:56527</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56527">tsDefinitions/phaser.d.ts:56527</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2048,7 +2077,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#getbottomleft">getBottomLeft</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#getbottomleft">getBottomLeft</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56519">tsDefinitions/phaser.d.ts:56519</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56519">tsDefinitions/phaser.d.ts:56519</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2094,7 +2123,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#getbottomright">getBottomRight</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#getbottomright">getBottomRight</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56535">tsDefinitions/phaser.d.ts:56535</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56535">tsDefinitions/phaser.d.ts:56535</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2140,7 +2169,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#getbounds">getBounds</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#getbounds">getBounds</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56542">tsDefinitions/phaser.d.ts:56542</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56542">tsDefinitions/phaser.d.ts:56542</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2180,7 +2209,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#getcenter">getCenter</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#getcenter">getCenter</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56471">tsDefinitions/phaser.d.ts:56471</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56471">tsDefinitions/phaser.d.ts:56471</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2219,7 +2248,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#getdata">getData</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14547">tsDefinitions/phaser.d.ts:14547</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14547">tsDefinitions/phaser.d.ts:14547</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2258,7 +2287,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#getindexlist">getIndexList</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14626">tsDefinitions/phaser.d.ts:14626</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14626">tsDefinitions/phaser.d.ts:14626</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2286,7 +2315,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#getleftcenter">getLeftCenter</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#getleftcenter">getLeftCenter</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56503">tsDefinitions/phaser.d.ts:56503</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56503">tsDefinitions/phaser.d.ts:56503</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2332,7 +2361,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#getlocaltransformmatrix">getLocalTransformMatrix</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#getlocaltransformmatrix">getLocalTransformMatrix</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57114">tsDefinitions/phaser.d.ts:57114</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57114">tsDefinitions/phaser.d.ts:57114</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2365,7 +2394,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#getparentrotation">getParentRotation</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#getparentrotation">getParentRotation</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57128">tsDefinitions/phaser.d.ts:57128</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57128">tsDefinitions/phaser.d.ts:57128</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2390,7 +2419,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#getpipelinename">getPipelineName</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#getpipelinename">getPipelineName</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56690">tsDefinitions/phaser.d.ts:56690</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56690">tsDefinitions/phaser.d.ts:56690</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2399,6 +2428,23 @@
 								</div>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getposition" class="tsd-anchor"></a>
+					<h3>get<wbr>Position</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Position<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Vector2</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/DynamicLoader/dPhysSprite.ts#L108">src/DynamicLoader/dPhysSprite.ts:108</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Vector2</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -2414,7 +2460,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#getrightcenter">getRightCenter</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#getrightcenter">getRightCenter</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56511">tsDefinitions/phaser.d.ts:56511</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56511">tsDefinitions/phaser.d.ts:56511</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2460,7 +2506,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#gettopcenter">getTopCenter</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#gettopcenter">getTopCenter</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56487">tsDefinitions/phaser.d.ts:56487</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56487">tsDefinitions/phaser.d.ts:56487</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2506,7 +2552,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#gettopleft">getTopLeft</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#gettopleft">getTopLeft</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56479">tsDefinitions/phaser.d.ts:56479</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56479">tsDefinitions/phaser.d.ts:56479</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2552,7 +2598,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#gettopright">getTopRight</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#gettopright">getTopRight</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56495">tsDefinitions/phaser.d.ts:56495</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56495">tsDefinitions/phaser.d.ts:56495</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2598,7 +2644,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#getworldtransformmatrix">getWorldTransformMatrix</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#getworldtransformmatrix">getWorldTransformMatrix</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57121">tsDefinitions/phaser.d.ts:57121</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57121">tsDefinitions/phaser.d.ts:57121</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2637,7 +2683,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#initpipeline">initPipeline</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#initpipeline">initPipeline</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56674">tsDefinitions/phaser.d.ts:56674</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56674">tsDefinitions/phaser.d.ts:56674</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2670,7 +2716,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#listenercount">listenerCount</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L7751">tsDefinitions/phaser.d.ts:7751</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L7751">tsDefinitions/phaser.d.ts:7751</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2702,7 +2748,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#listeners">listeners</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L7745">tsDefinitions/phaser.d.ts:7745</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L7745">tsDefinitions/phaser.d.ts:7745</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2734,7 +2780,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#off">off</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L7800">tsDefinitions/phaser.d.ts:7800</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L7800">tsDefinitions/phaser.d.ts:7800</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2784,7 +2830,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#on">on</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L7766">tsDefinitions/phaser.d.ts:7766</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L7766">tsDefinitions/phaser.d.ts:7766</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2828,7 +2874,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/src_dynamicloader.dynamicloadobject-1.html">DynamicLoadObject</a>.<a href="../interfaces/src_dynamicloader.dynamicloadobject-1.html#onloadcomplete">onLoadComplete</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/src/DynamicLoader/dPhysSprite.ts#L64">src/DynamicLoader/dPhysSprite.ts:64</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/DynamicLoader/dPhysSprite.ts#L77">src/DynamicLoader/dPhysSprite.ts:77</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2858,7 +2904,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#once">once</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L7782">tsDefinitions/phaser.d.ts:7782</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L7782">tsDefinitions/phaser.d.ts:7782</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2902,7 +2948,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides Sprite.play</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/src/DynamicLoader/dPhysSprite.ts#L82">src/DynamicLoader/dPhysSprite.ts:82</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/DynamicLoader/dPhysSprite.ts#L95">src/DynamicLoader/dPhysSprite.ts:95</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2932,7 +2978,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#preupdate">preUpdate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L32407">tsDefinitions/phaser.d.ts:32407</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L32407">tsDefinitions/phaser.d.ts:32407</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2970,7 +3016,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#refreshbody">refreshBody</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57343">tsDefinitions/phaser.d.ts:57343</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57343">tsDefinitions/phaser.d.ts:57343</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2996,7 +3042,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#removealllisteners">removeAllListeners</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L7806">tsDefinitions/phaser.d.ts:7806</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L7806">tsDefinitions/phaser.d.ts:7806</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3028,7 +3074,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#removeinteractive">removeInteractive</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14598">tsDefinitions/phaser.d.ts:14598</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14598">tsDefinitions/phaser.d.ts:14598</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3064,7 +3110,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#removelistener">removeListener</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L7791">tsDefinitions/phaser.d.ts:7791</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L7791">tsDefinitions/phaser.d.ts:7791</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3115,7 +3161,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#resetflip">resetFlip</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#resetflip">resetFlip</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56464">tsDefinitions/phaser.d.ts:56464</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56464">tsDefinitions/phaser.d.ts:56464</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3139,7 +3185,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#resetpipeline">resetPipeline</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#resetpipeline">resetPipeline</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56685">tsDefinitions/phaser.d.ts:56685</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56685">tsDefinitions/phaser.d.ts:56685</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3162,7 +3208,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setacceleration">setAcceleration</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57150">tsDefinitions/phaser.d.ts:57150</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57150">tsDefinitions/phaser.d.ts:57150</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3200,7 +3246,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setaccelerationx">setAccelerationX</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57156">tsDefinitions/phaser.d.ts:57156</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57156">tsDefinitions/phaser.d.ts:57156</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3232,7 +3278,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setaccelerationy">setAccelerationY</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57162">tsDefinitions/phaser.d.ts:57162</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57162">tsDefinitions/phaser.d.ts:57162</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3264,7 +3310,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setactive">setActive</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14453">tsDefinitions/phaser.d.ts:14453</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14453">tsDefinitions/phaser.d.ts:14453</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3298,7 +3344,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setalpha">setAlpha</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setalpha">setAlpha</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56295">tsDefinitions/phaser.d.ts:56295</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56295">tsDefinitions/phaser.d.ts:56295</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3352,7 +3398,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setangle">setAngle</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setangle">setAngle</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57077">tsDefinitions/phaser.d.ts:57077</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57077">tsDefinitions/phaser.d.ts:57077</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3384,7 +3430,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setangularacceleration">setAngularAcceleration</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57182">tsDefinitions/phaser.d.ts:57182</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57182">tsDefinitions/phaser.d.ts:57182</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3419,7 +3465,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setangulardrag">setAngularDrag</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57188">tsDefinitions/phaser.d.ts:57188</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57188">tsDefinitions/phaser.d.ts:57188</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3451,7 +3497,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setangularvelocity">setAngularVelocity</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57172">tsDefinitions/phaser.d.ts:57172</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57172">tsDefinitions/phaser.d.ts:57172</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3487,7 +3533,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setblendmode">setBlendMode</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setblendmode">setBlendMode</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56373">tsDefinitions/phaser.d.ts:56373</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56373">tsDefinitions/phaser.d.ts:56373</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3533,7 +3579,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setbounce">setBounce</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57198">tsDefinitions/phaser.d.ts:57198</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57198">tsDefinitions/phaser.d.ts:57198</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3573,7 +3619,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setbouncex">setBounceX</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57204">tsDefinitions/phaser.d.ts:57204</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57204">tsDefinitions/phaser.d.ts:57204</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3605,7 +3651,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setbouncey">setBounceY</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57210">tsDefinitions/phaser.d.ts:57210</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57210">tsDefinitions/phaser.d.ts:57210</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3637,7 +3683,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setcircle">setCircle</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57414">tsDefinitions/phaser.d.ts:57414</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57414">tsDefinitions/phaser.d.ts:57414</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3681,7 +3727,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setcollideworldbounds">setCollideWorldBounds</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57220">tsDefinitions/phaser.d.ts:57220</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57220">tsDefinitions/phaser.d.ts:57220</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3727,7 +3773,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setcrop">setCrop</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setcrop">setCrop</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56869">tsDefinitions/phaser.d.ts:56869</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56869">tsDefinitions/phaser.d.ts:56869</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3789,7 +3835,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setdamping">setDamping</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57318">tsDefinitions/phaser.d.ts:57318</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57318">tsDefinitions/phaser.d.ts:57318</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3828,7 +3874,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setdata">setData</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14521">tsDefinitions/phaser.d.ts:14521</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14521">tsDefinitions/phaser.d.ts:14521</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3882,7 +3928,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setdataenabled">setDataEnabled</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14478">tsDefinitions/phaser.d.ts:14478</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14478">tsDefinitions/phaser.d.ts:14478</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3905,7 +3951,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setdebug">setDebug</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57231">tsDefinitions/phaser.d.ts:57231</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57231">tsDefinitions/phaser.d.ts:57231</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3951,7 +3997,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setdebugbodycolor">setDebugBodyColor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57237">tsDefinitions/phaser.d.ts:57237</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57237">tsDefinitions/phaser.d.ts:57237</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -3984,7 +4030,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setdepth">setDepth</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setdepth">setDepth</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56400">tsDefinitions/phaser.d.ts:56400</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56400">tsDefinitions/phaser.d.ts:56400</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4022,7 +4068,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setdisplayorigin">setDisplayOrigin</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setdisplayorigin">setDisplayOrigin</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56651">tsDefinitions/phaser.d.ts:56651</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56651">tsDefinitions/phaser.d.ts:56651</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4062,7 +4108,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setdisplaysize">setDisplaySize</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setdisplaysize">setDisplaySize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56823">tsDefinitions/phaser.d.ts:56823</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56823">tsDefinitions/phaser.d.ts:56823</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4101,7 +4147,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setdrag">setDrag</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57270">tsDefinitions/phaser.d.ts:57270</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57270">tsDefinitions/phaser.d.ts:57270</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4147,7 +4193,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setdragx">setDragX</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57287">tsDefinitions/phaser.d.ts:57287</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57287">tsDefinitions/phaser.d.ts:57287</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4187,7 +4233,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setdragy">setDragY</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57304">tsDefinitions/phaser.d.ts:57304</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57304">tsDefinitions/phaser.d.ts:57304</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4228,7 +4274,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setflip">setFlip</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setflip">setFlip</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56459">tsDefinitions/phaser.d.ts:56459</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56459">tsDefinitions/phaser.d.ts:56459</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4270,7 +4316,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setflipx">setFlipX</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setflipx">setFlipX</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56442">tsDefinitions/phaser.d.ts:56442</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56442">tsDefinitions/phaser.d.ts:56442</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4306,7 +4352,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setflipy">setFlipY</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setflipy">setFlipY</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56448">tsDefinitions/phaser.d.ts:56448</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56448">tsDefinitions/phaser.d.ts:56448</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4339,7 +4385,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setframe">setFrame</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setframe">setFrame</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56893">tsDefinitions/phaser.d.ts:56893</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56893">tsDefinitions/phaser.d.ts:56893</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4387,7 +4433,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setfriction">setFriction</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57351">tsDefinitions/phaser.d.ts:57351</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57351">tsDefinitions/phaser.d.ts:57351</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4426,7 +4472,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setfrictionx">setFrictionX</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57358">tsDefinitions/phaser.d.ts:57358</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57358">tsDefinitions/phaser.d.ts:57358</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4459,7 +4505,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setfrictiony">setFrictionY</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57365">tsDefinitions/phaser.d.ts:57365</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57365">tsDefinitions/phaser.d.ts:57365</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4492,7 +4538,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setgravity">setGravity</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57374">tsDefinitions/phaser.d.ts:57374</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57374">tsDefinitions/phaser.d.ts:57374</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4531,7 +4577,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setgravityx">setGravityX</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57380">tsDefinitions/phaser.d.ts:57380</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57380">tsDefinitions/phaser.d.ts:57380</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4563,7 +4609,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setgravityy">setGravityY</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57386">tsDefinitions/phaser.d.ts:57386</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57386">tsDefinitions/phaser.d.ts:57386</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4595,7 +4641,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setimmovable">setImmovable</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57392">tsDefinitions/phaser.d.ts:57392</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57392">tsDefinitions/phaser.d.ts:57392</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4627,7 +4673,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setinteractive">setInteractive</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14565">tsDefinitions/phaser.d.ts:14565</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14565">tsDefinitions/phaser.d.ts:14565</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4679,7 +4725,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setmask">setMask</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setmask">setMask</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56564">tsDefinitions/phaser.d.ts:56564</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56564">tsDefinitions/phaser.d.ts:56564</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4718,7 +4764,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setmass">setMass</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57398">tsDefinitions/phaser.d.ts:57398</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57398">tsDefinitions/phaser.d.ts:57398</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4750,7 +4796,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setmaxvelocity">setMaxVelocity</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57444">tsDefinitions/phaser.d.ts:57444</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57444">tsDefinitions/phaser.d.ts:57444</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4788,7 +4834,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setname">setName</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14460">tsDefinitions/phaser.d.ts:14460</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14460">tsDefinitions/phaser.d.ts:14460</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4821,7 +4867,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setoffset">setOffset</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57406">tsDefinitions/phaser.d.ts:57406</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57406">tsDefinitions/phaser.d.ts:57406</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4861,7 +4907,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setorigin">setOrigin</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setorigin">setOrigin</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56638">tsDefinitions/phaser.d.ts:56638</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56638">tsDefinitions/phaser.d.ts:56638</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4901,7 +4947,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setoriginfromframe">setOriginFromFrame</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setoriginfromframe">setOriginFromFrame</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56643">tsDefinitions/phaser.d.ts:56643</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56643">tsDefinitions/phaser.d.ts:56643</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4925,7 +4971,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setpipeline">setPipeline</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setpipeline">setPipeline</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56680">tsDefinitions/phaser.d.ts:56680</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56680">tsDefinitions/phaser.d.ts:56680</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -4958,7 +5004,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setposition">setPosition</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setposition">setPosition</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57050">tsDefinitions/phaser.d.ts:57050</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57050">tsDefinitions/phaser.d.ts:57050</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5009,7 +5055,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setrandomposition">setRandomPosition</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setrandomposition">setRandomPosition</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57065">tsDefinitions/phaser.d.ts:57065</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57065">tsDefinitions/phaser.d.ts:57065</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5064,7 +5110,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setrotation">setRotation</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setrotation">setRotation</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57071">tsDefinitions/phaser.d.ts:57071</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57071">tsDefinitions/phaser.d.ts:57071</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5097,7 +5143,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setscale">setScale</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setscale">setScale</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57084">tsDefinitions/phaser.d.ts:57084</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57084">tsDefinitions/phaser.d.ts:57084</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5136,7 +5182,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setscrollfactor">setScrollFactor</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setscrollfactor">setScrollFactor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56749">tsDefinitions/phaser.d.ts:56749</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56749">tsDefinitions/phaser.d.ts:56749</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5185,7 +5231,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setsize">setSize</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setsize">setSize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56814">tsDefinitions/phaser.d.ts:56814</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56814">tsDefinitions/phaser.d.ts:56814</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5230,7 +5276,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setsizetoframe">setSizeToFrame</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setsizetoframe">setSizeToFrame</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56799">tsDefinitions/phaser.d.ts:56799</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56799">tsDefinitions/phaser.d.ts:56799</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5268,7 +5314,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setstate">setState</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14473">tsDefinitions/phaser.d.ts:14473</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14473">tsDefinitions/phaser.d.ts:14473</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5306,7 +5352,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#settexture">setTexture</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#settexture">setTexture</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56878">tsDefinitions/phaser.d.ts:56878</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56878">tsDefinitions/phaser.d.ts:56878</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5346,7 +5392,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#settint">setTint</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#settint">setTint</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56928">tsDefinitions/phaser.d.ts:56928</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56928">tsDefinitions/phaser.d.ts:56928</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5405,7 +5451,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#settintfill">setTintFill</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#settintfill">setTintFill</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56951">tsDefinitions/phaser.d.ts:56951</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56951">tsDefinitions/phaser.d.ts:56951</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5464,7 +5510,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setvelocity">setVelocity</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57421">tsDefinitions/phaser.d.ts:57421</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57421">tsDefinitions/phaser.d.ts:57421</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5502,7 +5548,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setvelocityx">setVelocityX</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57429">tsDefinitions/phaser.d.ts:57429</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57429">tsDefinitions/phaser.d.ts:57429</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5535,7 +5581,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setvelocityy">setVelocityY</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57437">tsDefinitions/phaser.d.ts:57437</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57437">tsDefinitions/phaser.d.ts:57437</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5569,7 +5615,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setvisible">setVisible</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setvisible">setVisible</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57143">tsDefinitions/phaser.d.ts:57143</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57143">tsDefinitions/phaser.d.ts:57143</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5603,7 +5649,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setw">setW</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setw">setW</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57108">tsDefinitions/phaser.d.ts:57108</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57108">tsDefinitions/phaser.d.ts:57108</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5636,7 +5682,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setx">setX</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setx">setX</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57090">tsDefinitions/phaser.d.ts:57090</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57090">tsDefinitions/phaser.d.ts:57090</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5669,7 +5715,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#sety">setY</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#sety">setY</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57096">tsDefinitions/phaser.d.ts:57096</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57096">tsDefinitions/phaser.d.ts:57096</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5702,7 +5748,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#setz">setZ</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#setz">setZ</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L57102">tsDefinitions/phaser.d.ts:57102</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L57102">tsDefinitions/phaser.d.ts:57102</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5734,7 +5780,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#shutdown">shutdown</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L7729">tsDefinitions/phaser.d.ts:7729</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L7729">tsDefinitions/phaser.d.ts:7729</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5758,7 +5804,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#tojson">toJSON</a></p>
 								<p>Overrides GameObject.toJSON</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L32420">tsDefinitions/phaser.d.ts:32420</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L32420">tsDefinitions/phaser.d.ts:32420</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5782,7 +5828,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#toggleflipx">toggleFlipX</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#toggleflipx">toggleFlipX</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56427">tsDefinitions/phaser.d.ts:56427</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56427">tsDefinitions/phaser.d.ts:56427</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5809,7 +5855,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#toggleflipy">toggleFlipY</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#toggleflipy">toggleFlipY</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56432">tsDefinitions/phaser.d.ts:56432</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56432">tsDefinitions/phaser.d.ts:56432</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5832,7 +5878,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#update">update</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14604">tsDefinitions/phaser.d.ts:14604</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14604">tsDefinitions/phaser.d.ts:14604</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5865,7 +5911,7 @@
 								<p>Inherited from <a href="src_dynamicloader.dphyssprite-1.html">dPhysSprite</a>.<a href="src_dynamicloader.dphyssprite-1.html#updatedisplayorigin">updateDisplayOrigin</a></p>
 								<p>Overrides <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#updatedisplayorigin">updateDisplayOrigin</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L56657">tsDefinitions/phaser.d.ts:56657</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L56657">tsDefinitions/phaser.d.ts:56657</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5889,7 +5935,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="src_dynamicloader.dsprite-1.html">dSprite</a>.<a href="src_dynamicloader.dsprite-1.html#willrender">willRender</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/fd1c942/tsDefinitions/phaser.d.ts#L14616">tsDefinitions/phaser.d.ts:14616</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/tsDefinitions/phaser.d.ts#L14616">tsDefinitions/phaser.d.ts:14616</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -5929,6 +5975,9 @@
 						<a href="../modules/src_events.html">src/<wbr>Events</a>
 					</li>
 					<li class=" tsd-kind-module">
+						<a href="../modules/src_gameobjects.html">src/<wbr>Game<wbr>Objects</a>
+					</li>
+					<li class=" tsd-kind-module">
 						<a href="../modules/src_structs.html">src/<wbr>Structs</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -5945,6 +5994,9 @@
 					</li>
 					<li class=" tsd-kind-namespace">
 						<a href="../modules/src_core.html">src/core</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/src_scenes.html">src/scenes</a>
 					</li>
 				</ul>
 			</nav>
@@ -6108,7 +6160,7 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="src_dynamicloader.dphyssprite-1.html#scaley" class="tsd-kind-icon">scaleY</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite">
 								<a href="src_dynamicloader.dphyssprite-1.html#scene" class="tsd-kind-icon">scene</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
@@ -6242,6 +6294,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="src_dynamicloader.dphyssprite-1.html#getpipelinename" class="tsd-kind-icon">get<wbr>Pipeline<wbr>Name</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="src_dynamicloader.dphyssprite-1.html#getposition" class="tsd-kind-icon">get<wbr>Position</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-overwrite tsd-is-inherited">
 								<a href="src_dynamicloader.dphyssprite-1.html#getrightcenter" class="tsd-kind-icon">get<wbr>Right<wbr>Center</a>
@@ -6564,15 +6619,16 @@
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>

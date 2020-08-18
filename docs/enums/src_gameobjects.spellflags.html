@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>EquipmentType | phaser_playground</title>
+	<title>SpellFlags | phaser_playground</title>
 	<meta name="description" content="Documentation for phaser_playground">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/src_core.html">src/core</a>
+					<a href="../modules/src_gameobjects.html">src/GameObjects</a>
 				</li>
 				<li>
-					<a href="src_core.equipmenttype.html">EquipmentType</a>
+					<a href="src_gameobjects.spellflags.html">SpellFlags</a>
 				</li>
 			</ul>
-			<h1>Enumeration EquipmentType</h1>
+			<h1>Enumeration SpellFlags</h1>
 		</div>
 	</div>
 </header>
@@ -76,11 +76,12 @@
 						<section class="tsd-index-section ">
 							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="src_core.equipmenttype.html#accessory" class="tsd-kind-icon">Accessory</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="src_core.equipmenttype.html#all" class="tsd-kind-icon">All</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="src_core.equipmenttype.html#armor" class="tsd-kind-icon">Armor</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="src_core.equipmenttype.html#unknown" class="tsd-kind-icon">Unknown</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="src_core.equipmenttype.html#weapon" class="tsd-kind-icon">Weapon</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="src_gameobjects.spellflags.html#areaeffect" class="tsd-kind-icon">area<wbr>Effect</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="src_gameobjects.spellflags.html#hastarget" class="tsd-kind-icon">has<wbr>Target</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="src_gameobjects.spellflags.html#isdamage" class="tsd-kind-icon">is<wbr>Damage</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="src_gameobjects.spellflags.html#isheal" class="tsd-kind-icon">is<wbr>Heal</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="src_gameobjects.spellflags.html#overtime" class="tsd-kind-icon">over<wbr>Time</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="src_gameobjects.spellflags.html#targetingeverything" class="tsd-kind-icon">targeting<wbr>Everything</a></li>
 							</ul>
 						</section>
 					</div>
@@ -89,52 +90,62 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Enumeration members</h2>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="accessory" class="tsd-anchor"></a>
-					<h3>Accessory</h3>
-					<div class="tsd-signature tsd-kind-icon">Accessory<span class="tsd-signature-symbol">:</span></div>
+					<a name="areaeffect" class="tsd-anchor"></a>
+					<h3>area<wbr>Effect</h3>
+					<div class="tsd-signature tsd-kind-icon">area<wbr>Effect<span class="tsd-signature-symbol">:</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/core/EquipmentCore.ts#L14">src/core/EquipmentCore.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/GameObjects/Spell.ts#L15">src/GameObjects/Spell.ts:15</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="all" class="tsd-anchor"></a>
-					<h3>All</h3>
-					<div class="tsd-signature tsd-kind-icon">All<span class="tsd-signature-symbol">:</span></div>
+					<a name="hastarget" class="tsd-anchor"></a>
+					<h3>has<wbr>Target</h3>
+					<div class="tsd-signature tsd-kind-icon">has<wbr>Target<span class="tsd-signature-symbol">:</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/core/EquipmentCore.ts#L13">src/core/EquipmentCore.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/GameObjects/Spell.ts#L14">src/GameObjects/Spell.ts:14</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="armor" class="tsd-anchor"></a>
-					<h3>Armor</h3>
-					<div class="tsd-signature tsd-kind-icon">Armor<span class="tsd-signature-symbol">:</span></div>
+					<a name="isdamage" class="tsd-anchor"></a>
+					<h3>is<wbr>Damage</h3>
+					<div class="tsd-signature tsd-kind-icon">is<wbr>Damage<span class="tsd-signature-symbol">:</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/core/EquipmentCore.ts#L15">src/core/EquipmentCore.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/GameObjects/Spell.ts#L12">src/GameObjects/Spell.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="unknown" class="tsd-anchor"></a>
-					<h3>Unknown</h3>
-					<div class="tsd-signature tsd-kind-icon">Unknown<span class="tsd-signature-symbol">:</span></div>
+					<a name="isheal" class="tsd-anchor"></a>
+					<h3>is<wbr>Heal</h3>
+					<div class="tsd-signature tsd-kind-icon">is<wbr>Heal<span class="tsd-signature-symbol">:</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/core/EquipmentCore.ts#L17">src/core/EquipmentCore.ts:17</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/GameObjects/Spell.ts#L13">src/GameObjects/Spell.ts:13</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="weapon" class="tsd-anchor"></a>
-					<h3>Weapon</h3>
-					<div class="tsd-signature tsd-kind-icon">Weapon<span class="tsd-signature-symbol">:</span></div>
+					<a name="overtime" class="tsd-anchor"></a>
+					<h3>over<wbr>Time</h3>
+					<div class="tsd-signature tsd-kind-icon">over<wbr>Time<span class="tsd-signature-symbol">:</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/core/EquipmentCore.ts#L16">src/core/EquipmentCore.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/GameObjects/Spell.ts#L16">src/GameObjects/Spell.ts:16</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="targetingeverything" class="tsd-anchor"></a>
+					<h3>targeting<wbr>Everything</h3>
+					<div class="tsd-signature tsd-kind-icon">targeting<wbr>Everything<span class="tsd-signature-symbol">:</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/6818149/src/GameObjects/Spell.ts#L17">src/GameObjects/Spell.ts:17</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -155,7 +166,7 @@
 					<li class=" tsd-kind-module">
 						<a href="../modules/src_events.html">src/<wbr>Events</a>
 					</li>
-					<li class=" tsd-kind-module">
+					<li class="current tsd-kind-module">
 						<a href="../modules/src_gameobjects.html">src/<wbr>Game<wbr>Objects</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -170,7 +181,7 @@
 					<li class=" tsd-kind-module">
 						<a href="../modules/src_agents.html">src/agents</a>
 					</li>
-					<li class="current tsd-kind-module">
+					<li class=" tsd-kind-module">
 						<a href="../modules/src_core.html">src/core</a>
 					</li>
 					<li class=" tsd-kind-namespace">
@@ -183,92 +194,38 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-enum tsd-parent-kind-module">
-						<a href="src_core.equipmenttag.html" class="tsd-kind-icon">Equipment<wbr>Tag</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-enum tsd-parent-kind-module">
-						<a href="src_core.equipmenttype.html" class="tsd-kind-icon">Equipment<wbr>Type</a>
+						<a href="src_gameobjects.spellflags.html" class="tsd-kind-icon">Spell<wbr>Flags</a>
 						<ul>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="src_core.equipmenttype.html#accessory" class="tsd-kind-icon">Accessory</a>
+								<a href="src_gameobjects.spellflags.html#areaeffect" class="tsd-kind-icon">area<wbr>Effect</a>
 							</li>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="src_core.equipmenttype.html#all" class="tsd-kind-icon">All</a>
+								<a href="src_gameobjects.spellflags.html#hastarget" class="tsd-kind-icon">has<wbr>Target</a>
 							</li>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="src_core.equipmenttype.html#armor" class="tsd-kind-icon">Armor</a>
+								<a href="src_gameobjects.spellflags.html#isdamage" class="tsd-kind-icon">is<wbr>Damage</a>
 							</li>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="src_core.equipmenttype.html#unknown" class="tsd-kind-icon">Unknown</a>
+								<a href="src_gameobjects.spellflags.html#isheal" class="tsd-kind-icon">is<wbr>Heal</a>
 							</li>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="src_core.equipmenttype.html#weapon" class="tsd-kind-icon">Weapon</a>
+								<a href="src_gameobjects.spellflags.html#overtime" class="tsd-kind-icon">over<wbr>Time</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="src_gameobjects.spellflags.html#targetingeverything" class="tsd-kind-icon">targeting<wbr>Everything</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-enum tsd-parent-kind-module">
-						<a href="src_core.moblistenertype.html" class="tsd-kind-icon">Mob<wbr>Listener<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-enum tsd-parent-kind-module">
-						<a href="src_core.weaponsubtype.html" class="tsd-kind-icon">Weapon<wbr>Sub<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-enum tsd-parent-kind-module">
-						<a href="src_core.weapontype.html" class="tsd-kind-icon">Weapon<wbr>Type</a>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/src_gameobjects.projectile.html" class="tsd-kind-icon">Projectile</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/src_core.accessory.html" class="tsd-kind-icon">Accessory</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/src_core.armor.html" class="tsd-kind-icon">Armor</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/src_core.battlemonitor.html" class="tsd-kind-icon">Battle<wbr>Monitor</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/src_core.buff.html" class="tsd-kind-icon">Buff</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/src_core.databackend.html" class="tsd-kind-icon">Data<wbr>Backend</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/src_core.equipable.html" class="tsd-kind-icon">Equipable</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/src_core.inventory.html" class="tsd-kind-icon">Inventory</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/src_core.item.html" class="tsd-kind-icon">Item</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/src_core.mobdata.html" class="tsd-kind-icon">Mob<wbr>Data</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/src_core.moblistener.html" class="tsd-kind-icon">Mob<wbr>Listener</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/src_core.spelldata.html" class="tsd-kind-icon">Spell<wbr>Data</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/src_core.unitmanager.html" class="tsd-kind-icon">Unit<wbr>Manager</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/src_core.weapon.html" class="tsd-kind-icon">Weapon</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="../modules/src_core.html#healdmg" class="tsd-kind-icon">Heal<wbr>Dmg</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="../modules/src_core.html#getrandomfloat" class="tsd-kind-icon">get<wbr>Random<wbr>Float</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="../modules/src_core.html#getrandomint" class="tsd-kind-icon">get<wbr>Random<wbr>Int</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="../modules/src_core.html#radian" class="tsd-kind-icon">radian</a>
+						<a href="../classes/src_gameobjects.spell.html" class="tsd-kind-icon">Spell</a>
 					</li>
 				</ul>
 			</nav>
