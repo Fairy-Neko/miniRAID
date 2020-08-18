@@ -24,7 +24,7 @@ export class UnitManager
     rotateKey: Phaser.Input.Keyboard.Key;
     sparseKey: Phaser.Input.Keyboard.Key;
     playerRotation: number;
-    
+
     renderRect: Phaser.GameObjects.Rectangle;
     selectingRect: Phaser.Geom.Rectangle;
 
@@ -34,7 +34,7 @@ export class UnitManager
     thirdGroup: Phaser.Physics.Arcade.Group;
     renderContainer: Phaser.GameObjects.Container;
 
-    constructor(scene:Phaser.Scene)
+    constructor(scene: Phaser.Scene)
     {
         this.name = "Unit Manager";
 
@@ -52,10 +52,10 @@ export class UnitManager
         this.rectTarget = new Phaser.Math.Vector2(0, 0);
         this.selectingRect = new Phaser.Geom.Rectangle(0, 0, 0, 0);
 
-        scene.input.on('pointerdown', (pt:any) => this.pointerDown(pt));
-        scene.input.on('pointerup', (pt:any) => this.pointerUp(pt));
+        scene.input.on('pointerdown', (pt: any) => this.pointerDown(pt));
+        scene.input.on('pointerup', (pt: any) => this.pointerUp(pt));
         // scene.input.on('pointerleave', (pt:any) => this.pointerLeave(pt));
-        scene.input.on('pointermove', (pt:any) => this.pointerMove(pt));
+        scene.input.on('pointermove', (pt: any) => this.pointerMove(pt));
 
         this.sparseKey = scene.input.keyboard.addKey('F');
         this.rotateKey = scene.input.keyboard.addKey('R');
@@ -66,7 +66,7 @@ export class UnitManager
         this.renderContainer = scene.add.container(0, 0);
         this.renderRect = new Phaser.GameObjects.Rectangle(scene, 0, 0, 0, 0, 0x90D7EC, 0.2);
         this.renderContainer.add(this.renderRect);
-        this.renderContainer.add(new Phaser.GameObjects.Line(scene, 0, 200, 0, 0, 1000, 0, 0xFF0000));
+        // this.renderContainer.add(new Phaser.GameObjects.Line(scene, 0, 200, 0, 0, 1000, 0, 0xFF0000));
         this.renderContainer.depth = 100000;
 
         this.playerGroup = scene.physics.add.group();
@@ -76,9 +76,9 @@ export class UnitManager
     }
 
     private static instance: UnitManager;
-    static resetScene(scene:Phaser.Scene)
+    static resetScene(scene: Phaser.Scene)
     {
-        if(UnitManager.instance)
+        if (UnitManager.instance)
         {
             delete UnitManager.instance;
         }
@@ -87,7 +87,7 @@ export class UnitManager
 
     static getCurrent(): UnitManager
     {
-        if(!UnitManager.instance)
+        if (!UnitManager.instance)
         {
             return undefined;
         }
@@ -96,7 +96,7 @@ export class UnitManager
 
     update(dt: number)
     {
-        if(this.isDragging == true)
+        if (this.isDragging == true)
         {
             this.renderRect.setVisible(true);
 
@@ -110,15 +110,15 @@ export class UnitManager
 
             var playerCount = 0;
             // console.log(this.player);
-            for(let player of this.player)
+            for (let player of this.player)
             {
-                if(Mob.checkAlive(player))
+                if (Mob.checkAlive(player))
                 {
                     var pt = new Phaser.Math.Vector2(player.x, player.y);
                     // var frame = game.UI.unitFrameSlots.slots[playerCount];
 
                     // TODO: use box intersection instead of containsPoint
-                    if(this.selectingRect.contains(pt.x, pt.y))
+                    if (this.selectingRect.contains(pt.x, pt.y))
                     {
                         player.mobData.inControl = true;
                     }
@@ -143,25 +143,25 @@ export class UnitManager
     isMouseLeft(pointer: any)
     {
         if ("which" in pointer.event)  // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
-            return pointer.event.which == 1; 
+            return pointer.event.which == 1;
         else if ("button" in pointer.event)  // IE, Opera 
-            return pointer.event.button == 0; 
+            return pointer.event.button == 0;
     }
 
     isMouseMiddle(pointer: any)
     {
         if ("which" in pointer.event)  // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
-            return pointer.event.which == 2; 
+            return pointer.event.which == 2;
         else if ("button" in pointer.event)  // IE, Opera 
-            return pointer.event.button == 1; 
+            return pointer.event.button == 1;
     }
 
     isMouseRight(pointer: any)
     {
         if ("which" in pointer.event)  // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
-            return pointer.event.which == 3; 
+            return pointer.event.which == 3;
         else if ("button" in pointer.event)  // IE, Opera 
-            return pointer.event.button == 2; 
+            return pointer.event.button == 2;
     }
 
     pointerDown(pointer: any)
@@ -170,7 +170,7 @@ export class UnitManager
         pointer.event.preventDefault();
 
         // Drag a rect
-        if(this.isMouseLeft(pointer))
+        if (this.isMouseLeft(pointer))
         {
             this.isDown = true;
             this.isDragging = true;
@@ -187,12 +187,12 @@ export class UnitManager
         }
 
         // Move player
-        if(this.isMouseRight(pointer))
+        if (this.isMouseRight(pointer))
         {
             this.selectedPlayerCount = 0;
-            for(var player of this.player)
+            for (var player of this.player)
             {
-                if(player.mobData.inControl == true)
+                if (player.mobData.inControl == true)
                 {
                     this.selectedPlayerCount += 1;
                 }
@@ -204,28 +204,28 @@ export class UnitManager
 
             var playerSparse = GameData.playerSparse + GameData.playerSparseInc * this.selectedPlayerCount;
 
-            if(this.sparseKey.isDown)
+            if (this.sparseKey.isDown)
             {
                 playerSparse = 60;
             }
-            if(this.rotateKey.isDown)
+            if (this.rotateKey.isDown)
             {
                 this.playerRotation += 2;
             }
 
-            if(this.selectedPlayerCount == 1)
+            if (this.selectedPlayerCount == 1)
             {
                 playerSparse = 0;
             }
 
-            for(var player of this.player)
+            for (var player of this.player)
             {
-                if(player.mobData.inControl == true)
+                if (player.mobData.inControl == true)
                 {
                     (<Simple>(player.agent)).setTargetPos(
-                        player, 
+                        player,
                         this.origin.clone().add(
-                            (new Phaser.Math.Vector2(0, 0)).setToPolar(((playerNum + this.playerRotation) / this.selectedPlayerCount * 2 * Math.PI), playerSparse) 
+                            (new Phaser.Math.Vector2(0, 0)).setToPolar(((playerNum + this.playerRotation) / this.selectedPlayerCount * 2 * Math.PI), playerSparse)
                         )
                     );
                     playerNum++;
@@ -240,7 +240,7 @@ export class UnitManager
     {
         // this.timeCounter += me.timer.lastUpdate;
 
-        if(this.isDragging)
+        if (this.isDragging)
         {
             this.rectTarget.set(pointer.x, pointer.y);
             // this.selectingRect.setPosition(this.rectOrigin.x, this.rectOrigin.y);
@@ -252,7 +252,7 @@ export class UnitManager
     {
         this.isDown = false;
 
-        if(this.isMouseLeft(pointer))
+        if (this.isMouseLeft(pointer))
         {
             this.isDragging = false;
             // console.log("Drag end");
@@ -271,7 +271,7 @@ export class UnitManager
         return true;
     }
 
-    addPlayer(player:Mob)
+    addPlayer(player: Mob)
     {
         console.log("Added player:");
         console.log(player);
@@ -279,30 +279,30 @@ export class UnitManager
         this.playerGroup.add(player);
     }
 
-    addEnemy(enemy:Mob)
+    addEnemy(enemy: Mob)
     {
         this.enemy.add(enemy);
         this.enemyGroup.add(enemy);
     }
 
-    removePlayer(player:Mob)
+    removePlayer(player: Mob)
     {
         this.player.delete(player);
     }
 
-    removeEnemy(enemy:Mob)
+    removeEnemy(enemy: Mob)
     {
         this.enemy.delete(enemy);
     }
 
-    _getUnitList(targetSet:Set<Mob>, sortMethod:mRTypes.CompareFunc<Mob>, availableTest:mRTypes.FilterFunc<Mob>, containsDead:boolean = false)
+    _getUnitList(targetSet: Set<Mob>, sortMethod: mRTypes.CompareFunc<Mob>, availableTest: mRTypes.FilterFunc<Mob>, containsDead: boolean = false)
     {
         var result = [];
 
-        for(var unit of targetSet)
+        for (var unit of targetSet)
         {
             // TODO: how to do with raise skills ?
-            if((containsDead || Mob.checkAlive(unit)) && availableTest(unit) === true)
+            if ((containsDead || Mob.checkAlive(unit)) && availableTest(unit) === true)
             {
                 result.push(unit);
             }
@@ -316,33 +316,33 @@ export class UnitManager
     // You will get a list that:
     // * The list was sorted using sortMethod,
     // * The list will contain units only if they have passed availableTest. (availableTest(unit) returns true)
-    getPlayerList(sortMethod:mRTypes.CompareFunc<Mob>, availableTest:mRTypes.FilterFunc<Mob>, containsDead:boolean = false)
+    getPlayerList(sortMethod: mRTypes.CompareFunc<Mob>, availableTest: mRTypes.FilterFunc<Mob>, containsDead: boolean = false)
     {
-        sortMethod = sortMethod || function(a, b) {return 0;};
-        availableTest = availableTest || function(a) {return true;};
+        sortMethod = sortMethod || function (a, b) { return 0; };
+        availableTest = availableTest || function (a) { return true; };
 
         return this._getUnitList(this.player, sortMethod, availableTest, containsDead);
     }
 
-    getPlayerListWithDead(sortMethod:mRTypes.CompareFunc<Mob>, availableTest:mRTypes.FilterFunc<Mob>)
+    getPlayerListWithDead(sortMethod: mRTypes.CompareFunc<Mob>, availableTest: mRTypes.FilterFunc<Mob>)
     {
-        sortMethod = sortMethod || function(a, b) {return 0;};
-        availableTest = availableTest || function(a) {return true;};
+        sortMethod = sortMethod || function (a, b) { return 0; };
+        availableTest = availableTest || function (a) { return true; };
 
         return this._getUnitList(this.player, sortMethod, availableTest, true);
     }
 
-    getEnemyList(sortMethod:mRTypes.CompareFunc<Mob>, availableTest:mRTypes.FilterFunc<Mob>)
+    getEnemyList(sortMethod: mRTypes.CompareFunc<Mob>, availableTest: mRTypes.FilterFunc<Mob>)
     {
-        sortMethod = sortMethod || function(a, b) {return 0;};
-        availableTest = availableTest || function(a) {return true;};
+        sortMethod = sortMethod || function (a, b) { return 0; };
+        availableTest = availableTest || function (a) { return true; };
 
         return this._getUnitList(this.enemy, sortMethod, availableTest);
     }
 
-    getUnitList(sortMethod:mRTypes.CompareFunc<Mob>, availableTest:mRTypes.FilterFunc<Mob>, isPlayer:boolean = false)
+    getUnitList(sortMethod: mRTypes.CompareFunc<Mob>, availableTest: mRTypes.FilterFunc<Mob>, isPlayer: boolean = false)
     {
-        if(isPlayer === true)
+        if (isPlayer === true)
         {
             return this._getUnitList(this.player, sortMethod, availableTest);
         }
@@ -352,16 +352,16 @@ export class UnitManager
         }
     }
 
-    getUnitListAll(sortMethod:mRTypes.CompareFunc<Mob>, availableTest:mRTypes.FilterFunc<Mob>)
+    getUnitListAll(sortMethod: mRTypes.CompareFunc<Mob>, availableTest: mRTypes.FilterFunc<Mob>)
     {
-        sortMethod = sortMethod || function(a, b) {return 0;};
-        availableTest = availableTest || function(a) {return true;};
+        sortMethod = sortMethod || function (a, b) { return 0; };
+        availableTest = availableTest || function (a) { return true; };
 
         return this._getUnitList(this.enemy, sortMethod, availableTest).concat(this._getUnitList(this.player, sortMethod, availableTest)).sort(sortMethod);
     }
 
     // Shorthand to get k-nearest (as a parameter "count") player around a position using above API.
-    getNearest(position:Phaser.Math.Vector2, isPlayer:boolean = false, count:integer = 1)
+    getNearest(position: Phaser.Math.Vector2, isPlayer: boolean = false, count: integer = 1)
     {
         var result = this.getUnitList(
             UnitManager.sortNearest(position),
@@ -371,7 +371,7 @@ export class UnitManager
         return result.slice(0, Math.min(count, result.length));
     }
 
-    getNearestUnitAll(position:Phaser.Math.Vector2, count = 1)
+    getNearestUnitAll(position: Phaser.Math.Vector2, count = 1)
     {
         var result = this.getUnitListAll(
             UnitManager.sortNearest(position),
@@ -380,31 +380,32 @@ export class UnitManager
         return result.slice(0, Math.min(count, result.length));
     }
 
-    static sortByHealth:mRTypes.CompareFunc<Mob> = (a:Mob, b:Mob) =>
+    static sortByHealth: mRTypes.CompareFunc<Mob> = (a: Mob, b: Mob) =>
     {
         return a.mobData.currentHealth - b.mobData.currentHealth;
     };
 
-    static sortByHealthPercentage:mRTypes.CompareFunc<Mob> = (a:Mob, b:Mob) =>
+    static sortByHealthPercentage: mRTypes.CompareFunc<Mob> = (a: Mob, b: Mob) =>
     {
         return (
-            ((a.mobData.currentHealth / a.mobData.maxHealth) - 0.4 * (a.mobData.healPriority ? 1.0 : 0.0)) - 
+            ((a.mobData.currentHealth / a.mobData.maxHealth) - 0.4 * (a.mobData.healPriority ? 1.0 : 0.0)) -
             ((b.mobData.currentHealth / b.mobData.maxHealth) - 0.4 * (b.mobData.healPriority ? 1.0 : 0.0))
         );
     };
 
-    static sortNearest(position:Phaser.Math.Vector2):mRTypes.CompareFunc<Mob>
+    static sortNearest(position: Phaser.Math.Vector2): mRTypes.CompareFunc<Mob>
     {
-        return (a:Mob, b:Mob) => {
+        return (a: Mob, b: Mob) =>
+        {
             return (
                 new Phaser.Math.Vector2(a.x, a.y).distance(position)
-              - new Phaser.Math.Vector2(b.x, b.y).distance(position)
+                - new Phaser.Math.Vector2(b.x, b.y).distance(position)
             );
         }
     }
 
-    static IDENTITY:mRTypes.CompareFunc<Mob> = (a:Mob, b:Mob) => 0;
-    static NOOP:mRTypes.FilterFunc<Mob> = (a:Mob) => true;
+    static IDENTITY: mRTypes.CompareFunc<Mob> = (a: Mob, b: Mob) => 0;
+    static NOOP: mRTypes.FilterFunc<Mob> = (a: Mob) => true;
 
     // // Boardcast the method targeted target with args to any listeners of any mobs that focused on the target.
     // boardcast: function(method, target, args)

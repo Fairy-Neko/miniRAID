@@ -1,12 +1,13 @@
 /** @module Core */
 
 import { Weapon, Armor, Accessory } from "./EquipmentCore";
-import {dSprite} from "../DynamicLoader/dSprite";
-import {Mob} from "../Mob";
-import {dPhysSprite} from "../DynamicLoader/dPhysSprite";
-import {MobAgent} from "../agents/MobAgent";
+import { dSprite } from "../DynamicLoader/dSprite";
+import { Mob as MobEntity } from "../Mob";
+import { dPhysSprite } from "../DynamicLoader/dPhysSprite";
+import { MobAgent } from "../agents/MobAgent";
 import * as MobData from "./MobData";
 import { SpellData } from "./SpellData";
+import { SpellFlags, Spell as SpellEntity } from "../GameObjects/Spell";
 
 export namespace mRTypes
 {
@@ -27,35 +28,35 @@ export namespace mRTypes
 
         export interface MobData
         {
-            name:string;
-            image?:string;
-            
-            race?:string;
-            class?:string;
-            level?:number;
+            name: string;
+            image?: string;
 
-            availableBP?:number;
-            availableSP?:number;
+            race?: string;
+            class?: string;
+            level?: number;
 
-            vit?:number;
-            str?:number;
-            dex?:number;
-            tec?:number;
-            int?:number;
-            mag?:number;
+            availableBP?: number;
+            availableSP?: number;
 
-            health?:number;
-            damage?:number;
-            mana?:number;
+            vit?: number;
+            str?: number;
+            dex?: number;
+            tec?: number;
+            int?: number;
+            mag?: number;
 
-            speed?:number;
-            movingSpeed?:number;
-            attackSpeed?:number;
-            spellSpeed?:number;
-            resourceCost?:number;
+            health?: number;
+            damage?: number;
+            mana?: number;
 
-            baseSpeed?:number;
-            baseAttackSpeed?:number;
+            speed?: number;
+            movingSpeed?: number;
+            attackSpeed?: number;
+            spellSpeed?: number;
+            resourceCost?: number;
+
+            baseSpeed?: number;
+            baseAttackSpeed?: number;
 
             weaponLeft?: Weapon;
             weaponRight?: Weapon;
@@ -75,8 +76,31 @@ export namespace mRTypes
             deadAnim: string;
 
             backendData: MobData.MobData;
-            
+
             agent: AgentConstructor;
+        }
+
+        export interface Spell
+        {
+            info?: SpellInfo;
+
+            source: MobEntity;
+            target?: MobEntity | Phaser.Math.Vector2;
+
+            onHit?: (self: SpellEntity, arg: Phaser.GameObjects.GameObject) => void;
+            onMobHit?: (self: SpellEntity, arg: MobEntity) => void;
+            onWorldHit?: (self: SpellEntity, arg: Phaser.GameObjects.GameObject) => void;
+            onDestroy?: (self: SpellEntity, arg: Phaser.GameObjects.GameObject) => void;
+            onUpdate?: (self: SpellEntity, dt: number) => void;
+
+            color?: Phaser.Display.Color;
+        }
+
+        export interface Projectile extends Spell
+        {
+            chasingRange?: number;
+            chasingPower?: number;
+            speed?: number;
         }
     }
 
@@ -87,12 +111,12 @@ export namespace mRTypes
 
     export interface MobConstructor
     {
-        new (settings:Settings.Mob): Mob;
+        new(settings: Settings.Mob): MobEntity;
     }
 
     export interface AgentConstructor
     {
-        new (arg:Mob): MobAgent;
+        new(arg: MobEntity): MobAgent;
     }
 
     export interface BaseStats
@@ -104,7 +128,7 @@ export namespace mRTypes
         int: number;
         mag: number;
 
-        [index:string] : number;
+        [index: string]: number;
     }
 
     export interface MobSpeedModifiers
@@ -115,7 +139,7 @@ export namespace mRTypes
         spellSpeed: number;
         resourceCost: number;
 
-        [index:string] : number;
+        [index: string]: number;
     }
 
     export interface AllTypes<T>
@@ -138,7 +162,7 @@ export namespace mRTypes
 
         heal: T;
 
-        [index:string] : T;
+        [index: string]: T;
     }
 
     export interface LeafTypes<T>
@@ -158,10 +182,14 @@ export namespace mRTypes
 
         heal: T;
 
-        [index:string] : T;
+        [index: string]: T;
     }
 
-    export const LeafTypesZERO:LeafTypes<number> = {fire:0, water:0, ice:0, wind:0, nature:0, light:0, thunder:0, slash:0, pierce:0, knock:0, dark:0, heal:0};
+    export interface SpellInfo
+    {
+        name: string;
+        flags: Set<SpellFlags>;
+    }
 
     export interface DamageHeal
     {
@@ -173,19 +201,19 @@ export namespace mRTypes
         isCrit?: boolean;
         isAvoid?: boolean;
         isBlock?: boolean;
-        spell?: SpellData;
+        spell?: SpellInfo;
     }
 
     export interface DamageHeal_FrontEnd
     {
-        source?: Mob;
-        target: Mob;
+        source?: MobEntity;
+        target: MobEntity;
         value: number;
         type: string;
         isCrit?: boolean;
         isAvoid?: boolean;
         isBlock?: boolean;
-        spell?: SpellData;
+        spell?: SpellInfo;
         popUp?: boolean;
     }
 
@@ -227,22 +255,24 @@ export namespace mRTypes
 
 export namespace Consts
 {
-    export const ElementColors : {[index: string]: Phaser.Display.Color} =
+    export const LeafTypesZERO: mRTypes.LeafTypes<number> = { fire: 0, water: 0, ice: 0, wind: 0, nature: 0, light: 0, thunder: 0, slash: 0, pierce: 0, knock: 0, dark: 0, heal: 0 };
+
+    export const ElementColors: { [index: string]: Phaser.Display.Color } =
     {
-        slash  : Phaser.Display.Color.HexStringToColor("#ffffff"),
-        knock  : Phaser.Display.Color.HexStringToColor("#ffffff"),
-        pierce : Phaser.Display.Color.HexStringToColor("#ffffff"),
-        
-        fire   : Phaser.Display.Color.HexStringToColor("#ffa342"),
-        ice    : Phaser.Display.Color.HexStringToColor("#72ffe2"),
-        water  : Phaser.Display.Color.HexStringToColor("#5b8fff"),
-        nature : Phaser.Display.Color.HexStringToColor("#b1ed1a"),
-        wind   : Phaser.Display.Color.HexStringToColor("#aaffc8"),
+        slash: Phaser.Display.Color.HexStringToColor("#ffffff"),
+        knock: Phaser.Display.Color.HexStringToColor("#ffffff"),
+        pierce: Phaser.Display.Color.HexStringToColor("#ffffff"),
+
+        fire: Phaser.Display.Color.HexStringToColor("#ffa342"),
+        ice: Phaser.Display.Color.HexStringToColor("#72ffe2"),
+        water: Phaser.Display.Color.HexStringToColor("#5b8fff"),
+        nature: Phaser.Display.Color.HexStringToColor("#b1ed1a"),
+        wind: Phaser.Display.Color.HexStringToColor("#aaffc8"),
         thunder: Phaser.Display.Color.HexStringToColor("#fffb21"),
-        light  : Phaser.Display.Color.HexStringToColor("#fffbd1"),
-        dark   : Phaser.Display.Color.HexStringToColor("#8d47bf"),
-        
-        miss   : Phaser.Display.Color.HexStringToColor("#ff19e0"),
-        heal   : Phaser.Display.Color.HexStringToColor("#66f95c"),
+        light: Phaser.Display.Color.HexStringToColor("#fffbd1"),
+        dark: Phaser.Display.Color.HexStringToColor("#8d47bf"),
+
+        miss: Phaser.Display.Color.HexStringToColor("#ff19e0"),
+        heal: Phaser.Display.Color.HexStringToColor("#66f95c"),
     }
 }

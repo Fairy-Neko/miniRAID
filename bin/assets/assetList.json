@@ -1,8 +1,15 @@
 {
-    "char_sheet_forestelf_myst":
-    {
+    "char_sheet_forestelf_myst": {
         "url": "./assets/forestElfMyst.png",
         "type": "spritesheet",
-        "frameConfig": {"frameWidth": 32, "frameHeight": 32, "endFrame": 4}
+        "frameConfig": {
+            "frameWidth": 32,
+            "frameHeight": 32,
+            "endFrame": 4
+        }
+    },
+    "img_iced_fx": {
+        "url": "./assets/iced_fx.png",
+        "type": "image"
     }
 }

@@ -73,7 +73,6 @@ export class Mob extends dPhysSprite
 
     update(dt:number)
     {
-        dt = dt / 1000.0;
         // this.sprite.x += dt / 1000.0 * 10;
         if(this.body.velocity.length() > 0)
         {

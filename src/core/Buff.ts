@@ -5,9 +5,6 @@ import { mRTypes } from "./mRTypes";
 import { MobListener } from "./MobListener";
 import { MobData } from "./MobData";
 
-console.log(mRTypes);
-console.log("Defination of Buff.ts");
-
 export class Buff extends MobListener
 {
     name: string;

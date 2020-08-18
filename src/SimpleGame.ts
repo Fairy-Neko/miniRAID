@@ -1,6 +1,6 @@
 /** @module GameScene */
 
-import {ExampleScene} from './ExampleScene'
+import {BattleScene} from './scenes/BattleScene'
 import {DynamicLoaderScene} from './DynamicLoader/DynamicLoaderScene'
 import { PopUpManager } from './UI/PopUpManager';
 
@@ -15,7 +15,7 @@ export class InitPhaser
             type: Phaser.AUTO,
             width: 1024,
             height: 640,
-            scene: [ExampleScene],
+            scene: [BattleScene],
             banner: true,
             title: 'Playground',
             url: 'https://updatestage.littlegames.app',
