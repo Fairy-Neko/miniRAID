@@ -17,7 +17,5 @@ To generate the docs, first install `typedoc` then `npx typedoc` under the root 
 
 ### TODOs
 
-* (OK) Add cooldown timer related things (1 timer is okay) to MobListener base class
-* Move attack speed timer from Mob to Weapon (using MobListener cooldown timer API)
 * Let MobListener able to listen to MobListeners (e.g. char listen to weapon, team buff listen to all player's weapon)
-* Let testGirl attack the woodLog with a fireball (which applies a burnt debuff) !
+* ~~Let testGirl attack the woodLog with a fireball~~ (which applies a burnt debuff) !
