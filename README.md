@@ -13,8 +13,8 @@ To generate the docs, first install `typedoc` then `npx typedoc` under the root 
 
 ### Github Pages
 
-* [https://fairy-neko.github.io/miniRAID_phaser/bin/](https://fairy-neko.github.io/miniRAID_phaser/bin/) to play the game
-* [https://fairy-neko.github.io/miniRAID_phaser/docs/](https://fairy-neko.github.io/miniRAID_phaser/docs/) for documentations.
+* [https://fairy-neko.github.io/miniRAID/bin/](https://fairy-neko.github.io/miniRAID_phaser/bin/) to play the game
+* [https://fairy-neko.github.io/miniRAID/docs/](https://fairy-neko.github.io/miniRAID_phaser/docs/) for documentations.
 
 ### TODOs
 
