@@ -1,4 +1,5 @@
-Please refer to https://updatestage.com/create-a-phaser-3-project-part-1/ for build up the enviorment, phaser and typescript.  
+Please refer to e.g. https://www.freecodecamp.org/news/how-to-build-a-simple-game-in-the-browser-with-phaser-3-and-typescript-bdc94719135/ for build up the enviorment, phaser and typescript.  
+I used NPM as the package manager.
 
 Basically, you need to:  
 1. `git clone --recursive path/to/this/repo.git`  
