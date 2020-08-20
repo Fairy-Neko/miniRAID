@@ -1,4 +1,4 @@
-/** @module Agent */
+/** @packageDocumentation @moduleeDocumentation @module Agent */
 
 import { MobAgent } from "../Engine/Agents/MobAgent";
 import { Mob } from "../Engine/GameObjects/Mob";

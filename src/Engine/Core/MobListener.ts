@@ -1,4 +1,4 @@
-/** @module Core */
+/** @packageDocumentation @module Core */
 
 import { mRTypes } from "./mRTypes";
 import { MobData } from "./MobData";

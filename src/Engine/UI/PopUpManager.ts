@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @module UI
+ */
+
 import { Scene } from "Phaser";
 
 export class PopupText extends Phaser.GameObjects.Text
@@ -82,7 +87,7 @@ export class PopUpManager extends Scene
         accY: number = 512,// gravity
     )
     {
-        let txt = new PopupText(this, posX, posY, text, { 'color': color.rgba, 'fontSize': '12px' }, time, velX, velY, accX, accY);
+        let txt = new PopupText(this, posX, posY, text, { 'color': color.rgba, 'fontSize': '24px', 'fontStyle': 'bold', 'strokeThickness': 5, 'stroke': '#000', 'align': 'center' }, time, velX, velY, accX, accY);
         this.add.existing(txt);
     }
 

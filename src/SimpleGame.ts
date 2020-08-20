@@ -1,4 +1,4 @@
-/** @module GameScene */
+/** @packageDocumentation @module GameScene */
 
 import { TestScene } from './TestScene'
 import { DynamicLoaderScene } from './Engine/DynamicLoader/DynamicLoaderScene'

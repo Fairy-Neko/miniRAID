@@ -1,4 +1,4 @@
-/** @module Core */
+/** @packageDocumentation @module Core */
 
 // import { MobListener, MobListenerType, MobData } from "./DataBackend";
 import { mRTypes } from "./mRTypes";
@@ -8,7 +8,7 @@ import { MobData } from "./MobData";
 export class Buff extends MobListener
 {
     name: string;
-    
+
     countTime: boolean;
     timeMax: number;
     timeRemain: number;
@@ -26,7 +26,7 @@ export class Buff extends MobListener
     source: MobData;
     toolTip: mRTypes.HTMLToolTip;
 
-    constructor(settings:mRTypes.Settings.Buff)
+    constructor(settings: mRTypes.Settings.Buff)
     {
         super();
     }

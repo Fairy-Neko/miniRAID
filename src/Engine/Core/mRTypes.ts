@@ -1,4 +1,4 @@
-/** @module Core */
+/** @packageDocumentation @module Core */
 
 import { Weapon, Armor, Accessory } from "./EquipmentCore";
 import { dSprite } from "../DynamicLoader/dSprite";
@@ -7,7 +7,7 @@ import { dPhysSprite } from "../DynamicLoader/dPhysSprite";
 import { MobAgent } from "../Agents/MobAgent";
 import * as MobData from "./MobData";
 import { SpellData } from "./SpellData";
-import { SpellFlags, Spell as SpellEntity } from "../GameObjects/Spell";
+import { SpellFlags, Spell as SpellEntity, DummySpell as DummySpellEntity } from "../GameObjects/Spell";
 
 export namespace mRTypes
 {
@@ -94,6 +94,13 @@ export namespace mRTypes
             onUpdate?: (self: SpellEntity, dt: number) => void;
 
             color?: Phaser.Display.Color;
+        }
+
+        export interface DummySpell extends Spell
+        {
+            triggerTime?: number;
+            onSpell?: (self: DummySpellEntity, source: MobEntity, target: MobEntity) => void;
+            onSpellVec2?: (self: DummySpellEntity, source: MobEntity, target: Phaser.Math.Vector2) => void;
         }
 
         export interface Projectile extends Spell

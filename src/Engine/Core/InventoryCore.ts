@@ -1,4 +1,4 @@
-/** @module Core */
+/** @packageDocumentation @module Core */
 
 export class Inventory
 {

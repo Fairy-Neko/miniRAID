@@ -1,8 +1,8 @@
-/** @module DynamicLoader */
+/** @packageDocumentation @module DynamicLoader */
 
-import {DynamicLoadObject} from './DynamicLoadObject'
+import { DynamicLoadObject } from './DynamicLoadObject'
 import * as dl from './DynamicLoadObject'
-import {DynamicLoaderScene} from './DynamicLoaderScene';
+import { DynamicLoaderScene } from './DynamicLoaderScene';
 
 interface DSAnimCache
 {
@@ -15,40 +15,40 @@ export class dSprite extends Phaser.GameObjects.Sprite implements DynamicLoadObj
     loadComplete: boolean;
     resources: dl.ResourceRequirements[];
 
-    textureToLoad:  string;
-    frameToLoad:    string | integer;
-    currentAnim:    DSAnimCache;
+    textureToLoad: string;
+    frameToLoad: string | integer;
+    currentAnim: DSAnimCache;
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, subsTexture?: string, frame?: string | integer)
     {
-        var textureToLoad:  string;
-        var frameToLoad:    string | integer;
+        var textureToLoad: string;
+        var frameToLoad: string | integer;
 
-        if(!scene.textures.exists(texture))
+        if (!scene.textures.exists(texture))
         {
             textureToLoad = texture;
             frameToLoad = frame;
             texture = subsTexture;
             frame = 0;
         }
-        if(!texture)
+        if (!texture)
         {
             texture = 'default';
         }
-        
+
         super(scene, x, y, texture, frame);
 
         // Since we cannot put "super" to the very beginning ...
         this.resources = [];
-        this.currentAnim = {'key': '', 'startFrame': 0};
+        this.currentAnim = { 'key': '', 'startFrame': 0 };
 
-        if(textureToLoad)
+        if (textureToLoad)
         {
-            this.resources.push({'key': textureToLoad, 'metadata': {}, 'callback': this.onLoadComplete.bind(this)});
+            this.resources.push({ 'key': textureToLoad, 'metadata': {}, 'callback': this.onLoadComplete.bind(this) });
             this.textureToLoad = textureToLoad;
             this.frameToLoad = frameToLoad;
         }
-        if(texture == 'default')
+        if (texture == 'default')
         {
             this.setVisible(false);
         }
@@ -61,9 +61,9 @@ export class dSprite extends Phaser.GameObjects.Sprite implements DynamicLoadObj
         return [];
     }
 
-    onLoadComplete(key:string, type:string, fileObj:any): void
+    onLoadComplete(key: string, type: string, fileObj: any): void
     {
-        if(key == this.textureToLoad)
+        if (key == this.textureToLoad)
         {
             this.loadComplete = true;
             this.setTexture(this.textureToLoad, this.frameToLoad);
@@ -84,7 +84,7 @@ export class dSprite extends Phaser.GameObjects.Sprite implements DynamicLoadObj
         this.currentAnim.key = key;
         this.currentAnim.startFrame = startFrame;
 
-        if(this.loadComplete == true)
+        if (this.loadComplete == true)
         {
             super.play(key, ignoreIfPlaying, startFrame);
         }

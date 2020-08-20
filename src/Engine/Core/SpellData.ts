@@ -1,3 +1,5 @@
+/** @packageDocumentation @module Core */
+
 import { mRTypes } from "./mRTypes";
 import { Mob } from "../GameObjects/Mob";
 

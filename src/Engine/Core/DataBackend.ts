@@ -1,4 +1,4 @@
-/** @module Core */
+/** @packageDocumentation @module Core */
 
 import * as EventSystem from '../Events/EventSystem'
 import { Mob } from '../GameObjects/Mob';

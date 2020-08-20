@@ -1,10 +1,11 @@
-/** @module BattleScene */
+/** @packageDocumentation @module BattleScene */
 
 import { BattleScene } from "./Engine/ScenePrototypes/BattleScene";
 import { Mob } from "./Engine/GameObjects/Mob";
 import { MobData } from "./Engine/Core/MobData";
 import { CometWand } from "./Weapons/Stuff";
 import * as PlayerAgents from "./Agents/PlayerAgents";
+import { KeepMoving } from "./Agents/SimpleAgents";
 
 export class TestScene extends BattleScene
 {
@@ -42,10 +43,10 @@ export class TestScene extends BattleScene
             'idleAnim': 'move',
             'moveAnim': 'move',
             'deadAnim': 'move',
-            'backendData': new MobData({ name: 'testGirl', 'isPlayer': true, 'attackSpeed': 1.72 }),
+            'backendData': new MobData({ name: 'testGirl', 'isPlayer': true, 'attackSpeed': 5 }),
             'agent': PlayerAgents.Simple,
         });
-        girl.mobData.battleStats.attackPower.ice = 3.3;
+        girl.mobData.battleStats.attackPower.ice = 10;
         girl.mobData.battleStats.crit = 50.0;
         girl.mobData.weaponRight = new CometWand();
         girl.mobData.currentWeapon = girl.mobData.weaponRight;
@@ -56,9 +57,29 @@ export class TestScene extends BattleScene
             'idleAnim': 'move',
             'moveAnim': 'move',
             'deadAnim': 'move',
-            'backendData': new MobData({ name: 'woodLog', 'isPlayer': false, 'health': 100000, }),
-            // 'agent': PlayerAgents.Simple,
-            'agent': null,
+            'backendData': new MobData({ name: 'woodLog', 'isPlayer': false, 'health': 1000, }),
+            'agent': KeepMoving,
+            // 'agent': undefined,
+        });
+        this.addMob(woodlog);
+
+        woodlog = new Mob(this, 350, 200, 'char_sheet_forestelf_myst', {
+            'idleAnim': 'move',
+            'moveAnim': 'move',
+            'deadAnim': 'move',
+            'backendData': new MobData({ name: 'woodLog', 'isPlayer': false, 'health': 1000, }),
+            'agent': KeepMoving,
+            // 'agent': undefined,
+        });
+        this.addMob(woodlog);
+
+        woodlog = new Mob(this, 300, 250, 'char_sheet_forestelf_myst', {
+            'idleAnim': 'move',
+            'moveAnim': 'move',
+            'deadAnim': 'move',
+            'backendData': new MobData({ name: 'woodLog', 'isPlayer': false, 'health': 1000, }),
+            'agent': KeepMoving,
+            // 'agent': undefined,
         });
         this.addMob(woodlog);
     }

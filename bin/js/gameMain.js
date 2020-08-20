@@ -1,4 +1,3 @@
-"use strict";
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -7,6 +6,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 /**
+ * @packageDocumentation
  * @module Events
  */
 define("Engine/Events/EventSystem", ["require", "exports", "typescript-collections"], function (require, exports, Collections) {
@@ -208,12 +208,13 @@ for(var i = 0; i < this.num; i++)
     }
 }
 */ 
-/** @module DynamicLoader */
+/** @packageDocumentation @module DynamicLoader */
 define("Engine/DynamicLoader/DynamicLoadObject", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
 });
 /**
+ * @packageDocumentation
  * @module UI
  */
 define("Engine/UI/DraggableScene", ["require", "exports"], function (require, exports) {
@@ -370,7 +371,7 @@ define("Engine/DynamicLoader/DynamicLoaderScene", ["require", "exports", "Engine
     }
     exports.DynamicLoaderScene = DynamicLoaderScene;
 });
-/** @module DynamicLoader */
+/** @packageDocumentation @module DynamicLoader */
 define("Engine/DynamicLoader/dSprite", ["require", "exports", "Engine/DynamicLoader/DynamicLoaderScene"], function (require, exports, DynamicLoaderScene_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -427,7 +428,7 @@ define("Engine/DynamicLoader/dSprite", ["require", "exports", "Engine/DynamicLoa
     }
     exports.dSprite = dSprite;
 });
-/** @module DynamicLoader */
+/** @packageDocumentation @module DynamicLoader */
 define("Engine/DynamicLoader/dPhysSprite", ["require", "exports", "Engine/DynamicLoader/DynamicLoaderScene"], function (require, exports, DynamicLoaderScene_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -497,6 +498,7 @@ define("Engine/DynamicLoader/dPhysSprite", ["require", "exports", "Engine/Dynami
     }
     exports.dPhysSprite = dPhysSprite;
 });
+/** @packageDocumentation @module Core */
 define("Engine/Core/SpellData", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -557,7 +559,7 @@ define("Engine/Core/SpellData", ["require", "exports"], function (require, expor
     }
     exports.SpellData = SpellData;
 });
-/** @module Struct */
+/** @packageDocumentation @module Struct */
 define("Engine/Structs/QuerySet", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -687,7 +689,7 @@ define("Engine/Structs/QuerySet", ["require", "exports"], function (require, exp
     }
     exports.QuerySet = QuerySet;
 });
-/** @module Core */
+/** @packageDocumentation @module Core */
 define("Engine/Core/InventoryCore", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -702,7 +704,7 @@ define("Engine/Core/InventoryCore", ["require", "exports"], function (require, e
     }
     exports.Item = Item;
 });
-/** @module Core */
+/** @packageDocumentation @module Core */
 define("Engine/Core/DataBackend", ["require", "exports", "Engine/Events/EventSystem", "Engine/Core/InventoryCore"], function (require, exports, EventSystem, InventoryCore_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -750,7 +752,7 @@ define("Engine/Core/DataBackend", ["require", "exports", "Engine/Events/EventSys
     }
     exports.DataBackend = DataBackend;
 });
-/** @module Core */
+/** @packageDocumentation @module Core */
 define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener"], function (require, exports, MobListener_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -766,7 +768,7 @@ define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener"], fu
     }
     exports.Buff = Buff;
 });
-/** @module Core */
+/** @packageDocumentation @module Core */
 define("Engine/Core/GameData", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -812,7 +814,7 @@ define("Engine/Core/GameData", ["require", "exports"], function (require, export
         GameData.healTaunt = 2;
     })(GameData = exports.GameData || (exports.GameData = {}));
 });
-/** @module Core */
+/** @packageDocumentation @module Core */
 define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem", "Engine/Core/EquipmentCore", "Engine/Structs/QuerySet", "Engine/Core/MobListener", "Engine/Core/DataBackend", "Engine/Core/Buff", "Engine/Core/GameData"], function (require, exports, EventSystem, EquipmentCore_1, QuerySet_1, MobListener_2, DataBackend_1, Buff_1, GameData_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -1279,7 +1281,8 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             // Check if it was avoided (we check it before final calculation, so when onReceiveDamageFinal(), damage are guaranteed not avoided)
             if (damageInfo.isAvoid === true) {
                 // Tell mob this attack was avoided
-                return { isAvoid: true };
+                damageInfo.value = 0;
+                return damageInfo;
             }
             // N.B. if you want do something if target avoid, e.g. deal extra on avoid,
             // you should let it change the damage at onDealDamage() when isAvoid == true. (e.g. set other to 0 and add extra damage)
@@ -1329,7 +1332,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
                 }
             }
             // It hits!
-            return damageInfo.value;
+            return damageInfo;
         }
         receiveHeal(healInfo) {
             // Calculate crit based on parameters
@@ -1368,7 +1371,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             // Increase the HP.
             this.currentHealth += healInfo.value;
             // game.data.monitor.addHeal(healInfo.value.heal, healInfo.overdeal.heal, healInfo.source, healInfo.target, healInfo.isCrit, healInfo.spell);
-            return healInfo.value;
+            return healInfo;
         }
         // Function used to tell buffs and agents what was going on
         // when damage and heal happens. They can modify them.
@@ -1405,7 +1408,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
     }
     exports.MobData = MobData;
 });
-/** @module Core */
+/** @packageDocumentation @module Core */
 define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListener"], function (require, exports, MobListener_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -1469,7 +1472,7 @@ define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListe
         }
         attack(source, target, triggerCD = true) {
             this.isReadyWrapper(() => {
-                this._weaponAttack(source, target);
+                this.doRegularAttack(source, target);
                 if (triggerCD) {
                     this.triggerCD();
                 }
@@ -1482,7 +1485,7 @@ define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListe
             super.onAdded(mob, source);
             // console.log("be added to " + mob.name);
         }
-        _weaponAttack(source, target) {
+        doRegularAttack(source, target) {
             throw new Error("Method not implemented.");
         }
     }
@@ -1491,29 +1494,456 @@ define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListe
     }
     exports.Accessory = Accessory;
 });
-define("Engine/DynamicLoader/Modules", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/DynamicLoader/dSprite", "Engine/DynamicLoader/DynamicLoaderScene"], function (require, exports, dPhysSprite_1, dSprite_1, DynamicLoaderScene_3) {
+/** @packageDocumentation @moduleeDocumentation @module Agent */
+define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "Engine/GameObjects/Mob", "Engine/Core/GameData", "Engine/Core/UnitManager"], function (require, exports, MobAgent_1, Mob_1, GameData_2, UnitManager_1) {
     "use strict";
-    function __export(m) {
-        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-    }
     Object.defineProperty(exports, "__esModule", { value: true });
-    __export(dPhysSprite_1);
-    __export(dSprite_1);
-    __export(DynamicLoaderScene_3);
+    class PlayerAgentBase extends MobAgent_1.MobAgent {
+        constructor(parentMob) {
+            super(parentMob);
+        }
+        setTargetPos(player, position, dt) { }
+        setTargetMob(player, target, dt) { }
+    }
+    exports.PlayerAgentBase = PlayerAgentBase;
+    class Simple extends PlayerAgentBase {
+        constructor(parentMob) {
+            super(parentMob);
+            // Will the player move automatically (to nearest mob) if it is free ?
+            this.autoMove = GameData_2.GameData.useAutomove;
+            // this.autoMove = true;
+            // idleCount will count down from idleFrame if player is in idle (-1 / frame) to smooth the animation.
+            // Only if idleCount = 0, the player will be "idle".
+            // idleFrame is seperated for targeting Mob (which may move = need more smooth)
+            // and targeting a static position (don't move and need high precision)
+            // WTF? I cannot understood what have I wrote ...
+            this.idleFrameMob = 10;
+            this.idleFramePos = 0;
+            this.idleCount = 0;
+            this.speedFriction = 0.9;
+            this.unitMgr = UnitManager_1.UnitManager.getCurrent();
+            // TODO: smooth when hit world object ?
+        }
+        updateMob(player, dt) {
+            this.autoMove = GameData_2.GameData.useAutomove;
+            this.footPos = new Phaser.Math.Vector2(player.x, player.y);
+            if (Mob_1.Mob.checkAlive(player) === true) {
+                if (typeof this.targetPos !== "undefined") {
+                    if (this.targetPos.distance(this.footPos) > 1.5) {
+                        let velocity = this.targetPos.clone().subtract(this.footPos).normalize().scale(player.mobData.getMovingSpeed());
+                        player.setVelocity(velocity.x, velocity.y);
+                        this.isMoving = true;
+                        // Reset the anim counter
+                        this.idleCount = this.idleFramePos;
+                    }
+                    else {
+                        this.targetPos = undefined;
+                        this.isMoving = false;
+                    }
+                }
+                else if (Mob_1.Mob.checkAlive(this.targetMob) == true) {
+                    // we need move to goin the range of our current weapon
+                    if (player.mobData.currentWeapon.isInRange(player, this.targetMob) == false) {
+                        let targetPos = new Phaser.Math.Vector2(this.targetMob.x, this.targetMob.y);
+                        let velocity = targetPos.subtract(this.footPos).normalize().scale(player.mobData.getMovingSpeed());
+                        player.setVelocity(velocity.x, velocity.y);
+                        this.isMoving = true;
+                        // Reset the anim counter
+                        this.idleCount = this.idleFrameMob;
+                    }
+                    // and then we don't move anymore.
+                    else {
+                        this.targetMob = undefined;
+                        this.isMoving = false;
+                    }
+                }
+                else {
+                    // We lose the target.
+                    this.targetPos = undefined;
+                    this.targetMob = undefined;
+                    this.isMoving = false;
+                }
+                if (this.isMoving === true) {
+                    // Fix our face direction when moving
+                    if (player.body.velocity.x > 0) {
+                        player.flipX = true;
+                    }
+                    else {
+                        player.flipX = false;
+                    }
+                    if (!(player.anims.currentAnim && player.anims.currentAnim.key == player.moveAnim)) {
+                        player.play(player.moveAnim);
+                    }
+                }
+                else {
+                    // Count the frames
+                    if (this.idleCount > 0) {
+                        this.idleCount--;
+                        // Also smooth the speed
+                        player.setVelocity(player.body.velocity.x * this.speedFriction, player.body.velocity.y * this.speedFriction);
+                    }
+                    else {
+                        player.setVelocity(0, 0);
+                        if (!(player.anims.currentAnim && player.anims.currentAnim.key == player.idleAnim)) {
+                            player.play(player.idleAnim);
+                        }
+                    }
+                    if (this.autoMove === true) {
+                        if (player.mobData.currentWeapon) {
+                            let targetList = player.mobData.currentWeapon.grabTargets(player);
+                            if (targetList.length > 0) {
+                                this.setTargetMob(player, targetList[0], dt);
+                            }
+                        }
+                    }
+                }
+                // Attack !
+                // Todo: attack single time for multi targets, they should add same amount of weapon gauge (basically)
+                if (player.doAttack(dt) === true) {
+                    // console.log("canAttack");
+                    let targets = player.mobData.currentWeapon.grabTargets(player); // This will ensure that targets are within the range
+                    if (targets.length > 0) {
+                        // for(var target of targets.values())
+                        // {
+                        // if(player.mobData.currentWeapon.isInRange(player, targets))
+                        // {
+                        if (player.mobData.currentMana > player.mobData.currentWeapon.manaCost) {
+                            player.mobData.currentMana -= player.mobData.currentWeapon.manaCost;
+                            player.mobData.currentWeapon.attack(player, targets);
+                        }
+                        // }
+                        // }
+                    }
+                }
+                // Use any spells available
+                for (let spell in player.mobData.spells) {
+                    if (player.mobData.spells.hasOwnProperty(spell)) {
+                        if (this.isMoving == false) {
+                            if (player.mobData.spells[spell].available) {
+                                player.mobData.cast(player, null, player.mobData.spells[spell]);
+                            }
+                        }
+                    }
+                }
+            }
+            // YOU DIED !
+            else {
+                this.isMoving = false;
+                player.setVelocity(0, 0);
+                player.flipX = false;
+                player.play(player.deadAnim);
+            }
+        }
+        setTargetPos(player, position) {
+            // console.log(position);
+            this.targetPos = position;
+        }
+        setTargetMob(player, mob, dt) {
+            this.targetMob = mob;
+        }
+    }
+    exports.Simple = Simple;
 });
-/** @module Helper */
-define("Engine/Core/Helper", ["require", "exports"], function (require, exports) {
+/** @packageDocumentation @module Core */
+define("Engine/Core/UnitManager", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/GameData"], function (require, exports, Mob_2, GameData_3) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class UnitManager {
+        constructor(scene) {
+            this.name = "Unit Manager";
+            // TODO: change this to QuerySet ?
+            this.player = new Set();
+            this.enemy = new Set();
+            this.selectedPlayerCount = 0;
+            this.isDown = false;
+            this.isDragging = false;
+            this.timeCounter = 0;
+            this.origin = new Phaser.Math.Vector2(0, 0);
+            this.rectOrigin = new Phaser.Math.Vector2(0, 0);
+            this.rectTarget = new Phaser.Math.Vector2(0, 0);
+            this.selectingRect = new Phaser.Geom.Rectangle(0, 0, 0, 0);
+            scene.input.on('pointerdown', (pt) => this.pointerDown(pt));
+            scene.input.on('pointerup', (pt) => this.pointerUp(pt));
+            // scene.input.on('pointerleave', (pt:any) => this.pointerLeave(pt));
+            scene.input.on('pointermove', (pt) => this.pointerMove(pt));
+            this.sparseKey = scene.input.keyboard.addKey('F');
+            this.rotateKey = scene.input.keyboard.addKey('R');
+            this.playerRotation = 0;
+            //Add a rectangle to the scene
+            this.renderContainer = scene.add.container(0, 0);
+            this.renderRect = new Phaser.GameObjects.Rectangle(scene, 0, 0, 0, 0, 0x90D7EC, 0.2);
+            this.renderContainer.add(this.renderRect);
+            // this.renderContainer.add(new Phaser.GameObjects.Line(scene, 0, 200, 0, 0, 1000, 0, 0xFF0000));
+            this.renderContainer.depth = 100000;
+            this.playerGroup = scene.physics.add.group();
+            this.enemyGroup = scene.physics.add.group();
+            this.allyGroup = scene.physics.add.group();
+            this.thirdGroup = scene.physics.add.group();
+        }
+        static resetScene(scene) {
+            if (UnitManager.instance) {
+                delete UnitManager.instance;
+            }
+            UnitManager.instance = new UnitManager(scene);
+        }
+        static getCurrent() {
+            if (!UnitManager.instance) {
+                return undefined;
+            }
+            return UnitManager.instance;
+        }
+        update(dt) {
+            if (this.isDragging == true) {
+                this.renderRect.setVisible(true);
+                this.renderRect.setPosition(this.selectingRect.x, this.selectingRect.y);
+                this.renderRect.setSize(this.selectingRect.width, this.selectingRect.height);
+                var minX = Math.min(this.rectOrigin.x, this.rectTarget.x);
+                var minY = Math.min(this.rectOrigin.y, this.rectTarget.y);
+                var maxX = Math.max(this.rectOrigin.x, this.rectTarget.x);
+                var maxY = Math.max(this.rectOrigin.y, this.rectTarget.y);
+                var playerCount = 0;
+                // console.log(this.player);
+                for (let player of this.player) {
+                    if (Mob_2.Mob.checkAlive(player)) {
+                        var pt = new Phaser.Math.Vector2(player.x, player.y);
+                        // var frame = game.UI.unitFrameSlots.slots[playerCount];
+                        // TODO: use box intersection instead of containsPoint
+                        if (this.selectingRect.contains(pt.x, pt.y)) {
+                            player.mobData.inControl = true;
+                        }
+                        // else if(this.selectingRect.containsPoint(frame.pos.x - minX, frame.pos.y - minY))
+                        // {
+                        //     player.data.inControl = true;
+                        // }
+                        else {
+                            player.mobData.inControl = false;
+                        }
+                    }
+                    playerCount++;
+                }
+            }
+            else {
+                this.renderRect.setVisible(false);
+            }
+        }
+        isMouseLeft(pointer) {
+            if ("which" in pointer.event) // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
+                return pointer.event.which == 1;
+            else if ("button" in pointer.event) // IE, Opera 
+                return pointer.event.button == 0;
+        }
+        isMouseMiddle(pointer) {
+            if ("which" in pointer.event) // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
+                return pointer.event.which == 2;
+            else if ("button" in pointer.event) // IE, Opera 
+                return pointer.event.button == 1;
+        }
+        isMouseRight(pointer) {
+            if ("which" in pointer.event) // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
+                return pointer.event.which == 3;
+            else if ("button" in pointer.event) // IE, Opera 
+                return pointer.event.button == 2;
+        }
+        pointerDown(pointer) {
+            // console.log(pointer);
+            pointer.event.preventDefault();
+            // Drag a rect
+            if (this.isMouseLeft(pointer)) {
+                this.isDown = true;
+                this.isDragging = true;
+                // console.log("Drag start");
+                this.rectOrigin.set(pointer.x, pointer.y);
+                this.rectTarget.set(pointer.x, pointer.y);
+                this.selectingRect.setPosition(pointer.x, pointer.y);
+                this.selectingRect.setSize(0, 0);
+                return true;
+            }
+            // Move player
+            if (this.isMouseRight(pointer)) {
+                this.selectedPlayerCount = 0;
+                for (var player of this.player) {
+                    if (player.mobData.inControl == true) {
+                        this.selectedPlayerCount += 1;
+                    }
+                }
+                this.origin.set(pointer.x, pointer.y);
+                var playerNum = 0;
+                var playerSparse = GameData_3.GameData.playerSparse + GameData_3.GameData.playerSparseInc * this.selectedPlayerCount;
+                if (this.sparseKey.isDown) {
+                    playerSparse = 60;
+                }
+                if (this.rotateKey.isDown) {
+                    this.playerRotation += 2;
+                }
+                if (this.selectedPlayerCount == 1) {
+                    playerSparse = 0;
+                }
+                for (var player of this.player) {
+                    if (player.mobData.inControl == true) {
+                        (player.agent).setTargetPos(player, this.origin.clone().add((new Phaser.Math.Vector2(0, 0)).setToPolar(((playerNum + this.playerRotation) / this.selectedPlayerCount * 2 * Math.PI), playerSparse)));
+                        playerNum++;
+                    }
+                }
+                return false;
+            }
+        }
+        pointerMove(pointer) {
+            // this.timeCounter += me.timer.lastUpdate;
+            if (this.isDragging) {
+                this.rectTarget.set(pointer.x, pointer.y);
+                // this.selectingRect.setPosition(this.rectOrigin.x, this.rectOrigin.y);
+                this.selectingRect.setSize(this.rectTarget.x - this.rectOrigin.x, this.rectTarget.y - this.rectOrigin.y);
+            }
+        }
+        pointerUp(pointer) {
+            this.isDown = false;
+            if (this.isMouseLeft(pointer)) {
+                this.isDragging = false;
+                // console.log("Drag end");
+            }
+            return true;
+        }
+        pointerLeave(pointer) {
+            // console.log("leave");
+            this.isDown = false;
+            this.isDragging = false;
+            return true;
+        }
+        addPlayer(player) {
+            console.log("Added player:");
+            console.log(player);
+            this.player.add(player);
+            this.playerGroup.add(player);
+        }
+        addEnemy(enemy) {
+            this.enemy.add(enemy);
+            this.enemyGroup.add(enemy);
+        }
+        removePlayer(player) {
+            this.player.delete(player);
+        }
+        removeEnemy(enemy) {
+            this.enemy.delete(enemy);
+        }
+        _getUnitList(targetSet, sortMethod, availableTest, containsDead = false) {
+            var result = [];
+            for (var unit of targetSet) {
+                // TODO: how to do with raise skills ?
+                if ((containsDead || Mob_2.Mob.checkAlive(unit)) && availableTest(unit) === true) {
+                    result.push(unit);
+                }
+            }
+            result.sort(sortMethod);
+            return result;
+        }
+        // Get a list of units, e.g. attack target list etc.
+        // You will get a list that:
+        // * The list was sorted using sortMethod,
+        // * The list will contain units only if they have passed availableTest. (availableTest(unit) returns true)
+        getPlayerList(sortMethod, availableTest, containsDead = false) {
+            sortMethod = sortMethod || function (a, b) { return 0; };
+            availableTest = availableTest || function (a) { return true; };
+            return this._getUnitList(this.player, sortMethod, availableTest, containsDead);
+        }
+        getPlayerListWithDead(sortMethod, availableTest) {
+            sortMethod = sortMethod || function (a, b) { return 0; };
+            availableTest = availableTest || function (a) { return true; };
+            return this._getUnitList(this.player, sortMethod, availableTest, true);
+        }
+        getEnemyList(sortMethod, availableTest) {
+            sortMethod = sortMethod || function (a, b) { return 0; };
+            availableTest = availableTest || function (a) { return true; };
+            return this._getUnitList(this.enemy, sortMethod, availableTest);
+        }
+        getUnitList(sortMethod, availableTest, isPlayer = false) {
+            if (isPlayer === true) {
+                return this._getUnitList(this.player, sortMethod, availableTest);
+            }
+            else {
+                return this._getUnitList(this.enemy, sortMethod, availableTest);
+            }
+        }
+        getUnitListAll(sortMethod, availableTest) {
+            sortMethod = sortMethod || function (a, b) { return 0; };
+            availableTest = availableTest || function (a) { return true; };
+            return this._getUnitList(this.enemy, sortMethod, availableTest).concat(this._getUnitList(this.player, sortMethod, availableTest)).sort(sortMethod);
+        }
+        // Shorthand to get k-nearest (as a parameter "count") player around a position using above API.
+        getNearest(position, isPlayer = false, count = 1) {
+            var result = this.getUnitList(UnitManager.sortNearest(position), UnitManager.NOOP, isPlayer);
+            return result.slice(0, Math.min(count, result.length));
+        }
+        getNearestUnitAll(position, count = 1) {
+            var result = this.getUnitListAll(UnitManager.sortNearest(position), UnitManager.NOOP);
+            return result.slice(0, Math.min(count, result.length));
+        }
+        static sortNearest(position) {
+            return (a, b) => {
+                return (new Phaser.Math.Vector2(a.x, a.y).distance(position)
+                    - new Phaser.Math.Vector2(b.x, b.y).distance(position));
+            };
+        }
+    }
+    exports.UnitManager = UnitManager;
+    UnitManager.sortByHealth = (a, b) => {
+        return a.mobData.currentHealth - b.mobData.currentHealth;
+    };
+    UnitManager.sortByHealthPercentage = (a, b) => {
+        return (((a.mobData.currentHealth / a.mobData.maxHealth) - 0.4 * (a.mobData.healPriority ? 1.0 : 0.0)) -
+            ((b.mobData.currentHealth / b.mobData.maxHealth) - 0.4 * (b.mobData.healPriority ? 1.0 : 0.0)));
+    };
+    UnitManager.IDENTITY = (a, b) => 0;
+    UnitManager.NOOP = (a) => true;
+});
+/** @packageDocumentation @module Core */
+define("Engine/Core/Helper", ["require", "exports", "Engine/Core/UnitManager", "Engine/GameObjects/Spell"], function (require, exports, UnitManager_2, Spell_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function HealDmg(info) {
         if (info.type === 'heal') {
-            info.target.receiveHeal(info);
+            return info.target.receiveHeal(info);
         }
         else {
-            info.target.receiveDamage(info);
+            return info.target.receiveDamage(info);
         }
     }
     exports.HealDmg = HealDmg;
+    /**
+     * Helper function for easily performing Area of Effects (AoE). Currently only supports a circle area.
+     *
+     * Example:
+     * ```typescript
+     * AoE(
+     *     (m: Mob, list: Mob[]) =>
+     *     {
+     *         // In fact it is not good to perform a HealDmg without assigning a source.
+     *         HealDmg({'target': m, 'value': 200 / list.length, 'type': 'fire'});
+     *     },
+     *     new Phaser.Math.Vector2(200, 200),
+     *     100,
+     *     Targeting.Both
+     * );
+     * ```
+     * Above code will perform a fire type AoE attack, centered at (200, 200) with range 100, dealing a splitable 200 damage (in total) to all targets inside its range.
+     *
+     * @param func Callback that will be applied for each mob once that captured by this AoE.
+     * @param pos Center of this AoE
+     * @param range Range of this AoE in px
+     * @param targets Which type of mobs is this AoE capturing. Rather player, enemy or both.
+     * @param maxCapture Maximum units that this AoE can capture, <= 0 means no limit. It is recommended to set a non-identity compareFunc when a maxCapture number is set.
+     * @param compareFunc The compareing function that will be used when quering the captured unit list. If set, target list will be sorted wrt this function, default is Identity (no sort).
+     */
+    function AoE(func, pos, range, targets, maxCapture = -1, compareFunc = UnitManager_2.UnitManager.IDENTITY) {
+        let AoEList = targets == Spell_1.Targeting.Both ?
+            UnitManager_2.UnitManager.getCurrent().getUnitListAll(compareFunc, (a) => { return (a.footPos().distance(pos) < range); })
+            :
+                UnitManager_2.UnitManager.getCurrent().getUnitList(compareFunc, (a) => { return (a.footPos().distance(pos) < range); }, targets == Spell_1.Targeting.Player);
+        if (maxCapture > 0) {
+            AoEList = AoEList.slice(0, maxCapture);
+        }
+        AoEList.forEach((m, i, l) => { func(m, l, i); });
+    }
+    exports.AoE = AoE;
     function getRandomInt(min, max) {
         min = Math.ceil(min);
         max = Math.floor(max);
@@ -1528,9 +1958,21 @@ define("Engine/Core/Helper", ["require", "exports"], function (require, exports)
         return degree / 180.0 * Math.PI;
     }
     exports.radian = radian;
+    function reverseTarget(target) {
+        if (target == Spell_1.Targeting.Both) {
+            return Spell_1.Targeting.Both;
+        }
+        if (target == Spell_1.Targeting.Player) {
+            return Spell_1.Targeting.Enemy;
+        }
+        if (target == Spell_1.Targeting.Enemy) {
+            return Spell_1.Targeting.Player;
+        }
+    }
+    exports.reverseTarget = reverseTarget;
 });
-/** @module GameObjects */
-define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/Modules", "Engine/GameObjects/Mob", "Engine/Core/Helper"], function (require, exports, Modules_1, Mob_1, Helper_1) {
+/** @packageDocumentation @module GameObjects */
+define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/GameObjects/Mob", "Engine/Core/Helper"], function (require, exports, dPhysSprite_1, Mob_3, Helper_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var SpellFlags;
@@ -1542,6 +1984,12 @@ define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/
         SpellFlags[SpellFlags["overTime"] = 4] = "overTime";
         SpellFlags[SpellFlags["targetingEverything"] = 5] = "targetingEverything";
     })(SpellFlags = exports.SpellFlags || (exports.SpellFlags = {}));
+    var Targeting;
+    (function (Targeting) {
+        Targeting[Targeting["Player"] = 0] = "Player";
+        Targeting[Targeting["Enemy"] = 1] = "Enemy";
+        Targeting[Targeting["Both"] = 2] = "Both";
+    })(Targeting = exports.Targeting || (exports.Targeting = {}));
     /**
      * Spell class, which is different from core/SpellData.
      * Spells are renderable, moveable entities that directly appears in the game screen,
@@ -1552,7 +2000,7 @@ define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/
      *
      * use SpellFlags.targetingEverything to make the spell to hit with everything.
      */
-    class Spell extends Modules_1.dPhysSprite {
+    class Spell extends dPhysSprite_1.dPhysSprite {
         constructor(x, y, sprite, settings, useCollider = true, subsprite, frame) {
             super(settings.source.scene, x, y, sprite, subsprite, frame);
             this.useCollider = useCollider;
@@ -1561,24 +2009,26 @@ define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/
             this.name = this.info.name;
             this.source = settings.source;
             this.target = settings.target;
-            if (this.target instanceof Mob_1.Mob) {
-                this.isTargetPlayer = this.target.mobData.isPlayer;
+            if (this.target instanceof Mob_3.Mob) {
+                this.targeting = this.target.mobData.isPlayer ? Targeting.Player : Targeting.Enemy;
             }
-            this.isTargetEverything = this.flags.has(SpellFlags.targetingEverything);
+            this.targeting = this.flags.has(SpellFlags.targetingEverything) ? Targeting.Both : this.targeting;
             if (this.useCollider === false) {
                 this.disableBody();
             }
             else {
-                if (this.isTargetEverything) {
+                if (this.targeting == Targeting.Both) {
                     this.scene.everyoneTargetingObjectGroup.add(this);
                 }
-                else if (this.isTargetPlayer) {
+                else if (this.targeting == Targeting.Player) {
                     this.scene.playerTargetingObjectGroup.add(this);
                 }
                 else {
                     this.scene.enemyTargetingObjectGroup.add(this);
                 }
             }
+            // Apply tint color
+            this.setTint(Phaser.Display.Color.GetColor(settings.color.red, settings.color.green, settings.color.blue));
             // Register events
             this._onHit = settings.onHit;
             this._onMobHit = settings.onMobHit;
@@ -1594,7 +2044,7 @@ define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/
         update(dt) {
             // Check is target alive
             // If target dead, set it to undefined
-            if (this.target instanceof Mob_1.Mob && Mob_1.Mob.checkAlive(this.target) !== true) {
+            if (this.target instanceof Mob_3.Mob && Mob_3.Mob.checkAlive(this.target) !== true) {
                 this.target = undefined;
             }
             // Cannot see me so die
@@ -1613,7 +2063,7 @@ define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/
             this.destroy();
         }
         HealDmg(target, dmg, type) {
-            Helper_1.HealDmg({
+            return Helper_1.HealDmg({
                 'source': this.source,
                 'target': target,
                 'value': dmg,
@@ -1639,8 +2089,41 @@ define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/
         } }
     }
     exports.Spell = Spell;
+    /**
+     * Dummy spell instance which is not represented as a Projectile (e.g. sword slash, melee attacks etc.)
+     */
+    class DummySpell extends Spell {
+        constructor(x, y, sprite, settings, subsprite, frame) {
+            settings.info.name = settings.info.name || "DummySpell";
+            super(x, y, sprite, settings, false, subsprite, frame);
+            this.triggerTime = -1 || settings.triggerTime;
+            this._onSpell = settings.onSpell;
+            this._onSpellVec2 = settings.onSpellVec2;
+            this.spellDone = false;
+            if (this.triggerTime < 0) {
+                this.onSpell(this.source, this.target);
+            }
+        }
+        updateSpell(dt) {
+            this.triggerTime -= dt;
+            if (this.spellDone == false && this.triggerTime < 0) {
+                this.onSpell(this.source, this.target);
+            }
+            super.updateSpell(dt);
+        }
+        onSpell(source, target) {
+            this.spellDone = true;
+            if (this._onSpell && target instanceof Mob_3.Mob) {
+                this._onSpell(this, source, target);
+            }
+            else if (this._onSpellVec2 && target instanceof Phaser.Math.Vector2) {
+                this._onSpellVec2(this, source, target);
+            }
+        }
+    }
+    exports.DummySpell = DummySpell;
 });
-/** @module Core */
+/** @packageDocumentation @module Core */
 define("Engine/Core/mRTypes", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -1664,7 +2147,7 @@ define("Engine/Core/mRTypes", ["require", "exports"], function (require, exports
         };
     })(Consts = exports.Consts || (exports.Consts = {}));
 });
-/** @module Core */
+/** @packageDocumentation @module Core */
 define("Engine/Core/MobListener", ["require", "exports", "Engine/Core/DataBackend", "Engine/Events/EventSystem"], function (require, exports, DataBackend_2, EventSystem) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -1815,415 +2298,10 @@ define("Engine/Agents/MobAgent", ["require", "exports", "Engine/Core/MobListener
     }
     exports.MobAgent = MobAgent;
 });
-/** @module Agent */
-define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "Engine/GameObjects/Mob", "Engine/Core/GameData", "Engine/Core/UnitManager"], function (require, exports, MobAgent_1, Mob_2, GameData_2, UnitManager_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    class PlayerAgentBase extends MobAgent_1.MobAgent {
-        constructor(parentMob) {
-            super(parentMob);
-        }
-        setTargetPos(player, position, dt) { }
-        setTargetMob(player, target, dt) { }
-    }
-    exports.PlayerAgentBase = PlayerAgentBase;
-    class Simple extends PlayerAgentBase {
-        constructor(parentMob) {
-            super(parentMob);
-            // Will the player move automatically (to nearest mob) if it is free ?
-            this.autoMove = GameData_2.GameData.useAutomove;
-            // this.autoMove = true;
-            // idleCount will count down from idleFrame if player is in idle (-1 / frame) to smooth the animation.
-            // Only if idleCount = 0, the player will be "idle".
-            // idleFrame is seperated for targeting Mob (which may move = need more smooth)
-            // and targeting a static position (don't move and need high precision)
-            // WTF? I cannot understood what have I wrote ...
-            this.idleFrameMob = 10;
-            this.idleFramePos = 0;
-            this.idleCount = 0;
-            this.speedFriction = 0.9;
-            this.unitMgr = UnitManager_1.UnitManager.getCurrent();
-            // TODO: smooth when hit world object ?
-        }
-        updateMob(player, dt) {
-            this.autoMove = GameData_2.GameData.useAutomove;
-            this.footPos = new Phaser.Math.Vector2(player.x, player.y);
-            if (Mob_2.Mob.checkAlive(player) === true) {
-                if (typeof this.targetPos !== "undefined") {
-                    if (this.targetPos.distance(this.footPos) > 1.5) {
-                        let velocity = this.targetPos.clone().subtract(this.footPos).normalize().scale(player.mobData.getMovingSpeed());
-                        player.setVelocity(velocity.x, velocity.y);
-                        this.isMoving = true;
-                        // Reset the anim counter
-                        this.idleCount = this.idleFramePos;
-                    }
-                    else {
-                        this.targetPos = undefined;
-                        this.isMoving = false;
-                    }
-                }
-                else if (Mob_2.Mob.checkAlive(this.targetMob) == true) {
-                    // we need move to goin the range of our current weapon
-                    if (player.mobData.currentWeapon.isInRange(player, this.targetMob) == false) {
-                        let targetPos = new Phaser.Math.Vector2(this.targetMob.x, this.targetMob.y);
-                        let velocity = targetPos.subtract(this.footPos).normalize().scale(player.mobData.getMovingSpeed());
-                        player.setVelocity(velocity.x, velocity.y);
-                        this.isMoving = true;
-                        // Reset the anim counter
-                        this.idleCount = this.idleFrameMob;
-                    }
-                    // and then we don't move anymore.
-                    else {
-                        this.targetMob = undefined;
-                        this.isMoving = false;
-                    }
-                }
-                else {
-                    // We lose the target.
-                    this.targetPos = undefined;
-                    this.targetMob = undefined;
-                    this.isMoving = false;
-                }
-                if (this.isMoving === true) {
-                    // Fix our face direction when moving
-                    if (player.body.velocity.x > 0) {
-                        player.flipX = true;
-                    }
-                    else {
-                        player.flipX = false;
-                    }
-                    if (!(player.anims.currentAnim && player.anims.currentAnim.key == player.moveAnim)) {
-                        player.play(player.moveAnim);
-                    }
-                }
-                else {
-                    // Count the frames
-                    if (this.idleCount > 0) {
-                        this.idleCount--;
-                        // Also smooth the speed
-                        player.setVelocity(player.body.velocity.x * this.speedFriction, player.body.velocity.y * this.speedFriction);
-                    }
-                    else {
-                        player.setVelocity(0, 0);
-                        if (!(player.anims.currentAnim && player.anims.currentAnim.key == player.idleAnim)) {
-                            player.play(player.idleAnim);
-                        }
-                    }
-                    if (this.autoMove === true) {
-                        if (player.mobData.currentWeapon) {
-                            let targetList = player.mobData.currentWeapon.grabTargets(player);
-                            if (targetList.length > 0) {
-                                this.setTargetMob(player, targetList[0], dt);
-                            }
-                        }
-                    }
-                }
-                // Attack !
-                // Todo: attack single time for multi targets, they should add same amount of weapon gauge (basically)
-                if (player.doAttack(dt) === true) {
-                    // console.log("canAttack");
-                    let targets = player.mobData.currentWeapon.grabTargets(player); // This will ensure that targets are within the range
-                    if (targets.length > 0) {
-                        // for(var target of targets.values())
-                        // {
-                        // if(player.mobData.currentWeapon.isInRange(player, targets))
-                        // {
-                        if (player.mobData.currentMana > player.mobData.currentWeapon.manaCost) {
-                            player.mobData.currentMana -= player.mobData.currentWeapon.manaCost;
-                            player.mobData.currentWeapon.attack(player, targets);
-                        }
-                        // }
-                        // }
-                    }
-                }
-                // Use any spells available
-                for (let spell in player.mobData.spells) {
-                    if (player.mobData.spells.hasOwnProperty(spell)) {
-                        if (this.isMoving == false) {
-                            if (player.mobData.spells[spell].available) {
-                                player.mobData.cast(player, null, player.mobData.spells[spell]);
-                            }
-                        }
-                    }
-                }
-            }
-            // YOU DIED !
-            else {
-                this.isMoving = false;
-                player.setVelocity(0, 0);
-                player.flipX = false;
-                player.play(player.deadAnim);
-            }
-        }
-        setTargetPos(player, position) {
-            // console.log(position);
-            this.targetPos = position;
-        }
-        setTargetMob(player, mob, dt) {
-            this.targetMob = mob;
-        }
-    }
-    exports.Simple = Simple;
-});
-define("Agents/Modules", ["require", "exports", "Agents/PlayerAgents"], function (require, exports, PlayerAgents_1) {
-    "use strict";
-    function __export(m) {
-        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-    }
-    Object.defineProperty(exports, "__esModule", { value: true });
-    __export(PlayerAgents_1);
-});
-/** @module Core */
-define("Engine/Core/UnitManager", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/GameData"], function (require, exports, Mob_3, GameData_3) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    class UnitManager {
-        constructor(scene) {
-            this.name = "Unit Manager";
-            // TODO: change this to QuerySet ?
-            this.player = new Set();
-            this.enemy = new Set();
-            this.selectedPlayerCount = 0;
-            this.isDown = false;
-            this.isDragging = false;
-            this.timeCounter = 0;
-            this.origin = new Phaser.Math.Vector2(0, 0);
-            this.rectOrigin = new Phaser.Math.Vector2(0, 0);
-            this.rectTarget = new Phaser.Math.Vector2(0, 0);
-            this.selectingRect = new Phaser.Geom.Rectangle(0, 0, 0, 0);
-            scene.input.on('pointerdown', (pt) => this.pointerDown(pt));
-            scene.input.on('pointerup', (pt) => this.pointerUp(pt));
-            // scene.input.on('pointerleave', (pt:any) => this.pointerLeave(pt));
-            scene.input.on('pointermove', (pt) => this.pointerMove(pt));
-            this.sparseKey = scene.input.keyboard.addKey('F');
-            this.rotateKey = scene.input.keyboard.addKey('R');
-            this.playerRotation = 0;
-            //Add a rectangle to the scene
-            this.renderContainer = scene.add.container(0, 0);
-            this.renderRect = new Phaser.GameObjects.Rectangle(scene, 0, 0, 0, 0, 0x90D7EC, 0.2);
-            this.renderContainer.add(this.renderRect);
-            // this.renderContainer.add(new Phaser.GameObjects.Line(scene, 0, 200, 0, 0, 1000, 0, 0xFF0000));
-            this.renderContainer.depth = 100000;
-            this.playerGroup = scene.physics.add.group();
-            this.enemyGroup = scene.physics.add.group();
-            this.allyGroup = scene.physics.add.group();
-            this.thirdGroup = scene.physics.add.group();
-        }
-        static resetScene(scene) {
-            if (UnitManager.instance) {
-                delete UnitManager.instance;
-            }
-            UnitManager.instance = new UnitManager(scene);
-        }
-        static getCurrent() {
-            if (!UnitManager.instance) {
-                return undefined;
-            }
-            return UnitManager.instance;
-        }
-        update(dt) {
-            if (this.isDragging == true) {
-                this.renderRect.setVisible(true);
-                this.renderRect.setPosition(this.selectingRect.x, this.selectingRect.y);
-                this.renderRect.setSize(this.selectingRect.width, this.selectingRect.height);
-                var minX = Math.min(this.rectOrigin.x, this.rectTarget.x);
-                var minY = Math.min(this.rectOrigin.y, this.rectTarget.y);
-                var maxX = Math.max(this.rectOrigin.x, this.rectTarget.x);
-                var maxY = Math.max(this.rectOrigin.y, this.rectTarget.y);
-                var playerCount = 0;
-                // console.log(this.player);
-                for (let player of this.player) {
-                    if (Mob_3.Mob.checkAlive(player)) {
-                        var pt = new Phaser.Math.Vector2(player.x, player.y);
-                        // var frame = game.UI.unitFrameSlots.slots[playerCount];
-                        // TODO: use box intersection instead of containsPoint
-                        if (this.selectingRect.contains(pt.x, pt.y)) {
-                            player.mobData.inControl = true;
-                        }
-                        // else if(this.selectingRect.containsPoint(frame.pos.x - minX, frame.pos.y - minY))
-                        // {
-                        //     player.data.inControl = true;
-                        // }
-                        else {
-                            player.mobData.inControl = false;
-                        }
-                    }
-                    playerCount++;
-                }
-            }
-            else {
-                this.renderRect.setVisible(false);
-            }
-        }
-        isMouseLeft(pointer) {
-            if ("which" in pointer.event) // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
-                return pointer.event.which == 1;
-            else if ("button" in pointer.event) // IE, Opera 
-                return pointer.event.button == 0;
-        }
-        isMouseMiddle(pointer) {
-            if ("which" in pointer.event) // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
-                return pointer.event.which == 2;
-            else if ("button" in pointer.event) // IE, Opera 
-                return pointer.event.button == 1;
-        }
-        isMouseRight(pointer) {
-            if ("which" in pointer.event) // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
-                return pointer.event.which == 3;
-            else if ("button" in pointer.event) // IE, Opera 
-                return pointer.event.button == 2;
-        }
-        pointerDown(pointer) {
-            // console.log(pointer);
-            pointer.event.preventDefault();
-            // Drag a rect
-            if (this.isMouseLeft(pointer)) {
-                this.isDown = true;
-                this.isDragging = true;
-                // console.log("Drag start");
-                this.rectOrigin.set(pointer.x, pointer.y);
-                this.rectTarget.set(pointer.x, pointer.y);
-                this.selectingRect.setPosition(pointer.x, pointer.y);
-                this.selectingRect.setSize(0, 0);
-                return true;
-            }
-            // Move player
-            if (this.isMouseRight(pointer)) {
-                this.selectedPlayerCount = 0;
-                for (var player of this.player) {
-                    if (player.mobData.inControl == true) {
-                        this.selectedPlayerCount += 1;
-                    }
-                }
-                this.origin.set(pointer.x, pointer.y);
-                var playerNum = 0;
-                var playerSparse = GameData_3.GameData.playerSparse + GameData_3.GameData.playerSparseInc * this.selectedPlayerCount;
-                if (this.sparseKey.isDown) {
-                    playerSparse = 60;
-                }
-                if (this.rotateKey.isDown) {
-                    this.playerRotation += 2;
-                }
-                if (this.selectedPlayerCount == 1) {
-                    playerSparse = 0;
-                }
-                for (var player of this.player) {
-                    if (player.mobData.inControl == true) {
-                        (player.agent).setTargetPos(player, this.origin.clone().add((new Phaser.Math.Vector2(0, 0)).setToPolar(((playerNum + this.playerRotation) / this.selectedPlayerCount * 2 * Math.PI), playerSparse)));
-                        playerNum++;
-                    }
-                }
-                return false;
-            }
-        }
-        pointerMove(pointer) {
-            // this.timeCounter += me.timer.lastUpdate;
-            if (this.isDragging) {
-                this.rectTarget.set(pointer.x, pointer.y);
-                // this.selectingRect.setPosition(this.rectOrigin.x, this.rectOrigin.y);
-                this.selectingRect.setSize(this.rectTarget.x - this.rectOrigin.x, this.rectTarget.y - this.rectOrigin.y);
-            }
-        }
-        pointerUp(pointer) {
-            this.isDown = false;
-            if (this.isMouseLeft(pointer)) {
-                this.isDragging = false;
-                // console.log("Drag end");
-            }
-            return true;
-        }
-        pointerLeave(pointer) {
-            // console.log("leave");
-            this.isDown = false;
-            this.isDragging = false;
-            return true;
-        }
-        addPlayer(player) {
-            console.log("Added player:");
-            console.log(player);
-            this.player.add(player);
-            this.playerGroup.add(player);
-        }
-        addEnemy(enemy) {
-            this.enemy.add(enemy);
-            this.enemyGroup.add(enemy);
-        }
-        removePlayer(player) {
-            this.player.delete(player);
-        }
-        removeEnemy(enemy) {
-            this.enemy.delete(enemy);
-        }
-        _getUnitList(targetSet, sortMethod, availableTest, containsDead = false) {
-            var result = [];
-            for (var unit of targetSet) {
-                // TODO: how to do with raise skills ?
-                if ((containsDead || Mob_3.Mob.checkAlive(unit)) && availableTest(unit) === true) {
-                    result.push(unit);
-                }
-            }
-            result.sort(sortMethod);
-            return result;
-        }
-        // Get a list of units, e.g. attack target list etc.
-        // You will get a list that:
-        // * The list was sorted using sortMethod,
-        // * The list will contain units only if they have passed availableTest. (availableTest(unit) returns true)
-        getPlayerList(sortMethod, availableTest, containsDead = false) {
-            sortMethod = sortMethod || function (a, b) { return 0; };
-            availableTest = availableTest || function (a) { return true; };
-            return this._getUnitList(this.player, sortMethod, availableTest, containsDead);
-        }
-        getPlayerListWithDead(sortMethod, availableTest) {
-            sortMethod = sortMethod || function (a, b) { return 0; };
-            availableTest = availableTest || function (a) { return true; };
-            return this._getUnitList(this.player, sortMethod, availableTest, true);
-        }
-        getEnemyList(sortMethod, availableTest) {
-            sortMethod = sortMethod || function (a, b) { return 0; };
-            availableTest = availableTest || function (a) { return true; };
-            return this._getUnitList(this.enemy, sortMethod, availableTest);
-        }
-        getUnitList(sortMethod, availableTest, isPlayer = false) {
-            if (isPlayer === true) {
-                return this._getUnitList(this.player, sortMethod, availableTest);
-            }
-            else {
-                return this._getUnitList(this.enemy, sortMethod, availableTest);
-            }
-        }
-        getUnitListAll(sortMethod, availableTest) {
-            sortMethod = sortMethod || function (a, b) { return 0; };
-            availableTest = availableTest || function (a) { return true; };
-            return this._getUnitList(this.enemy, sortMethod, availableTest).concat(this._getUnitList(this.player, sortMethod, availableTest)).sort(sortMethod);
-        }
-        // Shorthand to get k-nearest (as a parameter "count") player around a position using above API.
-        getNearest(position, isPlayer = false, count = 1) {
-            var result = this.getUnitList(UnitManager.sortNearest(position), UnitManager.NOOP, isPlayer);
-            return result.slice(0, Math.min(count, result.length));
-        }
-        getNearestUnitAll(position, count = 1) {
-            var result = this.getUnitListAll(UnitManager.sortNearest(position), UnitManager.NOOP);
-            return result.slice(0, Math.min(count, result.length));
-        }
-        static sortNearest(position) {
-            return (a, b) => {
-                return (new Phaser.Math.Vector2(a.x, a.y).distance(position)
-                    - new Phaser.Math.Vector2(b.x, b.y).distance(position));
-            };
-        }
-    }
-    exports.UnitManager = UnitManager;
-    UnitManager.sortByHealth = (a, b) => {
-        return a.mobData.currentHealth - b.mobData.currentHealth;
-    };
-    UnitManager.sortByHealthPercentage = (a, b) => {
-        return (((a.mobData.currentHealth / a.mobData.maxHealth) - 0.4 * (a.mobData.healPriority ? 1.0 : 0.0)) -
-            ((b.mobData.currentHealth / b.mobData.maxHealth) - 0.4 * (b.mobData.healPriority ? 1.0 : 0.0)));
-    };
-    UnitManager.IDENTITY = (a, b) => 0;
-    UnitManager.NOOP = (a) => true;
-});
+/**
+ * @packageDocumentation
+ * @module UI
+ */
 define("Engine/UI/PopUpManager", ["require", "exports", "Phaser"], function (require, exports, Phaser_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -2267,7 +2345,7 @@ define("Engine/UI/PopUpManager", ["require", "exports", "Phaser"], function (req
         addText(text, posX = 100, posY = 100, color = new Phaser.Display.Color(255, 255, 255, 255), time = 1.0, velX = -64, velY = -256, // jumping speed
         accX = 0.0, // gravity
         accY = 512) {
-            let txt = new PopupText(this, posX, posY, text, { 'color': color.rgba, 'fontSize': '12px' }, time, velX, velY, accX, accY);
+            let txt = new PopupText(this, posX, posY, text, { 'color': color.rgba, 'fontSize': '24px', 'fontStyle': 'bold', 'strokeThickness': 5, 'stroke': '#000', 'align': 'center' }, time, velX, velY, accX, accY);
             this.add.existing(txt);
         }
         update(time, dt) {
@@ -2291,8 +2369,8 @@ define("Engine/UI/PopUpManager", ["require", "exports", "Phaser"], function (req
     }
     exports.PopUpManager = PopUpManager;
 });
-/** @module GameEntity */
-define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/Core/mRTypes", "Engine/Core/UnitManager", "Engine/Core/EquipmentCore", "Engine/UI/PopUpManager"], function (require, exports, dPhysSprite_2, mRTypes_1, UnitManager_2, EquipmentCore_2, PopUpManager_1) {
+/** @packageDocumentation @module GameEntity */
+define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/Core/mRTypes", "Engine/Core/UnitManager", "Engine/Core/EquipmentCore", "Engine/UI/PopUpManager"], function (require, exports, dPhysSprite_2, mRTypes_1, UnitManager_3, EquipmentCore_2, PopUpManager_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Mob extends dPhysSprite_2.dPhysSprite {
@@ -2309,11 +2387,11 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
             this.isPlayer = this.mobData.isPlayer;
             if (this.isPlayer === true) {
                 // Is player
-                UnitManager_2.UnitManager.getCurrent().addPlayer(this);
+                UnitManager_3.UnitManager.getCurrent().addPlayer(this);
             }
             else {
                 // Is enemy
-                UnitManager_2.UnitManager.getCurrent().addEnemy(this);
+                UnitManager_3.UnitManager.getCurrent().addEnemy(this);
             }
             this.setGravity(0, 0);
             if (settings.agent) {
@@ -2413,9 +2491,6 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
          * popUp (true):    Should this damage popup a text ?
          */
         receiveDamage(_damageInfo) {
-            if (Mob.checkAlive(this) == false) {
-                return false;
-            }
             // Fill optional slots with their default values.
             _damageInfo = this.fillDHF(_damageInfo);
             let damageInfo = {
@@ -2430,21 +2505,26 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
                 // 'type'   : _damageInfo.type,
                 'overdeal': 0,
             };
+            if (Mob.checkAlive(this) == false) {
+                damageInfo.isAvoid = true;
+                damageInfo.value = 0;
+                return damageInfo;
+            }
             // The actual damage calculate and event trigger moved into backend
             // If mob dead finally, this.data.alive will become false
-            this.mobData.receiveDamage(damageInfo);
+            let result = this.mobData.receiveDamage(damageInfo);
             // It does not hit !
-            if (damageInfo.isAvoid) {
+            if (result.isAvoid) {
                 if (_damageInfo.popUp == true) {
                     var popUpPos = this.getTopCenter();
                     PopUpManager_1.PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, mRTypes_1.Consts.ElementColors['miss']);
                 }
-                return false;
+                return result;
             }
             // Mob itself only do rendering popUp texts
-            if (_damageInfo.popUp == true && damageInfo.value > 0) {
+            if (_damageInfo.popUp == true && result.value > 0) {
                 var popUpPos = this.getTopCenter();
-                PopUpManager_1.PopUpManager.getSingleton().addText(damageInfo.value.toString() + (damageInfo.isCrit ? " !" : ""), popUpPos.x, popUpPos.y, mRTypes_1.Consts.ElementColors[damageInfo.type]);
+                PopUpManager_1.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? " !" : ""), popUpPos.x, popUpPos.y, mRTypes_1.Consts.ElementColors[result.type]);
                 // // popUp texts on unit frames
                 // // fade from the edge of currentHealth to the left
                 // if(this.data.isPlayer)
@@ -2473,9 +2553,9 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
             // since it should remove the renderable (actual object) from the scene and mob list
             // Check if I am alive
             if (this.mobData.alive == false) {
-                this.die(_damageInfo.source, damageInfo);
+                this.die(_damageInfo.source, result);
             }
-            return true;
+            return result;
         }
         // Receive healing, same as recieve damage.
         /**
@@ -2487,9 +2567,6 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
          * popUp (true):    Should this heal popup a text ?
          */
         receiveHeal(_healInfo) {
-            if (Mob.checkAlive(this) == false) {
-                return false;
-            }
             // Fill optional slots with their default values.
             _healInfo = this.fillDHF(_healInfo);
             // Same as above
@@ -2504,9 +2581,14 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
                 'type': 'heal',
                 'overdeal': 0
             };
-            this.mobData.receiveHeal(healInfo);
+            if (Mob.checkAlive(this) == false) {
+                healInfo.isAvoid = true;
+                healInfo.value = 0;
+                return healInfo;
+            }
+            let result = this.mobData.receiveHeal(healInfo);
             // Show popUp text with overhealing hint
-            if (_healInfo.popUp == true && (healInfo.value + healInfo.overdeal) > 0) {
+            if (_healInfo.popUp == true && (result.value + result.overdeal) > 0) {
                 // var popUpPos = this.getRenderPos(0.5, 0.0);
                 // if(healInfo.heal.over > 0)
                 // {
@@ -2529,11 +2611,11 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
                 //     });
                 // }
                 var popUpPos = this.getTopCenter();
-                if (healInfo.overdeal > 0) {
-                    PopUpManager_1.PopUpManager.getSingleton().addText(healInfo.value.toString() + (healInfo.isCrit ? " !" : "") + " <" + healInfo.overdeal.toString(), popUpPos.x, popUpPos.y, mRTypes_1.Consts.ElementColors['heal']);
+                if (result.overdeal > 0) {
+                    PopUpManager_1.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? " !" : "") + " <" + result.overdeal.toString(), popUpPos.x, popUpPos.y, mRTypes_1.Consts.ElementColors['heal']);
                 }
                 else {
-                    PopUpManager_1.PopUpManager.getSingleton().addText(healInfo.value.toString() + (healInfo.isCrit ? " !" : ""), popUpPos.x, popUpPos.y, mRTypes_1.Consts.ElementColors['heal']);
+                    PopUpManager_1.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? " !" : ""), popUpPos.x, popUpPos.y, mRTypes_1.Consts.ElementColors['heal']);
                 }
                 // // popUp texts on unit frames
                 // // fade from left to the the edge of currentHealth
@@ -2558,6 +2640,7 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
                 //     }
                 // }
             }
+            return result;
         }
         die(source, damage) {
             this.mobData.die(damage);
@@ -2586,8 +2669,8 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
     }
     exports.Mob = Mob;
 });
-/** @module BattleScene */
-define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Phaser", "Engine/Core/UnitManager"], function (require, exports, Phaser, UnitManager_3) {
+/** @packageDocumentation @module BattleScene */
+define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Phaser", "Engine/Core/UnitManager"], function (require, exports, Phaser, UnitManager_4) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     Phaser = __importStar(Phaser);
@@ -2617,8 +2700,8 @@ define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Phaser", "E
             }
         }
         create() {
-            UnitManager_3.UnitManager.resetScene(this);
-            this.unitMgr = UnitManager_3.UnitManager.getCurrent();
+            UnitManager_4.UnitManager.resetScene(this);
+            this.unitMgr = UnitManager_4.UnitManager.getCurrent();
             // Create groups
             this.worldGroup = this.physics.add.group();
             this.commonGroup = this.physics.add.group();
@@ -2656,11 +2739,11 @@ define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Phaser", "E
     }
     exports.BattleScene = BattleScene;
 });
-/** @module GameObjects */
-define("Engine/GameObjects/Projectile", ["require", "exports", "Engine/GameObjects/Spell", "Engine/GameObjects/Mob"], function (require, exports, Spell_1, Mob_4) {
+/** @packageDocumentation @module GameObjects */
+define("Engine/GameObjects/Projectile", ["require", "exports", "Engine/GameObjects/Spell", "Engine/GameObjects/Mob"], function (require, exports, Spell_2, Mob_4) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    class Projectile extends Spell_1.Spell {
+    class Projectile extends Spell_2.Spell {
         constructor(x, y, sprite, settings, useCollider = true, subsprite, frame) {
             super(x, y, sprite, settings, useCollider, subsprite, frame);
             this.chasingRange = settings.chasingRange || 0;
@@ -2678,7 +2761,7 @@ define("Engine/GameObjects/Projectile", ["require", "exports", "Engine/GameObjec
             // Homing
             if (this.target instanceof Mob_4.Mob && (this.chasingRange < 0 || this.target.footPos().clone().subtract(this.getPosition()).length() < this.chasingRange)) {
                 let newDirc = this.target.footPos().clone().subtract(this.getPosition()).normalize();
-                this.moveDirc = this.moveDirc.clone().scale(1 - this.chasingPower).add(newDirc.clone().scale(this.chasingPower));
+                this.moveDirc = this.moveDirc.clone().scale(1 - dt * this.chasingPower).add(newDirc.clone().scale(dt * this.chasingPower));
             }
             this.setVelocity(this.moveDirc.x * this.speed, this.moveDirc.y * this.speed);
             super.updateSpell(dt);
@@ -2686,8 +2769,8 @@ define("Engine/GameObjects/Projectile", ["require", "exports", "Engine/GameObjec
     }
     exports.Projectile = Projectile;
 });
-/** @module Weapons */
-define("Weapons/Stuff", ["require", "exports", "Engine/Core/EquipmentCore", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/GameObjects/Projectile", "Engine/Core/Helper"], function (require, exports, EquipmentCore_3, UnitManager_4, Spell_2, Projectile_1, Helper_2) {
+/** @packageDocumentation @module Weapons */
+define("Weapons/Stuff", ["require", "exports", "Engine/Core/EquipmentCore", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/GameObjects/Projectile", "Engine/Core/Helper"], function (require, exports, EquipmentCore_3, UnitManager_5, Spell_3, Projectile_1, Helper_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class CometWand extends EquipmentCore_3.Weapon {
@@ -2707,24 +2790,55 @@ define("Weapons/Stuff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
             this.weaponGaugeMax = 25;
             this.weaponGaugeIncreasement = function (mob) { return mob.baseStats.mag; };
         }
-        _weaponAttack(source, target) {
+        doRegularAttack(source, target) {
             let targetMob = target[0];
             new Projectile_1.Projectile(source.x, source.y, 'img_iced_fx', {
-                'info': { 'name': this.name, 'flags': new Set([Spell_2.SpellFlags.isDamage, Spell_2.SpellFlags.hasTarget]) },
+                'info': { 'name': this.name, 'flags': new Set([Spell_3.SpellFlags.isDamage, Spell_3.SpellFlags.hasTarget]) },
                 'source': source,
                 'target': targetMob,
-                'speed': 250,
-                'onMobHit': (self, mob) => { self.dieAfter(self.HealDmg, [targetMob, Helper_2.getRandomInt(6, 18), 'ice'], mob); },
+                'speed': 150,
+                'onMobHit': (self, mob) => { self.dieAfter(self.HealDmg, [mob, Helper_2.getRandomInt(6, 18), 'ice'], mob); },
+                // 'onMobHit': (self: Spell, mob: Mob) =>
+                // {
+                //     self.dieAfter(
+                //         () => AoE((m: Mob) =>
+                //         {
+                //             self.HealDmg(m, getRandomInt(6, 18), 'ice')
+                //         }, self.getPosition(), 100, self.targeting), [], mob);
+                // },
+                'color': Phaser.Display.Color.HexStringToColor("#77ffff"),
+                'chasingRange': 400,
+                'chasingPower': 1.0,
             });
         }
         grabTargets(mob) {
-            return UnitManager_4.UnitManager.getCurrent().getNearest(mob.footPos(), !mob.mobData.isPlayer, this.targetCount);
+            return UnitManager_5.UnitManager.getCurrent().getNearest(mob.footPos(), !mob.mobData.isPlayer, this.targetCount);
         }
     }
     exports.CometWand = CometWand;
 });
-/** @module BattleScene */
-define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/Stuff", "Agents/PlayerAgents"], function (require, exports, BattleScene_1, Mob_5, MobData_1, Stuff_1, PlayerAgents) {
+/** @packageDocumentation @module Agent */
+define("Agents/SimpleAgents", ["require", "exports", "Engine/Agents/MobAgent"], function (require, exports, MobAgent_2) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class KeepMoving extends MobAgent_2.MobAgent {
+        constructor(parentMob, range = 150, dirc = new Phaser.Math.Vector2(0, 1)) {
+            super(parentMob);
+            this.center = parentMob.getPosition();
+            this.range = range;
+            this.dirc = dirc.normalize();
+        }
+        updateMob(mob, dt) {
+            if (mob.getPosition().add(this.dirc.clone().scale(20.0)).distance(this.center) > this.range) {
+                this.dirc = this.dirc.negate();
+            }
+            mob.setVelocity(this.dirc.x * 100.0, this.dirc.y * 100.0);
+        }
+    }
+    exports.KeepMoving = KeepMoving;
+});
+/** @packageDocumentation @module BattleScene */
+define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/Stuff", "Agents/PlayerAgents", "Agents/SimpleAgents"], function (require, exports, BattleScene_1, Mob_5, MobData_1, Stuff_1, PlayerAgents, SimpleAgents_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     PlayerAgents = __importStar(PlayerAgents);
@@ -2750,10 +2864,10 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
                 'idleAnim': 'move',
                 'moveAnim': 'move',
                 'deadAnim': 'move',
-                'backendData': new MobData_1.MobData({ name: 'testGirl', 'isPlayer': true, 'attackSpeed': 1.72 }),
+                'backendData': new MobData_1.MobData({ name: 'testGirl', 'isPlayer': true, 'attackSpeed': 5 }),
                 'agent': PlayerAgents.Simple,
             });
-            girl.mobData.battleStats.attackPower.ice = 3.3;
+            girl.mobData.battleStats.attackPower.ice = 10;
             girl.mobData.battleStats.crit = 50.0;
             girl.mobData.weaponRight = new Stuff_1.CometWand();
             girl.mobData.currentWeapon = girl.mobData.weaponRight;
@@ -2763,17 +2877,32 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
                 'idleAnim': 'move',
                 'moveAnim': 'move',
                 'deadAnim': 'move',
-                'backendData': new MobData_1.MobData({ name: 'woodLog', 'isPlayer': false, 'health': 100000, }),
-                // 'agent': PlayerAgents.Simple,
-                'agent': null,
+                'backendData': new MobData_1.MobData({ name: 'woodLog', 'isPlayer': false, 'health': 1000, }),
+                'agent': SimpleAgents_1.KeepMoving,
+            });
+            this.addMob(woodlog);
+            woodlog = new Mob_5.Mob(this, 350, 200, 'char_sheet_forestelf_myst', {
+                'idleAnim': 'move',
+                'moveAnim': 'move',
+                'deadAnim': 'move',
+                'backendData': new MobData_1.MobData({ name: 'woodLog', 'isPlayer': false, 'health': 1000, }),
+                'agent': SimpleAgents_1.KeepMoving,
+            });
+            this.addMob(woodlog);
+            woodlog = new Mob_5.Mob(this, 300, 250, 'char_sheet_forestelf_myst', {
+                'idleAnim': 'move',
+                'moveAnim': 'move',
+                'deadAnim': 'move',
+                'backendData': new MobData_1.MobData({ name: 'woodLog', 'isPlayer': false, 'health': 1000, }),
+                'agent': SimpleAgents_1.KeepMoving,
             });
             this.addMob(woodlog);
         }
     }
     exports.TestScene = TestScene;
 });
-/** @module GameScene */
-define("SimpleGame", ["require", "exports", "TestScene", "Engine/DynamicLoader/DynamicLoaderScene", "Engine/UI/PopUpManager"], function (require, exports, TestScene_1, DynamicLoaderScene_4, PopUpManager_2) {
+/** @packageDocumentation @module GameScene */
+define("SimpleGame", ["require", "exports", "TestScene", "Engine/DynamicLoader/DynamicLoaderScene", "Engine/UI/PopUpManager"], function (require, exports, TestScene_1, DynamicLoaderScene_3, PopUpManager_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class InitPhaser {
@@ -2790,22 +2919,14 @@ define("SimpleGame", ["require", "exports", "TestScene", "Engine/DynamicLoader/D
                 parent: 'GameFrame',
             };
             this.gameRef = new Phaser.Game(config);
-            this.gameRef.scene.add('DynamicLoaderScene', DynamicLoaderScene_4.DynamicLoaderScene.getSingleton(), true);
+            this.gameRef.scene.add('DynamicLoaderScene', DynamicLoaderScene_3.DynamicLoaderScene.getSingleton(), true);
             this.gameRef.scene.add('PopupManagerScene', PopUpManager_2.PopUpManager.getSingleton(), true);
         }
     }
     exports.InitPhaser = InitPhaser;
     InitPhaser.initGame();
 });
-define("Engine/Agents/Modules", ["require", "exports", "Engine/Agents/MobAgent"], function (require, exports, MobAgent_2) {
-    "use strict";
-    function __export(m) {
-        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-    }
-    Object.defineProperty(exports, "__esModule", { value: true });
-    __export(MobAgent_2);
-});
-/** @module Core */
+/** @packageDocumentation @module Core */
 define("Engine/Core/BattleMonitor", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -2813,19 +2934,4 @@ define("Engine/Core/BattleMonitor", ["require", "exports"], function (require, e
     }
     exports.BattleMonitor = BattleMonitor;
 });
-// /** @module Core */
-// /**
-//  * Usea proxy exporting module to tackle cyclic dependencies.
-//  * 
-//  * Example
-//  * A, B holds references to each other
-//  */
-// export * from './mRTypes'
-// export * from './DataBackend'
-// export * from './EquipmentCore'
-// export * from './Buff'
-// export * from './BattleMonitor'
-// export * from './GameData'
-// export * from './InventoryCore'
-// export * from './UnitManager'
 //# sourceMappingURL=gameMain.js.map

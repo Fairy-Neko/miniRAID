@@ -1,4 +1,4 @@
-/** @module Struct */
+/** @packageDocumentation @module Struct */
 
 import { Data } from "Phaser";
 import { mRTypes } from "../Core/mRTypes";

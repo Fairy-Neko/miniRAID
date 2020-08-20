@@ -1,4 +1,4 @@
-/** @module BattleScene */
+/** @packageDocumentation @module BattleScene */
 
 import * as Events from '../Events/EventSystem'
 import * as Phaser from 'Phaser'

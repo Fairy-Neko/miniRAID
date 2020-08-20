@@ -1,4 +1,4 @@
-/** @module GameEntity */
+/** @packageDocumentation @module GameEntity */
 
 import { dSprite } from '../DynamicLoader/dSprite'
 // import {MobData, Buff, EquipmentType, EquipmentTag, UnitManager, mRTypes} from './core/ModuleProxy'
@@ -203,13 +203,8 @@ export class Mob extends dPhysSprite
      * spell:           the spell used at this attack
      * popUp (true):    Should this damage popup a text ?
      */
-    receiveDamage(_damageInfo: mRTypes.DamageHeal_FrontEnd): boolean
+    receiveDamage(_damageInfo: mRTypes.DamageHeal_FrontEnd): mRTypes.DamageHeal
     {
-        if (Mob.checkAlive(this) == false)
-        {
-            return false;
-        }
-
         // Fill optional slots with their default values.
         _damageInfo = this.fillDHF(_damageInfo);
 
@@ -226,12 +221,19 @@ export class Mob extends dPhysSprite
             'overdeal': 0,
         };
 
+        if (Mob.checkAlive(this) == false)
+        {
+            damageInfo.isAvoid = true;
+            damageInfo.value = 0;
+            return damageInfo;
+        }
+
         // The actual damage calculate and event trigger moved into backend
         // If mob dead finally, this.data.alive will become false
-        this.mobData.receiveDamage(damageInfo);
+        let result = this.mobData.receiveDamage(damageInfo);
 
         // It does not hit !
-        if (damageInfo.isAvoid)
+        if (result.isAvoid)
         {
             if (_damageInfo.popUp == true)
             {
@@ -239,14 +241,14 @@ export class Mob extends dPhysSprite
                 PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, Consts.ElementColors['miss']);
             }
 
-            return false;
+            return result;
         }
 
         // Mob itself only do rendering popUp texts
-        if (_damageInfo.popUp == true && damageInfo.value > 0)
+        if (_damageInfo.popUp == true && result.value > 0)
         {
             var popUpPos = this.getTopCenter();
-            PopUpManager.getSingleton().addText(damageInfo.value.toString() + (damageInfo.isCrit ? " !" : ""), popUpPos.x, popUpPos.y, Consts.ElementColors[damageInfo.type]);
+            PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? " !" : ""), popUpPos.x, popUpPos.y, Consts.ElementColors[result.type]);
 
             // // popUp texts on unit frames
             // // fade from the edge of currentHealth to the left
@@ -278,10 +280,10 @@ export class Mob extends dPhysSprite
         // Check if I am alive
         if (this.mobData.alive == false)
         {
-            this.die(_damageInfo.source, damageInfo);
+            this.die(_damageInfo.source, result);
         }
 
-        return true;
+        return result;
     }
 
     // Receive healing, same as recieve damage.
@@ -294,13 +296,8 @@ export class Mob extends dPhysSprite
      * spell:           the spell used at this attack
      * popUp (true):    Should this heal popup a text ?
      */
-    receiveHeal(_healInfo: mRTypes.DamageHeal_FrontEnd)
+    receiveHeal(_healInfo: mRTypes.DamageHeal_FrontEnd): mRTypes.DamageHeal
     {
-        if (Mob.checkAlive(this) == false)
-        {
-            return false;
-        }
-
         // Fill optional slots with their default values.
         _healInfo = this.fillDHF(_healInfo);
 
@@ -317,10 +314,17 @@ export class Mob extends dPhysSprite
             'overdeal': 0
         };
 
-        this.mobData.receiveHeal(healInfo);
+        if (Mob.checkAlive(this) == false)
+        {
+            healInfo.isAvoid = true;
+            healInfo.value = 0;
+            return healInfo;
+        }
+
+        let result = this.mobData.receiveHeal(healInfo);
 
         // Show popUp text with overhealing hint
-        if (_healInfo.popUp == true && (healInfo.value + healInfo.overdeal) > 0)
+        if (_healInfo.popUp == true && (result.value + result.overdeal) > 0)
         {
             // var popUpPos = this.getRenderPos(0.5, 0.0);
             // if(healInfo.heal.over > 0)
@@ -345,13 +349,13 @@ export class Mob extends dPhysSprite
             // }
 
             var popUpPos = this.getTopCenter();
-            if (healInfo.overdeal > 0)
+            if (result.overdeal > 0)
             {
-                PopUpManager.getSingleton().addText(healInfo.value.toString() + (healInfo.isCrit ? " !" : "") + " <" + healInfo.overdeal.toString(), popUpPos.x, popUpPos.y, Consts.ElementColors['heal']);
+                PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? " !" : "") + " <" + result.overdeal.toString(), popUpPos.x, popUpPos.y, Consts.ElementColors['heal']);
             }
             else
             {
-                PopUpManager.getSingleton().addText(healInfo.value.toString() + (healInfo.isCrit ? " !" : ""), popUpPos.x, popUpPos.y, Consts.ElementColors['heal']);
+                PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? " !" : ""), popUpPos.x, popUpPos.y, Consts.ElementColors['heal']);
             }
 
             // // popUp texts on unit frames
@@ -377,6 +381,8 @@ export class Mob extends dPhysSprite
             //     }
             // }
         }
+
+        return result;
     }
 
     die(source?: Mob, damage?: mRTypes.DamageHeal)

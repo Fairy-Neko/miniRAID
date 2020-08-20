@@ -1,4 +1,4 @@
-/** @module Core */
+/** @packageDocumentation @module Core */
 
 // import * as Modules from './ModuleProxy'
 // import { MobListener, MobData } from './Modules'
@@ -120,7 +120,7 @@ export class Weapon extends Equipable
     {
         this.isReadyWrapper(() =>
         {
-            this._weaponAttack(source, target);
+            this.doRegularAttack(source, target);
             if (triggerCD)
             {
                 this.triggerCD();
@@ -139,7 +139,7 @@ export class Weapon extends Equipable
         // console.log("be added to " + mob.name);
     }
 
-    _weaponAttack(source: Mob, target: Array<Mob>)
+    doRegularAttack(source: Mob, target: Array<Mob>)
     {
         throw new Error("Method not implemented.");
     }

@@ -1,4 +1,5 @@
 /**
+ * @packageDocumentation
  * @module UI
  */
 
@@ -9,7 +10,7 @@ export class DraggableScene extends Phaser.Scene
     sizeX: number;
     sizeY: number;
 
-    constructor(config:Phaser.Types.Scenes.SettingsConfig)
+    constructor(config: Phaser.Types.Scenes.SettingsConfig)
     {
         super(config);
     }
@@ -19,8 +20,8 @@ export class DraggableScene extends Phaser.Scene
         this.cameras.main.setViewport(this.screenX, this.screenY, this.sizeX, this.sizeY);
     }
 
-    update(time:number, dt:number)
+    update(time: number, dt: number)
     {
-        
+
     }
 }

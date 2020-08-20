@@ -1,4 +1,4 @@
-/** @module Core */
+/** @packageDocumentation @module Core */
 
 import { mRTypes } from "./mRTypes";
 import * as EventSystem from "../Events/EventSystem";
@@ -653,7 +653,7 @@ export class MobData extends EventSystem.EventElement
         this.currentHealth = Math.max(0, Math.ceil(this.healthRatio * this.maxHealth));
     }
 
-    receiveDamage(damageInfo: mRTypes.DamageHeal)
+    receiveDamage(damageInfo: mRTypes.DamageHeal): mRTypes.DamageHeal
     {
         // Calculate crit based on parameters
         if (!damageInfo.isCrit)
@@ -677,7 +677,8 @@ export class MobData extends EventSystem.EventElement
         if (damageInfo.isAvoid === true)
         {
             // Tell mob this attack was avoided
-            return { isAvoid: true };
+            damageInfo.value = 0;
+            return damageInfo;
         }
         // N.B. if you want do something if target avoid, e.g. deal extra on avoid,
         // you should let it change the damage at onDealDamage() when isAvoid == true. (e.g. set other to 0 and add extra damage)
@@ -748,10 +749,10 @@ export class MobData extends EventSystem.EventElement
         }
 
         // It hits!
-        return damageInfo.value;
+        return damageInfo;
     }
 
-    receiveHeal(healInfo: mRTypes.DamageHeal)
+    receiveHeal(healInfo: mRTypes.DamageHeal): mRTypes.DamageHeal
     {
         // Calculate crit based on parameters
         if (!healInfo.isCrit)
@@ -811,7 +812,7 @@ export class MobData extends EventSystem.EventElement
         this.currentHealth += healInfo.value;
         // game.data.monitor.addHeal(healInfo.value.heal, healInfo.overdeal.heal, healInfo.source, healInfo.target, healInfo.isCrit, healInfo.spell);
 
-        return healInfo.value;
+        return healInfo;
     }
 
     // Function used to tell buffs and agents what was going on

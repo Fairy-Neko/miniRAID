@@ -1,4 +1,4 @@
-/** @module DynamicLoader */
+/** @packageDocumentation @module DynamicLoader */
 
 import { DynamicLoadObject } from './DynamicLoadObject'
 import * as dl from './DynamicLoadObject'

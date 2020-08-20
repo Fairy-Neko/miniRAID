@@ -1,6 +1,6 @@
-/** @module GameObjects */
+/** @packageDocumentation @module GameObjects */
 
-import { dPhysSprite } from "../DynamicLoader/Modules"
+import { dPhysSprite } from "../DynamicLoader/dPhysSprite"
 import { Scene } from "Phaser"
 import { mRTypes } from "../Core/mRTypes";
 import { Mob } from "./Mob";
@@ -15,6 +15,13 @@ export enum SpellFlags
     areaEffect,
     overTime, // DOT / HOT
     targetingEverything,
+}
+
+export enum Targeting
+{
+    Player,
+    Enemy,
+    Both
 }
 
 /**
@@ -38,8 +45,7 @@ export class Spell extends dPhysSprite
     info: mRTypes.SpellInfo;
 
     useCollider: boolean;
-    isTargetPlayer: boolean;
-    isTargetEverything: boolean;
+    targeting: Targeting;
 
     _onHit: (self: Spell, arg: Phaser.GameObjects.GameObject) => void;
     _onMobHit: (self: Spell, arg: Mob) => void;
@@ -66,10 +72,10 @@ export class Spell extends dPhysSprite
         this.target = settings.target;
         if (this.target instanceof Mob)
         {
-            this.isTargetPlayer = this.target.mobData.isPlayer;
+            this.targeting = this.target.mobData.isPlayer ? Targeting.Player : Targeting.Enemy;
         }
 
-        this.isTargetEverything = this.flags.has(SpellFlags.targetingEverything);
+        this.targeting = this.flags.has(SpellFlags.targetingEverything) ? Targeting.Both : this.targeting;
 
         if (this.useCollider === false)
         {
@@ -77,11 +83,11 @@ export class Spell extends dPhysSprite
         }
         else
         {
-            if (this.isTargetEverything)
+            if (this.targeting == Targeting.Both)
             {
                 (<BattleScene>this.scene).everyoneTargetingObjectGroup.add(this);
             }
-            else if (this.isTargetPlayer)
+            else if (this.targeting == Targeting.Player)
             {
                 (<BattleScene>this.scene).playerTargetingObjectGroup.add(this);
             }
@@ -90,6 +96,9 @@ export class Spell extends dPhysSprite
                 (<BattleScene>this.scene).enemyTargetingObjectGroup.add(this);
             }
         }
+
+        // Apply tint color
+        this.setTint(Phaser.Display.Color.GetColor(settings.color.red, settings.color.green, settings.color.blue));
 
         // Register events
         this._onHit = settings.onHit;
@@ -139,9 +148,9 @@ export class Spell extends dPhysSprite
         this.destroy();
     }
 
-    HealDmg(target: Mob, dmg: number, type: string)
+    HealDmg(target: Mob, dmg: number, type: string): mRTypes.DamageHeal
     {
-        HealDmg({
+        return HealDmg({
             'source': this.source,
             'target': target,
             'value': dmg,
@@ -158,4 +167,60 @@ export class Spell extends dPhysSprite
     onWorldHit(obj: Phaser.GameObjects.GameObject) { if (this._onWorldHit) { this._onWorldHit(this, obj); } }
 
     onDestroy(obj: Phaser.GameObjects.GameObject = this) { if (this._onDestroy) { this._onDestroy(this, obj); } }
+}
+
+/**
+ * Dummy spell instance which is not represented as a Projectile (e.g. sword slash, melee attacks etc.)
+ */
+export class DummySpell extends Spell
+{
+    triggerTime: number;
+    _onSpell: (self: DummySpell, source: Mob, target: Mob) => void;
+    _onSpellVec2: (self: DummySpell, source: Mob, target: Phaser.Math.Vector2) => void;
+    spellDone: boolean;
+
+    constructor(
+        x: number, y: number,
+        sprite: string,
+        settings: mRTypes.Settings.DummySpell,
+        subsprite?: string,
+        frame?: string | number)
+    {
+        settings.info.name = settings.info.name || "DummySpell";
+        super(x, y, sprite, settings, false, subsprite, frame);
+
+        this.triggerTime = -1 || settings.triggerTime;
+        this._onSpell = settings.onSpell;
+        this._onSpellVec2 = settings.onSpellVec2;
+
+        this.spellDone = false;
+        if (this.triggerTime < 0)
+        {
+            this.onSpell(this.source, this.target);
+        }
+    }
+
+    updateSpell(dt: number)
+    {
+        this.triggerTime -= dt;
+        if (this.spellDone == false && this.triggerTime < 0)
+        {
+            this.onSpell(this.source, this.target);
+        }
+
+        super.updateSpell(dt);
+    }
+
+    onSpell(source: Mob, target: Mob | Phaser.Math.Vector2)
+    {
+        this.spellDone = true;
+        if (this._onSpell && target instanceof Mob)
+        {
+            this._onSpell(this, source, target);
+        }
+        else if (this._onSpellVec2 && target instanceof Phaser.Math.Vector2)
+        {
+            this._onSpellVec2(this, source, target);
+        }
+    }
 }

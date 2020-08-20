@@ -2,6 +2,7 @@
  * Agents are used to control the action of mobs (players, enemies). They are also MobListeners so that they could handle events like dealDamage etc.
  * They are the "brain" of a mob, and a mob will not make any action without an agent.
  * 
+ * @packageDocumentation
  * @module Agent
  * @preferred
  */

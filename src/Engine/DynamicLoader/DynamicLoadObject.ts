@@ -1,4 +1,4 @@
-/** @module DynamicLoader */
+/** @packageDocumentation @module DynamicLoader */
 
 export interface ResourceRequirements
 {
@@ -6,7 +6,7 @@ export interface ResourceRequirements
     key: string;
     // uri: string;
     metadata: any;
-    callback: (key:string, type:string, fileObj:any) => void;
+    callback: (key: string, type: string, fileObj: any) => void;
 }
 
 export interface DynamicLoadObject
@@ -14,5 +14,5 @@ export interface DynamicLoadObject
     loadComplete: boolean;
     resources: ResourceRequirements[];
     fetchChildren(): DynamicLoadObject[];
-    onLoadComplete(key:string, type:string, fileObj:any): void;
+    onLoadComplete(key: string, type: string, fileObj: any): void;
 }

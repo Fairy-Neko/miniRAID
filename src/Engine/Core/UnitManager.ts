@@ -1,9 +1,9 @@
-/** @module Core */
+/** @packageDocumentation @module Core */
 
 import { Mob } from "../GameObjects/Mob";
 import { mRTypes } from "./mRTypes";
 import { GameData } from "./GameData"
-import { PlayerAgentBase, Simple } from "../../Agents/Modules";
+import { Simple } from "../../Agents/PlayerAgents";
 
 export class UnitManager
 {

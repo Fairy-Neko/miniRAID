@@ -1,4 +1,4 @@
-/** @module GameObjects */
+/** @packageDocumentation @module GameObjects */
 
 import { Spell } from "./Spell";
 import { mRTypes } from "../Core/mRTypes";
@@ -43,7 +43,7 @@ export class Projectile extends Spell
         if (this.target instanceof Mob && (this.chasingRange < 0 || this.target.footPos().clone().subtract(this.getPosition()).length() < this.chasingRange))
         {
             let newDirc = this.target.footPos().clone().subtract(this.getPosition()).normalize();
-            this.moveDirc = this.moveDirc.clone().scale(1 - this.chasingPower).add(newDirc.clone().scale(this.chasingPower));
+            this.moveDirc = this.moveDirc.clone().scale(1 - dt * this.chasingPower).add(newDirc.clone().scale(dt * this.chasingPower));
         }
 
         this.setVelocity(this.moveDirc.x * this.speed, this.moveDirc.y * this.speed);
