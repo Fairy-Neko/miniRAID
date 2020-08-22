@@ -3,7 +3,7 @@
 import { dSprite } from '../DynamicLoader/dSprite'
 // import {MobData, Buff, EquipmentType, EquipmentTag, UnitManager, mRTypes} from './core/ModuleProxy'
 import { dPhysSprite } from '../DynamicLoader/dPhysSprite';
-import { Game, Scene } from 'Phaser';
+// import { Game, Scene } from 'phaser';
 import { MobAgent } from '../Agents/MobAgent';
 import { MobData } from '../Core/MobData';
 import { mRTypes, Consts } from '../Core/mRTypes';
@@ -24,7 +24,7 @@ export class Mob extends dPhysSprite
     attackCounter: number;
 
     constructor(
-        scene: Scene,
+        scene: Phaser.Scene,
         x: number, y: number,
         sprite: string,
         settings: mRTypes.Settings.Mob,

@@ -1834,12 +1834,11 @@ define("Engine/Core/UnitManager", ["require", "exports", "Engine/GameObjects/Mob
     UnitManager.NOOP = (a) => true;
 });
 /** @packageDocumentation @module BattleScene */
-define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Phaser", "Engine/Core/UnitManager"], function (require, exports, Phaser, UnitManager_2) {
+define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/Core/UnitManager"], function (require, exports, UnitManager_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    Phaser = __importStar(Phaser);
     class BattleScene extends Phaser.Scene {
-        constructor(debug = false) {
+        constructor(debug = false, mapToLoad = "overworld") {
             super({
                 key: 'BattleScene',
                 physics: {
@@ -1849,10 +1848,12 @@ define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Phaser", "E
                     }
                 }
             });
+            this.mapToLoad = mapToLoad;
         }
         preload() {
             this.width = this.sys.game.canvas.width;
             this.height = this.sys.game.canvas.height;
+            this.load.tilemapTiledJSON(this.mapToLoad, "assets/tilemaps/Overworld_tst.json");
         }
         addMob(mob) {
             this.add.existing(mob);
@@ -1882,6 +1883,10 @@ define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Phaser", "E
             this.physics.add.overlap(this.playerTargetingObjectGroup, this.worldGroup, this.spellHitWorldCallback);
             this.physics.add.overlap(this.enemyTargetingObjectGroup, this.worldGroup, this.spellHitWorldCallback);
             this.physics.add.overlap(this.everyoneTargetingObjectGroup, this.worldGroup, this.spellHitWorldCallback);
+            this.map = this.make.tilemap({ key: this.mapToLoad });
+            console.log(this.map);
+            for (let layer in this.map.layers) {
+            }
         }
         // Handle when spell hits a mob it targets
         spellHitMobCallback(obj1, obj2) {
@@ -2015,6 +2020,7 @@ define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/
             this.info = settings.info;
             this.flags = this.info.flags;
             this.name = this.info.name;
+            this.destroying = false;
             this.source = settings.source;
             this.target = settings.target;
             if (this.target instanceof Mob_3.Mob) {
@@ -2066,9 +2072,13 @@ define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/
             this.selfDestroy(other);
         }
         selfDestroy(other = this) {
-            this.disableBody(true, true);
-            this.onDestroy(other);
-            this.destroy();
+            if (!this.destroying) {
+                if (this.body) {
+                    this.disableBody(true, true);
+                }
+                this.onDestroy(other);
+                this.destroy();
+            }
         }
         HealDmg(target, dmg, type) {
             return Helper_1.HealDmg({
@@ -2311,9 +2321,10 @@ define("Engine/Agents/MobAgent", ["require", "exports", "Engine/Core/MobListener
  * @packageDocumentation
  * @module UI
  */
-define("Engine/UI/PopUpManager", ["require", "exports", "Phaser"], function (require, exports, Phaser_1) {
+define("Engine/UI/PopUpManager", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    // import * as Phaser from 'phaser'
     class PopupText extends Phaser.GameObjects.Text {
         constructor(scene, x, y, text, style, time = 1.0, velX = -64, velY = -256, accX = 0.0, accY = 512.0) {
             super(scene, x, y, text, style);
@@ -2340,7 +2351,7 @@ define("Engine/UI/PopUpManager", ["require", "exports", "Phaser"], function (req
         }
     }
     exports.PopupText = PopupText;
-    class PopUpManager extends Phaser_1.Scene {
+    class PopUpManager extends Phaser.Scene {
         static getSingleton() {
             if (!PopUpManager.instance) {
                 PopUpManager.instance = new PopUpManager({ key: 'PopupManagerScene' });

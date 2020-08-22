@@ -3,7 +3,7 @@
  * @module UI
  */
 
-import { Scene } from "Phaser";
+// import * as Phaser from 'phaser'
 
 export class PopupText extends Phaser.GameObjects.Text
 {
@@ -17,7 +17,7 @@ export class PopupText extends Phaser.GameObjects.Text
 
     constructor(
         scene: Phaser.Scene, x: number, y: number, text: string,
-        style: Phaser.Types.GameObjects.Text.TextSyle,
+        style: Phaser.Types.GameObjects.Text.TextStyle,
         time: number = 1.0,
         velX: number = -64, velY: number = -256,
         accX: number = 0.0, accY: number = 512.0)
@@ -55,7 +55,7 @@ export class PopupText extends Phaser.GameObjects.Text
     }
 }
 
-export class PopUpManager extends Scene
+export class PopUpManager extends Phaser.Scene
 {
     textList: Set<PopupText>;
     static instance: PopUpManager;

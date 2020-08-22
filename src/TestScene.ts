@@ -14,7 +14,6 @@ import { ItemList } from "./ItemList";
 export class TestScene extends BattleScene
 {
     terrainLayer: Phaser.Tilemaps.StaticTilemapLayer;
-    map: Phaser.Tilemaps.Tilemap;
     tiles: Phaser.Tilemaps.Tileset;
     girl: Mob;
 

@@ -79,7 +79,7 @@ export class dSprite extends Phaser.GameObjects.Sprite implements DynamicLoadObj
     }
 
     // override to allow play() calls when not loaded (not sure if without this it will work or not, never tried)
-    play(key: string, ignoreIfPlaying?: boolean, startFrame?: number): Phaser.GameObjects.Sprite
+    play(key: string, ignoreIfPlaying?: boolean, startFrame?: number): this
     {
         this.currentAnim.key = key;
         this.currentAnim.startFrame = startFrame;

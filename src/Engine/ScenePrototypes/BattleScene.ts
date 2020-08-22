@@ -1,7 +1,7 @@
 /** @packageDocumentation @module BattleScene */
 
 import * as Events from '../Events/EventSystem'
-import * as Phaser from 'Phaser'
+// import * as Phaser from 'phaser'
 import { Mob } from '../GameObjects/Mob'
 import { UnitManager } from '../Core/UnitManager';
 import { Spell } from '../GameObjects/Spell';
@@ -24,7 +24,10 @@ export class BattleScene extends Phaser.Scene
     enemyTargetingObjectGroup: Phaser.Physics.Arcade.Group;
     everyoneTargetingObjectGroup: Phaser.Physics.Arcade.Group;
 
-    constructor(debug: boolean = false) 
+    mapToLoad: string;
+    map: Phaser.Tilemaps.Tilemap;
+
+    constructor(debug: boolean = false, mapToLoad = "overworld") 
     {
         super({
             key: 'BattleScene',
@@ -35,12 +38,16 @@ export class BattleScene extends Phaser.Scene
                 }
             }
         });
+
+        this.mapToLoad = mapToLoad;
     }
 
     preload() 
     {
         this.width = this.sys.game.canvas.width;
         this.height = this.sys.game.canvas.height;
+
+        this.load.tilemapTiledJSON(this.mapToLoad, "assets/tilemaps/Overworld_tst.json");
     }
 
     addMob(mob: Mob)
@@ -80,6 +87,13 @@ export class BattleScene extends Phaser.Scene
         this.physics.add.overlap(this.playerTargetingObjectGroup, this.worldGroup, this.spellHitWorldCallback);
         this.physics.add.overlap(this.enemyTargetingObjectGroup, this.worldGroup, this.spellHitWorldCallback);
         this.physics.add.overlap(this.everyoneTargetingObjectGroup, this.worldGroup, this.spellHitWorldCallback);
+
+        this.map = this.make.tilemap({ key: this.mapToLoad });
+        console.log(this.map);
+        for (let layer in this.map.layers)
+        {
+
+        }
     }
 
     // Handle when spell hits a mob it targets

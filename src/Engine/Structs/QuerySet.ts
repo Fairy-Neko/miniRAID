@@ -1,6 +1,6 @@
 /** @packageDocumentation @module Struct */
 
-import { Data } from "Phaser";
+// import { Data } from "phaser";
 import { mRTypes } from "../Core/mRTypes";
 // import { mRTypes } from "../core/ModuleProxy";
 

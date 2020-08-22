@@ -1,7 +1,7 @@
 /** @packageDocumentation @module GameObjects */
 
 import { dPhysSprite } from "../DynamicLoader/dPhysSprite"
-import { Scene } from "Phaser"
+// import { Scene } from "phaser"
 import { mRTypes } from "../Core/mRTypes";
 import { Mob } from "./Mob";
 import { BattleScene } from "../ScenePrototypes/BattleScene";
@@ -46,6 +46,7 @@ export class Spell extends dPhysSprite
 
     useCollider: boolean;
     targeting: Targeting;
+    destroying: boolean;
 
     _onHit: (self: Spell, arg: Phaser.GameObjects.GameObject) => void;
     _onMobHit: (self: Spell, arg: Mob) => void;
@@ -67,6 +68,8 @@ export class Spell extends dPhysSprite
         this.info = settings.info;
         this.flags = this.info.flags;
         this.name = this.info.name;
+
+        this.destroying = false;
 
         this.source = settings.source;
         this.target = settings.target;
@@ -142,10 +145,16 @@ export class Spell extends dPhysSprite
 
     selfDestroy(other: Phaser.GameObjects.GameObject = this)
     {
-        this.disableBody(true, true);
-        this.onDestroy(other);
+        if (!this.destroying)
+        {
+            if (this.body)
+            {
+                this.disableBody(true, true);
+            }
+            this.onDestroy(other);
 
-        this.destroy();
+            this.destroy();
+        }
     }
 
     HealDmg(target: Mob, dmg: number, type: string): mRTypes.DamageHeal

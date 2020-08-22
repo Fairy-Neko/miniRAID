@@ -1,6 +1,6 @@
 /** @packageDocumentation @module DynamicLoader */
 
-import * as Phaser from 'Phaser'
+// import * as Phaser from 'phaser'
 import { DraggableScene } from '../UI/DraggableScene'
 import * as DLO from './DynamicLoadObject'
 import * as Collections from 'typescript-collections'
