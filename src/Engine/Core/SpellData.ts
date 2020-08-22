@@ -52,7 +52,7 @@ export class SpellData
     {
         if (this.coolDownRemain >= 0)
         {
-            this.coolDownRemain -= dt * 0.001;
+            this.coolDownRemain -= dt;
         }
 
         this.available = this.isAvailable(mob);

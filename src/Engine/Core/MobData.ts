@@ -68,6 +68,7 @@ export class MobData extends EventSystem.EventElement
     currentHealth: number;
     maxMana: number;
     currentMana: number;
+    manaRegen: number;
     alive: boolean;
 
     modifiers: mRTypes.MobSpeedModifiers;
@@ -154,6 +155,7 @@ export class MobData extends EventSystem.EventElement
 
         this.maxMana = settings.mana || 100;
         this.currentMana = this.maxMana || settings.mana || 100;
+        this.manaRegen = settings.manaRegen || 5;
 
         // speed related (1.0 means 100% (NOT a value but a ratio))
         this.modifiers = {
@@ -374,10 +376,10 @@ export class MobData extends EventSystem.EventElement
         }
 
         // Mana Regen
-        if (typeof this.currentWeapon !== "undefined")
-        {
-            this.currentMana += dt * this.currentWeapon.manaRegen * 0.001; // change to this.manaRegen plz
-        }
+        this.currentMana += dt * this.manaRegen;
+        // if (typeof this.currentWeapon !== "undefined")
+        // {
+        // }
         if (this.currentMana > this.maxMana)
         {
             this.currentMana = this.maxMana;
@@ -386,7 +388,7 @@ export class MobData extends EventSystem.EventElement
         // Spell Casting
         if (this.globalCDRemain > 0)
         {
-            this.globalCDRemain -= dt * 0.001;
+            this.globalCDRemain -= dt;
         }
         else
         {
@@ -406,7 +408,7 @@ export class MobData extends EventSystem.EventElement
         {
             if (this.castRemain > 0)
             {
-                this.castRemain -= dt * 0.001;
+                this.castRemain -= dt;
             }
             else
             {
@@ -419,8 +421,8 @@ export class MobData extends EventSystem.EventElement
         {
             if (this.channelRemain > 0)
             {
-                this.channelRemain -= dt * 0.001;
-                this.currentSpell.onChanneling(mob, this.currentSpellTarget, dt * 0.001 * this.channelTimeFactor);
+                this.channelRemain -= dt;
+                this.currentSpell.onChanneling(mob, this.currentSpellTarget, dt * this.channelTimeFactor);
             }
             else
             {
@@ -565,7 +567,7 @@ export class MobData extends EventSystem.EventElement
         this.battleStats = {
             resist: {
                 physical: 0,
-                elemental: 10,
+                elemental: 0,
                 pure: 0, // It should always be 0
 
                 slash: 0,
@@ -612,7 +614,7 @@ export class MobData extends EventSystem.EventElement
             avoid: 0,
 
             // Percentage
-            crit: 20, // Should crit have types? e.g. physical elemental etc.
+            crit: 0, // Should crit have types? e.g. physical elemental etc.
             antiCrit: 0,
 
             // Parry for shield should calculate inside the shield itself when onReceiveDamage().
@@ -640,7 +642,7 @@ export class MobData extends EventSystem.EventElement
             + this.baseStats.int * 4
             + this.baseStats.mag * 4;
 
-        // 4. Calculate battle (advanced) stats from base stats (e.g. atkPower = INT * 0.7 * floor( MAG * 1.4 ) ... )
+        // TODO - 4. Calculate battle (advanced) stats from base stats (e.g. atkPower = INT * 0.7 * floor( MAG * 1.4 ) ... )
         // 5. Add equipment by listener.calcStats()
         // Actually, those steps were combined in a single call,
         // as the calculation step of each class will happen in their player classes,
@@ -667,6 +669,7 @@ export class MobData extends EventSystem.EventElement
                 damageInfo.target.getPercentage(damageInfo.target.battleStats.avoid));
         }
 
+        let originalDmgValue = damageInfo.value; // Used to multiply the contribution of every source
         this.updateListeners(damageInfo.target, 'receiveDamage', damageInfo);
         if (damageInfo.source)
         {
@@ -731,6 +734,8 @@ export class MobData extends EventSystem.EventElement
         damageInfo.value = realDmg;
         // game.data.monitor.addDamage(damageInfo.value[dmg], dmg, damageInfo.source, damageInfo.target, damageInfo.isCrit, damageInfo.spell);
 
+        // TODO: modify damageInfo.detailedSource
+
         if (this.currentHealth <= 0)
         {
             // Let everyone know what is happening
@@ -752,6 +757,7 @@ export class MobData extends EventSystem.EventElement
         return damageInfo;
     }
 
+    // TODO: merge receiveHeal and receiveDamage.
     receiveHeal(healInfo: mRTypes.DamageHeal): mRTypes.DamageHeal
     {
         // Calculate crit based on parameters

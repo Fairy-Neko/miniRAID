@@ -219,6 +219,8 @@ export class Mob extends dPhysSprite
             'type': _damageInfo.type,
             // 'type'   : _damageInfo.type,
             'overdeal': 0,
+
+            'detailedSource': new Map([[_damageInfo.source.mobData, _damageInfo.value]]),
         };
 
         if (Mob.checkAlive(this) == false)
@@ -248,7 +250,7 @@ export class Mob extends dPhysSprite
         if (_damageInfo.popUp == true && result.value > 0)
         {
             var popUpPos = this.getTopCenter();
-            PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? " !" : ""), popUpPos.x, popUpPos.y, Consts.ElementColors[result.type]);
+            PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, Consts.ElementColors[result.type]);
 
             // // popUp texts on unit frames
             // // fade from the edge of currentHealth to the left
@@ -351,11 +353,11 @@ export class Mob extends dPhysSprite
             var popUpPos = this.getTopCenter();
             if (result.overdeal > 0)
             {
-                PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? " !" : "") + " <" + result.overdeal.toString(), popUpPos.x, popUpPos.y, Consts.ElementColors['heal']);
+                PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : "") + " <" + result.overdeal.toString() + ">", popUpPos.x, popUpPos.y, Consts.ElementColors['heal'], 1.0, 64, -256);
             }
             else
             {
-                PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? " !" : ""), popUpPos.x, popUpPos.y, Consts.ElementColors['heal']);
+                PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, Consts.ElementColors['heal'], 1.0, 64, -256);
             }
 
             // // popUp texts on unit frames
@@ -403,6 +405,7 @@ export class Mob extends dPhysSprite
             // me.game.world.removeChild(this.HPBar);
             // game.units.removeEnemy(this);
             // me.game.world.removeChild(this);
+            this.destroy();
         }
     }
 

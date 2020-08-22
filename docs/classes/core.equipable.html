@@ -98,6 +98,7 @@
 				<ul class="tsd-hierarchy">
 					<li><a href="../interfaces/events.ieventemitter.html" class="tsd-signature-type">IEventEmitter</a></li>
 					<li><a href="../interfaces/events.ieventreceiver.html" class="tsd-signature-type">IEventReceiver</a></li>
+					<li><a href="../interfaces/core.item.html" class="tsd-signature-type">Item</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -128,18 +129,24 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="core.equipable.html#focuslist" class="tsd-kind-icon">focus<wbr>List</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="core.equipable.html#isover" class="tsd-kind-icon">is<wbr>Over</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="core.equipable.html#isready" class="tsd-kind-icon">is<wbr>Ready</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="core.equipable.html#itemdata" class="tsd-kind-icon">item<wbr>Data</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="core.equipable.html#itemid" class="tsd-kind-icon">itemID</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="core.equipable.html#listenrecord" class="tsd-kind-icon">listen<wbr>Record</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="core.equipable.html#name" class="tsd-kind-icon">name</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="core.equipable.html#parentmob" class="tsd-kind-icon">parent<wbr>Mob</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="core.equipable.html#parentsystem" class="tsd-kind-icon">parent<wbr>System</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="core.equipable.html#priority" class="tsd-kind-icon">priority</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="core.equipable.html#stackable" class="tsd-kind-icon">stackable</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="core.equipable.html#stacks" class="tsd-kind-icon">stacks</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="core.equipable.html#statrequirements" class="tsd-kind-icon">stat<wbr>Requirements</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="core.equipable.html#type" class="tsd-kind-icon">type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="core.equipable.html#user" class="tsd-kind-icon">user</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.equipable.html#assigntags" class="tsd-kind-icon">assign<wbr>Tags</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core.equipable.html#discard" class="tsd-kind-icon">discard</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core.equipable.html#discardemitter" class="tsd-kind-icon">discard<wbr>Emitter</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core.equipable.html#discardreceiver" class="tsd-kind-icon">discard<wbr>Receiver</a></li>
@@ -171,6 +178,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core.equipable.html#onspecialattack" class="tsd-kind-icon">on<wbr>Special<wbr>Attack</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core.equipable.html#onstatcalculation" class="tsd-kind-icon">on<wbr>Stat<wbr>Calculation</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="core.equipable.html#onstatcalculationfinish" class="tsd-kind-icon">on<wbr>Stat<wbr>Calculation<wbr>Finish</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.equipable.html#showtooltip" class="tsd-kind-icon">show<wbr>Tool<wbr>Tip</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="core.equipable.html#syncstats" class="tsd-kind-icon">sync<wbr>Stats</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core.equipable.html#unfocus" class="tsd-kind-icon">unfocus</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core.equipable.html#unlisten" class="tsd-kind-icon">unlisten</a></li>
@@ -187,20 +195,20 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Equipable<span class="tsd-signature-symbol">(</span>eqType<span class="tsd-signature-symbol">?: </span><a href="../enums/core.equipmenttype.html" class="tsd-signature-type">EquipmentType</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="core.equipable.html" class="tsd-signature-type">Equipable</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Equipable<span class="tsd-signature-symbol">(</span>itemID<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="core.equipable.html" class="tsd-signature-type">Equipable</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Overrides <a href="core.moblistener.html">MobListener</a>.<a href="core.moblistener.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/EquipmentCore.ts#L42">src/Engine/Core/EquipmentCore.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/EquipmentCore.ts#L50">src/Engine/Core/EquipmentCore.ts:50</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> eqType: <a href="../enums/core.equipmenttype.html" class="tsd-signature-type">EquipmentType</a><span class="tsd-signature-symbol"> = EquipmentType.Unknown</span></h5>
+									<h5>itemID: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="core.equipable.html" class="tsd-signature-type">Equipable</a></h4>
@@ -221,7 +229,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#onswitchweapon">onSwitchWeapon</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L161">src/Engine/Core/MobListener.ts:161</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L161">src/Engine/Core/MobListener.ts:161</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -256,7 +264,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#onupdate">onUpdate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L153">src/Engine/Core/MobListener.ts:153</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L153">src/Engine/Core/MobListener.ts:153</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -294,7 +302,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#cooldown">cooldown</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L33">src/Engine/Core/MobListener.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L33">src/Engine/Core/MobListener.ts:33</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -305,7 +313,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#cooldownmax">cooldownMax</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L32">src/Engine/Core/MobListener.ts:32</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L32">src/Engine/Core/MobListener.ts:32</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -316,7 +324,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#enabled">enabled</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L29">src/Engine/Core/MobListener.ts:29</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L29">src/Engine/Core/MobListener.ts:29</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -326,7 +334,7 @@
 					<div class="tsd-signature tsd-kind-icon">eq<wbr>Type<span class="tsd-signature-symbol">:</span> <a href="../enums/core.equipmenttype.html" class="tsd-signature-type">EquipmentType</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/EquipmentCore.ts#L40">src/Engine/Core/EquipmentCore.ts:40</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/EquipmentCore.ts#L42">src/Engine/Core/EquipmentCore.ts:42</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -336,7 +344,7 @@
 					<div class="tsd-signature tsd-kind-icon">equipper<span class="tsd-signature-symbol">:</span> <a href="core.mobdata.html" class="tsd-signature-type">MobData</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/EquipmentCore.ts#L38">src/Engine/Core/EquipmentCore.ts:38</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/EquipmentCore.ts#L40">src/Engine/Core/EquipmentCore.ts:40</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -347,7 +355,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#focuslist">focusList</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L27">src/Engine/Core/MobListener.ts:27</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L27">src/Engine/Core/MobListener.ts:27</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -358,7 +366,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#isover">isOver</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L30">src/Engine/Core/MobListener.ts:30</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L30">src/Engine/Core/MobListener.ts:30</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -369,7 +377,28 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#isready">isReady</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L34">src/Engine/Core/MobListener.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L34">src/Engine/Core/MobListener.ts:34</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="itemdata" class="tsd-anchor"></a>
+					<h3>item<wbr>Data</h3>
+					<div class="tsd-signature tsd-kind-icon">item<wbr>Data<span class="tsd-signature-symbol">:</span> <a href="../interfaces/src_engine_core.itemdata.html" class="tsd-signature-type">ItemData</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/EquipmentCore.ts#L50">src/Engine/Core/EquipmentCore.ts:50</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="itemid" class="tsd-anchor"></a>
+					<h3>itemID</h3>
+					<div class="tsd-signature tsd-kind-icon">itemID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/core.item.html">Item</a>.<a href="../interfaces/core.item.html#itemid">itemID</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/EquipmentCore.ts#L49">src/Engine/Core/EquipmentCore.ts:49</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -381,7 +410,7 @@
 						<p>Implementation of <a href="../interfaces/events.ieventreceiver.html">IEventReceiver</a>.<a href="../interfaces/events.ieventreceiver.html#listenrecord">listenRecord</a></p>
 						<p>Inherited from <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#listenrecord">listenRecord</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Events/EventSystem.ts#L30">src/Engine/Events/EventSystem.ts:30</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Events/EventSystem.ts#L30">src/Engine/Events/EventSystem.ts:30</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -391,7 +420,7 @@
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/EquipmentCore.ts#L39">src/Engine/Core/EquipmentCore.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/EquipmentCore.ts#L41">src/Engine/Core/EquipmentCore.ts:41</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -402,7 +431,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#parentmob">parentMob</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L35">src/Engine/Core/MobListener.ts:35</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L35">src/Engine/Core/MobListener.ts:35</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -414,7 +443,7 @@
 						<p>Implementation of <a href="../interfaces/events.ieventreceiver.html">IEventReceiver</a>.<a href="../interfaces/events.ieventreceiver.html#parentsystem">parentSystem</a></p>
 						<p>Inherited from <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#parentsystem">parentSystem</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Events/EventSystem.ts#L29">src/Engine/Events/EventSystem.ts:29</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Events/EventSystem.ts#L29">src/Engine/Events/EventSystem.ts:29</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -425,7 +454,29 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#priority">priority</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L28">src/Engine/Core/MobListener.ts:28</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L28">src/Engine/Core/MobListener.ts:28</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="stackable" class="tsd-anchor"></a>
+					<h3>stackable</h3>
+					<div class="tsd-signature tsd-kind-icon">stackable<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/core.item.html">Item</a>.<a href="../interfaces/core.item.html#stackable">stackable</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/EquipmentCore.ts#L46">src/Engine/Core/EquipmentCore.ts:46</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="stacks" class="tsd-anchor"></a>
+					<h3>stacks</h3>
+					<div class="tsd-signature tsd-kind-icon">stacks<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/core.item.html">Item</a>.<a href="../interfaces/core.item.html#stacks">stacks</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/EquipmentCore.ts#L47">src/Engine/Core/EquipmentCore.ts:47</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -435,7 +486,7 @@
 					<div class="tsd-signature tsd-kind-icon">stat<wbr>Requirements<span class="tsd-signature-symbol">:</span> <a href="../interfaces/src_engine_core.basestats.html" class="tsd-signature-type">BaseStats</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/EquipmentCore.ts#L42">src/Engine/Core/EquipmentCore.ts:42</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/EquipmentCore.ts#L44">src/Engine/Core/EquipmentCore.ts:44</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -446,13 +497,41 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#type">type</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L31">src/Engine/Core/MobListener.ts:31</a></li>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L31">src/Engine/Core/MobListener.ts:31</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="user" class="tsd-anchor"></a>
+					<h3>user</h3>
+					<div class="tsd-signature tsd-kind-icon">user<span class="tsd-signature-symbol">:</span> <a href="core.mobdata.html" class="tsd-signature-type">MobData</a></div>
+					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/core.item.html">Item</a>.<a href="../interfaces/core.item.html#user">user</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/EquipmentCore.ts#L48">src/Engine/Core/EquipmentCore.ts:48</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="assigntags" class="tsd-anchor"></a>
+					<h3>assign<wbr>Tags</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">assign<wbr>Tags<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/EquipmentCore.ts#L87">src/Engine/Core/EquipmentCore.ts:87</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="discard" class="tsd-anchor"></a>
 					<h3>discard</h3>
@@ -464,7 +543,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#discard">discard</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Events/EventSystem.ts#L101">src/Engine/Events/EventSystem.ts:101</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Events/EventSystem.ts#L101">src/Engine/Events/EventSystem.ts:101</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -483,7 +562,7 @@
 								<p>Implementation of <a href="../interfaces/events.ieventemitter.html">IEventEmitter</a>.<a href="../interfaces/events.ieventemitter.html#discardemitter">discardEmitter</a></p>
 								<p>Inherited from <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#discardemitter">discardEmitter</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Events/EventSystem.ts#L87">src/Engine/Events/EventSystem.ts:87</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Events/EventSystem.ts#L87">src/Engine/Events/EventSystem.ts:87</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -502,7 +581,7 @@
 								<p>Implementation of <a href="../interfaces/events.ieventreceiver.html">IEventReceiver</a>.<a href="../interfaces/events.ieventreceiver.html#discardreceiver">discardReceiver</a></p>
 								<p>Inherited from <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#discardreceiver">discardReceiver</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Events/EventSystem.ts#L92">src/Engine/Events/EventSystem.ts:92</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Events/EventSystem.ts#L92">src/Engine/Events/EventSystem.ts:92</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -520,7 +599,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#emit">emit</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Events/EventSystem.ts#L37">src/Engine/Events/EventSystem.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Events/EventSystem.ts#L37">src/Engine/Events/EventSystem.ts:37</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -568,7 +647,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#emitarray">emitArray</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Events/EventSystem.ts#L42">src/Engine/Events/EventSystem.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Events/EventSystem.ts#L42">src/Engine/Events/EventSystem.ts:42</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -616,7 +695,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#focus">focus</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L63">src/Engine/Core/MobListener.ts:63</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L63">src/Engine/Core/MobListener.ts:63</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -640,7 +719,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#isreadywrapper">isReadyWrapper</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L52">src/Engine/Core/MobListener.ts:52</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L52">src/Engine/Core/MobListener.ts:52</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -701,7 +780,7 @@
 								<p>Implementation of <a href="../interfaces/events.ieventreceiver.html">IEventReceiver</a>.<a href="../interfaces/events.ieventreceiver.html#listen">listen</a></p>
 								<p>Inherited from <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#listen">listen</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Events/EventSystem.ts#L47">src/Engine/Events/EventSystem.ts:47</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Events/EventSystem.ts#L47">src/Engine/Events/EventSystem.ts:47</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -731,7 +810,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="core.buff.html">Buff</a>.<a href="core.buff.html#onadded">onAdded</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/EquipmentCore.ts#L52">src/Engine/Core/EquipmentCore.ts:52</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/EquipmentCore.ts#L65">src/Engine/Core/EquipmentCore.ts:65</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -758,7 +837,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#onafterattack">onAfterAttack</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L130">src/Engine/Core/MobListener.ts:130</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L130">src/Engine/Core/MobListener.ts:130</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -782,7 +861,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#onafterspecialattack">onAfterSpecialAttack</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L137">src/Engine/Core/MobListener.ts:137</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L137">src/Engine/Core/MobListener.ts:137</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -806,7 +885,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#onattack">onAttack</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L127">src/Engine/Core/MobListener.ts:127</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L127">src/Engine/Core/MobListener.ts:127</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -830,7 +909,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#onbasestatcalculation">onBaseStatCalculation</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L108">src/Engine/Core/MobListener.ts:108</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L108">src/Engine/Core/MobListener.ts:108</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -854,7 +933,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#oncreate">onCreate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L141">src/Engine/Core/MobListener.ts:141</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L141">src/Engine/Core/MobListener.ts:141</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -881,7 +960,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#ondealdamage">onDealDamage</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L172">src/Engine/Core/MobListener.ts:172</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L172">src/Engine/Core/MobListener.ts:172</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -905,7 +984,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#ondealdamagefinal">onDealDamageFinal</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L173">src/Engine/Core/MobListener.ts:173</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L173">src/Engine/Core/MobListener.ts:173</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -929,7 +1008,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#ondealheal">onDealHeal</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L175">src/Engine/Core/MobListener.ts:175</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L175">src/Engine/Core/MobListener.ts:175</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -953,7 +1032,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#ondealhealfinal">onDealHealFinal</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L176">src/Engine/Core/MobListener.ts:176</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L176">src/Engine/Core/MobListener.ts:176</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -977,7 +1056,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#ondeath">onDeath</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L185">src/Engine/Core/MobListener.ts:185</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L185">src/Engine/Core/MobListener.ts:185</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1001,7 +1080,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#onfrontenddestroy">onFrontEndDestroy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L144">src/Engine/Core/MobListener.ts:144</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L144">src/Engine/Core/MobListener.ts:144</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1028,7 +1107,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#onfrontendupdate">onFrontEndUpdate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L142">src/Engine/Core/MobListener.ts:142</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L142">src/Engine/Core/MobListener.ts:142</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1055,7 +1134,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#onkill">onKill</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L184">src/Engine/Core/MobListener.ts:184</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L184">src/Engine/Core/MobListener.ts:184</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1079,7 +1158,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#onreceivedamage">onReceiveDamage</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L178">src/Engine/Core/MobListener.ts:178</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L178">src/Engine/Core/MobListener.ts:178</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1103,7 +1182,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#onreceivedamagefinal">onReceiveDamageFinal</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L179">src/Engine/Core/MobListener.ts:179</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L179">src/Engine/Core/MobListener.ts:179</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1127,7 +1206,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#onreceiveheal">onReceiveHeal</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L181">src/Engine/Core/MobListener.ts:181</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L181">src/Engine/Core/MobListener.ts:181</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1151,7 +1230,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#onreceivehealfinal">onReceiveHealFinal</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L182">src/Engine/Core/MobListener.ts:182</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L182">src/Engine/Core/MobListener.ts:182</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1175,7 +1254,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#onremoved">onRemoved</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L120">src/Engine/Core/MobListener.ts:120</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L120">src/Engine/Core/MobListener.ts:120</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1202,7 +1281,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#onrender">onRender</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L143">src/Engine/Core/MobListener.ts:143</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L143">src/Engine/Core/MobListener.ts:143</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1229,7 +1308,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#onspecialattack">onSpecialAttack</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L134">src/Engine/Core/MobListener.ts:134</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L134">src/Engine/Core/MobListener.ts:134</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1253,7 +1332,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#onstatcalculation">onStatCalculation</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L109">src/Engine/Core/MobListener.ts:109</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L109">src/Engine/Core/MobListener.ts:109</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1277,7 +1356,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="core.buff.html">Buff</a>.<a href="core.buff.html#onstatcalculationfinish">onStatCalculationFinish</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/EquipmentCore.ts#L60">src/Engine/Core/EquipmentCore.ts:60</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/EquipmentCore.ts#L73">src/Engine/Core/EquipmentCore.ts:73</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1291,6 +1370,23 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="showtooltip" class="tsd-anchor"></a>
+					<h3>show<wbr>Tool<wbr>Tip</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">show<wbr>Tool<wbr>Tip<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/src_engine_core.htmltooltip.html" class="tsd-signature-type">HTMLToolTip</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/EquipmentCore.ts#L79">src/Engine/Core/EquipmentCore.ts:79</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/src_engine_core.htmltooltip.html" class="tsd-signature-type">HTMLToolTip</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="syncstats" class="tsd-anchor"></a>
 					<h3>sync<wbr>Stats</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -1300,7 +1396,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/EquipmentCore.ts#L50">src/Engine/Core/EquipmentCore.ts:50</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/EquipmentCore.ts#L63">src/Engine/Core/EquipmentCore.ts:63</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1324,7 +1420,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#unfocus">unfocus</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L68">src/Engine/Core/MobListener.ts:68</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L68">src/Engine/Core/MobListener.ts:68</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1348,7 +1444,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#unlisten">unlisten</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Events/EventSystem.ts#L57">src/Engine/Events/EventSystem.ts:57</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Events/EventSystem.ts#L57">src/Engine/Events/EventSystem.ts:57</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1375,7 +1471,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="events.eventelement.html">EventElement</a>.<a href="events.eventelement.html#unlistenall">unlistenAll</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Events/EventSystem.ts#L70">src/Engine/Events/EventSystem.ts:70</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Events/EventSystem.ts#L70">src/Engine/Events/EventSystem.ts:70</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1399,7 +1495,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core.buff.html">Buff</a>.<a href="core.buff.html#update">update</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/53e422e/src/Engine/Core/MobListener.ts#L74">src/Engine/Core/MobListener.ts:74</a></li>
+									<li>Defined in <a href="https://github.com/betairylia/miniRAID_phaser/blob/06f104d/src/Engine/Core/MobListener.ts#L74">src/Engine/Core/MobListener.ts:74</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1455,6 +1551,9 @@
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="../modules/weapons.html">Weapons</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/src.html">src</a>
 					</li>
 					<li class=" tsd-kind-namespace">
 						<a href="../modules/src_engine_core.html">src/<wbr>Engine/<wbr>Core</a>
@@ -1531,6 +1630,12 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="core.equipable.html#isready" class="tsd-kind-icon">is<wbr>Ready</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="core.equipable.html#itemdata" class="tsd-kind-icon">item<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="core.equipable.html#itemid" class="tsd-kind-icon">itemID</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="core.equipable.html#listenrecord" class="tsd-kind-icon">listen<wbr>Record</a>
 							</li>
@@ -1547,10 +1652,22 @@
 								<a href="core.equipable.html#priority" class="tsd-kind-icon">priority</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="core.equipable.html#stackable" class="tsd-kind-icon">stackable</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="core.equipable.html#stacks" class="tsd-kind-icon">stacks</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="core.equipable.html#statrequirements" class="tsd-kind-icon">stat<wbr>Requirements</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="core.equipable.html#type" class="tsd-kind-icon">type</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="core.equipable.html#user" class="tsd-kind-icon">user</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="core.equipable.html#assigntags" class="tsd-kind-icon">assign<wbr>Tags</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="core.equipable.html#discard" class="tsd-kind-icon">discard</a>
@@ -1646,6 +1763,9 @@
 								<a href="core.equipable.html#onstatcalculationfinish" class="tsd-kind-icon">on<wbr>Stat<wbr>Calculation<wbr>Finish</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="core.equipable.html#showtooltip" class="tsd-kind-icon">show<wbr>Tool<wbr>Tip</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="core.equipable.html#syncstats" class="tsd-kind-icon">sync<wbr>Stats</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -1668,7 +1788,7 @@
 						<a href="core.inventory.html" class="tsd-kind-icon">Inventory</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="core.item.html" class="tsd-kind-icon">Item</a>
+						<a href="core.itemmanager.html" class="tsd-kind-icon">Item<wbr>Manager</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="core.mobdata.html" class="tsd-kind-icon">Mob<wbr>Data</a>
@@ -1684,6 +1804,9 @@
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="core.weapon.html" class="tsd-kind-icon">Weapon</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/core.item.html" class="tsd-kind-icon">Item</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-is-not-exported">
 						<a href="../modules/core.html#aoecbm" class="tsd-kind-icon">AoECBm</a>
@@ -1729,6 +1852,7 @@
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
 			</ul>

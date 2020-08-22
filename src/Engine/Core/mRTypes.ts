@@ -8,6 +8,7 @@ import { MobAgent } from "../Agents/MobAgent";
 import * as MobData from "./MobData";
 import { SpellData } from "./SpellData";
 import { SpellFlags, Spell as SpellEntity, DummySpell as DummySpellEntity } from "../GameObjects/Spell";
+import { Dictionary } from "typescript-collections";
 
 export namespace mRTypes
 {
@@ -48,6 +49,7 @@ export namespace mRTypes
             health?: number;
             damage?: number;
             mana?: number;
+            manaRegen?: number;
 
             speed?: number;
             movingSpeed?: number;
@@ -209,6 +211,8 @@ export namespace mRTypes
         isAvoid?: boolean;
         isBlock?: boolean;
         spell?: SpellInfo;
+
+        detailedSource?: Map<MobData.MobData, number>;
     }
 
     export interface DamageHeal_FrontEnd
@@ -257,6 +261,34 @@ export namespace mRTypes
     {
         title: string;
         text: string;
+        color?: Phaser.Display.Color;
+    }
+
+    export interface ItemData
+    {
+        showName: string;
+        color: Phaser.Display.Color;
+        tint: boolean;
+
+        level: number;
+        rarity: number;
+
+        stackable: boolean;
+        tags: Set<string>;
+
+        pClass: string;
+        sClass: string;
+
+        image: string;
+        iconIdx: number;
+
+        toolTipText: string;
+        className: string;
+    }
+
+    export interface ItemDataStorage
+    {
+        [index: string]: ItemData;
     }
 }
 

@@ -10,14 +10,10 @@ import { getRandomInt, AoE } from '../Engine/Core/Helper';
 
 export class CometWand extends Weapon
 {
-    constructor()
+    constructor(itemID: string = 'cometWand')
     {
-        super();
+        super(itemID);
 
-        this.name = "Comet Wand";
-
-        this.wpType = WeaponType.Stuff;
-        this.wpsubType = WeaponSubType.Common;
         this.mainElement = 'ice';
 
         this.baseAttackMin = 6;
@@ -27,15 +23,15 @@ export class CometWand extends Weapon
         this.targetCount = 1;
         this.activeRange = 200;
 
-        this.manaCost = 0;
-        this.manaRegen = 0;
+        this.manaCost = 4;
 
         this.weaponGaugeMax = 25;
-        this.weaponGaugeIncreasement = function (mob: MobData) { return mob.baseStats.mag; };
+        this.weaponGaugeIncreasement = function (mob: Mob) { return mob.mobData.baseStats.mag; };
     }
 
     doRegularAttack(source: Mob, target: Array<Mob>)
     {
+        console.log(this.weaponGauge.toString() + " / " + this.weaponGaugeMax.toString());
         let targetMob = target[0];
         new Projectile(source.x, source.y, 'img_iced_fx', {
             'info': { 'name': this.name, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },
@@ -54,7 +50,29 @@ export class CometWand extends Weapon
             'color': Phaser.Display.Color.HexStringToColor("#77ffff"),
             'chasingRange': 400,
             'chasingPower': 1.0,
-        })
+        });
+    }
+
+    doSpecialAttack(source: Mob, target: Array<Mob>)
+    {
+        let targetMob = target[0];
+        new Projectile(source.x, source.y, 'img_iced_fx', {
+            'info': { 'name': this.name, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },
+            'source': source,
+            'target': targetMob,
+            'speed': 250,
+            'onMobHit': (self: Spell, mob: Mob) =>
+            {
+                self.dieAfter(
+                    () => AoE((m: Mob) =>
+                    {
+                        self.HealDmg(m, getRandomInt(30, 50), 'fire')
+                    }, self.getPosition(), 100, self.targeting), [], mob);
+            },
+            'color': Phaser.Display.Color.HexStringToColor("#ff3333"),
+            'chasingRange': 400,
+            'chasingPower': 5.0,
+        });
     }
 
     grabTargets(mob: Mob): Array<Mob> 

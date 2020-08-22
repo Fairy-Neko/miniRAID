@@ -5,209 +5,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-/**
- * @packageDocumentation
- * @module Events
- */
-define("Engine/Events/EventSystem", ["require", "exports", "typescript-collections"], function (require, exports, Collections) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    Collections = __importStar(Collections);
-    class EventElement {
-        constructor(parentSystem) {
-            this.listenRecord = new Collections.Set();
-            this.parentSystem = parentSystem;
-        }
-        emit(evt, resCallback, ...args) {
-            return this.parentSystem.emit(this, resCallback, evt, args);
-        }
-        emitArray(evt, resCallback, args) {
-            return this.parentSystem.emit(this, resCallback, evt, args);
-        }
-        listen(src, evt, callback) {
-            var result = this.parentSystem.listen(src, this, callback, evt);
-            this.listenRecord.add({ src: src, evt: evt });
-            // result?
-            return result;
-        }
-        unlisten(src, evt) {
-            if (this.listenRecord.contains({ src: src, evt: evt })) {
-                this.parentSystem.discardListener(src, this, evt);
-                this.listenRecord.remove({ src: src, evt: evt });
-                return true;
-            }
-            return false;
-        }
-        // So lazy to use another dict omg
-        unlistenAll(src) {
-            var result = false;
-            // Will "this" be correct here? idk
-            this.listenRecord.forEach((obj) => {
-                if (obj.src === src) {
-                    result = true;
-                    this.unlisten(obj.src, obj.evt);
-                }
-            });
-            return result;
-        }
-        discardEmitter() {
-            this.parentSystem.discardEmitter(this);
-        }
-        discardReceiver() {
-            // Will "this" be correct here? idk
-            this.listenRecord.forEach((element) => {
-                this.parentSystem.discardListener(element.src, this, element.evt);
-            });
-        }
-        discard() {
-            this.discardEmitter();
-            this.discardReceiver();
-        }
-    }
-    exports.EventElement = EventElement;
-    class EventSystem {
-        constructor() {
-            this.dict = new Collections.Dictionary();
-            // nothing to do?
-        }
-        listen(src, dst, callback, evt) {
-            // Check if the source object is in our dict
-            if (!this.dict.containsKey(src)) {
-                this.dict.setValue(src, new Collections.Dictionary());
-            }
-            var srcDict = this.dict.getValue(src);
-            // Check if the event type is in our dict
-            if (!srcDict.containsKey(evt)) {
-                srcDict.setValue(evt, new Collections.LinkedDictionary());
-            }
-            var evtList = srcDict.getValue(evt);
-            // Check if the destnation is already be in the listener list
-            var overlay = true;
-            if (!evtList.containsKey(dst)) {
-                overlay = false;
-            }
-            // Use new value anyway
-            evtList.setValue(dst, callback);
-            return overlay;
-        }
-        emit(src, resCallback, evt, args) {
-            var totalCnt = 0;
-            if (this.dict.containsKey(src)) {
-                var srcDict = this.dict.getValue(src);
-                if (srcDict.containsKey(evt)) {
-                    var evtList = srcDict.getValue(evt);
-                    // Pack argument array
-                    var lst = [src];
-                    lst.push.apply(lst, args);
-                    // Call the event callback function for each destination
-                    evtList.forEach((dst, callback) => {
-                        let result = callback.apply(dst, args);
-                        if (resCallback) {
-                            resCallback(result);
-                        }
-                        totalCnt += 1;
-                    });
-                }
-            }
-            return totalCnt;
-        }
-        discardEmitter(src) {
-            if (this.dict.containsKey(src)) {
-                this.dict.remove(src);
-            }
-        }
-        discardListener(src, dst, evt, clean = false) {
-            if (this.dict.containsKey(src)) {
-                var srcDict = this.dict.getValue(src);
-                if (srcDict.containsKey(evt)) {
-                    var evtList = srcDict.getValue(evt);
-                    if (evtList.containsKey(dst)) {
-                        evtList.remove(dst);
-                    }
-                    if (clean === true && evtList.isEmpty()) {
-                        srcDict.remove(evt);
-                    }
-                }
-                if (clean === true && srcDict.isEmpty()) {
-                    this.dict.remove(src);
-                }
-            }
-        }
-    }
-    exports.EventSystem = EventSystem;
-});
-/* Example usage
-                                        // Create //
-let tween = this.tweens.add({
-                targets: this.logo,
-                scaleX: { value: 1.0, duration: 2000, ease: 'Back.easeInOut' },
-                scaleY: { value: 1.0, duration: 2000, ease: 'Back.easeInOut' },
-                yoyo: true,
-                repeat: -1
-                });
-
-for (var i:number = 0; i < 4000; i++)
-{
-    var tmpText = this.add.text(16 + (i % 40) * 20, 16 + Math.floor(i / 40) * 20, '哇哦', {fontSize: '9px'});
-}
-
-console.log('Building event system...')
-// Init event system
-// 50x {1 Main -> 9 Sub}
-// this.num = 5000; // <-- This still runs at 60 FPS! with the update operation 7.88ms. Although the starting process is quite long (around 2min). This system is strong!
-this.num = 500;
-for(var i = 0; i < this.num * 10; i++)
-{
-    this.objs.push(new Events.EventElement(this.eventSystem));
-}
-
-// Create relationships
-for(var i = 0; i < this.num * 10; i++)
-{
-    if(i % 10 >= 0)
-    {
-        this.objs[i].listen(this.objs[Math.floor(i / 10) * 10], 'update', (mob, dt) => {return 0;});
-        this.objs[i].listen(this.objs[Math.floor(i / 10) * 10], 'onDamageReceived', (mob, src, dmg, hit, crit) => {console.log(dmg);});
-        this.objs[i].listen(this.objs[Math.floor(i / 10) * 10], 'onDead', (mob, lastHit) => {return 0;});
-        for(var j = 0; j < this.num; j++)
-        {
-            if(Math.random() < 0.5)
-            {
-                this.objs[i].listen(this.objs[j * 10], 'onDamageReceived', (mob, src, dmg, hit, crit) => {console.log(dmg);})
-            }
-        }
-    }
-
-    if(i % 1000 == 0)
-    {
-        console.log(i / 10);
-    }
-}
-
-                                        Update //
-this.cnt ++;
-if(this.cnt > 20)
-{
-    console.log(1000.0 / dt);
-    this.cnt = 0;
-}
-this.logo_scale = time / 10000.0;
-this.logo.setScale(this.logo_scale, this.logo_scale);
-
-this.ground_rt.scale -= 0.01;
-this.ground_rt.draw(this.mesh0);
-
-for(var i = 0; i < this.num; i++)
-{
-    this.objs[i * 10].emit('update', this.objs[i * 10], dt);
-    if(Math.random() < 0.6)
-    {
-        var src = Math.floor(Math.random() * this.num);
-        var dmg = Math.random() * 100.0;
-        this.objs[i * 10].emit('onDamageReceived', this.objs[i * 10], src, dmg, true, false);
-    }
-}
-*/ 
 /** @packageDocumentation @module DynamicLoader */
 define("Engine/DynamicLoader/DynamicLoadObject", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -232,7 +29,7 @@ define("Engine/UI/DraggableScene", ["require", "exports"], function (require, ex
     }
     exports.DraggableScene = DraggableScene;
 });
-/** @module DynamicLoader */
+/** @packageDocumentation @module DynamicLoader */
 define("Engine/DynamicLoader/DynamicLoaderScene", ["require", "exports", "Engine/UI/DraggableScene"], function (require, exports, DraggableScene_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -498,6 +295,209 @@ define("Engine/DynamicLoader/dPhysSprite", ["require", "exports", "Engine/Dynami
     }
     exports.dPhysSprite = dPhysSprite;
 });
+/**
+ * @packageDocumentation
+ * @module Events
+ */
+define("Engine/Events/EventSystem", ["require", "exports", "typescript-collections"], function (require, exports, Collections) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    Collections = __importStar(Collections);
+    class EventElement {
+        constructor(parentSystem) {
+            this.listenRecord = new Collections.Set();
+            this.parentSystem = parentSystem;
+        }
+        emit(evt, resCallback, ...args) {
+            return this.parentSystem.emit(this, resCallback, evt, args);
+        }
+        emitArray(evt, resCallback, args) {
+            return this.parentSystem.emit(this, resCallback, evt, args);
+        }
+        listen(src, evt, callback) {
+            var result = this.parentSystem.listen(src, this, callback, evt);
+            this.listenRecord.add({ src: src, evt: evt });
+            // result?
+            return result;
+        }
+        unlisten(src, evt) {
+            if (this.listenRecord.contains({ src: src, evt: evt })) {
+                this.parentSystem.discardListener(src, this, evt);
+                this.listenRecord.remove({ src: src, evt: evt });
+                return true;
+            }
+            return false;
+        }
+        // So lazy to use another dict omg
+        unlistenAll(src) {
+            var result = false;
+            // Will "this" be correct here? idk
+            this.listenRecord.forEach((obj) => {
+                if (obj.src === src) {
+                    result = true;
+                    this.unlisten(obj.src, obj.evt);
+                }
+            });
+            return result;
+        }
+        discardEmitter() {
+            this.parentSystem.discardEmitter(this);
+        }
+        discardReceiver() {
+            // Will "this" be correct here? idk
+            this.listenRecord.forEach((element) => {
+                this.parentSystem.discardListener(element.src, this, element.evt);
+            });
+        }
+        discard() {
+            this.discardEmitter();
+            this.discardReceiver();
+        }
+    }
+    exports.EventElement = EventElement;
+    class EventSystem {
+        constructor() {
+            this.dict = new Collections.Dictionary();
+            // nothing to do?
+        }
+        listen(src, dst, callback, evt) {
+            // Check if the source object is in our dict
+            if (!this.dict.containsKey(src)) {
+                this.dict.setValue(src, new Collections.Dictionary());
+            }
+            var srcDict = this.dict.getValue(src);
+            // Check if the event type is in our dict
+            if (!srcDict.containsKey(evt)) {
+                srcDict.setValue(evt, new Collections.LinkedDictionary());
+            }
+            var evtList = srcDict.getValue(evt);
+            // Check if the destnation is already be in the listener list
+            var overlay = true;
+            if (!evtList.containsKey(dst)) {
+                overlay = false;
+            }
+            // Use new value anyway
+            evtList.setValue(dst, callback);
+            return overlay;
+        }
+        emit(src, resCallback, evt, args) {
+            var totalCnt = 0;
+            if (this.dict.containsKey(src)) {
+                var srcDict = this.dict.getValue(src);
+                if (srcDict.containsKey(evt)) {
+                    var evtList = srcDict.getValue(evt);
+                    // Pack argument array
+                    var lst = [src];
+                    lst.push.apply(lst, args);
+                    // Call the event callback function for each destination
+                    evtList.forEach((dst, callback) => {
+                        let result = callback.apply(dst, args);
+                        if (resCallback) {
+                            resCallback(result);
+                        }
+                        totalCnt += 1;
+                    });
+                }
+            }
+            return totalCnt;
+        }
+        discardEmitter(src) {
+            if (this.dict.containsKey(src)) {
+                this.dict.remove(src);
+            }
+        }
+        discardListener(src, dst, evt, clean = false) {
+            if (this.dict.containsKey(src)) {
+                var srcDict = this.dict.getValue(src);
+                if (srcDict.containsKey(evt)) {
+                    var evtList = srcDict.getValue(evt);
+                    if (evtList.containsKey(dst)) {
+                        evtList.remove(dst);
+                    }
+                    if (clean === true && evtList.isEmpty()) {
+                        srcDict.remove(evt);
+                    }
+                }
+                if (clean === true && srcDict.isEmpty()) {
+                    this.dict.remove(src);
+                }
+            }
+        }
+    }
+    exports.EventSystem = EventSystem;
+});
+/* Example usage
+                                        // Create //
+let tween = this.tweens.add({
+                targets: this.logo,
+                scaleX: { value: 1.0, duration: 2000, ease: 'Back.easeInOut' },
+                scaleY: { value: 1.0, duration: 2000, ease: 'Back.easeInOut' },
+                yoyo: true,
+                repeat: -1
+                });
+
+for (var i:number = 0; i < 4000; i++)
+{
+    var tmpText = this.add.text(16 + (i % 40) * 20, 16 + Math.floor(i / 40) * 20, '哇哦', {fontSize: '9px'});
+}
+
+console.log('Building event system...')
+// Init event system
+// 50x {1 Main -> 9 Sub}
+// this.num = 5000; // <-- This still runs at 60 FPS! with the update operation 7.88ms. Although the starting process is quite long (around 2min). This system is strong!
+this.num = 500;
+for(var i = 0; i < this.num * 10; i++)
+{
+    this.objs.push(new Events.EventElement(this.eventSystem));
+}
+
+// Create relationships
+for(var i = 0; i < this.num * 10; i++)
+{
+    if(i % 10 >= 0)
+    {
+        this.objs[i].listen(this.objs[Math.floor(i / 10) * 10], 'update', (mob, dt) => {return 0;});
+        this.objs[i].listen(this.objs[Math.floor(i / 10) * 10], 'onDamageReceived', (mob, src, dmg, hit, crit) => {console.log(dmg);});
+        this.objs[i].listen(this.objs[Math.floor(i / 10) * 10], 'onDead', (mob, lastHit) => {return 0;});
+        for(var j = 0; j < this.num; j++)
+        {
+            if(Math.random() < 0.5)
+            {
+                this.objs[i].listen(this.objs[j * 10], 'onDamageReceived', (mob, src, dmg, hit, crit) => {console.log(dmg);})
+            }
+        }
+    }
+
+    if(i % 1000 == 0)
+    {
+        console.log(i / 10);
+    }
+}
+
+                                        Update //
+this.cnt ++;
+if(this.cnt > 20)
+{
+    console.log(1000.0 / dt);
+    this.cnt = 0;
+}
+this.logo_scale = time / 10000.0;
+this.logo.setScale(this.logo_scale, this.logo_scale);
+
+this.ground_rt.scale -= 0.01;
+this.ground_rt.draw(this.mesh0);
+
+for(var i = 0; i < this.num; i++)
+{
+    this.objs[i * 10].emit('update', this.objs[i * 10], dt);
+    if(Math.random() < 0.6)
+    {
+        var src = Math.floor(Math.random() * this.num);
+        var dmg = Math.random() * 100.0;
+        this.objs[i * 10].emit('onDamageReceived', this.objs[i * 10], src, dmg, true, false);
+    }
+}
+*/ 
 /** @packageDocumentation @module Core */
 define("Engine/Core/SpellData", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -527,7 +527,7 @@ define("Engine/Core/SpellData", ["require", "exports"], function (require, expor
         }
         update(mob, dt) {
             if (this.coolDownRemain >= 0) {
-                this.coolDownRemain -= dt * 0.001;
+                this.coolDownRemain -= dt;
             }
             this.available = this.isAvailable(mob);
             this.onUpdate(mob, dt);
@@ -698,11 +698,30 @@ define("Engine/Core/InventoryCore", ["require", "exports"], function (require, e
         }
     }
     exports.Inventory = Inventory;
-    class Item {
-        constructor() {
+    class ItemManager {
+        constructor() { }
+        static getCurrent() {
+            if (!ItemManager.instance) {
+                return new ItemManager();
+            }
+            return ItemManager.instance;
+        }
+        static setData(itemData, itemList) {
+            this.itemList = itemList;
+            ItemManager.datastorage = JSON.parse(JSON.stringify(itemData)); // Deep copy
+            for (let key in ItemManager.datastorage) {
+                ((ItemManager.datastorage)[key]).tags = new Set(((ItemManager.datastorage)[key]).tags);
+                ((ItemManager.datastorage)[key]).color = Phaser.Display.Color.HexStringToColor(((ItemManager.datastorage)[key]).color);
+            }
+        }
+        static getData(itemID) {
+            return ItemManager.datastorage[itemID];
+        }
+        static newItem(itemID) {
+            return (new this.itemList[itemID](itemID));
         }
     }
-    exports.Item = Item;
+    exports.ItemManager = ItemManager;
 });
 /** @packageDocumentation @module Core */
 define("Engine/Core/DataBackend", ["require", "exports", "Engine/Events/EventSystem", "Engine/Core/InventoryCore"], function (require, exports, EventSystem, InventoryCore_1) {
@@ -886,6 +905,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             this.alive = true;
             this.maxMana = settings.mana || 100;
             this.currentMana = this.maxMana || settings.mana || 100;
+            this.manaRegen = settings.manaRegen || 5;
             // speed related (1.0 means 100% (NOT a value but a ratio))
             this.modifiers = {
                 speed: settings.speed || 1.0,
@@ -1058,15 +1078,16 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
                 }
             }
             // Mana Regen
-            if (typeof this.currentWeapon !== "undefined") {
-                this.currentMana += dt * this.currentWeapon.manaRegen * 0.001; // change to this.manaRegen plz
-            }
+            this.currentMana += dt * this.manaRegen;
+            // if (typeof this.currentWeapon !== "undefined")
+            // {
+            // }
             if (this.currentMana > this.maxMana) {
                 this.currentMana = this.maxMana;
             }
             // Spell Casting
             if (this.globalCDRemain > 0) {
-                this.globalCDRemain -= dt * 0.001;
+                this.globalCDRemain -= dt;
             }
             else {
                 this.globalCDRemain = 0;
@@ -1080,7 +1101,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             }
             if (this.inCasting == true) {
                 if (this.castRemain > 0) {
-                    this.castRemain -= dt * 0.001;
+                    this.castRemain -= dt;
                 }
                 else {
                     this.inCasting = false;
@@ -1089,8 +1110,8 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             }
             if (this.inChanneling == true) {
                 if (this.channelRemain > 0) {
-                    this.channelRemain -= dt * 0.001;
-                    this.currentSpell.onChanneling(mob, this.currentSpellTarget, dt * 0.001 * this.channelTimeFactor);
+                    this.channelRemain -= dt;
+                    this.currentSpell.onChanneling(mob, this.currentSpellTarget, dt * this.channelTimeFactor);
                 }
                 else {
                     this.inChanneling = false;
@@ -1193,7 +1214,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             this.battleStats = {
                 resist: {
                     physical: 0,
-                    elemental: 10,
+                    elemental: 0,
                     pure: 0,
                     slash: 0,
                     knock: 0,
@@ -1233,7 +1254,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
                 hitAcc: 100,
                 avoid: 0,
                 // Percentage
-                crit: 20,
+                crit: 0,
                 antiCrit: 0,
                 // Parry for shield should calculate inside the shield itself when onReceiveDamage().
                 attackRange: 0,
@@ -1255,7 +1276,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
                     + this.baseStats.tec * 4
                     + this.baseStats.int * 4
                     + this.baseStats.mag * 4;
-            // 4. Calculate battle (advanced) stats from base stats (e.g. atkPower = INT * 0.7 * floor( MAG * 1.4 ) ... )
+            // TODO - 4. Calculate battle (advanced) stats from base stats (e.g. atkPower = INT * 0.7 * floor( MAG * 1.4 ) ... )
             // 5. Add equipment by listener.calcStats()
             // Actually, those steps were combined in a single call,
             // as the calculation step of each class will happen in their player classes,
@@ -1274,6 +1295,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
                 damageInfo.isAvoid = (100 * Math.random()) > (damageInfo.source.getPercentage(damageInfo.source.battleStats.hitAcc) -
                     damageInfo.target.getPercentage(damageInfo.target.battleStats.avoid));
             }
+            let originalDmgValue = damageInfo.value; // Used to multiply the contribution of every source
             this.updateListeners(damageInfo.target, 'receiveDamage', damageInfo);
             if (damageInfo.source) {
                 damageInfo.source.updateListeners(damageInfo.source, 'dealDamage', damageInfo);
@@ -1319,6 +1341,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             damageInfo.overdeal = damageInfo.value - realDmg;
             damageInfo.value = realDmg;
             // game.data.monitor.addDamage(damageInfo.value[dmg], dmg, damageInfo.source, damageInfo.target, damageInfo.isCrit, damageInfo.spell);
+            // TODO: modify damageInfo.detailedSource
             if (this.currentHealth <= 0) {
                 // Let everyone know what is happening
                 this.updateListeners(damageInfo.target, 'death', damageInfo);
@@ -1334,6 +1357,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             // It hits!
             return damageInfo;
         }
+        // TODO: merge receiveHeal and receiveDamage.
         receiveHeal(healInfo) {
             // Calculate crit based on parameters
             if (!healInfo.isCrit) {
@@ -1407,92 +1431,6 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
         }
     }
     exports.MobData = MobData;
-});
-/** @packageDocumentation @module Core */
-define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListener"], function (require, exports, MobListener_3) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var EquipmentType;
-    (function (EquipmentType) {
-        EquipmentType[EquipmentType["All"] = 0] = "All";
-        EquipmentType[EquipmentType["Accessory"] = 1] = "Accessory";
-        EquipmentType[EquipmentType["Armor"] = 2] = "Armor";
-        EquipmentType[EquipmentType["Weapon"] = 3] = "Weapon";
-        EquipmentType[EquipmentType["Unknown"] = 4] = "Unknown";
-    })(EquipmentType = exports.EquipmentType || (exports.EquipmentType = {}));
-    var WeaponType;
-    (function (WeaponType) {
-        WeaponType[WeaponType["Stuff"] = 0] = "Stuff";
-        WeaponType[WeaponType["Unknown"] = 1] = "Unknown";
-    })(WeaponType = exports.WeaponType || (exports.WeaponType = {}));
-    var WeaponSubType;
-    (function (WeaponSubType) {
-        WeaponSubType[WeaponSubType["Common"] = 0] = "Common";
-    })(WeaponSubType = exports.WeaponSubType || (exports.WeaponSubType = {}));
-    var EquipmentTag;
-    (function (EquipmentTag) {
-        EquipmentTag[EquipmentTag["Equipment"] = 0] = "Equipment";
-    })(EquipmentTag = exports.EquipmentTag || (exports.EquipmentTag = {}));
-    class Equipable extends MobListener_3.MobListener {
-        constructor(eqType = EquipmentType.Unknown) {
-            super();
-            this.eqType = eqType;
-        }
-        syncStats(mob) { }
-        onAdded(mob, source) {
-            super.onAdded(mob, source);
-            this.syncStats(mob);
-            this.listen(mob, 'statCalculationFinish', this.onStatCalculationFinish);
-        }
-        onStatCalculationFinish(mob) {
-            super.onStatCalculationFinish(mob);
-            this.syncStats(mob);
-        }
-    }
-    exports.Equipable = Equipable;
-    class Armor extends Equipable {
-    }
-    exports.Armor = Armor;
-    class Weapon extends Equipable {
-        constructor() {
-            super(EquipmentType.Weapon);
-            this.wpType = WeaponType.Unknown;
-            this.wpsubType = WeaponSubType.Common;
-            this.weaponGauge = 0;
-        }
-        isInRange(mob, target) {
-            throw new Error("Method not implemented.");
-        }
-        grabTargets(mob) {
-            return [];
-        }
-        triggerCD() {
-            this.isReady = false;
-            this.cooldown = 0;
-        }
-        attack(source, target, triggerCD = true) {
-            this.isReadyWrapper(() => {
-                this.doRegularAttack(source, target);
-                if (triggerCD) {
-                    this.triggerCD();
-                }
-            })();
-        }
-        syncStats(mob) {
-            this.cooldownMax = mob.getAttackSpeed();
-        }
-        onAdded(mob, source) {
-            super.onAdded(mob, source);
-            // console.log("be added to " + mob.name);
-        }
-        doRegularAttack(source, target) {
-            throw new Error("Method not implemented.");
-        }
-    }
-    exports.Weapon = Weapon;
-    class Accessory extends Equipable {
-    }
-    exports.Accessory = Accessory;
 });
 /** @packageDocumentation @moduleeDocumentation @module Agent */
 define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "Engine/GameObjects/Mob", "Engine/Core/GameData", "Engine/Core/UnitManager"], function (require, exports, MobAgent_1, Mob_1, GameData_2, UnitManager_1) {
@@ -1895,8 +1833,78 @@ define("Engine/Core/UnitManager", ["require", "exports", "Engine/GameObjects/Mob
     UnitManager.IDENTITY = (a, b) => 0;
     UnitManager.NOOP = (a) => true;
 });
+/** @packageDocumentation @module BattleScene */
+define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Phaser", "Engine/Core/UnitManager"], function (require, exports, Phaser, UnitManager_2) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    Phaser = __importStar(Phaser);
+    class BattleScene extends Phaser.Scene {
+        constructor(debug = false) {
+            super({
+                key: 'BattleScene',
+                physics: {
+                    default: 'arcade',
+                    'arcade': {
+                        debug: debug,
+                    }
+                }
+            });
+        }
+        preload() {
+            this.width = this.sys.game.canvas.width;
+            this.height = this.sys.game.canvas.height;
+        }
+        addMob(mob) {
+            this.add.existing(mob);
+            if (mob.mobData.isPlayer) {
+                this.playerGroup.add(mob);
+            }
+            else {
+                this.enemyGroup.add(mob);
+            }
+        }
+        create() {
+            UnitManager_2.UnitManager.resetScene(this);
+            this.unitMgr = UnitManager_2.UnitManager.getCurrent();
+            // Create groups
+            this.worldGroup = this.physics.add.group();
+            this.commonGroup = this.physics.add.group();
+            this.fxGroup = this.physics.add.group();
+            this.playerGroup = this.physics.add.group();
+            this.enemyGroup = this.physics.add.group();
+            this.playerTargetingObjectGroup = this.physics.add.group();
+            this.enemyTargetingObjectGroup = this.physics.add.group();
+            this.everyoneTargetingObjectGroup = this.physics.add.group();
+            this.physics.add.overlap(this.playerTargetingObjectGroup, this.playerGroup, this.spellHitMobCallback);
+            this.physics.add.overlap(this.everyoneTargetingObjectGroup, this.playerGroup, this.spellHitMobCallback);
+            this.physics.add.overlap(this.enemyTargetingObjectGroup, this.enemyGroup, this.spellHitMobCallback);
+            this.physics.add.overlap(this.everyoneTargetingObjectGroup, this.enemyGroup, this.spellHitMobCallback);
+            this.physics.add.overlap(this.playerTargetingObjectGroup, this.worldGroup, this.spellHitWorldCallback);
+            this.physics.add.overlap(this.enemyTargetingObjectGroup, this.worldGroup, this.spellHitWorldCallback);
+            this.physics.add.overlap(this.everyoneTargetingObjectGroup, this.worldGroup, this.spellHitWorldCallback);
+        }
+        // Handle when spell hits a mob it targets
+        spellHitMobCallback(obj1, obj2) {
+            let spell = obj1;
+            let mob = obj2;
+            spell.onHit(mob);
+            spell.onMobHit(mob);
+        }
+        // Handle when spell hits some world object that it may interact
+        spellHitWorldCallback(obj1, obj2) {
+            let spell = obj1;
+            spell.onHit(obj2);
+            spell.onWorldHit(obj2);
+        }
+        update(time, dt) {
+            this.children.each((item) => { item.update(dt / 1000.0); });
+            this.unitMgr.update(dt / 1000.0);
+        }
+    }
+    exports.BattleScene = BattleScene;
+});
 /** @packageDocumentation @module Core */
-define("Engine/Core/Helper", ["require", "exports", "Engine/Core/UnitManager", "Engine/GameObjects/Spell"], function (require, exports, UnitManager_2, Spell_1) {
+define("Engine/Core/Helper", ["require", "exports", "Engine/Core/UnitManager", "Engine/GameObjects/Spell"], function (require, exports, UnitManager_3, Spell_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function HealDmg(info) {
@@ -1926,18 +1934,18 @@ define("Engine/Core/Helper", ["require", "exports", "Engine/Core/UnitManager", "
      * ```
      * Above code will perform a fire type AoE attack, centered at (200, 200) with range 100, dealing a splitable 200 damage (in total) to all targets inside its range.
      *
-     * @param func Callback that will be applied for each mob once that captured by this AoE.
+     * @param func Callback that will be applied for each mob once, who got captured by this AoE.
      * @param pos Center of this AoE
      * @param range Range of this AoE in px
      * @param targets Which type of mobs is this AoE capturing. Rather player, enemy or both.
      * @param maxCapture Maximum units that this AoE can capture, <= 0 means no limit. It is recommended to set a non-identity compareFunc when a maxCapture number is set.
      * @param compareFunc The compareing function that will be used when quering the captured unit list. If set, target list will be sorted wrt this function, default is Identity (no sort).
      */
-    function AoE(func, pos, range, targets, maxCapture = -1, compareFunc = UnitManager_2.UnitManager.IDENTITY) {
+    function AoE(func, pos, range, targets, maxCapture = -1, compareFunc = UnitManager_3.UnitManager.IDENTITY) {
         let AoEList = targets == Spell_1.Targeting.Both ?
-            UnitManager_2.UnitManager.getCurrent().getUnitListAll(compareFunc, (a) => { return (a.footPos().distance(pos) < range); })
+            UnitManager_3.UnitManager.getCurrent().getUnitListAll(compareFunc, (a) => { return (a.footPos().distance(pos) < range); })
             :
-                UnitManager_2.UnitManager.getCurrent().getUnitList(compareFunc, (a) => { return (a.footPos().distance(pos) < range); }, targets == Spell_1.Targeting.Player);
+                UnitManager_3.UnitManager.getCurrent().getUnitList(compareFunc, (a) => { return (a.footPos().distance(pos) < range); }, targets == Spell_1.Targeting.Player);
         if (maxCapture > 0) {
             AoEList = AoEList.slice(0, maxCapture);
         }
@@ -2284,13 +2292,14 @@ define("Engine/Core/MobListener", ["require", "exports", "Engine/Core/DataBacken
  * Agents are used to control the action of mobs (players, enemies). They are also MobListeners so that they could handle events like dealDamage etc.
  * They are the "brain" of a mob, and a mob will not make any action without an agent.
  *
+ * @packageDocumentation
  * @module Agent
  * @preferred
  */
-define("Engine/Agents/MobAgent", ["require", "exports", "Engine/Core/MobListener"], function (require, exports, MobListener_4) {
+define("Engine/Agents/MobAgent", ["require", "exports", "Engine/Core/MobListener"], function (require, exports, MobListener_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    class MobAgent extends MobListener_4.MobListener {
+    class MobAgent extends MobListener_3.MobListener {
         constructor(parentMob) {
             super();
         }
@@ -2370,7 +2379,7 @@ define("Engine/UI/PopUpManager", ["require", "exports", "Phaser"], function (req
     exports.PopUpManager = PopUpManager;
 });
 /** @packageDocumentation @module GameEntity */
-define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/Core/mRTypes", "Engine/Core/UnitManager", "Engine/Core/EquipmentCore", "Engine/UI/PopUpManager"], function (require, exports, dPhysSprite_2, mRTypes_1, UnitManager_3, EquipmentCore_2, PopUpManager_1) {
+define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/Core/mRTypes", "Engine/Core/UnitManager", "Engine/Core/EquipmentCore", "Engine/UI/PopUpManager"], function (require, exports, dPhysSprite_2, mRTypes_1, UnitManager_4, EquipmentCore_2, PopUpManager_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Mob extends dPhysSprite_2.dPhysSprite {
@@ -2387,11 +2396,11 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
             this.isPlayer = this.mobData.isPlayer;
             if (this.isPlayer === true) {
                 // Is player
-                UnitManager_3.UnitManager.getCurrent().addPlayer(this);
+                UnitManager_4.UnitManager.getCurrent().addPlayer(this);
             }
             else {
                 // Is enemy
-                UnitManager_3.UnitManager.getCurrent().addEnemy(this);
+                UnitManager_4.UnitManager.getCurrent().addEnemy(this);
             }
             this.setGravity(0, 0);
             if (settings.agent) {
@@ -2504,6 +2513,7 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
                 'type': _damageInfo.type,
                 // 'type'   : _damageInfo.type,
                 'overdeal': 0,
+                'detailedSource': new Map([[_damageInfo.source.mobData, _damageInfo.value]]),
             };
             if (Mob.checkAlive(this) == false) {
                 damageInfo.isAvoid = true;
@@ -2524,7 +2534,7 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
             // Mob itself only do rendering popUp texts
             if (_damageInfo.popUp == true && result.value > 0) {
                 var popUpPos = this.getTopCenter();
-                PopUpManager_1.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? " !" : ""), popUpPos.x, popUpPos.y, mRTypes_1.Consts.ElementColors[result.type]);
+                PopUpManager_1.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, mRTypes_1.Consts.ElementColors[result.type]);
                 // // popUp texts on unit frames
                 // // fade from the edge of currentHealth to the left
                 // if(this.data.isPlayer)
@@ -2612,10 +2622,10 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
                 // }
                 var popUpPos = this.getTopCenter();
                 if (result.overdeal > 0) {
-                    PopUpManager_1.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? " !" : "") + " <" + result.overdeal.toString(), popUpPos.x, popUpPos.y, mRTypes_1.Consts.ElementColors['heal']);
+                    PopUpManager_1.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : "") + " <" + result.overdeal.toString() + ">", popUpPos.x, popUpPos.y, mRTypes_1.Consts.ElementColors['heal'], 1.0, 64, -256);
                 }
                 else {
-                    PopUpManager_1.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? " !" : ""), popUpPos.x, popUpPos.y, mRTypes_1.Consts.ElementColors['heal']);
+                    PopUpManager_1.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, mRTypes_1.Consts.ElementColors['heal'], 1.0, 64, -256);
                 }
                 // // popUp texts on unit frames
                 // // fade from left to the the edge of currentHealth
@@ -2655,6 +2665,7 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
                 // me.game.world.removeChild(this.HPBar);
                 // game.units.removeEnemy(this);
                 // me.game.world.removeChild(this);
+                this.destroy();
             }
         }
         footPos() {
@@ -2669,75 +2680,122 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
     }
     exports.Mob = Mob;
 });
-/** @packageDocumentation @module BattleScene */
-define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Phaser", "Engine/Core/UnitManager"], function (require, exports, Phaser, UnitManager_4) {
+/** @packageDocumentation @module Core */
+define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListener", "Engine/Core/InventoryCore"], function (require, exports, MobListener_4, InventoryCore_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    Phaser = __importStar(Phaser);
-    class BattleScene extends Phaser.Scene {
-        constructor(debug = false) {
-            super({
-                key: 'BattleScene',
-                physics: {
-                    default: 'arcade',
-                    'arcade': {
-                        debug: debug,
-                    }
+    var EquipmentType;
+    (function (EquipmentType) {
+        EquipmentType["All"] = "EQTYPE_ALL";
+        EquipmentType["Accessory"] = "accessory";
+        EquipmentType["Armor"] = "armor";
+        EquipmentType["Weapon"] = "weapon";
+        EquipmentType["Unknown"] = "EQTYPE_UNKNOWN";
+    })(EquipmentType = exports.EquipmentType || (exports.EquipmentType = {}));
+    var WeaponType;
+    (function (WeaponType) {
+        WeaponType["Staff"] = "staff";
+        WeaponType["Unknown"] = "WPTYPE_UNKNOWN";
+    })(WeaponType = exports.WeaponType || (exports.WeaponType = {}));
+    var WeaponSubType;
+    (function (WeaponSubType) {
+        WeaponSubType["Unknown"] = "WPTYPE_UNKNOWN";
+    })(WeaponSubType = exports.WeaponSubType || (exports.WeaponSubType = {}));
+    var EquipmentTag;
+    (function (EquipmentTag) {
+        EquipmentTag["Equipment"] = "equipment";
+    })(EquipmentTag = exports.EquipmentTag || (exports.EquipmentTag = {}));
+    class Equipable extends MobListener_4.MobListener {
+        constructor(itemID) {
+            super();
+            this.itemID = itemID;
+            this.itemData = InventoryCore_2.ItemManager.getData(this.itemID);
+            this.name = this.itemData.showName;
+            this.assignTags();
+        }
+        syncStats(mob) { }
+        onAdded(mob, source) {
+            super.onAdded(mob, source);
+            this.syncStats(mob);
+            this.listen(mob, 'statCalculationFinish', this.onStatCalculationFinish);
+        }
+        onStatCalculationFinish(mob) {
+            super.onStatCalculationFinish(mob);
+            this.syncStats(mob);
+        }
+        showToolTip() {
+            return {
+                'title': 'Equipment',
+                'text': 'Tooltip',
+            };
+        }
+        assignTags() {
+            let tags = this.itemData.tags;
+            tags.forEach(t => {
+                if (t in EquipmentType) {
+                    this.eqType = EquipmentType[t];
                 }
             });
         }
-        preload() {
-            this.width = this.sys.game.canvas.width;
-            this.height = this.sys.game.canvas.height;
+    }
+    exports.Equipable = Equipable;
+    class Armor extends Equipable {
+    }
+    exports.Armor = Armor;
+    class Weapon extends Equipable {
+        constructor(itemID) {
+            super(itemID);
+            this.weaponGauge = 0;
+            this.weaponGaugeMax = -1;
         }
-        addMob(mob) {
-            this.add.existing(mob);
-            if (mob.mobData.isPlayer) {
-                this.playerGroup.add(mob);
-            }
-            else {
-                this.enemyGroup.add(mob);
-            }
+        isInRange(mob, target) {
+            throw new Error("Method not implemented.");
         }
-        create() {
-            UnitManager_4.UnitManager.resetScene(this);
-            this.unitMgr = UnitManager_4.UnitManager.getCurrent();
-            // Create groups
-            this.worldGroup = this.physics.add.group();
-            this.commonGroup = this.physics.add.group();
-            this.fxGroup = this.physics.add.group();
-            this.playerGroup = this.physics.add.group();
-            this.enemyGroup = this.physics.add.group();
-            this.playerTargetingObjectGroup = this.physics.add.group();
-            this.enemyTargetingObjectGroup = this.physics.add.group();
-            this.everyoneTargetingObjectGroup = this.physics.add.group();
-            this.physics.add.overlap(this.playerTargetingObjectGroup, this.playerGroup, this.spellHitMobCallback);
-            this.physics.add.overlap(this.everyoneTargetingObjectGroup, this.playerGroup, this.spellHitMobCallback);
-            this.physics.add.overlap(this.enemyTargetingObjectGroup, this.enemyGroup, this.spellHitMobCallback);
-            this.physics.add.overlap(this.everyoneTargetingObjectGroup, this.enemyGroup, this.spellHitMobCallback);
-            this.physics.add.overlap(this.playerTargetingObjectGroup, this.worldGroup, this.spellHitWorldCallback);
-            this.physics.add.overlap(this.enemyTargetingObjectGroup, this.worldGroup, this.spellHitWorldCallback);
-            this.physics.add.overlap(this.everyoneTargetingObjectGroup, this.worldGroup, this.spellHitWorldCallback);
+        grabTargets(mob) {
+            return [];
         }
-        // Handle when spell hits a mob it targets
-        spellHitMobCallback(obj1, obj2) {
-            let spell = obj1;
-            let mob = obj2;
-            spell.onHit(mob);
-            spell.onMobHit(mob);
+        triggerCD() {
+            this.isReady = false;
+            this.cooldown = 0;
         }
-        // Handle when spell hits some world object that it may interact
-        spellHitWorldCallback(obj1, obj2) {
-            let spell = obj1;
-            spell.onHit(obj2);
-            spell.onWorldHit(obj2);
+        assignTags() {
+            super.assignTags();
+            this.wpType = WeaponType[this.itemData.pClass];
+            this.wpsubType = WeaponType[this.itemData.sClass];
         }
-        update(time, dt) {
-            this.children.each((item) => { item.update(dt / 1000.0); });
-            this.unitMgr.update(dt / 1000.0);
+        attack(source, target, triggerCD = true) {
+            this.isReadyWrapper(() => {
+                this.doRegularAttack(source, target);
+                if (triggerCD) {
+                    this.triggerCD();
+                }
+                if (this.weaponGaugeMax > 0) {
+                    this.weaponGauge += this.weaponGaugeIncreasement(source);
+                    if (this.weaponGauge > this.weaponGaugeMax) {
+                        this.weaponGauge -= this.weaponGaugeMax;
+                        this.doSpecialAttack(source, target);
+                    }
+                }
+            })();
+        }
+        syncStats(mob) {
+            this.cooldownMax = mob.getAttackSpeed();
+        }
+        onAdded(mob, source) {
+            super.onAdded(mob, source);
+            // console.log("be added to " + mob.name);
+        }
+        doRegularAttack(source, target) {
+            throw new Error("Method not implemented.");
+        }
+        doSpecialAttack(source, target) {
+            // throw new Error("Method not implemented.")
         }
     }
-    exports.BattleScene = BattleScene;
+    exports.Weapon = Weapon;
+    class Accessory extends Equipable {
+    }
+    exports.Accessory = Accessory;
 });
 /** @packageDocumentation @module GameObjects */
 define("Engine/GameObjects/Projectile", ["require", "exports", "Engine/GameObjects/Spell", "Engine/GameObjects/Mob"], function (require, exports, Spell_2, Mob_4) {
@@ -2770,27 +2828,24 @@ define("Engine/GameObjects/Projectile", ["require", "exports", "Engine/GameObjec
     exports.Projectile = Projectile;
 });
 /** @packageDocumentation @module Weapons */
-define("Weapons/Stuff", ["require", "exports", "Engine/Core/EquipmentCore", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/GameObjects/Projectile", "Engine/Core/Helper"], function (require, exports, EquipmentCore_3, UnitManager_5, Spell_3, Projectile_1, Helper_2) {
+define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/GameObjects/Projectile", "Engine/Core/Helper"], function (require, exports, EquipmentCore_3, UnitManager_5, Spell_3, Projectile_1, Helper_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class CometWand extends EquipmentCore_3.Weapon {
-        constructor() {
-            super();
-            this.name = "Comet Wand";
-            this.wpType = EquipmentCore_3.WeaponType.Stuff;
-            this.wpsubType = EquipmentCore_3.WeaponSubType.Common;
+        constructor(itemID = 'cometWand') {
+            super(itemID);
             this.mainElement = 'ice';
             this.baseAttackMin = 6;
             this.baseAttackMax = 18;
             this.baseAttackSpeed = 1.5;
             this.targetCount = 1;
             this.activeRange = 200;
-            this.manaCost = 0;
-            this.manaRegen = 0;
+            this.manaCost = 4;
             this.weaponGaugeMax = 25;
-            this.weaponGaugeIncreasement = function (mob) { return mob.baseStats.mag; };
+            this.weaponGaugeIncreasement = function (mob) { return mob.mobData.baseStats.mag; };
         }
         doRegularAttack(source, target) {
+            console.log(this.weaponGauge.toString() + " / " + this.weaponGaugeMax.toString());
             let targetMob = target[0];
             new Projectile_1.Projectile(source.x, source.y, 'img_iced_fx', {
                 'info': { 'name': this.name, 'flags': new Set([Spell_3.SpellFlags.isDamage, Spell_3.SpellFlags.hasTarget]) },
@@ -2811,11 +2866,35 @@ define("Weapons/Stuff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
                 'chasingPower': 1.0,
             });
         }
+        doSpecialAttack(source, target) {
+            let targetMob = target[0];
+            new Projectile_1.Projectile(source.x, source.y, 'img_iced_fx', {
+                'info': { 'name': this.name, 'flags': new Set([Spell_3.SpellFlags.isDamage, Spell_3.SpellFlags.hasTarget]) },
+                'source': source,
+                'target': targetMob,
+                'speed': 250,
+                'onMobHit': (self, mob) => {
+                    self.dieAfter(() => Helper_2.AoE((m) => {
+                        self.HealDmg(m, Helper_2.getRandomInt(30, 50), 'fire');
+                    }, self.getPosition(), 100, self.targeting), [], mob);
+                },
+                'color': Phaser.Display.Color.HexStringToColor("#ff3333"),
+                'chasingRange': 400,
+                'chasingPower': 5.0,
+            });
+        }
         grabTargets(mob) {
             return UnitManager_5.UnitManager.getCurrent().getNearest(mob.footPos(), !mob.mobData.isPlayer, this.targetCount);
         }
     }
     exports.CometWand = CometWand;
+});
+define("ItemList", ["require", "exports", "Weapons/Staff"], function (require, exports, Staff_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ItemList = {
+        "cometWand": Staff_1.CometWand,
+    };
 });
 /** @packageDocumentation @module Agent */
 define("Agents/SimpleAgents", ["require", "exports", "Engine/Agents/MobAgent"], function (require, exports, MobAgent_2) {
@@ -2838,13 +2917,15 @@ define("Agents/SimpleAgents", ["require", "exports", "Engine/Agents/MobAgent"], 
     exports.KeepMoving = KeepMoving;
 });
 /** @packageDocumentation @module BattleScene */
-define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/Stuff", "Agents/PlayerAgents", "Agents/SimpleAgents"], function (require, exports, BattleScene_1, Mob_5, MobData_1, Stuff_1, PlayerAgents, SimpleAgents_1) {
+define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/Staff", "Agents/PlayerAgents", "Agents/SimpleAgents", "Engine/Core/Helper", "Engine/Core/InventoryCore", "ItemList"], function (require, exports, BattleScene_1, Mob_5, MobData_1, Staff_2, PlayerAgents, SimpleAgents_1, Helper_3, InventoryCore_3, ItemList_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     PlayerAgents = __importStar(PlayerAgents);
     class TestScene extends BattleScene_1.BattleScene {
         constructor() {
             super(false); // debug?
+            this.hc = 0.5;
+            this.hcM = 0.5;
         }
         preload() {
             super.preload();
@@ -2852,27 +2933,31 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
             this.load.image('Grass_Overworld', 'assets/tilemaps/tiles/overworld_tileset_grass.png');
             this.load.tilemapTiledJSON('overworld', 'assets/tilemaps/Overworld_tst.json');
             this.load.spritesheet('elf', 'assets/forestElfMyst.png', { frameWidth: 32, frameHeight: 32, endFrame: 3 });
+            this.load.json('itemData', 'assets/dataSheets/Items.json');
         }
         create() {
             super.create();
+            // Create the ItemManager
+            InventoryCore_3.ItemManager.setData(this.cache.json.get('itemData'), ItemList_1.ItemList);
+            InventoryCore_3.ItemManager.newItem("cometWand");
             this.map = this.make.tilemap({ key: 'overworld' });
             this.tiles = this.map.addTilesetImage('Grass_Overworld', 'Grass_Overworld');
             this.terrainLayer = this.map.createStaticLayer('Terrain', this.tiles, 0, 0);
             this.anims.create({ key: 'move', frames: this.anims.generateFrameNumbers('elf', { start: 0, end: 3, first: 0 }), frameRate: 8, repeat: -1 });
             // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
-            let girl = new Mob_5.Mob(this, 100, 200, 'char_sheet_forestelf_myst', {
+            this.girl = new Mob_5.Mob(this, 100, 200, 'char_sheet_forestelf_myst', {
                 'idleAnim': 'move',
                 'moveAnim': 'move',
                 'deadAnim': 'move',
-                'backendData': new MobData_1.MobData({ name: 'testGirl', 'isPlayer': true, 'attackSpeed': 5 }),
+                'backendData': new MobData_1.MobData({ name: 'testGirl', 'isPlayer': true, 'attackSpeed': 5, 'mag': 5, }),
                 'agent': PlayerAgents.Simple,
             });
-            girl.mobData.battleStats.attackPower.ice = 10;
-            girl.mobData.battleStats.crit = 50.0;
-            girl.mobData.weaponRight = new Stuff_1.CometWand();
-            girl.mobData.currentWeapon = girl.mobData.weaponRight;
-            girl.mobData.addListener(girl.mobData.weaponRight);
-            this.addMob(girl);
+            this.girl.mobData.battleStats.attackPower.ice = 10;
+            this.girl.mobData.battleStats.crit = 50.0;
+            this.girl.mobData.weaponRight = new Staff_2.CometWand();
+            this.girl.mobData.currentWeapon = this.girl.mobData.weaponRight;
+            this.girl.mobData.addListener(this.girl.mobData.weaponRight);
+            this.addMob(this.girl);
             let woodlog = new Mob_5.Mob(this, 300, 200, 'char_sheet_forestelf_myst', {
                 'idleAnim': 'move',
                 'moveAnim': 'move',
@@ -2889,6 +2974,7 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
                 'agent': SimpleAgents_1.KeepMoving,
             });
             this.addMob(woodlog);
+            this.h = woodlog;
             woodlog = new Mob_5.Mob(this, 300, 250, 'char_sheet_forestelf_myst', {
                 'idleAnim': 'move',
                 'moveAnim': 'move',
@@ -2897,6 +2983,15 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
                 'agent': SimpleAgents_1.KeepMoving,
             });
             this.addMob(woodlog);
+        }
+        update(time, dt) {
+            super.update(time, dt);
+            // console.log("Mana: " + this.girl.mobData.currentMana.toString() + " / " + this.girl.mobData.maxMana.toString());
+            if (this.hc < 0) {
+                this.hc = this.hcM;
+                Helper_3.HealDmg({ 'source': this.h, 'target': this.h, type: 'heal', value: 5 });
+            }
+            this.hc -= dt * 0.001;
         }
     }
     exports.TestScene = TestScene;
