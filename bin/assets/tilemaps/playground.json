@@ -388,7 +388,7 @@
                         {
                          "name":"health",
                          "type":"float",
-                         "value":1000000
+                         "value":1000
                         }, 
                         {
                          "name":"image",
@@ -425,7 +425,7 @@
                         {
                          "name":"health",
                          "type":"float",
-                         "value":1000000
+                         "value":1000
                         }, 
                         {
                          "name":"image",
@@ -462,7 +462,7 @@
                         {
                          "name":"health",
                          "type":"float",
-                         "value":1000000
+                         "value":1000
                         }, 
                         {
                          "name":"image",
@@ -499,7 +499,7 @@
                         {
                          "name":"health",
                          "type":"float",
-                         "value":1000000
+                         "value":1000
                         }, 
                         {
                          "name":"image",
@@ -536,7 +536,7 @@
                         {
                          "name":"health",
                          "type":"float",
-                         "value":1000000
+                         "value":1000
                         }, 
                         {
                          "name":"image",
@@ -573,7 +573,7 @@
                         {
                          "name":"health",
                          "type":"float",
-                         "value":1000000
+                         "value":1000
                         }, 
                         {
                          "name":"image",
@@ -610,7 +610,7 @@
                         {
                          "name":"health",
                          "type":"float",
-                         "value":1000000
+                         "value":1000
                         }, 
                         {
                          "name":"image",
@@ -647,7 +647,7 @@
                         {
                          "name":"health",
                          "type":"float",
-                         "value":1000000
+                         "value":1000
                         }, 
                         {
                          "name":"image",

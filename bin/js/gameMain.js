@@ -1230,7 +1230,6 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
         }
         // To be continued - dataBackend.js:301
         updateMobBackend(mob, dt) {
-            console.log(this.listeners.data.size);
             // Register parent mob
             if (typeof this.parentMob == undefined) {
                 this.parentMob = mob;
@@ -2303,9 +2302,11 @@ define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListe
             this.assignTags();
         }
         syncStats(mob) { }
-        onAdded(mob, source) {
+        _beAdded(mob, source) {
             this.syncStats(mob);
             this.listen(mob, 'statCalculationFinish', this.onStatCalculationFinish);
+            super._beAdded(mob, source);
+            this.emitArray('statChange', (res) => { }, [this]);
         }
         onStatCalculationFinish(mob) {
             super.onStatCalculationFinish(mob);
@@ -2369,10 +2370,11 @@ define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListe
         syncStats(mob) {
             this.cooldownMax = mob.getAttackSpeed();
         }
-        onAdded(mob, source) {
-            super.onAdded(mob, source);
-            // console.log("be added to " + mob.name);
-        }
+        // onAdded(mob: MobData, source: MobData)
+        // {
+        //     super.onAdded(mob, source);
+        //     // console.log("be added to " + mob.name);
+        // }
         doRegularAttack(source, target) {
             throw new Error("Method not implemented.");
         }
@@ -3090,6 +3092,12 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
             this.weaponGaugeMax = 25;
             this.weaponGaugeIncreasement = function (mob) { return mob.mobData.baseStats.mag; };
         }
+        onAdded(mob, source) {
+            this.listen(mob, 'baseStatCalculation', this.onBaseStatCalculation);
+        }
+        onBaseStatCalculation(mob) {
+            mob.baseStats.mag += 200;
+        }
         doRegularAttack(source, target) {
             let targetMob = target[0];
             new Projectile_1.Projectile(source.x, source.y, 'img_iced_fx', {
@@ -3121,7 +3129,7 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
                 'onMobHit': (self, mob) => {
                     self.dieAfter(() => Helper_3.AoE((m) => {
                         // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
-                        m.receiveBuff(source, new HDOT_1.HDOT({ 'source': source.mobData, 'countTime': true, 'popupColor': GameData_7.GameData.ElementColors[GameData_7.GameData.Elements.fire], 'popupName': 'Burnt' }, GameData_7.GameData.Elements.fire, 20, 500, 0.94));
+                        m.receiveBuff(source, new HDOT_1.HDOT({ 'source': source.mobData, 'countTime': true, 'popupColor': GameData_7.GameData.ElementColors[GameData_7.GameData.Elements.fire], 'popupName': 'Burnt' }, GameData_7.GameData.Elements.fire, 5, 8, 0.2));
                     }, self.getPosition(), 100, self.targeting), [], mob);
                 },
                 'color': Phaser.Display.Color.HexStringToColor("#ff3333"),

@@ -31,6 +31,16 @@ export class CometWand extends Weapon
         this.weaponGaugeIncreasement = function (mob: Mob) { return mob.mobData.baseStats.mag; };
     }
 
+    onAdded(mob: MobData, source: MobData)
+    {
+        this.listen(mob, 'baseStatCalculation', this.onBaseStatCalculation);
+    }
+
+    onBaseStatCalculation(mob: MobData)
+    {
+        mob.baseStats.mag += 200;
+    }
+
     doRegularAttack(source: Mob, target: Array<Mob>)
     {
         let targetMob = target[0];
@@ -68,7 +78,7 @@ export class CometWand extends Weapon
                     () => AoE((m: Mob) =>
                     {
                         // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
-                        m.receiveBuff(source, new HDOT({ 'source': source.mobData, 'countTime': true, 'popupColor': GameData.ElementColors[GameData.Elements.fire], 'popupName': 'Burnt' }, GameData.Elements.fire, 20, 500, 0.94));
+                        m.receiveBuff(source, new HDOT({ 'source': source.mobData, 'countTime': true, 'popupColor': GameData.ElementColors[GameData.Elements.fire], 'popupName': 'Burnt' }, GameData.Elements.fire, 5, 8, 0.2));
                     }, self.getPosition(), 100, self.targeting), [], mob);
             },
             'color': Phaser.Display.Color.HexStringToColor("#ff3333"),

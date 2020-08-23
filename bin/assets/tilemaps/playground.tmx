@@ -155,7 +155,7 @@
    <properties>
     <property name="agentType" value="keepMoving"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="health" type="float" value="1e+06"/>
+    <property name="health" type="float" value="1000"/>
     <property name="image" value="gripe_run_right"/>
     <property name="vit" type="float" value="10"/>
    </properties>
@@ -164,7 +164,7 @@
    <properties>
     <property name="agentType" value="keepMoving"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="health" type="float" value="1e+06"/>
+    <property name="health" type="float" value="1000"/>
     <property name="image" value="gripe_run_right"/>
     <property name="vit" type="float" value="10"/>
    </properties>
@@ -173,7 +173,7 @@
    <properties>
     <property name="agentType" value="keepMoving"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="health" type="float" value="1e+06"/>
+    <property name="health" type="float" value="1000"/>
     <property name="image" value="gripe_run_right"/>
     <property name="vit" type="float" value="10"/>
    </properties>
@@ -182,7 +182,7 @@
    <properties>
     <property name="agentType" value="keepMoving"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="health" type="float" value="1e+06"/>
+    <property name="health" type="float" value="1000"/>
     <property name="image" value="gripe_run_right"/>
     <property name="vit" type="float" value="10"/>
    </properties>
@@ -191,7 +191,7 @@
    <properties>
     <property name="agentType" value="keepMoving"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="health" type="float" value="1e+06"/>
+    <property name="health" type="float" value="1000"/>
     <property name="image" value="gripe_run_right"/>
     <property name="vit" type="float" value="10"/>
    </properties>
@@ -200,7 +200,7 @@
    <properties>
     <property name="agentType" value="keepMoving"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="health" type="float" value="1e+06"/>
+    <property name="health" type="float" value="1000"/>
     <property name="image" value="gripe_run_right"/>
     <property name="vit" type="float" value="10"/>
    </properties>
@@ -209,7 +209,7 @@
    <properties>
     <property name="agentType" value="keepMoving"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="health" type="float" value="1e+06"/>
+    <property name="health" type="float" value="1000"/>
     <property name="image" value="gripe_run_right"/>
     <property name="vit" type="float" value="10"/>
    </properties>
@@ -218,7 +218,7 @@
    <properties>
     <property name="agentType" value="keepMoving"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="health" type="float" value="1e+06"/>
+    <property name="health" type="float" value="1000"/>
     <property name="image" value="gripe_run_right"/>
     <property name="vit" type="float" value="10"/>
    </properties>

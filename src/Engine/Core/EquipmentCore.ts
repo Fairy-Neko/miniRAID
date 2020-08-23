@@ -62,10 +62,14 @@ export class Equipable extends MobListener implements Item
 
     syncStats(mob: MobData) { }
 
-    onAdded(mob: MobData, source: MobData)
+    _beAdded(mob: MobData, source: MobData)
     {
         this.syncStats(mob);
         this.listen(mob, 'statCalculationFinish', this.onStatCalculationFinish);
+
+        super._beAdded(mob, source);
+
+        this.emitArray('statChange', (res) => { }, [this]);
     }
 
     onStatCalculationFinish(mob: MobData)
@@ -179,11 +183,11 @@ export class Weapon extends Equipable
         this.cooldownMax = mob.getAttackSpeed();
     }
 
-    onAdded(mob: MobData, source: MobData)
-    {
-        super.onAdded(mob, source);
-        // console.log("be added to " + mob.name);
-    }
+    // onAdded(mob: MobData, source: MobData)
+    // {
+    //     super.onAdded(mob, source);
+    //     // console.log("be added to " + mob.name);
+    // }
 
     doRegularAttack(source: Mob, target: Array<Mob>)
     {

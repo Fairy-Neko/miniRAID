@@ -334,8 +334,6 @@ export class MobData extends EventSystem.EventElement
     // To be continued - dataBackend.js:301
     updateMobBackend(mob: Mob, dt: number)
     {
-        console.log(this.listeners.data.size);
-
         // Register parent mob
         if (typeof this.parentMob == undefined)
         {
