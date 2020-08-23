@@ -38,6 +38,7 @@ export class CometWand extends Weapon
 
     onBaseStatCalculation(mob: MobData)
     {
+        // Add stats to the mob
         mob.baseStats.mag += 200;
     }
 

@@ -3096,6 +3096,7 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
             this.listen(mob, 'baseStatCalculation', this.onBaseStatCalculation);
         }
         onBaseStatCalculation(mob) {
+            // Add stats to the mob
             mob.baseStats.mag += 200;
         }
         doRegularAttack(source, target) {
