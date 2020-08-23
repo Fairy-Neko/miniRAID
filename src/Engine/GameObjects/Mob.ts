@@ -11,6 +11,8 @@ import { UnitManager } from '../Core/UnitManager';
 import { EquipmentType, EquipmentTag } from '../Core/EquipmentCore';
 import { Buff } from '../Core/Buff';
 import { PopUpManager } from '../UI/PopUpManager';
+import { DynamicLoaderScene } from '../DynamicLoader/DynamicLoaderScene';
+import { ObjectPopulator } from '../Core/ObjectPopulator';
 
 export class Mob extends dPhysSprite
 {
@@ -69,6 +71,23 @@ export class Mob extends dPhysSprite
         this.attackCounter = 0;
 
         // HPBar
+    }
+
+    static fromTiled(scene: Phaser.Scene, obj: Phaser.Types.Tilemaps.TiledObject, prop: any): Mob
+    {
+        let settings_backend = <mRTypes.Settings.MobData>(prop);
+        settings_backend.name = settings_backend.name || obj.name || 'Unnamed_mob';
+
+        let charsheet_key = 'sheet_' + prop['image'] || 'sheet_default_mob';
+        let settings: mRTypes.Settings.Mob = {
+            'moveAnim': charsheet_key + '_move',
+            'idleAnim': charsheet_key + '_idle',
+            'deadAnim': charsheet_key + '_dead',
+            'backendData': new MobData(settings_backend),
+            'agent': ObjectPopulator.agentList[prop['agentType'] || prop['agent'] || 'default'],
+        };
+
+        return new Mob(scene, obj.x, obj.y, charsheet_key, <mRTypes.Settings.Mob>settings);
     }
 
     update(dt: number)

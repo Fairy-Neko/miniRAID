@@ -31,7 +31,6 @@ export class CometWand extends Weapon
 
     doRegularAttack(source: Mob, target: Array<Mob>)
     {
-        console.log(this.weaponGauge.toString() + " / " + this.weaponGaugeMax.toString());
         let targetMob = target[0];
         new Projectile(source.x, source.y, 'img_iced_fx', {
             'info': { 'name': this.name, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },

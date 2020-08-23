@@ -47,6 +47,7 @@ export class DynamicLoaderScene extends DraggableScene
     {
         super.create();
         this.label = this.add.text(0, 0, 'Loading ... [100.0%]');
+        this.label.setBackgroundColor('#000000');
 
         this.assetList = this.cache.json.get('assetList');
 
@@ -123,7 +124,7 @@ export class DynamicLoaderScene extends DraggableScene
                         // We already have this
                         item.callback(item.key, resource.type, IOObj.pool.get(item.key));
                     }
-                    // We don't want load a file many times (Phaser will throw a warning and actually it won't load multiple times for same keys, but hey we hate warnings (x))
+                    // We don't want to load a file many times (Phaser will throw a warning and actually it won't load multiple times for same keys, but hey we hate warnings (x))
                     else if (!this.pending.has(item.key))
                     {
                         console.log(`[DynamicLoader] Loading resource ${item.key} as type ${resource.type}`);
@@ -173,6 +174,17 @@ export class DynamicLoaderScene extends DraggableScene
                 // Maybe we don't want to get it again for performance ...
                 let resource = self.assetList[key];
                 let IOObj = self.pools.get(resource.type);
+
+                if (resource.type === "spritesheet")
+                {
+                    if (resource.animations)
+                    {
+                        for (let anim_key in resource.animations)
+                        {
+                            self.anims.create({ key: key + '_' + anim_key, frames: self.anims.generateFrameNumbers(key, { start: resource.animations[anim_key][0], end: resource.animations[anim_key][1], first: resource.animations[anim_key][2] }), frameRate: 8, repeat: -1 });
+                        }
+                    }
+                }
 
                 value.forEach(element =>
                 {

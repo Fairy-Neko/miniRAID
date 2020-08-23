@@ -5,296 +5,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-/** @packageDocumentation @module DynamicLoader */
-define("Engine/DynamicLoader/DynamicLoadObject", ["require", "exports"], function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-});
-/**
- * @packageDocumentation
- * @module UI
- */
-define("Engine/UI/DraggableScene", ["require", "exports"], function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    class DraggableScene extends Phaser.Scene {
-        constructor(config) {
-            super(config);
-        }
-        create() {
-            this.cameras.main.setViewport(this.screenX, this.screenY, this.sizeX, this.sizeY);
-        }
-        update(time, dt) {
-        }
-    }
-    exports.DraggableScene = DraggableScene;
-});
-/** @packageDocumentation @module DynamicLoader */
-define("Engine/DynamicLoader/DynamicLoaderScene", ["require", "exports", "Engine/UI/DraggableScene"], function (require, exports, DraggableScene_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    class DynamicLoaderScene extends DraggableScene_1.DraggableScene {
-        constructor() {
-            super({ key: 'DynamicLoaderScene' });
-            this.queue = [];
-            this.pending = new Map();
-            this.isLoading = false;
-            this.pools = new Map();
-            this.screenX = 10;
-            this.screenY = 10;
-            this.sizeX = 800;
-            this.sizeY = 40;
-        }
-        preload() {
-            this.load.json('assetList', './assets/assetList.json');
-        }
-        create() {
-            super.create();
-            this.label = this.add.text(0, 0, 'Loading ... [100.0%]');
-            this.assetList = this.cache.json.get('assetList');
-            this.pools.set("image", {
-                "load": this.scene.scene.load.image,
-                "pool": this.scene.scene.textures
-            });
-            this.pools.set("spritesheet", {
-                "load": this.scene.scene.load.spritesheet,
-                "pool": this.scene.scene.textures
-            });
-            this.pools.set("audio", {
-                "load": this.scene.scene.load.audio,
-                "pool": this.scene.scene.cache.audio
-            });
-            this.pools.set("bitmapFont", {
-                "load": this.scene.scene.load.bitmapFont,
-                "pool": this.scene.scene.cache.bitmapFont
-            });
-            this.pools.set("binary", {
-                "load": this.scene.scene.load.binary,
-                "pool": this.scene.scene.cache.binary
-            });
-            this.pools.set("json", {
-                "load": this.scene.scene.load.json,
-                "pool": this.scene.scene.cache.json
-            });
-            this.pools.set("JSONtilemap", {
-                "load": this.scene.scene.load.tilemapTiledJSON,
-                "pool": this.scene.scene.cache.tilemap
-            });
-            this.pools.set("glsl", {
-                "load": this.scene.scene.load.glsl,
-                "pool": this.scene.scene.cache.shader
-            });
-            this.pools.set("text", {
-                "load": this.scene.scene.load.text,
-                "pool": this.scene.scene.cache.text
-            });
-            this.scene.scene.load.on('complete', this.loadComplete.bind(this));
-        }
-        update(time, dt) {
-            this.isLoading = this.scene.scene.load.isLoading();
-            if (this.isLoading) {
-                this.label.setVisible(true);
-                this.label.text = `Loading ... [${(this.scene.scene.load.progress / 1.0 * 100.0).toFixed(1)}]`;
-            }
-            else {
-                // this.label.setVisible(false);
-                this.label.setVisible(true);
-                this.label.text = `(DEBUG MESSAGE) Dynamic loader idle ...`;
-            }
-            if (this.queue.length > 0) {
-                for (let i = 0; i < this.queue.length; i++) {
-                    let item = this.queue[i];
-                    if (this.assetList.hasOwnProperty(item.key)) {
-                        let resource = this.assetList[item.key];
-                        let target;
-                        let IOObj = this.pools.get(resource.type);
-                        if (IOObj.pool.exists(item.key)) {
-                            // We already have this
-                            item.callback(item.key, resource.type, IOObj.pool.get(item.key));
-                        }
-                        // We don't want load a file many times (Phaser will throw a warning and actually it won't load multiple times for same keys, but hey we hate warnings (x))
-                        else if (!this.pending.has(item.key)) {
-                            console.log(`[DynamicLoader] Loading resource ${item.key} as type ${resource.type}`);
-                            resource.key = item.key;
-                            IOObj.load.apply(this.scene.scene.load, [resource]);
-                            this.pending.set(item.key, [item]);
-                        }
-                        else {
-                            this.pending.get(item.key).push(item);
-                        }
-                    }
-                    else {
-                        console.warn(`[DynamicLoader] Resource not found: ${item.key}, discarding`);
-                    }
-                }
-                // Since we are done for all items
-                this.queue.length = 0;
-            }
-            // Look for not yet loaded requests
-            if (!this.isLoading && this.pending.size > 0) {
-                this.scene.scene.load.start();
-            }
-        }
-        loadSingle(req) {
-            this.queue.push(req);
-        }
-        loadMultiple(reqs) {
-            this.queue.push.apply(this.queue, reqs);
-        }
-        loadComplete() {
-            // Since we are done for all pending requests
-            let self = this;
-            this.pending.forEach(function (value, key, map) {
-                // Maybe we don't want to get it again for performance ...
-                let resource = self.assetList[key];
-                let IOObj = self.pools.get(resource.type);
-                value.forEach(element => {
-                    element.callback(key, resource.type, IOObj.pool.get(key));
-                });
-            });
-            // Again, we are done so goodbye
-            this.pending.clear();
-        }
-        pendLoad(requirement) {
-            this.queue.push(requirement);
-        }
-        static getSingleton() {
-            if (!DynamicLoaderScene.instance) {
-                DynamicLoaderScene.instance = new DynamicLoaderScene();
-                console.log("registering dynamic loader...");
-            }
-            return DynamicLoaderScene.instance;
-        }
-    }
-    exports.DynamicLoaderScene = DynamicLoaderScene;
-});
-/** @packageDocumentation @module DynamicLoader */
-define("Engine/DynamicLoader/dSprite", ["require", "exports", "Engine/DynamicLoader/DynamicLoaderScene"], function (require, exports, DynamicLoaderScene_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    class dSprite extends Phaser.GameObjects.Sprite {
-        constructor(scene, x, y, texture, subsTexture, frame) {
-            var textureToLoad;
-            var frameToLoad;
-            if (!scene.textures.exists(texture)) {
-                textureToLoad = texture;
-                frameToLoad = frame;
-                texture = subsTexture;
-                frame = 0;
-            }
-            if (!texture) {
-                texture = 'default';
-            }
-            super(scene, x, y, texture, frame);
-            // Since we cannot put "super" to the very beginning ...
-            this.resources = [];
-            this.currentAnim = { 'key': '', 'startFrame': 0 };
-            if (textureToLoad) {
-                this.resources.push({ 'key': textureToLoad, 'metadata': {}, 'callback': this.onLoadComplete.bind(this) });
-                this.textureToLoad = textureToLoad;
-                this.frameToLoad = frameToLoad;
-            }
-            if (texture == 'default') {
-                this.setVisible(false);
-            }
-            DynamicLoaderScene_1.DynamicLoaderScene.getSingleton().loadMultiple(this.resources);
-        }
-        fetchChildren() {
-            return [];
-        }
-        onLoadComplete(key, type, fileObj) {
-            if (key == this.textureToLoad) {
-                this.loadComplete = true;
-                this.setTexture(this.textureToLoad, this.frameToLoad);
-                // Play cached animation
-                if (this.currentAnim.key) {
-                    this.play(this.currentAnim.key, true, this.currentAnim.startFrame);
-                }
-                this.setVisible(true);
-            }
-        }
-        // override to allow play() calls when not loaded (not sure if without this it will work or not, never tried)
-        play(key, ignoreIfPlaying, startFrame) {
-            this.currentAnim.key = key;
-            this.currentAnim.startFrame = startFrame;
-            if (this.loadComplete == true) {
-                super.play(key, ignoreIfPlaying, startFrame);
-            }
-            return this;
-        }
-    }
-    exports.dSprite = dSprite;
-});
-/** @packageDocumentation @module DynamicLoader */
-define("Engine/DynamicLoader/dPhysSprite", ["require", "exports", "Engine/DynamicLoader/DynamicLoaderScene"], function (require, exports, DynamicLoaderScene_2) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    class dPhysSprite extends Phaser.Physics.Arcade.Sprite {
-        /**
-         *
-         * @param scene scene that this sprite belongs to
-         * @param x x coordinate
-         * @param y y coordinate
-         * @param texture texture to load
-         * @param subsTexture Texture that can be used as a substitute when the real texture is loading.
-         * @param frame
-         */
-        constructor(scene, x, y, texture, subsTexture, frame) {
-            var textureToLoad;
-            var frameToLoad;
-            if (!scene.textures.exists(texture)) {
-                textureToLoad = texture;
-                frameToLoad = frame;
-                texture = subsTexture;
-                frame = 0;
-            }
-            if (!texture) {
-                texture = 'default';
-            }
-            super(scene, x, y, texture, frame);
-            this.scene = scene;
-            // Since we cannot put "super" to the very beginning ...
-            this.resources = [];
-            this.currentAnim = { 'key': '', 'startFrame': 0 };
-            if (textureToLoad) {
-                this.resources.push({ 'key': textureToLoad, 'metadata': {}, 'callback': this.onLoadComplete.bind(this) });
-                this.textureToLoad = textureToLoad;
-                this.frameToLoad = frameToLoad;
-            }
-            if (texture == 'default') {
-                this.setVisible(false);
-            }
-            DynamicLoaderScene_2.DynamicLoaderScene.getSingleton().loadMultiple(this.resources);
-        }
-        fetchChildren() {
-            return [];
-        }
-        onLoadComplete(key, type, fileObj) {
-            if (key == this.textureToLoad) {
-                this.loadComplete = true;
-                this.setTexture(this.textureToLoad, this.frameToLoad);
-                // Play cached animation
-                if (this.currentAnim.key) {
-                    this.play(this.currentAnim.key, true, this.currentAnim.startFrame);
-                }
-                this.setVisible(true);
-            }
-        }
-        // override to allow play() calls when not loaded (not sure if without this it will work or not, never tried)
-        play(key, ignoreIfPlaying, startFrame) {
-            this.currentAnim.key = key;
-            this.currentAnim.startFrame = startFrame;
-            if (this.loadComplete == true) {
-                super.play(key, ignoreIfPlaying, startFrame);
-            }
-            return this;
-        }
-        getPosition() {
-            return new Phaser.Math.Vector2(this.x, this.y);
-        }
-    }
-    exports.dPhysSprite = dPhysSprite;
-});
 /**
  * @packageDocumentation
  * @module Events
@@ -498,6 +208,304 @@ for(var i = 0; i < this.num; i++)
     }
 }
 */ 
+/** @packageDocumentation @module DynamicLoader */
+define("Engine/DynamicLoader/DynamicLoadObject", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+});
+/**
+ * @packageDocumentation
+ * @module UI
+ */
+define("Engine/UI/DraggableScene", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class DraggableScene extends Phaser.Scene {
+        constructor(config) {
+            super(config);
+        }
+        create() {
+            this.cameras.main.setViewport(this.screenX, this.screenY, this.sizeX, this.sizeY);
+        }
+        update(time, dt) {
+        }
+    }
+    exports.DraggableScene = DraggableScene;
+});
+/** @packageDocumentation @module DynamicLoader */
+define("Engine/DynamicLoader/DynamicLoaderScene", ["require", "exports", "Engine/UI/DraggableScene"], function (require, exports, DraggableScene_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class DynamicLoaderScene extends DraggableScene_1.DraggableScene {
+        constructor() {
+            super({ key: 'DynamicLoaderScene' });
+            this.queue = [];
+            this.pending = new Map();
+            this.isLoading = false;
+            this.pools = new Map();
+            this.screenX = 10;
+            this.screenY = 10;
+            this.sizeX = 800;
+            this.sizeY = 40;
+        }
+        preload() {
+            this.load.json('assetList', './assets/assetList.json');
+        }
+        create() {
+            super.create();
+            this.label = this.add.text(0, 0, 'Loading ... [100.0%]');
+            this.label.setBackgroundColor('#000000');
+            this.assetList = this.cache.json.get('assetList');
+            this.pools.set("image", {
+                "load": this.scene.scene.load.image,
+                "pool": this.scene.scene.textures
+            });
+            this.pools.set("spritesheet", {
+                "load": this.scene.scene.load.spritesheet,
+                "pool": this.scene.scene.textures
+            });
+            this.pools.set("audio", {
+                "load": this.scene.scene.load.audio,
+                "pool": this.scene.scene.cache.audio
+            });
+            this.pools.set("bitmapFont", {
+                "load": this.scene.scene.load.bitmapFont,
+                "pool": this.scene.scene.cache.bitmapFont
+            });
+            this.pools.set("binary", {
+                "load": this.scene.scene.load.binary,
+                "pool": this.scene.scene.cache.binary
+            });
+            this.pools.set("json", {
+                "load": this.scene.scene.load.json,
+                "pool": this.scene.scene.cache.json
+            });
+            this.pools.set("JSONtilemap", {
+                "load": this.scene.scene.load.tilemapTiledJSON,
+                "pool": this.scene.scene.cache.tilemap
+            });
+            this.pools.set("glsl", {
+                "load": this.scene.scene.load.glsl,
+                "pool": this.scene.scene.cache.shader
+            });
+            this.pools.set("text", {
+                "load": this.scene.scene.load.text,
+                "pool": this.scene.scene.cache.text
+            });
+            this.scene.scene.load.on('complete', this.loadComplete.bind(this));
+        }
+        update(time, dt) {
+            this.isLoading = this.scene.scene.load.isLoading();
+            if (this.isLoading) {
+                this.label.setVisible(true);
+                this.label.text = `Loading ... [${(this.scene.scene.load.progress / 1.0 * 100.0).toFixed(1)}]`;
+            }
+            else {
+                // this.label.setVisible(false);
+                this.label.setVisible(true);
+                this.label.text = `(DEBUG MESSAGE) Dynamic loader idle ...`;
+            }
+            if (this.queue.length > 0) {
+                for (let i = 0; i < this.queue.length; i++) {
+                    let item = this.queue[i];
+                    if (this.assetList.hasOwnProperty(item.key)) {
+                        let resource = this.assetList[item.key];
+                        let target;
+                        let IOObj = this.pools.get(resource.type);
+                        if (IOObj.pool.exists(item.key)) {
+                            // We already have this
+                            item.callback(item.key, resource.type, IOObj.pool.get(item.key));
+                        }
+                        // We don't want to load a file many times (Phaser will throw a warning and actually it won't load multiple times for same keys, but hey we hate warnings (x))
+                        else if (!this.pending.has(item.key)) {
+                            console.log(`[DynamicLoader] Loading resource ${item.key} as type ${resource.type}`);
+                            resource.key = item.key;
+                            IOObj.load.apply(this.scene.scene.load, [resource]);
+                            this.pending.set(item.key, [item]);
+                        }
+                        else {
+                            this.pending.get(item.key).push(item);
+                        }
+                    }
+                    else {
+                        console.warn(`[DynamicLoader] Resource not found: ${item.key}, discarding`);
+                    }
+                }
+                // Since we are done for all items
+                this.queue.length = 0;
+            }
+            // Look for not yet loaded requests
+            if (!this.isLoading && this.pending.size > 0) {
+                this.scene.scene.load.start();
+            }
+        }
+        loadSingle(req) {
+            this.queue.push(req);
+        }
+        loadMultiple(reqs) {
+            this.queue.push.apply(this.queue, reqs);
+        }
+        loadComplete() {
+            // Since we are done for all pending requests
+            let self = this;
+            this.pending.forEach(function (value, key, map) {
+                // Maybe we don't want to get it again for performance ...
+                let resource = self.assetList[key];
+                let IOObj = self.pools.get(resource.type);
+                if (resource.type === "spritesheet") {
+                    if (resource.animations) {
+                        for (let anim_key in resource.animations) {
+                            self.anims.create({ key: key + '_' + anim_key, frames: self.anims.generateFrameNumbers(key, { start: resource.animations[anim_key][0], end: resource.animations[anim_key][1], first: resource.animations[anim_key][2] }), frameRate: 8, repeat: -1 });
+                        }
+                    }
+                }
+                value.forEach(element => {
+                    element.callback(key, resource.type, IOObj.pool.get(key));
+                });
+            });
+            // Again, we are done so goodbye
+            this.pending.clear();
+        }
+        pendLoad(requirement) {
+            this.queue.push(requirement);
+        }
+        static getSingleton() {
+            if (!DynamicLoaderScene.instance) {
+                DynamicLoaderScene.instance = new DynamicLoaderScene();
+                console.log("registering dynamic loader...");
+            }
+            return DynamicLoaderScene.instance;
+        }
+    }
+    exports.DynamicLoaderScene = DynamicLoaderScene;
+});
+/** @packageDocumentation @module DynamicLoader */
+define("Engine/DynamicLoader/dSprite", ["require", "exports", "Engine/DynamicLoader/DynamicLoaderScene"], function (require, exports, DynamicLoaderScene_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class dSprite extends Phaser.GameObjects.Sprite {
+        constructor(scene, x, y, texture, subsTexture, frame) {
+            var textureToLoad;
+            var frameToLoad;
+            if (!scene.textures.exists(texture)) {
+                textureToLoad = texture;
+                frameToLoad = frame;
+                texture = subsTexture;
+                frame = 0;
+            }
+            if (!texture) {
+                texture = 'default';
+            }
+            super(scene, x, y, texture, frame);
+            // Since we cannot put "super" to the very beginning ...
+            this.resources = [];
+            this.currentAnim = { 'key': '', 'startFrame': 0 };
+            if (textureToLoad) {
+                this.resources.push({ 'key': textureToLoad, 'metadata': {}, 'callback': this.onLoadComplete.bind(this) });
+                this.textureToLoad = textureToLoad;
+                this.frameToLoad = frameToLoad;
+            }
+            if (texture == 'default') {
+                this.setVisible(false);
+            }
+            DynamicLoaderScene_1.DynamicLoaderScene.getSingleton().loadMultiple(this.resources);
+        }
+        fetchChildren() {
+            return [];
+        }
+        onLoadComplete(key, type, fileObj) {
+            if (key == this.textureToLoad) {
+                this.loadComplete = true;
+                this.setTexture(this.textureToLoad, this.frameToLoad);
+                // Play cached animation
+                if (this.currentAnim.key) {
+                    this.play(this.currentAnim.key, true, this.currentAnim.startFrame);
+                }
+                this.setVisible(true);
+            }
+        }
+        // override to allow play() calls when not loaded (not sure if without this it will work or not, never tried)
+        play(key, ignoreIfPlaying, startFrame) {
+            this.currentAnim.key = key;
+            this.currentAnim.startFrame = startFrame;
+            if (this.loadComplete == true) {
+                super.play(key, ignoreIfPlaying, startFrame);
+            }
+            return this;
+        }
+    }
+    exports.dSprite = dSprite;
+});
+/** @packageDocumentation @module DynamicLoader */
+define("Engine/DynamicLoader/dPhysSprite", ["require", "exports", "Engine/DynamicLoader/DynamicLoaderScene"], function (require, exports, DynamicLoaderScene_2) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class dPhysSprite extends Phaser.Physics.Arcade.Sprite {
+        /**
+         *
+         * @param scene scene that this sprite belongs to
+         * @param x x coordinate
+         * @param y y coordinate
+         * @param texture texture to load
+         * @param subsTexture Texture that can be used as a substitute when the real texture is loading.
+         * @param frame
+         */
+        constructor(scene, x, y, texture, subsTexture, frame) {
+            var textureToLoad;
+            var frameToLoad;
+            if (!scene.textures.exists(texture)) {
+                textureToLoad = texture;
+                frameToLoad = frame;
+                texture = subsTexture;
+                frame = 0;
+            }
+            if (!texture) {
+                texture = 'default';
+            }
+            super(scene, x, y, texture, frame);
+            this.scene = scene;
+            // Since we cannot put "super" to the very beginning ...
+            this.resources = [];
+            this.currentAnim = { 'key': '', 'startFrame': 0 };
+            if (textureToLoad) {
+                this.resources.push({ 'key': textureToLoad, 'metadata': {}, 'callback': this.onLoadComplete.bind(this) });
+                this.textureToLoad = textureToLoad;
+                this.frameToLoad = frameToLoad;
+            }
+            if (texture == 'default') {
+                this.setVisible(false);
+            }
+            DynamicLoaderScene_2.DynamicLoaderScene.getSingleton().loadMultiple(this.resources);
+        }
+        fetchChildren() {
+            return [];
+        }
+        onLoadComplete(key, type, fileObj) {
+            if (key == this.textureToLoad) {
+                this.loadComplete = true;
+                this.setTexture(this.textureToLoad, this.frameToLoad);
+                // Play cached animation
+                if (this.currentAnim.key) {
+                    this.play(this.currentAnim.key, true, this.currentAnim.startFrame);
+                }
+                this.setVisible(true);
+            }
+        }
+        // override to allow play() calls when not loaded (not sure if without this it will work or not, never tried)
+        play(key, ignoreIfPlaying, startFrame) {
+            this.currentAnim.key = key;
+            this.currentAnim.startFrame = startFrame;
+            if (this.loadComplete == true) {
+                super.play(key, ignoreIfPlaying, startFrame);
+            }
+            return this;
+        }
+        getPosition() {
+            return new Phaser.Math.Vector2(this.x, this.y);
+        }
+    }
+    exports.dPhysSprite = dPhysSprite;
+});
 /** @packageDocumentation @module Core */
 define("Engine/Core/SpellData", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -882,7 +890,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             this.inControl = false;
             this.name = settings.name || "noname";
             // this.position = {x: this.body.left, y: this.body.top};
-            this.image = settings.image || "magical_girl";
+            this.image = settings.image || "unknown";
             // Stats
             this.race = settings.race || "unknown";
             this.class = settings.class || "unknown";
@@ -1833,83 +1841,8 @@ define("Engine/Core/UnitManager", ["require", "exports", "Engine/GameObjects/Mob
     UnitManager.IDENTITY = (a, b) => 0;
     UnitManager.NOOP = (a) => true;
 });
-/** @packageDocumentation @module BattleScene */
-define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/Core/UnitManager"], function (require, exports, UnitManager_2) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    class BattleScene extends Phaser.Scene {
-        constructor(debug = false, mapToLoad = "overworld") {
-            super({
-                key: 'BattleScene',
-                physics: {
-                    default: 'arcade',
-                    'arcade': {
-                        debug: debug,
-                    }
-                }
-            });
-            this.mapToLoad = mapToLoad;
-        }
-        preload() {
-            this.width = this.sys.game.canvas.width;
-            this.height = this.sys.game.canvas.height;
-            this.load.tilemapTiledJSON(this.mapToLoad, "assets/tilemaps/Overworld_tst.json");
-        }
-        addMob(mob) {
-            this.add.existing(mob);
-            if (mob.mobData.isPlayer) {
-                this.playerGroup.add(mob);
-            }
-            else {
-                this.enemyGroup.add(mob);
-            }
-        }
-        create() {
-            UnitManager_2.UnitManager.resetScene(this);
-            this.unitMgr = UnitManager_2.UnitManager.getCurrent();
-            // Create groups
-            this.worldGroup = this.physics.add.group();
-            this.commonGroup = this.physics.add.group();
-            this.fxGroup = this.physics.add.group();
-            this.playerGroup = this.physics.add.group();
-            this.enemyGroup = this.physics.add.group();
-            this.playerTargetingObjectGroup = this.physics.add.group();
-            this.enemyTargetingObjectGroup = this.physics.add.group();
-            this.everyoneTargetingObjectGroup = this.physics.add.group();
-            this.physics.add.overlap(this.playerTargetingObjectGroup, this.playerGroup, this.spellHitMobCallback);
-            this.physics.add.overlap(this.everyoneTargetingObjectGroup, this.playerGroup, this.spellHitMobCallback);
-            this.physics.add.overlap(this.enemyTargetingObjectGroup, this.enemyGroup, this.spellHitMobCallback);
-            this.physics.add.overlap(this.everyoneTargetingObjectGroup, this.enemyGroup, this.spellHitMobCallback);
-            this.physics.add.overlap(this.playerTargetingObjectGroup, this.worldGroup, this.spellHitWorldCallback);
-            this.physics.add.overlap(this.enemyTargetingObjectGroup, this.worldGroup, this.spellHitWorldCallback);
-            this.physics.add.overlap(this.everyoneTargetingObjectGroup, this.worldGroup, this.spellHitWorldCallback);
-            this.map = this.make.tilemap({ key: this.mapToLoad });
-            console.log(this.map);
-            for (let layer in this.map.layers) {
-            }
-        }
-        // Handle when spell hits a mob it targets
-        spellHitMobCallback(obj1, obj2) {
-            let spell = obj1;
-            let mob = obj2;
-            spell.onHit(mob);
-            spell.onMobHit(mob);
-        }
-        // Handle when spell hits some world object that it may interact
-        spellHitWorldCallback(obj1, obj2) {
-            let spell = obj1;
-            spell.onHit(obj2);
-            spell.onWorldHit(obj2);
-        }
-        update(time, dt) {
-            this.children.each((item) => { item.update(dt / 1000.0); });
-            this.unitMgr.update(dt / 1000.0);
-        }
-    }
-    exports.BattleScene = BattleScene;
-});
 /** @packageDocumentation @module Core */
-define("Engine/Core/Helper", ["require", "exports", "Engine/Core/UnitManager", "Engine/GameObjects/Spell"], function (require, exports, UnitManager_3, Spell_1) {
+define("Engine/Core/Helper", ["require", "exports", "Engine/Core/UnitManager", "Engine/GameObjects/Spell"], function (require, exports, UnitManager_2, Spell_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function HealDmg(info) {
@@ -1946,11 +1879,11 @@ define("Engine/Core/Helper", ["require", "exports", "Engine/Core/UnitManager", "
      * @param maxCapture Maximum units that this AoE can capture, <= 0 means no limit. It is recommended to set a non-identity compareFunc when a maxCapture number is set.
      * @param compareFunc The compareing function that will be used when quering the captured unit list. If set, target list will be sorted wrt this function, default is Identity (no sort).
      */
-    function AoE(func, pos, range, targets, maxCapture = -1, compareFunc = UnitManager_3.UnitManager.IDENTITY) {
+    function AoE(func, pos, range, targets, maxCapture = -1, compareFunc = UnitManager_2.UnitManager.IDENTITY) {
         let AoEList = targets == Spell_1.Targeting.Both ?
-            UnitManager_3.UnitManager.getCurrent().getUnitListAll(compareFunc, (a) => { return (a.footPos().distance(pos) < range); })
+            UnitManager_2.UnitManager.getCurrent().getUnitListAll(compareFunc, (a) => { return (a.footPos().distance(pos) < range); })
             :
-                UnitManager_3.UnitManager.getCurrent().getUnitList(compareFunc, (a) => { return (a.footPos().distance(pos) < range); }, targets == Spell_1.Targeting.Player);
+                UnitManager_2.UnitManager.getCurrent().getUnitList(compareFunc, (a) => { return (a.footPos().distance(pos) < range); }, targets == Spell_1.Targeting.Player);
         if (maxCapture > 0) {
             AoEList = AoEList.slice(0, maxCapture);
         }
@@ -2142,6 +2075,123 @@ define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/
     exports.DummySpell = DummySpell;
 });
 /** @packageDocumentation @module Core */
+define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListener", "Engine/Core/InventoryCore"], function (require, exports, MobListener_3, InventoryCore_2) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var EquipmentType;
+    (function (EquipmentType) {
+        EquipmentType["All"] = "EQTYPE_ALL";
+        EquipmentType["Accessory"] = "accessory";
+        EquipmentType["Armor"] = "armor";
+        EquipmentType["Weapon"] = "weapon";
+        EquipmentType["Unknown"] = "EQTYPE_UNKNOWN";
+    })(EquipmentType = exports.EquipmentType || (exports.EquipmentType = {}));
+    var WeaponType;
+    (function (WeaponType) {
+        WeaponType["Staff"] = "staff";
+        WeaponType["Unknown"] = "WPTYPE_UNKNOWN";
+    })(WeaponType = exports.WeaponType || (exports.WeaponType = {}));
+    var WeaponSubType;
+    (function (WeaponSubType) {
+        WeaponSubType["Unknown"] = "WPTYPE_UNKNOWN";
+    })(WeaponSubType = exports.WeaponSubType || (exports.WeaponSubType = {}));
+    var EquipmentTag;
+    (function (EquipmentTag) {
+        EquipmentTag["Equipment"] = "equipment";
+    })(EquipmentTag = exports.EquipmentTag || (exports.EquipmentTag = {}));
+    class Equipable extends MobListener_3.MobListener {
+        constructor(itemID) {
+            super();
+            this.itemID = itemID;
+            this.itemData = InventoryCore_2.ItemManager.getData(this.itemID);
+            this.name = this.itemData.showName;
+            this.assignTags();
+        }
+        syncStats(mob) { }
+        onAdded(mob, source) {
+            super.onAdded(mob, source);
+            this.syncStats(mob);
+            this.listen(mob, 'statCalculationFinish', this.onStatCalculationFinish);
+        }
+        onStatCalculationFinish(mob) {
+            super.onStatCalculationFinish(mob);
+            this.syncStats(mob);
+        }
+        showToolTip() {
+            return {
+                'title': 'Equipment',
+                'text': 'Tooltip',
+            };
+        }
+        assignTags() {
+            let tags = this.itemData.tags;
+            tags.forEach(t => {
+                if (t in EquipmentType) {
+                    this.eqType = EquipmentType[t];
+                }
+            });
+        }
+    }
+    exports.Equipable = Equipable;
+    class Armor extends Equipable {
+    }
+    exports.Armor = Armor;
+    class Weapon extends Equipable {
+        constructor(itemID) {
+            super(itemID);
+            this.weaponGauge = 0;
+            this.weaponGaugeMax = -1;
+        }
+        isInRange(mob, target) {
+            throw new Error("Method not implemented.");
+        }
+        grabTargets(mob) {
+            return [];
+        }
+        triggerCD() {
+            this.isReady = false;
+            this.cooldown = 0;
+        }
+        assignTags() {
+            super.assignTags();
+            this.wpType = WeaponType[this.itemData.pClass];
+            this.wpsubType = WeaponType[this.itemData.sClass];
+        }
+        attack(source, target, triggerCD = true) {
+            this.isReadyWrapper(() => {
+                this.doRegularAttack(source, target);
+                if (triggerCD) {
+                    this.triggerCD();
+                }
+                if (this.weaponGaugeMax > 0) {
+                    this.weaponGauge += this.weaponGaugeIncreasement(source);
+                    if (this.weaponGauge > this.weaponGaugeMax) {
+                        this.weaponGauge -= this.weaponGaugeMax;
+                        this.doSpecialAttack(source, target);
+                    }
+                }
+            })();
+        }
+        syncStats(mob) {
+            this.cooldownMax = mob.getAttackSpeed();
+        }
+        onAdded(mob, source) {
+            super.onAdded(mob, source);
+            // console.log("be added to " + mob.name);
+        }
+        doRegularAttack(source, target) {
+            throw new Error("Method not implemented.");
+        }
+        doSpecialAttack(source, target) {
+            // throw new Error("Method not implemented.")
+        }
+    }
+    exports.Weapon = Weapon;
+    class Accessory extends Equipable {
+    }
+    exports.Accessory = Accessory;
+});
+/** @packageDocumentation @module Core */
 define("Engine/Core/mRTypes", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -2306,10 +2356,10 @@ define("Engine/Core/MobListener", ["require", "exports", "Engine/Core/DataBacken
  * @module Agent
  * @preferred
  */
-define("Engine/Agents/MobAgent", ["require", "exports", "Engine/Core/MobListener"], function (require, exports, MobListener_3) {
+define("Engine/Agents/MobAgent", ["require", "exports", "Engine/Core/MobListener"], function (require, exports, MobListener_4) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    class MobAgent extends MobListener_3.MobListener {
+    class MobAgent extends MobListener_4.MobListener {
         constructor(parentMob) {
             super();
         }
@@ -2389,8 +2439,31 @@ define("Engine/UI/PopUpManager", ["require", "exports"], function (require, expo
     }
     exports.PopUpManager = PopUpManager;
 });
+define("Engine/Core/ObjectPopulator", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class ObjectPopulator {
+        constructor() { }
+        static setData(objList, agentList) {
+            ObjectPopulator.objList = objList;
+            ObjectPopulator.agentList = agentList;
+        }
+        static newObject(scene, objID, obj) {
+            let f = this.objList[objID];
+            if (f) {
+                let prop = {};
+                for (let key of obj.properties) {
+                    prop[key.name] = key.value;
+                }
+                return f(scene, obj, prop);
+            }
+            return undefined;
+        }
+    }
+    exports.ObjectPopulator = ObjectPopulator;
+});
 /** @packageDocumentation @module GameEntity */
-define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/Core/mRTypes", "Engine/Core/UnitManager", "Engine/Core/EquipmentCore", "Engine/UI/PopUpManager"], function (require, exports, dPhysSprite_2, mRTypes_1, UnitManager_4, EquipmentCore_2, PopUpManager_1) {
+define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/Core/MobData", "Engine/Core/mRTypes", "Engine/Core/UnitManager", "Engine/Core/EquipmentCore", "Engine/UI/PopUpManager", "Engine/Core/ObjectPopulator"], function (require, exports, dPhysSprite_2, MobData_1, mRTypes_1, UnitManager_3, EquipmentCore_2, PopUpManager_1, ObjectPopulator_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Mob extends dPhysSprite_2.dPhysSprite {
@@ -2407,11 +2480,11 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
             this.isPlayer = this.mobData.isPlayer;
             if (this.isPlayer === true) {
                 // Is player
-                UnitManager_4.UnitManager.getCurrent().addPlayer(this);
+                UnitManager_3.UnitManager.getCurrent().addPlayer(this);
             }
             else {
                 // Is enemy
-                UnitManager_4.UnitManager.getCurrent().addEnemy(this);
+                UnitManager_3.UnitManager.getCurrent().addEnemy(this);
             }
             this.setGravity(0, 0);
             if (settings.agent) {
@@ -2420,6 +2493,19 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
             }
             this.attackCounter = 0;
             // HPBar
+        }
+        static fromTiled(scene, obj, prop) {
+            let settings_backend = (prop);
+            settings_backend.name = settings_backend.name || obj.name || 'Unnamed_mob';
+            let charsheet_key = 'sheet_' + prop['image'] || 'sheet_default_mob';
+            let settings = {
+                'moveAnim': charsheet_key + '_move',
+                'idleAnim': charsheet_key + '_idle',
+                'deadAnim': charsheet_key + '_dead',
+                'backendData': new MobData_1.MobData(settings_backend),
+                'agent': ObjectPopulator_1.ObjectPopulator.agentList[prop['agentType'] || prop['agent'] || 'default'],
+            };
+            return new Mob(scene, obj.x, obj.y, charsheet_key, settings);
         }
         update(dt) {
             // this.sprite.x += dt / 1000.0 * 10;
@@ -2691,125 +2777,126 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
     }
     exports.Mob = Mob;
 });
-/** @packageDocumentation @module Core */
-define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListener", "Engine/Core/InventoryCore"], function (require, exports, MobListener_4, InventoryCore_2) {
+/** @packageDocumentation @module BattleScene */
+define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/UnitManager", "Engine/Core/ObjectPopulator"], function (require, exports, Mob_4, UnitManager_4, ObjectPopulator_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var EquipmentType;
-    (function (EquipmentType) {
-        EquipmentType["All"] = "EQTYPE_ALL";
-        EquipmentType["Accessory"] = "accessory";
-        EquipmentType["Armor"] = "armor";
-        EquipmentType["Weapon"] = "weapon";
-        EquipmentType["Unknown"] = "EQTYPE_UNKNOWN";
-    })(EquipmentType = exports.EquipmentType || (exports.EquipmentType = {}));
-    var WeaponType;
-    (function (WeaponType) {
-        WeaponType["Staff"] = "staff";
-        WeaponType["Unknown"] = "WPTYPE_UNKNOWN";
-    })(WeaponType = exports.WeaponType || (exports.WeaponType = {}));
-    var WeaponSubType;
-    (function (WeaponSubType) {
-        WeaponSubType["Unknown"] = "WPTYPE_UNKNOWN";
-    })(WeaponSubType = exports.WeaponSubType || (exports.WeaponSubType = {}));
-    var EquipmentTag;
-    (function (EquipmentTag) {
-        EquipmentTag["Equipment"] = "equipment";
-    })(EquipmentTag = exports.EquipmentTag || (exports.EquipmentTag = {}));
-    class Equipable extends MobListener_4.MobListener {
-        constructor(itemID) {
-            super();
-            this.itemID = itemID;
-            this.itemData = InventoryCore_2.ItemManager.getData(this.itemID);
-            this.name = this.itemData.showName;
-            this.assignTags();
-        }
-        syncStats(mob) { }
-        onAdded(mob, source) {
-            super.onAdded(mob, source);
-            this.syncStats(mob);
-            this.listen(mob, 'statCalculationFinish', this.onStatCalculationFinish);
-        }
-        onStatCalculationFinish(mob) {
-            super.onStatCalculationFinish(mob);
-            this.syncStats(mob);
-        }
-        showToolTip() {
-            return {
-                'title': 'Equipment',
-                'text': 'Tooltip',
-            };
-        }
-        assignTags() {
-            let tags = this.itemData.tags;
-            tags.forEach(t => {
-                if (t in EquipmentType) {
-                    this.eqType = EquipmentType[t];
-                }
-            });
-        }
-    }
-    exports.Equipable = Equipable;
-    class Armor extends Equipable {
-    }
-    exports.Armor = Armor;
-    class Weapon extends Equipable {
-        constructor(itemID) {
-            super(itemID);
-            this.weaponGauge = 0;
-            this.weaponGaugeMax = -1;
-        }
-        isInRange(mob, target) {
-            throw new Error("Method not implemented.");
-        }
-        grabTargets(mob) {
-            return [];
-        }
-        triggerCD() {
-            this.isReady = false;
-            this.cooldown = 0;
-        }
-        assignTags() {
-            super.assignTags();
-            this.wpType = WeaponType[this.itemData.pClass];
-            this.wpsubType = WeaponType[this.itemData.sClass];
-        }
-        attack(source, target, triggerCD = true) {
-            this.isReadyWrapper(() => {
-                this.doRegularAttack(source, target);
-                if (triggerCD) {
-                    this.triggerCD();
-                }
-                if (this.weaponGaugeMax > 0) {
-                    this.weaponGauge += this.weaponGaugeIncreasement(source);
-                    if (this.weaponGauge > this.weaponGaugeMax) {
-                        this.weaponGauge -= this.weaponGaugeMax;
-                        this.doSpecialAttack(source, target);
+    class BattleScene extends Phaser.Scene {
+        constructor(debug = false, mapToLoad = "playground") {
+            super({
+                key: 'BattleScene',
+                physics: {
+                    default: 'arcade',
+                    'arcade': {
+                        debug: debug,
                     }
                 }
-            })();
+            });
+            this.tilesetImgPrefix = 'assets/tilemaps/tiles/';
+            this.mapToLoad = mapToLoad;
         }
-        syncStats(mob) {
-            this.cooldownMax = mob.getAttackSpeed();
+        preload() {
+            this.width = this.sys.game.canvas.width;
+            this.height = this.sys.game.canvas.height;
+            this.load.tilemapTiledJSON(this.mapToLoad, "assets/tilemaps/playground.json");
         }
-        onAdded(mob, source) {
-            super.onAdded(mob, source);
-            // console.log("be added to " + mob.name);
+        addMob(mob) {
+            this.add.existing(mob);
+            if (mob.mobData.isPlayer) {
+                this.playerGroup.add(mob);
+            }
+            else {
+                this.enemyGroup.add(mob);
+            }
         }
-        doRegularAttack(source, target) {
-            throw new Error("Method not implemented.");
+        create() {
+            UnitManager_4.UnitManager.resetScene(this);
+            this.unitMgr = UnitManager_4.UnitManager.getCurrent();
+            // Create groups
+            this.worldGroup = this.physics.add.group();
+            this.commonGroup = this.physics.add.group();
+            this.fxGroup = this.physics.add.group();
+            this.playerGroup = this.physics.add.group();
+            this.enemyGroup = this.physics.add.group();
+            this.playerTargetingObjectGroup = this.physics.add.group();
+            this.enemyTargetingObjectGroup = this.physics.add.group();
+            this.everyoneTargetingObjectGroup = this.physics.add.group();
+            this.physics.add.overlap(this.playerTargetingObjectGroup, this.playerGroup, this.spellHitMobCallback);
+            this.physics.add.overlap(this.everyoneTargetingObjectGroup, this.playerGroup, this.spellHitMobCallback);
+            this.physics.add.overlap(this.enemyTargetingObjectGroup, this.enemyGroup, this.spellHitMobCallback);
+            this.physics.add.overlap(this.everyoneTargetingObjectGroup, this.enemyGroup, this.spellHitMobCallback);
+            this.physics.add.overlap(this.playerTargetingObjectGroup, this.worldGroup, this.spellHitWorldCallback);
+            this.physics.add.overlap(this.enemyTargetingObjectGroup, this.worldGroup, this.spellHitWorldCallback);
+            this.physics.add.overlap(this.everyoneTargetingObjectGroup, this.worldGroup, this.spellHitWorldCallback);
+            // Prepare for load the tilemap
+            this.loadingScreen = this.add.image(512, 640 / 2, 'loadscreen_BG');
+            this.loadingScreen.displayWidth = 1024;
+            this.loadingScreen.displayHeight = 640;
+            this.loadingScreen.setDepth(100);
+            this.map = this.make.tilemap({ key: this.mapToLoad });
+            console.log(this.map);
+            for (let tileset of this.map.tilesets) {
+                let path = this.tilesetImgPrefix + tileset.name + ".png";
+                this.load.image(tileset.name, path);
+                console.log(path);
+            }
+            this.load.on('complete', this.loadComplete.bind(this));
+            this.load.start();
         }
-        doSpecialAttack(source, target) {
-            // throw new Error("Method not implemented.")
+        loadComplete() {
+            this.tweens.add({
+                targets: this.loadingScreen,
+                alpha: { value: 0, duration: 1000, ease: 'Power1' },
+                yoyo: false,
+                repeat: 0
+            });
+            for (let tileset of this.map.tilesets) {
+                this.map.addTilesetImage(tileset.name, tileset.name);
+            }
+            for (let layer of this.map.layers) {
+                let tmp_layer = this.map.createStaticLayer(layer.name, this.map.tilesets, 0, 0);
+                tmp_layer.depth = -1; // TODO: adjust this value
+            }
+            for (let objLayer of this.map.objects) {
+                for (let obj of objLayer.objects) {
+                    let objPopulated = ObjectPopulator_2.ObjectPopulator.newObject(this, obj.type == "" ? obj.name : obj.type, obj);
+                    if (objPopulated instanceof Mob_4.Mob) {
+                        this.addMob(objPopulated);
+                    }
+                    else if (objPopulated) {
+                        this.add.existing(objPopulated);
+                    }
+                }
+            }
+            console.log(this.map);
+            this.mapReady = true;
         }
+        // Handle when spell hits a mob it targets
+        spellHitMobCallback(obj1, obj2) {
+            let spell = obj1;
+            let mob = obj2;
+            spell.onHit(mob);
+            spell.onMobHit(mob);
+        }
+        // Handle when spell hits some world object that it may interact
+        spellHitWorldCallback(obj1, obj2) {
+            let spell = obj1;
+            spell.onHit(obj2);
+            spell.onWorldHit(obj2);
+        }
+        update(time, dt) {
+            if (this.mapReady) {
+                this.children.each((item) => { item.update(dt / 1000.0); });
+                this.unitMgr.update(dt / 1000.0);
+                this.updateScene(time, dt);
+            }
+        }
+        updateScene(time, dt) { }
     }
-    exports.Weapon = Weapon;
-    class Accessory extends Equipable {
-    }
-    exports.Accessory = Accessory;
+    exports.BattleScene = BattleScene;
 });
 /** @packageDocumentation @module GameObjects */
-define("Engine/GameObjects/Projectile", ["require", "exports", "Engine/GameObjects/Spell", "Engine/GameObjects/Mob"], function (require, exports, Spell_2, Mob_4) {
+define("Engine/GameObjects/Projectile", ["require", "exports", "Engine/GameObjects/Spell", "Engine/GameObjects/Mob"], function (require, exports, Spell_2, Mob_5) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Projectile extends Spell_2.Spell {
@@ -2828,7 +2915,7 @@ define("Engine/GameObjects/Projectile", ["require", "exports", "Engine/GameObjec
         }
         updateSpell(dt) {
             // Homing
-            if (this.target instanceof Mob_4.Mob && (this.chasingRange < 0 || this.target.footPos().clone().subtract(this.getPosition()).length() < this.chasingRange)) {
+            if (this.target instanceof Mob_5.Mob && (this.chasingRange < 0 || this.target.footPos().clone().subtract(this.getPosition()).length() < this.chasingRange)) {
                 let newDirc = this.target.footPos().clone().subtract(this.getPosition()).normalize();
                 this.moveDirc = this.moveDirc.clone().scale(1 - dt * this.chasingPower).add(newDirc.clone().scale(dt * this.chasingPower));
             }
@@ -2856,7 +2943,6 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
             this.weaponGaugeIncreasement = function (mob) { return mob.mobData.baseStats.mag; };
         }
         doRegularAttack(source, target) {
-            console.log(this.weaponGauge.toString() + " / " + this.weaponGaugeMax.toString());
             let targetMob = target[0];
             new Projectile_1.Projectile(source.x, source.y, 'img_iced_fx', {
                 'info': { 'name': this.name, 'flags': new Set([Spell_3.SpellFlags.isDamage, Spell_3.SpellFlags.hasTarget]) },
@@ -2900,13 +2986,6 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
     }
     exports.CometWand = CometWand;
 });
-define("ItemList", ["require", "exports", "Weapons/Staff"], function (require, exports, Staff_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.ItemList = {
-        "cometWand": Staff_1.CometWand,
-    };
-});
 /** @packageDocumentation @module Agent */
 define("Agents/SimpleAgents", ["require", "exports", "Engine/Agents/MobAgent"], function (require, exports, MobAgent_2) {
     "use strict";
@@ -2927,8 +3006,30 @@ define("Agents/SimpleAgents", ["require", "exports", "Engine/Agents/MobAgent"], 
     }
     exports.KeepMoving = KeepMoving;
 });
+define("Lists/ItemList", ["require", "exports", "Weapons/Staff"], function (require, exports, Staff_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ItemList = {
+        "cometWand": Staff_1.CometWand,
+    };
+});
+define("Lists/ObjectList", ["require", "exports", "Engine/GameObjects/Mob"], function (require, exports, Mob_6) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ObjectList = {
+        'mob': Mob_6.Mob.fromTiled,
+    };
+});
+define("Lists/AgentList", ["require", "exports", "Agents/SimpleAgents"], function (require, exports, SimpleAgents_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.AgentList = {
+        'default': undefined,
+        'keepMoving': SimpleAgents_1.KeepMoving,
+    };
+});
 /** @packageDocumentation @module BattleScene */
-define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/Staff", "Agents/PlayerAgents", "Agents/SimpleAgents", "Engine/Core/Helper", "Engine/Core/InventoryCore", "ItemList"], function (require, exports, BattleScene_1, Mob_5, MobData_1, Staff_2, PlayerAgents, SimpleAgents_1, Helper_3, InventoryCore_3, ItemList_1) {
+define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/Staff", "Agents/PlayerAgents", "Agents/SimpleAgents", "Engine/Core/Helper", "Engine/Core/InventoryCore", "Lists/ItemList", "Engine/Core/ObjectPopulator", "Lists/ObjectList", "Lists/AgentList"], function (require, exports, BattleScene_1, Mob_7, MobData_2, Staff_2, PlayerAgents, SimpleAgents_2, Helper_3, InventoryCore_3, ItemList_1, ObjectPopulator_3, ObjectList_1, AgentList_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     PlayerAgents = __importStar(PlayerAgents);
@@ -2939,6 +3040,7 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
             this.hcM = 0.5;
         }
         preload() {
+            ObjectPopulator_3.ObjectPopulator.setData(ObjectList_1.ObjectList, AgentList_1.AgentList);
             super.preload();
             this.load.image('logo', 'assets/BlueHGRMJsm.png');
             this.load.image('Grass_Overworld', 'assets/tilemaps/tiles/overworld_tileset_grass.png');
@@ -2947,20 +3049,20 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
             this.load.json('itemData', 'assets/dataSheets/Items.json');
         }
         create() {
-            super.create();
             // Create the ItemManager
             InventoryCore_3.ItemManager.setData(this.cache.json.get('itemData'), ItemList_1.ItemList);
             InventoryCore_3.ItemManager.newItem("cometWand");
-            this.map = this.make.tilemap({ key: 'overworld' });
-            this.tiles = this.map.addTilesetImage('Grass_Overworld', 'Grass_Overworld');
-            this.terrainLayer = this.map.createStaticLayer('Terrain', this.tiles, 0, 0);
+            super.create();
+            // this.map = this.make.tilemap({ key: 'overworld' });
+            // this.tiles = this.map.addTilesetImage('Grass_Overworld', 'Grass_Overworld');
+            // this.terrainLayer = this.map.createStaticLayer('Terrain', this.tiles, 0, 0);
             this.anims.create({ key: 'move', frames: this.anims.generateFrameNumbers('elf', { start: 0, end: 3, first: 0 }), frameRate: 8, repeat: -1 });
             // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
-            this.girl = new Mob_5.Mob(this, 100, 200, 'char_sheet_forestelf_myst', {
+            this.girl = new Mob_7.Mob(this, 100, 200, 'sheet_forestelf_myst', {
                 'idleAnim': 'move',
                 'moveAnim': 'move',
                 'deadAnim': 'move',
-                'backendData': new MobData_1.MobData({ name: 'testGirl', 'isPlayer': true, 'attackSpeed': 5, 'mag': 5, }),
+                'backendData': new MobData_2.MobData({ name: 'testGirl', 'isPlayer': true, 'attackSpeed': 5, 'mag': 5, }),
                 'agent': PlayerAgents.Simple,
             });
             this.girl.mobData.battleStats.attackPower.ice = 10;
@@ -2969,29 +3071,29 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
             this.girl.mobData.currentWeapon = this.girl.mobData.weaponRight;
             this.girl.mobData.addListener(this.girl.mobData.weaponRight);
             this.addMob(this.girl);
-            let woodlog = new Mob_5.Mob(this, 300, 200, 'char_sheet_forestelf_myst', {
+            let woodlog = new Mob_7.Mob(this, 300, 200, 'sheet_forestelf_myst', {
                 'idleAnim': 'move',
                 'moveAnim': 'move',
                 'deadAnim': 'move',
-                'backendData': new MobData_1.MobData({ name: 'woodLog', 'isPlayer': false, 'health': 1000, }),
-                'agent': SimpleAgents_1.KeepMoving,
+                'backendData': new MobData_2.MobData({ name: 'woodLog', 'isPlayer': false, 'health': 1000, }),
+                'agent': SimpleAgents_2.KeepMoving,
             });
             this.addMob(woodlog);
-            woodlog = new Mob_5.Mob(this, 350, 200, 'char_sheet_forestelf_myst', {
+            woodlog = new Mob_7.Mob(this, 350, 200, 'sheet_forestelf_myst', {
                 'idleAnim': 'move',
                 'moveAnim': 'move',
                 'deadAnim': 'move',
-                'backendData': new MobData_1.MobData({ name: 'woodLog', 'isPlayer': false, 'health': 1000, }),
-                'agent': SimpleAgents_1.KeepMoving,
+                'backendData': new MobData_2.MobData({ name: 'woodLog', 'isPlayer': false, 'health': 1000, }),
+                'agent': SimpleAgents_2.KeepMoving,
             });
             this.addMob(woodlog);
             this.h = woodlog;
-            woodlog = new Mob_5.Mob(this, 300, 250, 'char_sheet_forestelf_myst', {
+            woodlog = new Mob_7.Mob(this, 300, 250, 'sheet_forestelf_myst', {
                 'idleAnim': 'move',
                 'moveAnim': 'move',
                 'deadAnim': 'move',
-                'backendData': new MobData_1.MobData({ name: 'woodLog', 'isPlayer': false, 'health': 1000, }),
-                'agent': SimpleAgents_1.KeepMoving,
+                'backendData': new MobData_2.MobData({ name: 'woodLog', 'isPlayer': false, 'health': 1000, }),
+                'agent': SimpleAgents_2.KeepMoving,
             });
             this.addMob(woodlog);
         }

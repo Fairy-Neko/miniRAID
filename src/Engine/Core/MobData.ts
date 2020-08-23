@@ -126,7 +126,7 @@ export class MobData extends EventSystem.EventElement
 
         this.name = settings.name || "noname";
         // this.position = {x: this.body.left, y: this.body.top};
-        this.image = settings.image || "magical_girl";
+        this.image = settings.image || "unknown";
 
         // Stats
         this.race = settings.race || "unknown";

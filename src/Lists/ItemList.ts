@@ -1,4 +1,4 @@
-import { CometWand } from './Weapons/Staff'
+import { CometWand } from '../Weapons/Staff'
 
 export const ItemList: any =
 {

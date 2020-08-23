@@ -9,7 +9,10 @@ import { KeepMoving } from "./Agents/SimpleAgents";
 import { HealDmg } from "./Engine/Core/Helper";
 import { SpellFlags } from "./Engine/GameObjects/Spell";
 import { ItemManager } from "./Engine/Core/InventoryCore";
-import { ItemList } from "./ItemList";
+import { ItemList } from "./Lists/ItemList";
+import { ObjectPopulator } from "./Engine/Core/ObjectPopulator";
+import { ObjectList } from "./Lists/ObjectList";
+import { AgentList } from "./Lists/AgentList";
 
 export class TestScene extends BattleScene
 {
@@ -28,6 +31,8 @@ export class TestScene extends BattleScene
 
     preload() 
     {
+        ObjectPopulator.setData(ObjectList, AgentList);
+
         super.preload();
         this.load.image('logo', 'assets/BlueHGRMJsm.png');
 
@@ -41,20 +46,20 @@ export class TestScene extends BattleScene
 
     create() 
     {
-        super.create();
-
         // Create the ItemManager
         ItemManager.setData(this.cache.json.get('itemData'), ItemList);
         ItemManager.newItem("cometWand");
 
-        this.map = this.make.tilemap({ key: 'overworld' });
-        this.tiles = this.map.addTilesetImage('Grass_Overworld', 'Grass_Overworld');
-        this.terrainLayer = this.map.createStaticLayer('Terrain', this.tiles, 0, 0);
+        super.create();
+
+        // this.map = this.make.tilemap({ key: 'overworld' });
+        // this.tiles = this.map.addTilesetImage('Grass_Overworld', 'Grass_Overworld');
+        // this.terrainLayer = this.map.createStaticLayer('Terrain', this.tiles, 0, 0);
 
         this.anims.create({ key: 'move', frames: this.anims.generateFrameNumbers('elf', { start: 0, end: 3, first: 0 }), frameRate: 8, repeat: -1 });
 
         // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
-        this.girl = new Mob(this, 100, 200, 'char_sheet_forestelf_myst', {
+        this.girl = new Mob(this, 100, 200, 'sheet_forestelf_myst', {
             'idleAnim': 'move',
             'moveAnim': 'move',
             'deadAnim': 'move',
@@ -68,7 +73,7 @@ export class TestScene extends BattleScene
         this.girl.mobData.addListener(this.girl.mobData.weaponRight);
         this.addMob(this.girl);
 
-        let woodlog = new Mob(this, 300, 200, 'char_sheet_forestelf_myst', {
+        let woodlog = new Mob(this, 300, 200, 'sheet_forestelf_myst', {
             'idleAnim': 'move',
             'moveAnim': 'move',
             'deadAnim': 'move',
@@ -78,7 +83,7 @@ export class TestScene extends BattleScene
         });
         this.addMob(woodlog);
 
-        woodlog = new Mob(this, 350, 200, 'char_sheet_forestelf_myst', {
+        woodlog = new Mob(this, 350, 200, 'sheet_forestelf_myst', {
             'idleAnim': 'move',
             'moveAnim': 'move',
             'deadAnim': 'move',
@@ -89,7 +94,7 @@ export class TestScene extends BattleScene
         this.addMob(woodlog);
         this.h = woodlog;
 
-        woodlog = new Mob(this, 300, 250, 'char_sheet_forestelf_myst', {
+        woodlog = new Mob(this, 300, 250, 'sheet_forestelf_myst', {
             'idleAnim': 'move',
             'moveAnim': 'move',
             'deadAnim': 'move',

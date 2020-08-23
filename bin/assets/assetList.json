@@ -1,11 +1,54 @@
 {
-    "char_sheet_forestelf_myst": {
+    "sheet_forestelf_myst": {
         "url": "./assets/forestElfMyst.png",
         "type": "spritesheet",
         "frameConfig": {
             "frameWidth": 32,
             "frameHeight": 32,
             "endFrame": 4
+        },
+        "animations": {
+            "idle": [
+                0,
+                3,
+                0
+            ],
+            "move": [
+                0,
+                3,
+                0
+            ],
+            "dead": [
+                0,
+                0,
+                0
+            ]
+        }
+    },
+    "sheet_gripe_run_right": {
+        "url": "./assets/gripe_run_right.png",
+        "type": "spritesheet",
+        "frameConfig": {
+            "frameWidth": 32,
+            "frameHeight": 32,
+            "endFrame": 8
+        },
+        "animations": {
+            "idle": [
+                0,
+                7,
+                0
+            ],
+            "move": [
+                0,
+                7,
+                0
+            ],
+            "dead": [
+                0,
+                0,
+                0
+            ]
         }
     },
     "img_iced_fx": {

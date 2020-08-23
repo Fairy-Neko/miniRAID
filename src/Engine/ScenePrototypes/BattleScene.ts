@@ -5,6 +5,8 @@ import * as Events from '../Events/EventSystem'
 import { Mob } from '../GameObjects/Mob'
 import { UnitManager } from '../Core/UnitManager';
 import { Spell } from '../GameObjects/Spell';
+import { DynamicLoaderScene } from '../DynamicLoader/DynamicLoaderScene';
+import { ObjectPopulator } from '../Core/ObjectPopulator';
 
 export class BattleScene extends Phaser.Scene 
 {
@@ -26,8 +28,12 @@ export class BattleScene extends Phaser.Scene
 
     mapToLoad: string;
     map: Phaser.Tilemaps.Tilemap;
+    tilesetImgPrefix: string = 'assets/tilemaps/tiles/';
 
-    constructor(debug: boolean = false, mapToLoad = "overworld") 
+    mapReady: boolean;
+    loadingScreen: Phaser.GameObjects.Image;
+
+    constructor(debug: boolean = false, mapToLoad = "playground") 
     {
         super({
             key: 'BattleScene',
@@ -47,7 +53,7 @@ export class BattleScene extends Phaser.Scene
         this.width = this.sys.game.canvas.width;
         this.height = this.sys.game.canvas.height;
 
-        this.load.tilemapTiledJSON(this.mapToLoad, "assets/tilemaps/Overworld_tst.json");
+        this.load.tilemapTiledJSON(this.mapToLoad, "assets/tilemaps/playground.json");
     }
 
     addMob(mob: Mob)
@@ -88,12 +94,58 @@ export class BattleScene extends Phaser.Scene
         this.physics.add.overlap(this.enemyTargetingObjectGroup, this.worldGroup, this.spellHitWorldCallback);
         this.physics.add.overlap(this.everyoneTargetingObjectGroup, this.worldGroup, this.spellHitWorldCallback);
 
+        // Prepare for load the tilemap
+        this.loadingScreen = this.add.image(512, 640 / 2, 'loadscreen_BG');
+        this.loadingScreen.displayWidth = 1024;
+        this.loadingScreen.displayHeight = 640;
+        this.loadingScreen.setDepth(100);
+
         this.map = this.make.tilemap({ key: this.mapToLoad });
         console.log(this.map);
-        for (let layer in this.map.layers)
+        for (let tileset of this.map.tilesets)
         {
-
+            let path: string = this.tilesetImgPrefix + tileset.name + ".png";
+            this.load.image(tileset.name, path);
+            console.log(path);
         }
+        this.load.on('complete', this.loadComplete.bind(this));
+        this.load.start();
+    }
+
+    loadComplete()
+    {
+        this.tweens.add({
+            targets: this.loadingScreen,
+            alpha: { value: 0, duration: 1000, ease: 'Power1' },
+            yoyo: false,
+            repeat: 0
+        });
+        for (let tileset of this.map.tilesets)
+        {
+            this.map.addTilesetImage(tileset.name, tileset.name);
+        }
+        for (let layer of this.map.layers)
+        {
+            let tmp_layer = this.map.createStaticLayer(layer.name, this.map.tilesets, 0, 0);
+            tmp_layer.depth = -1; // TODO: adjust this value
+        }
+        for (let objLayer of this.map.objects)
+        {
+            for (let obj of objLayer.objects)
+            {
+                let objPopulated = ObjectPopulator.newObject<Phaser.GameObjects.GameObject>(this, obj.type == "" ? obj.name : obj.type, obj);
+                if (objPopulated instanceof Mob)
+                {
+                    this.addMob(objPopulated);
+                }
+                else if (objPopulated)
+                {
+                    this.add.existing(objPopulated);
+                }
+            }
+        }
+        console.log(this.map);
+        this.mapReady = true;
     }
 
     // Handle when spell hits a mob it targets
@@ -117,7 +169,14 @@ export class BattleScene extends Phaser.Scene
 
     update(time: number, dt: number)
     {
-        this.children.each((item: Phaser.GameObjects.GameObject) => { item.update(dt / 1000.0); });
-        this.unitMgr.update(dt / 1000.0);
+        if (this.mapReady)
+        {
+            this.children.each((item: Phaser.GameObjects.GameObject) => { item.update(dt / 1000.0); });
+            this.unitMgr.update(dt / 1000.0);
+
+            this.updateScene(time, dt);
+        }
     }
+
+    updateScene(time: number, dt: number) { }
 }
