@@ -1,3 +1,5 @@
+/** @packageDocumentation @module Lists */
+
 import { objectConstructor } from "../Engine/Core/ObjectPopulator";
 import { Mob } from "../Engine/GameObjects/Mob";
 

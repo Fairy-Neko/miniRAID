@@ -1,3 +1,5 @@
+/** @packageDocumentation @module Core */
+
 import { MobAgent } from "../Agents/MobAgent";
 
 export type agentConstructor = (typeof MobAgent);

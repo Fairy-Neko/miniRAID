@@ -1,3 +1,5 @@
+/** @packageDocumentation @module Lists */
+
 import { KeepMoving } from "../Agents/SimpleAgents";
 import { agentConstructor } from "../Engine/Core/ObjectPopulator";
 
