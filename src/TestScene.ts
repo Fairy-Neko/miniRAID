@@ -61,7 +61,7 @@ export class TestScene extends BattleScene
         for (let i = 0; i < 3; i++)
         {
             // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
-            this.girl = new Mob(this, 100, 220 + i * 100, 'sheet_forestelf_myst', {
+            this.girl = new Mob(this, 800, 220 + i * 100, 'sheet_forestelf_myst', {
                 'idleAnim': 'move',
                 'moveAnim': 'move',
                 'deadAnim': 'move',

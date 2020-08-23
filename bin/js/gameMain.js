@@ -2453,6 +2453,7 @@ define("Engine/UI/PopUpManager", ["require", "exports"], function (require, expo
     }
     exports.PopUpManager = PopUpManager;
 });
+/** @packageDocumentation @module Core */
 define("Engine/Core/ObjectPopulator", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -3020,6 +3021,7 @@ define("Agents/SimpleAgents", ["require", "exports", "Engine/Agents/MobAgent"], 
     }
     exports.KeepMoving = KeepMoving;
 });
+/** @packageDocumentation @module Lists */
 define("Lists/ItemList", ["require", "exports", "Weapons/Staff"], function (require, exports, Staff_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -3027,6 +3029,7 @@ define("Lists/ItemList", ["require", "exports", "Weapons/Staff"], function (requ
         "cometWand": Staff_1.CometWand,
     };
 });
+/** @packageDocumentation @module Lists */
 define("Lists/ObjectList", ["require", "exports", "Engine/GameObjects/Mob"], function (require, exports, Mob_6) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -3034,6 +3037,7 @@ define("Lists/ObjectList", ["require", "exports", "Engine/GameObjects/Mob"], fun
         'mob': Mob_6.Mob.fromTiled,
     };
 });
+/** @packageDocumentation @module Lists */
 define("Lists/AgentList", ["require", "exports", "Agents/SimpleAgents"], function (require, exports, SimpleAgents_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -3073,7 +3077,7 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
             this.anims.create({ key: 'move', frames: this.anims.generateFrameNumbers('elf', { start: 0, end: 3, first: 0 }), frameRate: 8, repeat: -1 });
             for (let i = 0; i < 3; i++) {
                 // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
-                this.girl = new Mob_7.Mob(this, 100, 220 + i * 100, 'sheet_forestelf_myst', {
+                this.girl = new Mob_7.Mob(this, 800, 220 + i * 100, 'sheet_forestelf_myst', {
                     'idleAnim': 'move',
                     'moveAnim': 'move',
                     'deadAnim': 'move',
