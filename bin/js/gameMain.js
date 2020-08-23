@@ -1947,12 +1947,13 @@ define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/
      * use SpellFlags.targetingEverything to make the spell to hit with everything.
      */
     class Spell extends dPhysSprite_1.dPhysSprite {
-        constructor(x, y, sprite, settings, useCollider = true, subsprite, frame) {
+        constructor(x, y, sprite, settings, useCollider = true, maxLifeSpan = 30.0, subsprite, frame) {
             super(settings.source.scene, x, y, sprite, subsprite, frame);
             this.useCollider = useCollider;
             this.info = settings.info;
             this.flags = this.info.flags;
             this.name = this.info.name;
+            this.lifeRemain = maxLifeSpan;
             this.destroying = false;
             this.source = settings.source;
             this.target = settings.target;
@@ -1989,16 +1990,23 @@ define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/
             return true;
         }
         update(dt) {
-            // Check is target alive
-            // If target dead, set it to undefined
-            if (this.target instanceof Mob_3.Mob && Mob_3.Mob.checkAlive(this.target) !== true) {
-                this.target = undefined;
-            }
-            // Cannot see me so die
-            if (this.checkInCamera() === false) {
+            // Life counter
+            this.lifeRemain -= dt;
+            if (this.lifeRemain < 0) {
                 this.selfDestroy();
             }
-            this.updateSpell(dt);
+            else {
+                // Check is target alive
+                // If target dead, set it to undefined
+                if (this.target instanceof Mob_3.Mob && Mob_3.Mob.checkAlive(this.target) !== true) {
+                    this.target = undefined;
+                }
+                // Cannot see me so die
+                if (this.checkInCamera() === false) {
+                    this.selfDestroy();
+                }
+                this.updateSpell(dt);
+            }
         }
         dieAfter(foo, arg, other) {
             foo.apply(this, arg);
@@ -2046,7 +2054,7 @@ define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/
     class DummySpell extends Spell {
         constructor(x, y, sprite, settings, subsprite, frame) {
             settings.info.name = settings.info.name || "DummySpell";
-            super(x, y, sprite, settings, false, subsprite, frame);
+            super(x, y, sprite, settings, false, 60.0, subsprite, frame);
             this.triggerTime = -1 || settings.triggerTime;
             this._onSpell = settings.onSpell;
             this._onSpellVec2 = settings.onSpellVec2;
@@ -2375,15 +2383,17 @@ define("Engine/UI/PopUpManager", ["require", "exports"], function (require, expo
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     // import * as Phaser from 'phaser'
-    class PopupText extends Phaser.GameObjects.Text {
-        constructor(scene, x, y, text, style, time = 1.0, velX = -64, velY = -256, accX = 0.0, accY = 512.0) {
-            super(scene, x, y, text, style);
+    class PopupText extends Phaser.GameObjects.BitmapText {
+        constructor(scene, x, y, text, color, time = 1.0, velX = -64, velY = -256, accX = 0.0, accY = 512.0) {
+            super(scene, x, y, 'mediumPx', text);
             this.time = time;
             this.velX = velX;
             this.velY = velY;
             this.accX = accX;
             this.accY = accY;
             this.dead = false;
+            this.setTint(color);
+            this.setLetterSpacing(1);
         }
         update(dt) {
             // perhaps we don't need this?
@@ -2409,13 +2419,17 @@ define("Engine/UI/PopUpManager", ["require", "exports"], function (require, expo
             }
             return PopUpManager.instance;
         }
+        preload() {
+            this.load.bitmapFont('smallPx', './assets/fonts/smallPx_04b03_0.png', './assets/fonts/smallPx_04b03.fnt');
+            this.load.bitmapFont('mediumPx', './assets/fonts/mediumPx_04b03_0.png', './assets/fonts/mediumPx_04b03.fnt');
+        }
         create() {
             this.textList = new Set();
         }
         addText(text, posX = 100, posY = 100, color = new Phaser.Display.Color(255, 255, 255, 255), time = 1.0, velX = -64, velY = -256, // jumping speed
         accX = 0.0, // gravity
         accY = 512) {
-            let txt = new PopupText(this, posX, posY, text, { 'color': color.rgba, 'fontSize': '24px', 'fontStyle': 'bold', 'strokeThickness': 5, 'stroke': '#000', 'align': 'center' }, time, velX, velY, accX, accY);
+            let txt = new PopupText(this, posX, posY, text, color.color, time, velX, velY, accX, accY);
             this.add.existing(txt);
         }
         update(time, dt) {
@@ -2901,7 +2915,7 @@ define("Engine/GameObjects/Projectile", ["require", "exports", "Engine/GameObjec
     Object.defineProperty(exports, "__esModule", { value: true });
     class Projectile extends Spell_2.Spell {
         constructor(x, y, sprite, settings, useCollider = true, subsprite, frame) {
-            super(x, y, sprite, settings, useCollider, subsprite, frame);
+            super(x, y, sprite, settings, useCollider, 7.0, subsprite, frame);
             this.chasingRange = settings.chasingRange || 0;
             this.chasingPower = settings.chasingPower || 0;
             this.speed = settings.speed || 200;
@@ -3057,20 +3071,23 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
             // this.tiles = this.map.addTilesetImage('Grass_Overworld', 'Grass_Overworld');
             // this.terrainLayer = this.map.createStaticLayer('Terrain', this.tiles, 0, 0);
             this.anims.create({ key: 'move', frames: this.anims.generateFrameNumbers('elf', { start: 0, end: 3, first: 0 }), frameRate: 8, repeat: -1 });
-            // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
-            this.girl = new Mob_7.Mob(this, 100, 200, 'sheet_forestelf_myst', {
-                'idleAnim': 'move',
-                'moveAnim': 'move',
-                'deadAnim': 'move',
-                'backendData': new MobData_2.MobData({ name: 'testGirl', 'isPlayer': true, 'attackSpeed': 5, 'mag': 5, }),
-                'agent': PlayerAgents.Simple,
-            });
-            this.girl.mobData.battleStats.attackPower.ice = 10;
-            this.girl.mobData.battleStats.crit = 50.0;
-            this.girl.mobData.weaponRight = new Staff_2.CometWand();
-            this.girl.mobData.currentWeapon = this.girl.mobData.weaponRight;
-            this.girl.mobData.addListener(this.girl.mobData.weaponRight);
-            this.addMob(this.girl);
+            for (let i = 0; i < 3; i++) {
+                // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
+                this.girl = new Mob_7.Mob(this, 100, 220 + i * 100, 'sheet_forestelf_myst', {
+                    'idleAnim': 'move',
+                    'moveAnim': 'move',
+                    'deadAnim': 'move',
+                    'backendData': new MobData_2.MobData({ name: 'testGirl', 'isPlayer': true, 'attackSpeed': 40, 'mag': 13, 'manaRegen': 1000 }),
+                    'agent': PlayerAgents.Simple,
+                });
+                this.girl.mobData.battleStats.attackPower.ice = 10;
+                this.girl.mobData.battleStats.attackPower.fire = 40;
+                this.girl.mobData.battleStats.crit = 50.0;
+                this.girl.mobData.weaponRight = new Staff_2.CometWand();
+                this.girl.mobData.currentWeapon = this.girl.mobData.weaponRight;
+                this.girl.mobData.addListener(this.girl.mobData.weaponRight);
+                this.addMob(this.girl);
+            }
             let woodlog = new Mob_7.Mob(this, 300, 200, 'sheet_forestelf_myst', {
                 'idleAnim': 'move',
                 'moveAnim': 'move',

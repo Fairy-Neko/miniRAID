@@ -58,20 +58,24 @@ export class TestScene extends BattleScene
 
         this.anims.create({ key: 'move', frames: this.anims.generateFrameNumbers('elf', { start: 0, end: 3, first: 0 }), frameRate: 8, repeat: -1 });
 
-        // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
-        this.girl = new Mob(this, 100, 200, 'sheet_forestelf_myst', {
-            'idleAnim': 'move',
-            'moveAnim': 'move',
-            'deadAnim': 'move',
-            'backendData': new MobData({ name: 'testGirl', 'isPlayer': true, 'attackSpeed': 5, 'mag': 5, }),
-            'agent': PlayerAgents.Simple,
-        });
-        this.girl.mobData.battleStats.attackPower.ice = 10;
-        this.girl.mobData.battleStats.crit = 50.0;
-        this.girl.mobData.weaponRight = new CometWand();
-        this.girl.mobData.currentWeapon = this.girl.mobData.weaponRight;
-        this.girl.mobData.addListener(this.girl.mobData.weaponRight);
-        this.addMob(this.girl);
+        for (let i = 0; i < 3; i++)
+        {
+            // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
+            this.girl = new Mob(this, 100, 220 + i * 100, 'sheet_forestelf_myst', {
+                'idleAnim': 'move',
+                'moveAnim': 'move',
+                'deadAnim': 'move',
+                'backendData': new MobData({ name: 'testGirl', 'isPlayer': true, 'attackSpeed': 40, 'mag': 13, 'manaRegen': 1000 }),
+                'agent': PlayerAgents.Simple,
+            });
+            this.girl.mobData.battleStats.attackPower.ice = 10;
+            this.girl.mobData.battleStats.attackPower.fire = 40;
+            this.girl.mobData.battleStats.crit = 50.0;
+            this.girl.mobData.weaponRight = new CometWand();
+            this.girl.mobData.currentWeapon = this.girl.mobData.weaponRight;
+            this.girl.mobData.addListener(this.girl.mobData.weaponRight);
+            this.addMob(this.girl);
+        }
 
         let woodlog = new Mob(this, 300, 200, 'sheet_forestelf_myst', {
             'idleAnim': 'move',

@@ -5,7 +5,7 @@
 
 // import * as Phaser from 'phaser'
 
-export class PopupText extends Phaser.GameObjects.Text
+export class PopupText extends Phaser.GameObjects.BitmapText
 {
     time: number;
     velX: number;
@@ -17,12 +17,12 @@ export class PopupText extends Phaser.GameObjects.Text
 
     constructor(
         scene: Phaser.Scene, x: number, y: number, text: string,
-        style: Phaser.Types.GameObjects.Text.TextStyle,
+        color: number,
         time: number = 1.0,
         velX: number = -64, velY: number = -256,
         accX: number = 0.0, accY: number = 512.0)
     {
-        super(scene, x, y, text, style);
+        super(scene, x, y, 'mediumPx', text);
 
         this.time = time;
         this.velX = velX;
@@ -31,6 +31,8 @@ export class PopupText extends Phaser.GameObjects.Text
         this.accY = accY;
 
         this.dead = false;
+        this.setTint(color);
+        this.setLetterSpacing(1);
     }
 
     update(dt: number)
@@ -70,6 +72,12 @@ export class PopUpManager extends Phaser.Scene
         return PopUpManager.instance;
     }
 
+    preload()
+    {
+        this.load.bitmapFont('smallPx', './assets/fonts/smallPx_04b03_0.png', './assets/fonts/smallPx_04b03.fnt');
+        this.load.bitmapFont('mediumPx', './assets/fonts/mediumPx_04b03_0.png', './assets/fonts/mediumPx_04b03.fnt');
+    }
+
     create()
     {
         this.textList = new Set<PopupText>();
@@ -87,7 +95,7 @@ export class PopUpManager extends Phaser.Scene
         accY: number = 512,// gravity
     )
     {
-        let txt = new PopupText(this, posX, posY, text, { 'color': color.rgba, 'fontSize': '24px', 'fontStyle': 'bold', 'strokeThickness': 5, 'stroke': '#000', 'align': 'center' }, time, velX, velY, accX, accY);
+        let txt = new PopupText(this, posX, posY, text, color.color, time, velX, velY, accX, accY);
         this.add.existing(txt);
     }
 

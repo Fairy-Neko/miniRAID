@@ -20,7 +20,7 @@ export class Projectile extends Spell
         subsprite?: string,
         frame?: string | number)
     {
-        super(x, y, sprite, settings, useCollider, subsprite, frame);
+        super(x, y, sprite, settings, useCollider, 7.0, subsprite, frame);
 
         this.chasingRange = settings.chasingRange || 0;
         this.chasingPower = settings.chasingPower || 0;

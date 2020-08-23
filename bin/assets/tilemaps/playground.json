@@ -124,8 +124,8 @@
                  "type":"mob",
                  "visible":true,
                  "width":32,
-                 "x":635.902377990431,
-                 "y":212.419124401914
+                 "x":885.165535885167,
+                 "y":178.122473684211
                 }, 
                 {
                  "height":31.5,
@@ -431,8 +431,8 @@
                  "type":"mob",
                  "visible":true,
                  "width":32,
-                 "x":635.902377990431,
-                 "y":212.419124401914
+                 "x":885.165535885167,
+                 "y":178.122473684211
                 }, 
                 {
                  "height":32,
@@ -463,8 +463,8 @@
                  "type":"mob",
                  "visible":true,
                  "width":32,
-                 "x":616.038277511962,
-                 "y":224.688995215311
+                 "x":865.301435406699,
+                 "y":190.392344497608
                 }, 
                 {
                  "height":32,
@@ -482,6 +482,11 @@
                          "value":32
                         }, 
                         {
+                         "name":"health",
+                         "type":"float",
+                         "value":1000000
+                        }, 
+                        {
                          "name":"image",
                          "type":"string",
                          "value":"gripe_run_right"
@@ -495,8 +500,8 @@
                  "type":"mob",
                  "visible":true,
                  "width":32,
-                 "x":587.253588516746,
-                 "y":209.99043062201
+                 "x":876.325358851675,
+                 "y":263.885167464115
                 }, 
                 {
                  "height":32,
@@ -527,8 +532,8 @@
                  "type":"mob",
                  "visible":true,
                  "width":32,
-                 "x":577.454545454545,
-                 "y":256.535885167464
+                 "x":826.717703349282,
+                 "y":222.239234449761
                 }, 
                 {
                  "height":32,
@@ -559,8 +564,8 @@
                  "type":"mob",
                  "visible":true,
                  "width":32,
-                 "x":606.239234449761,
-                 "y":252.861244019139
+                 "x":855.502392344498,
+                 "y":218.564593301435
                 }, 
                 {
                  "height":32,
@@ -591,8 +596,8 @@
                  "type":"mob",
                  "visible":true,
                  "width":32,
-                 "x":636.248803827751,
-                 "y":247.961722488038
+                 "x":885.511961722488,
+                 "y":213.665071770335
                 }, 
                 {
                  "height":32,
@@ -623,8 +628,304 @@
                  "type":"mob",
                  "visible":true,
                  "width":32,
-                 "x":614.200956937799,
-                 "y":281.033492822966
+                 "x":863.464114832536,
+                 "y":246.736842105263
+                }, 
+                {
+                 "height":32,
+                 "id":173,
+                 "name":"testMob",
+                 "properties":[
+                        {
+                         "name":"agentType",
+                         "type":"string",
+                         "value":"keepMoving"
+                        }, 
+                        {
+                         "name":"framewidth",
+                         "type":"int",
+                         "value":32
+                        }, 
+                        {
+                         "name":"health",
+                         "type":"float",
+                         "value":1000000
+                        }, 
+                        {
+                         "name":"image",
+                         "type":"string",
+                         "value":"gripe_run_right"
+                        }, 
+                        {
+                         "name":"vit",
+                         "type":"float",
+                         "value":10
+                        }],
+                 "rotation":90,
+                 "type":"mob",
+                 "visible":true,
+                 "width":32,
+                 "x":835.904306220096,
+                 "y":268.172248803828
+                }, 
+                {
+                 "height":32,
+                 "id":174,
+                 "name":"testMob",
+                 "properties":[
+                        {
+                         "name":"agentType",
+                         "type":"string",
+                         "value":"keepMoving"
+                        }, 
+                        {
+                         "name":"framewidth",
+                         "type":"int",
+                         "value":32
+                        }, 
+                        {
+                         "name":"health",
+                         "type":"float",
+                         "value":1000000
+                        }, 
+                        {
+                         "name":"image",
+                         "type":"string",
+                         "value":"gripe_run_right"
+                        }, 
+                        {
+                         "name":"vit",
+                         "type":"float",
+                         "value":10
+                        }],
+                 "rotation":90,
+                 "type":"mob",
+                 "visible":true,
+                 "width":32,
+                 "x":898.373205741627,
+                 "y":328.191387559809
+                }, 
+                {
+                 "height":32,
+                 "id":175,
+                 "name":"testMob",
+                 "properties":[
+                        {
+                         "name":"agentType",
+                         "type":"string",
+                         "value":"keepMoving"
+                        }, 
+                        {
+                         "name":"framewidth",
+                         "type":"int",
+                         "value":32
+                        }, 
+                        {
+                         "name":"health",
+                         "type":"float",
+                         "value":1000000
+                        }, 
+                        {
+                         "name":"image",
+                         "type":"string",
+                         "value":"gripe_run_right"
+                        }, 
+                        {
+                         "name":"vit",
+                         "type":"float",
+                         "value":10
+                        }],
+                 "rotation":90,
+                 "type":"mob",
+                 "visible":true,
+                 "width":32,
+                 "x":888.574162679426,
+                 "y":309.205741626794
+                }, 
+                {
+                 "height":32,
+                 "id":176,
+                 "name":"testMob",
+                 "properties":[
+                        {
+                         "name":"agentType",
+                         "type":"string",
+                         "value":"keepMoving"
+                        }, 
+                        {
+                         "name":"framewidth",
+                         "type":"int",
+                         "value":32
+                        }, 
+                        {
+                         "name":"health",
+                         "type":"float",
+                         "value":1000000
+                        }, 
+                        {
+                         "name":"image",
+                         "type":"string",
+                         "value":"gripe_run_right"
+                        }, 
+                        {
+                         "name":"vit",
+                         "type":"float",
+                         "value":10
+                        }],
+                 "rotation":90,
+                 "type":"mob",
+                 "visible":true,
+                 "width":32,
+                 "x":851.215311004785,
+                 "y":328.803827751196
+                }, 
+                {
+                 "height":32,
+                 "id":177,
+                 "name":"testMob",
+                 "properties":[
+                        {
+                         "name":"agentType",
+                         "type":"string",
+                         "value":"keepMoving"
+                        }, 
+                        {
+                         "name":"framewidth",
+                         "type":"int",
+                         "value":32
+                        }, 
+                        {
+                         "name":"health",
+                         "type":"float",
+                         "value":1000000
+                        }, 
+                        {
+                         "name":"image",
+                         "type":"string",
+                         "value":"gripe_run_right"
+                        }, 
+                        {
+                         "name":"vit",
+                         "type":"float",
+                         "value":10
+                        }],
+                 "rotation":90,
+                 "type":"mob",
+                 "visible":true,
+                 "width":32,
+                 "x":876.325358851675,
+                 "y":284.708133971292
+                }, 
+                {
+                 "height":32,
+                 "id":178,
+                 "name":"testMob",
+                 "properties":[
+                        {
+                         "name":"agentType",
+                         "type":"string",
+                         "value":"keepMoving"
+                        }, 
+                        {
+                         "name":"framewidth",
+                         "type":"int",
+                         "value":32
+                        }, 
+                        {
+                         "name":"health",
+                         "type":"float",
+                         "value":1000000
+                        }, 
+                        {
+                         "name":"image",
+                         "type":"string",
+                         "value":"gripe_run_right"
+                        }, 
+                        {
+                         "name":"vit",
+                         "type":"float",
+                         "value":10
+                        }],
+                 "rotation":90,
+                 "type":"mob",
+                 "visible":true,
+                 "width":32,
+                 "x":890.411483253589,
+                 "y":277.358851674641
+                }, 
+                {
+                 "height":32,
+                 "id":179,
+                 "name":"testMob",
+                 "properties":[
+                        {
+                         "name":"agentType",
+                         "type":"string",
+                         "value":"keepMoving"
+                        }, 
+                        {
+                         "name":"framewidth",
+                         "type":"int",
+                         "value":32
+                        }, 
+                        {
+                         "name":"health",
+                         "type":"float",
+                         "value":1000000
+                        }, 
+                        {
+                         "name":"image",
+                         "type":"string",
+                         "value":"gripe_run_right"
+                        }, 
+                        {
+                         "name":"vit",
+                         "type":"float",
+                         "value":10
+                        }],
+                 "rotation":90,
+                 "type":"mob",
+                 "visible":true,
+                 "width":32,
+                 "x":854.277511961722,
+                 "y":294.507177033493
+                }, 
+                {
+                 "height":32,
+                 "id":180,
+                 "name":"testMob",
+                 "properties":[
+                        {
+                         "name":"agentType",
+                         "type":"string",
+                         "value":"keepMoving"
+                        }, 
+                        {
+                         "name":"framewidth",
+                         "type":"int",
+                         "value":32
+                        }, 
+                        {
+                         "name":"health",
+                         "type":"float",
+                         "value":1000000
+                        }, 
+                        {
+                         "name":"image",
+                         "type":"string",
+                         "value":"gripe_run_right"
+                        }, 
+                        {
+                         "name":"vit",
+                         "type":"float",
+                         "value":10
+                        }],
+                 "rotation":90,
+                 "type":"mob",
+                 "visible":true,
+                 "width":32,
+                 "x":840.803827751196,
+                 "y":298.181818181818
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -848,7 +1149,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":173,
+ "nextobjectid":181,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.4.2",

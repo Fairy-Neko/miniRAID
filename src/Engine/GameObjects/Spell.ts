@@ -48,6 +48,8 @@ export class Spell extends dPhysSprite
     targeting: Targeting;
     destroying: boolean;
 
+    lifeRemain: number;
+
     _onHit: (self: Spell, arg: Phaser.GameObjects.GameObject) => void;
     _onMobHit: (self: Spell, arg: Mob) => void;
     _onWorldHit: (self: Spell, arg: Phaser.GameObjects.GameObject) => void;
@@ -59,6 +61,7 @@ export class Spell extends dPhysSprite
         sprite: string,
         settings: mRTypes.Settings.Spell,
         useCollider: boolean = true,
+        maxLifeSpan: number = 30.0,
         subsprite?: string,
         frame?: string | number)
     {
@@ -69,6 +72,7 @@ export class Spell extends dPhysSprite
         this.flags = this.info.flags;
         this.name = this.info.name;
 
+        this.lifeRemain = maxLifeSpan;
         this.destroying = false;
 
         this.source = settings.source;
@@ -121,20 +125,29 @@ export class Spell extends dPhysSprite
 
     update(dt: number)
     {
-        // Check is target alive
-        // If target dead, set it to undefined
-        if (this.target instanceof Mob && Mob.checkAlive(this.target) !== true)
-        {
-            this.target = undefined;
-        }
-
-        // Cannot see me so die
-        if (this.checkInCamera() === false)
+        // Life counter
+        this.lifeRemain -= dt;
+        if (this.lifeRemain < 0)
         {
             this.selfDestroy();
         }
+        else
+        {
+            // Check is target alive
+            // If target dead, set it to undefined
+            if (this.target instanceof Mob && Mob.checkAlive(this.target) !== true)
+            {
+                this.target = undefined;
+            }
 
-        this.updateSpell(dt);
+            // Cannot see me so die
+            if (this.checkInCamera() === false)
+            {
+                this.selfDestroy();
+            }
+
+            this.updateSpell(dt);
+        }
     }
 
     dieAfter(foo: any, arg: any, other: Phaser.GameObjects.GameObject)
@@ -196,7 +209,7 @@ export class DummySpell extends Spell
         frame?: string | number)
     {
         settings.info.name = settings.info.name || "DummySpell";
-        super(x, y, sprite, settings, false, subsprite, frame);
+        super(x, y, sprite, settings, false, 60.0, subsprite, frame);
 
         this.triggerTime = -1 || settings.triggerTime;
         this._onSpell = settings.onSpell;
