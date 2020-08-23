@@ -64,9 +64,7 @@ export class Equipable extends MobListener implements Item
 
     onAdded(mob: MobData, source: MobData)
     {
-        super.onAdded(mob, source);
         this.syncStats(mob);
-
         this.listen(mob, 'statCalculationFinish', this.onStatCalculationFinish);
     }
 

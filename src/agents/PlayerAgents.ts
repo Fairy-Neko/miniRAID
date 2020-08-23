@@ -4,6 +4,7 @@ import { MobAgent } from "../Engine/Agents/MobAgent";
 import { Mob } from "../Engine/GameObjects/Mob";
 import { GameData } from "../Engine/Core/GameData";
 import { UnitManager } from "../Engine/Core/UnitManager";
+import { PopUpManager } from "../Engine/UI/PopUpManager";
 
 export class PlayerAgentBase extends MobAgent
 {
@@ -31,6 +32,8 @@ export class Simple extends PlayerAgentBase
     footPos: Phaser.Math.Vector2;
     isMoving: boolean;
     unitMgr: UnitManager;
+
+    OOMwarned: boolean = false;
 
     constructor(parentMob: Mob)
     {
@@ -62,6 +65,21 @@ export class Simple extends PlayerAgentBase
 
         if (Mob.checkAlive(player) === true)
         {
+            // Low Mana warning
+            if (player.mobData.currentMana < (player.mobData.currentWeapon.manaCost * player.mobData.modifiers.resourceCost))
+            {
+                if (!this.OOMwarned)
+                {
+                    let _p = player.getTopCenter();
+                    PopUpManager.getSingleton().addText("*OOM*", _p.x, _p.y, Phaser.Display.Color.HexStringToColor("#45beff"), 1.0, 0)
+                }
+                this.OOMwarned = true;
+            }
+            else
+            {
+                this.OOMwarned = false;
+            }
+
             if (typeof this.targetPos !== "undefined")
             {
                 if (this.targetPos.distance(this.footPos) > 1.5)

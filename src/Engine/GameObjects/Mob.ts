@@ -6,13 +6,14 @@ import { dPhysSprite } from '../DynamicLoader/dPhysSprite';
 // import { Game, Scene } from 'phaser';
 import { MobAgent } from '../Agents/MobAgent';
 import { MobData } from '../Core/MobData';
-import { mRTypes, Consts } from '../Core/mRTypes';
+import { mRTypes } from '../Core/mRTypes';
 import { UnitManager } from '../Core/UnitManager';
 import { EquipmentType, EquipmentTag } from '../Core/EquipmentCore';
 import { Buff } from '../Core/Buff';
 import { PopUpManager } from '../UI/PopUpManager';
 import { DynamicLoaderScene } from '../DynamicLoader/DynamicLoaderScene';
 import { ObjectPopulator } from '../Core/ObjectPopulator';
+import { GameData } from '../Core/GameData';
 
 export class Mob extends dPhysSprite
 {
@@ -38,6 +39,7 @@ export class Mob extends dPhysSprite
         this.setOrigin(0.5, 0.8);
 
         this.mobData = settings.backendData;
+        this.mobData.parentMob = this;
 
         this.moveAnim = settings.moveAnim;
         this.idleAnim = settings.idleAnim;
@@ -170,8 +172,7 @@ export class Mob extends dPhysSprite
             // Initial popUp
             if (popUp == true)
             {
-                throw new Error("Please implement popup");
-                // buff.popUp(this);
+                buff.popUp(this);
             }
         }
 
@@ -259,7 +260,7 @@ export class Mob extends dPhysSprite
             if (_damageInfo.popUp == true)
             {
                 var popUpPos = this.getTopCenter();
-                PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, Consts.ElementColors['miss']);
+                PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, GameData.ElementColors['miss']);
             }
 
             return result;
@@ -269,7 +270,7 @@ export class Mob extends dPhysSprite
         if (_damageInfo.popUp == true && result.value > 0)
         {
             var popUpPos = this.getTopCenter();
-            PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, Consts.ElementColors[result.type]);
+            PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData.ElementColors[result.type]);
 
             // // popUp texts on unit frames
             // // fade from the edge of currentHealth to the left
@@ -331,7 +332,7 @@ export class Mob extends dPhysSprite
             'isCrit': _healInfo.isCrit,
             'isAvoid': _healInfo.isAvoid,
             'isBlock': _healInfo.isBlock,
-            'type': 'heal',
+            'type': GameData.Elements.heal,
             'overdeal': 0
         };
 
@@ -372,11 +373,11 @@ export class Mob extends dPhysSprite
             var popUpPos = this.getTopCenter();
             if (result.overdeal > 0)
             {
-                PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : "") + " <" + result.overdeal.toString() + ">", popUpPos.x, popUpPos.y, Consts.ElementColors['heal'], 1.0, 64, -256);
+                PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : "") + " <" + result.overdeal.toString() + ">", popUpPos.x, popUpPos.y, GameData.ElementColors['heal'], 1.0, 64, -256);
             }
             else
             {
-                PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, Consts.ElementColors['heal'], 1.0, 64, -256);
+                PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData.ElementColors['heal'], 1.0, 64, -256);
             }
 
             // // popUp texts on unit frames
@@ -424,6 +425,8 @@ export class Mob extends dPhysSprite
             // me.game.world.removeChild(this.HPBar);
             // game.units.removeEnemy(this);
             // me.game.world.removeChild(this);
+            this.agent.parentMob = undefined;
+            this.agent = undefined;
             this.destroy();
         }
     }

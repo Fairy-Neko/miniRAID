@@ -6,6 +6,7 @@ import { mRTypes } from "../Core/mRTypes";
 import { Mob } from "./Mob";
 import { BattleScene } from "../ScenePrototypes/BattleScene";
 import { HealDmg } from "../Core/Helper";
+import { GameData } from "../Core/GameData";
 
 export enum SpellFlags
 {
@@ -170,7 +171,7 @@ export class Spell extends dPhysSprite
         }
     }
 
-    HealDmg(target: Mob, dmg: number, type: string): mRTypes.DamageHeal
+    HealDmg(target: Mob, dmg: number, type: GameData.Elements): mRTypes.DamageHeal
     {
         return HealDmg({
             'source': this.source,

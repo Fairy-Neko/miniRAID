@@ -111,16 +111,22 @@ export class MobListener extends EventSystem.EventElement
 
     // When this listener was added to the mob by source
     // Buffs will also be triggered when new stack comes.
-    onAdded(mob: MobData, source: MobData) 
+    _beAdded(mob: MobData, source: MobData) 
     {
         this.parentMob = mob;
+        this.onAdded(mob, source)
     }
 
+    onAdded(mob: MobData, source: MobData) { }
+
     // When this listener was removed from the mob by source. By default this will remove the listener from the eventsystem.
-    onRemoved(mob: MobData, source: MobData) 
+    _beRemoved(mob: MobData, source: MobData) 
     {
         this.discard();
+        this.onRemoved(mob, source);
     }
+
+    onRemoved(mob: MobData, source: MobData) { }
 
     // Be triggered when the mob is attacking.
     // This is triggered before the mob's attack.

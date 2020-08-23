@@ -334,6 +334,8 @@ export class MobData extends EventSystem.EventElement
     // To be continued - dataBackend.js:301
     updateMobBackend(mob: Mob, dt: number)
     {
+        console.log(this.listeners.data.size);
+
         // Register parent mob
         if (typeof this.parentMob == undefined)
         {
@@ -477,7 +479,7 @@ export class MobData extends EventSystem.EventElement
         {
             this.listen(listener, 'statChange', (arg: MobListener) => this.onStatChange(arg));
             // listener.emit('add', undefined, this, source);
-            listener.onAdded(this, source);
+            listener._beAdded(this, source);
         }
     }
 
@@ -492,7 +494,7 @@ export class MobData extends EventSystem.EventElement
         if (this.listeners.removeItem(listener))
         {
             // listener.emit('remove', undefined, this, source);
-            listener.onRemoved(this, source);
+            listener._beRemoved(this, source);
             this.unlistenAll(listener);
         }
     }

@@ -9,6 +9,7 @@ import * as MobData from "./MobData";
 import { SpellData } from "./SpellData";
 import { SpellFlags, Spell as SpellEntity, DummySpell as DummySpellEntity } from "../GameObjects/Spell";
 import { Dictionary } from "typescript-collections";
+import { GameData } from "./GameData";
 
 export namespace mRTypes
 {
@@ -16,7 +17,21 @@ export namespace mRTypes
     {
         export interface Buff
         {
+            name?: string;
 
+            countTime?: boolean;
+            time?: number;
+
+            stacks?: integer;
+            stackable?: boolean;
+            maxStack?: integer;
+
+            iconId?: integer;
+            color?: Phaser.Display.Color;
+            popupName?: string;
+            popupColor?: Phaser.Display.Color;
+
+            source?: MobData.MobData;
         }
 
         export interface SpellData
@@ -205,7 +220,7 @@ export namespace mRTypes
         source?: MobData.MobData;
         target: MobData.MobData;
         value: number;
-        type: string;
+        type: GameData.Elements;
         overdeal?: number;
         isCrit?: boolean;
         isAvoid?: boolean;
@@ -220,7 +235,7 @@ export namespace mRTypes
         source?: MobEntity;
         target: MobEntity;
         value: number;
-        type: string;
+        type: GameData.Elements;
         isCrit?: boolean;
         isAvoid?: boolean;
         isBlock?: boolean;
@@ -289,29 +304,5 @@ export namespace mRTypes
     export interface ItemDataStorage
     {
         [index: string]: ItemData;
-    }
-}
-
-export namespace Consts
-{
-    export const LeafTypesZERO: mRTypes.LeafTypes<number> = { fire: 0, water: 0, ice: 0, wind: 0, nature: 0, light: 0, thunder: 0, slash: 0, pierce: 0, knock: 0, dark: 0, heal: 0 };
-
-    export const ElementColors: { [index: string]: Phaser.Display.Color } =
-    {
-        slash: Phaser.Display.Color.HexStringToColor("#ffffff"),
-        knock: Phaser.Display.Color.HexStringToColor("#ffffff"),
-        pierce: Phaser.Display.Color.HexStringToColor("#ffffff"),
-
-        fire: Phaser.Display.Color.HexStringToColor("#ffa342"),
-        ice: Phaser.Display.Color.HexStringToColor("#72ffe2"),
-        water: Phaser.Display.Color.HexStringToColor("#5b8fff"),
-        nature: Phaser.Display.Color.HexStringToColor("#b1ed1a"),
-        wind: Phaser.Display.Color.HexStringToColor("#aaffc8"),
-        thunder: Phaser.Display.Color.HexStringToColor("#fffb21"),
-        light: Phaser.Display.Color.HexStringToColor("#fffbd1"),
-        dark: Phaser.Display.Color.HexStringToColor("#8d47bf"),
-
-        miss: Phaser.Display.Color.HexStringToColor("#ff19e0"),
-        heal: Phaser.Display.Color.HexStringToColor("#66f95c"),
     }
 }

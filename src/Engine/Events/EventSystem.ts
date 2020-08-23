@@ -28,10 +28,12 @@ export class EventElement implements IEventEmitter, IEventReceiver
 {
     parentSystem: EventSystem;
     listenRecord: Collections.Set<ListenRecord> = new Collections.Set<ListenRecord>();
+    UID: number;
 
     constructor(parentSystem: EventSystem)
     {
         this.parentSystem = parentSystem;
+        this.UID = this.parentSystem.getUID();
     }
 
     public emit(evt: String, resCallback: (res: any) => void, ...args: any[]): number
@@ -103,15 +105,34 @@ export class EventElement implements IEventEmitter, IEventReceiver
         this.discardEmitter();
         this.discardReceiver();
     }
+
+    public toString()
+    {
+        return "ER" + this.UID;
+    }
 }
 
 export class EventSystem
 {
+    private Ecounter: number = 0;
+    private Rcounter: number = 0;
     private dict: Collections.Dictionary<IEventEmitter, Collections.Dictionary<String, Collections.LinkedDictionary<IEventReceiver, EventCallback>>> = new Collections.Dictionary<IEventEmitter, Collections.Dictionary<String, Collections.LinkedDictionary<IEventReceiver, EventCallback>>>();
 
     constructor()
     {
         // nothing to do?
+    }
+
+    getUID(isE: boolean = true)
+    {
+        if (isE)
+        {
+            return this.Ecounter++;
+        }
+        else
+        {
+            return this.Rcounter++;
+        }
     }
 
     listen(src: IEventEmitter, dst: IEventReceiver, callback: EventCallback, evt: String): boolean

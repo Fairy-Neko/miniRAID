@@ -4,10 +4,11 @@ import { Mob } from "../GameObjects/Mob";
 import { mRTypes } from "./mRTypes";
 import { UnitManager } from "./UnitManager";
 import { Targeting } from "../GameObjects/Spell";
+import { GameData } from "./GameData";
 
 export function HealDmg(info: mRTypes.DamageHeal_FrontEnd): mRTypes.DamageHeal
 {
-    if (info.type === 'heal')
+    if (info.type === GameData.Elements.heal)
     {
         return info.target.receiveHeal(info);
     }

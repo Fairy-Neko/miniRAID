@@ -13,6 +13,8 @@ import { ItemList } from "./Lists/ItemList";
 import { ObjectPopulator } from "./Engine/Core/ObjectPopulator";
 import { ObjectList } from "./Lists/ObjectList";
 import { AgentList } from "./Lists/AgentList";
+import { GameData } from "./Engine/Core/GameData";
+import { HDOT } from "./Buffs/HDOT";
 
 export class TestScene extends BattleScene
 {
@@ -44,13 +46,17 @@ export class TestScene extends BattleScene
         this.load.json('itemData', 'assets/dataSheets/Items.json');
     }
 
-    create() 
+    create()
     {
         // Create the ItemManager
         ItemManager.setData(this.cache.json.get('itemData'), ItemList);
-        ItemManager.newItem("cometWand");
 
         super.create();
+    }
+
+    loadComplete() 
+    {
+        super.loadComplete();
 
         // this.map = this.make.tilemap({ key: 'overworld' });
         // this.tiles = this.map.addTilesetImage('Grass_Overworld', 'Grass_Overworld');
@@ -65,7 +71,7 @@ export class TestScene extends BattleScene
                 'idleAnim': 'move',
                 'moveAnim': 'move',
                 'deadAnim': 'move',
-                'backendData': new MobData({ name: 'testGirl', 'isPlayer': true, 'attackSpeed': 40, 'mag': 13, 'manaRegen': 1000 }),
+                'backendData': new MobData({ name: 'testGirl', 'isPlayer': true, 'attackSpeed': 40 - 5 * i, 'mag': 13 - 2 * i, 'manaRegen': 2 + 6 * i }),
                 'agent': PlayerAgents.Simple,
             });
             this.girl.mobData.battleStats.attackPower.ice = 10;
@@ -74,6 +80,7 @@ export class TestScene extends BattleScene
             this.girl.mobData.weaponRight = new CometWand();
             this.girl.mobData.currentWeapon = this.girl.mobData.weaponRight;
             this.girl.mobData.addListener(this.girl.mobData.weaponRight);
+            this.girl.receiveBuff(this.girl, new HDOT({ 'source': this.girl.mobData, 'countTime': false, 'name': 'GodHeal' }, GameData.Elements.heal, 10, 18, 1.66));
             this.addMob(this.girl);
         }
 
@@ -116,7 +123,7 @@ export class TestScene extends BattleScene
         if (this.hc < 0)
         {
             this.hc = this.hcM;
-            HealDmg({ 'source': this.h, 'target': this.h, type: 'heal', value: 5 });
+            HealDmg({ 'source': this.h, 'target': this.h, type: GameData.Elements.heal, value: 5 });
         }
         this.hc -= dt * 0.001;
     }

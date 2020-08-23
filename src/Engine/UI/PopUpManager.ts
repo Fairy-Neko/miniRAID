@@ -24,7 +24,7 @@ export class PopupText extends Phaser.GameObjects.BitmapText
     {
         super(scene, x, y, 'mediumPx', text);
 
-        this.time = time;
+        this.time = time * 1.5;
         this.velX = velX;
         this.velY = velY;
         this.accX = accX;
@@ -33,6 +33,7 @@ export class PopupText extends Phaser.GameObjects.BitmapText
         this.dead = false;
         this.setTint(color);
         this.setLetterSpacing(1);
+        this.setOrigin(0.5, 0.0);
     }
 
     update(dt: number)
@@ -61,6 +62,7 @@ export class PopUpManager extends Phaser.Scene
 {
     textList: Set<PopupText>;
     static instance: PopUpManager;
+    loaded: boolean = false;
 
     static getSingleton(): PopUpManager
     {
@@ -81,6 +83,7 @@ export class PopUpManager extends Phaser.Scene
     create()
     {
         this.textList = new Set<PopupText>();
+        this.loaded = true;
     }
 
     addText(
@@ -95,8 +98,11 @@ export class PopUpManager extends Phaser.Scene
         accY: number = 512,// gravity
     )
     {
-        let txt = new PopupText(this, posX, posY, text, color.color, time, velX, velY, accX, accY);
-        this.add.existing(txt);
+        if (this.loaded)
+        {
+            let txt = new PopupText(this, posX, posY, text, color.color, time, velX, velY, accX, accY);
+            this.add.existing(txt);
+        }
     }
 
     update(time: number, dt: number)

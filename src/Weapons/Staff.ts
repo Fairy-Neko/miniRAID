@@ -7,6 +7,8 @@ import { UnitManager } from '../Engine/Core/UnitManager';
 import { Spell, SpellFlags, Targeting } from '../Engine/GameObjects/Spell';
 import { Projectile } from '../Engine/GameObjects/Projectile';
 import { getRandomInt, AoE } from '../Engine/Core/Helper';
+import { GameData } from '../Engine/Core/GameData';
+import { HDOT } from '../Buffs/HDOT';
 
 export class CometWand extends Weapon
 {
@@ -37,7 +39,7 @@ export class CometWand extends Weapon
             'source': source,
             'target': targetMob,
             'speed': 150,
-            'onMobHit': (self: Spell, mob: Mob) => { self.dieAfter(self.HealDmg, [mob, getRandomInt(6, 18), 'ice'], mob); },
+            'onMobHit': (self: Spell, mob: Mob) => { self.dieAfter(self.HealDmg, [mob, getRandomInt(6, 18), GameData.Elements.ice], mob); },
             // 'onMobHit': (self: Spell, mob: Mob) =>
             // {
             //     self.dieAfter(
@@ -65,7 +67,8 @@ export class CometWand extends Weapon
                 self.dieAfter(
                     () => AoE((m: Mob) =>
                     {
-                        self.HealDmg(m, getRandomInt(30, 50), 'fire')
+                        // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
+                        m.receiveBuff(source, new HDOT({ 'source': source.mobData, 'countTime': true, 'popupColor': GameData.ElementColors[GameData.Elements.fire], 'popupName': 'Burnt' }, GameData.Elements.fire, 2, 5, 0.44));
                     }, self.getPosition(), 100, self.targeting), [], mob);
             },
             'color': Phaser.Display.Color.HexStringToColor("#ff3333"),
