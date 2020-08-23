@@ -109,9 +109,8 @@ export class TestScene extends BattleScene
         this.addMob(woodlog);
     }
 
-    update(time: number, dt: number)
+    updateScene(time: number, dt: number)
     {
-        super.update(time, dt);
         // console.log("Mana: " + this.girl.mobData.currentMana.toString() + " / " + this.girl.mobData.maxMana.toString());
 
         if (this.hc < 0)

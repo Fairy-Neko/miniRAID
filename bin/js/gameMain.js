@@ -3118,8 +3118,7 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
             });
             this.addMob(woodlog);
         }
-        update(time, dt) {
-            super.update(time, dt);
+        updateScene(time, dt) {
             // console.log("Mana: " + this.girl.mobData.currentMana.toString() + " / " + this.girl.mobData.maxMana.toString());
             if (this.hc < 0) {
                 this.hc = this.hcM;
