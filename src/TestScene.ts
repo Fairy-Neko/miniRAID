@@ -76,7 +76,7 @@ export class TestScene extends BattleScene
             });
             this.girl.mobData.battleStats.attackPower.ice = 10;
             this.girl.mobData.battleStats.attackPower.fire = 40;
-            this.girl.mobData.battleStats.crit = 50.0;
+            this.girl.mobData.battleStats.crit = 5.0;
             this.girl.mobData.weaponRight = new CometWand();
             this.girl.mobData.currentWeapon = this.girl.mobData.weaponRight;
             this.girl.mobData.addListener(this.girl.mobData.weaponRight);

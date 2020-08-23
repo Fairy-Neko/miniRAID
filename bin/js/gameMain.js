@@ -3121,7 +3121,7 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
                 'onMobHit': (self, mob) => {
                     self.dieAfter(() => Helper_3.AoE((m) => {
                         // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
-                        m.receiveBuff(source, new HDOT_1.HDOT({ 'source': source.mobData, 'countTime': true, 'popupColor': GameData_7.GameData.ElementColors[GameData_7.GameData.Elements.fire], 'popupName': 'Burnt' }, GameData_7.GameData.Elements.fire, 2, 5, 0.44));
+                        m.receiveBuff(source, new HDOT_1.HDOT({ 'source': source.mobData, 'countTime': true, 'popupColor': GameData_7.GameData.ElementColors[GameData_7.GameData.Elements.fire], 'popupName': 'Burnt' }, GameData_7.GameData.Elements.fire, 20, 500, 0.94));
                     }, self.getPosition(), 100, self.targeting), [], mob);
                 },
                 'color': Phaser.Display.Color.HexStringToColor("#ff3333"),
@@ -3222,7 +3222,7 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
                 });
                 this.girl.mobData.battleStats.attackPower.ice = 10;
                 this.girl.mobData.battleStats.attackPower.fire = 40;
-                this.girl.mobData.battleStats.crit = 50.0;
+                this.girl.mobData.battleStats.crit = 5.0;
                 this.girl.mobData.weaponRight = new Staff_2.CometWand();
                 this.girl.mobData.currentWeapon = this.girl.mobData.weaponRight;
                 this.girl.mobData.addListener(this.girl.mobData.weaponRight);

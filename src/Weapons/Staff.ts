@@ -68,7 +68,7 @@ export class CometWand extends Weapon
                     () => AoE((m: Mob) =>
                     {
                         // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
-                        m.receiveBuff(source, new HDOT({ 'source': source.mobData, 'countTime': true, 'popupColor': GameData.ElementColors[GameData.Elements.fire], 'popupName': 'Burnt' }, GameData.Elements.fire, 2, 5, 0.44));
+                        m.receiveBuff(source, new HDOT({ 'source': source.mobData, 'countTime': true, 'popupColor': GameData.ElementColors[GameData.Elements.fire], 'popupName': 'Burnt' }, GameData.Elements.fire, 20, 500, 0.94));
                     }, self.getPosition(), 100, self.targeting), [], mob);
             },
             'color': Phaser.Display.Color.HexStringToColor("#ff3333"),
