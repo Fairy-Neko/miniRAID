@@ -135,7 +135,7 @@ export class Weapon extends Equipable
 
     isInRange(mob: Mob, target: Mob): boolean
     {
-        throw new Error("Method not implemented.");
+        return (mob.footPos().distance(target.footPos()) < (this.activeRange + mob.mobData.battleStats.attackRange));
     }
 
     grabTargets(mob: Mob): Array<Mob> 
@@ -156,10 +156,13 @@ export class Weapon extends Equipable
         this.wpsubType = (<any>WeaponType)[this.itemData.sClass];
     }
 
-    attack(source: Mob, target: Array<Mob>, triggerCD: boolean = true)
+    attack(source: Mob, target: Array<Mob>, triggerCD: boolean = true): boolean
     {
+        let flag: boolean = false;
         this.isReadyWrapper(() =>
         {
+            target = target.filter((v: Mob) => this.isInRange(source, v));
+            if (target.length <= 0) { return; }
             this.doRegularAttack(source, target);
             if (triggerCD)
             {
@@ -175,7 +178,10 @@ export class Weapon extends Equipable
                     this.doSpecialAttack(source, target);
                 }
             }
+            flag = true;
         })();
+
+        return flag;
     }
 
     syncStats(mob: MobData)
@@ -194,10 +200,7 @@ export class Weapon extends Equipable
         throw new Error("Method not implemented.");
     }
 
-    doSpecialAttack(source: Mob, target: Array<Mob>)
-    {
-        // throw new Error("Method not implemented.")
-    }
+    doSpecialAttack(source: Mob, target: Array<Mob>) { }
 }
 
 export class Accessory extends Equipable

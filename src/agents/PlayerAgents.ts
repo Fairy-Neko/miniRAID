@@ -194,8 +194,11 @@ export class Simple extends PlayerAgentBase
                     // {
                     if (player.mobData.currentMana > player.mobData.currentWeapon.manaCost)
                     {
-                        player.mobData.currentMana -= player.mobData.currentWeapon.manaCost;
-                        player.mobData.currentWeapon.attack(player, targets);
+                        let result = player.mobData.currentWeapon.attack(player, targets);
+                        if (result)
+                        {
+                            player.mobData.currentMana -= player.mobData.currentWeapon.manaCost;
+                        }
                     }
                     // }
                     // }

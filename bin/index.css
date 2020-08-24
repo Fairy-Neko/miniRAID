@@ -1,0 +1,99 @@
+@font-face
+{
+    font-family: 'smallPx';
+    /* src: url("./assets/fonts/dogica.ttf"); */
+    /* src: url("./assets/fonts/dogicapixel.ttf"); */
+    src: url("./assets/fonts/pixelmix_pP.ttf");
+}
+
+div
+{
+    display: block;
+}
+
+.unitHUD
+{
+    font-family: 'smallPx';
+    font-size: 9pt;
+    text-rendering: geometricPrecision;
+}
+
+.unitHUD p
+{
+    margin: 0px;
+    text-align: center;
+}
+
+.progress_bar p
+{
+    color: white;
+}
+
+.cp_content
+{
+    margin-bottom: 5px;
+}
+
+.progress_bar
+{
+    background-color: darkgreen;
+    position: relative;
+
+    height: 20px;
+}
+
+.progress_bar_label
+{
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    font-size: 12px;
+    font-family: SimSun;
+    line-height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.progress_bar_label p.bar_num
+{
+    font-family: 'smallPx';
+    font-size: 6pt;
+    /* text-rendering: geometricPrecision; */
+    /* -webkit-font-smoothing: none; */
+}
+
+.bar_head
+{
+    position: absolute;
+
+    left: 10px;
+    top: 50%;
+    transform: translate(0%, -50%);
+}
+
+.bar_num
+{
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.progress_bar_fill
+{
+    position: absolute;
+
+    background-color: #4CAF50;
+    text-align: center;
+
+    border-right: 1px ridge white;
+
+    height: 100%;
+}

@@ -22,8 +22,8 @@ export class CometWand extends Weapon
         this.baseAttackMax = 18;
         this.baseAttackSpeed = 1.5;
 
-        this.targetCount = 1;
-        this.activeRange = 200;
+        this.targetCount = 4;
+        this.activeRange = 2000;
 
         this.manaCost = 4;
 
@@ -39,53 +39,53 @@ export class CometWand extends Weapon
     onBaseStatCalculation(mob: MobData)
     {
         // Add stats to the mob
-        mob.baseStats.mag += 200;
+        // mob.baseStats.mag += 200;
     }
 
     doRegularAttack(source: Mob, target: Array<Mob>)
     {
-        let targetMob = target[0];
-        new Projectile(source.x, source.y, 'img_iced_fx', {
-            'info': { 'name': this.name, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },
-            'source': source,
-            'target': targetMob,
-            'speed': 150,
-            'onMobHit': (self: Spell, mob: Mob) => { self.dieAfter(self.HealDmg, [mob, getRandomInt(6, 18), GameData.Elements.ice], mob); },
-            // 'onMobHit': (self: Spell, mob: Mob) =>
-            // {
-            //     self.dieAfter(
-            //         () => AoE((m: Mob) =>
-            //         {
-            //             self.HealDmg(m, getRandomInt(6, 18), 'ice')
-            //         }, self.getPosition(), 100, self.targeting), [], mob);
-            // },
-            'color': Phaser.Display.Color.HexStringToColor("#77ffff"),
-            'chasingRange': 400,
-            'chasingPower': 1.0,
-        });
+        for (let targetMob of target)
+            new Projectile(source.x, source.y, 'img_iced_fx', {
+                'info': { 'name': this.name, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },
+                'source': source,
+                'target': targetMob,
+                'speed': 150,
+                'onMobHit': (self: Spell, mob: Mob) => { self.dieAfter(self.HealDmg, [mob, getRandomInt(6, 18), GameData.Elements.ice], mob); },
+                // 'onMobHit': (self: Spell, mob: Mob) =>
+                // {
+                //     self.dieAfter(
+                //         () => AoE((m: Mob) =>
+                //         {
+                //             self.HealDmg(m, getRandomInt(6, 18), 'ice')
+                //         }, self.getPosition(), 100, self.targeting), [], mob);
+                // },
+                'color': Phaser.Display.Color.HexStringToColor("#77ffff"),
+                'chasingRange': 400,
+                'chasingPower': 1.0,
+            });
     }
 
     doSpecialAttack(source: Mob, target: Array<Mob>)
     {
-        let targetMob = target[0];
-        new Projectile(source.x, source.y, 'img_iced_fx', {
-            'info': { 'name': this.name, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },
-            'source': source,
-            'target': targetMob,
-            'speed': 250,
-            'onMobHit': (self: Spell, mob: Mob) =>
-            {
-                self.dieAfter(
-                    () => AoE((m: Mob) =>
-                    {
-                        // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
-                        m.receiveBuff(source, new HDOT({ 'source': source.mobData, 'countTime': true, 'popupColor': GameData.ElementColors[GameData.Elements.fire], 'popupName': 'Burnt' }, GameData.Elements.fire, 5, 8, 0.2));
-                    }, self.getPosition(), 100, self.targeting), [], mob);
-            },
-            'color': Phaser.Display.Color.HexStringToColor("#ff3333"),
-            'chasingRange': 400,
-            'chasingPower': 5.0,
-        });
+        for (let targetMob of target)
+            new Projectile(source.x, source.y, 'img_iced_fx', {
+                'info': { 'name': this.name, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },
+                'source': source,
+                'target': targetMob,
+                'speed': 250,
+                'onMobHit': (self: Spell, mob: Mob) =>
+                {
+                    self.dieAfter(
+                        () => AoE((m: Mob) =>
+                        {
+                            // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
+                            m.receiveBuff(source, new HDOT({ 'source': source.mobData, 'countTime': true, 'popupColor': GameData.ElementColors[GameData.Elements.fire], 'popupName': 'Burnt' }, GameData.Elements.fire, 5, 8, 0.2));
+                        }, self.getPosition(), 100, self.targeting), [], mob);
+                },
+                'color': Phaser.Display.Color.HexStringToColor("#ff3333"),
+                'chasingRange': 400,
+                'chasingPower': 5.0,
+            });
     }
 
     grabTargets(mob: Mob): Array<Mob> 

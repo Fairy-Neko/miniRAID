@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" media="screen" href="index.css">
     <title>Test Game</title>
 
-    <script src = "js/require.js"></script>
+    <script src="js/require.js"></script>
     <!-- <script src = "js/umd.min.js"></script> -->
-    <script src = "js/phaser.js"></script>
-    <script src = "js/gameMain.js"></script>
+    <script src="js/phaser.js"></script>
+    <script src="js/gameMain.js"></script>
 
     <script>
         require.config({
@@ -19,7 +21,7 @@
                 "Phaser": 'js/phaser',
             },
 
-            deps: [ "Phaser", "typescript-collections" ]
+            deps: ["Phaser", "typescript-collections"]
         });
 
         window.onload = () => {
@@ -27,8 +29,40 @@
         }
     </script>
 </head>
+
 <body>
     <div id="GameFrame" oncontextmenu="return false;">
     </div>
+    <div id="testUnitHUD" class="unitHUD">
+        <div id="character_status_panel" class="cp_content">
+            <div class="progress_bar" id="health" style="background-color: #20604F; margin-bottom: 2px">
+                <div class="progress_bar_fill" style="width: 83.3%; background-color: #1B813E"></div>
+                <div class="progress_bar_label">
+                    <p class="bar_head">生命</p>
+                    <p class="bar_num">100 / 120</p>
+                </div>
+            </div>
+            <div class="progress_bar" id="resource" style="height: 14px; background-color: #20604F; margin-bottom: 4px">
+                <div class="progress_bar_fill" style="width: 45.83%; background-color: #33A6B8"></div>
+                <div class="progress_bar_label">
+                    <p class="bar_head">魔力</p>
+                    <p class="bar_num">50 / 100 Lv.18 FloraFairy MANASONG.</p>
+                </div>
+            </div>
+            <div id="buffs">
+                <li id="buff_base" class="show_image buff" style="
+                        --image-width: 16px; 
+                        --image-height: 16px; 
+                        outline: 1px solid lightslategrey;
+                        display: none">
+                    <div class="buff_timer" style="width: 20%;"></div>
+                    <p>8</p>
+                </li>
+                <ul id="buff_list_team_tab_character" class="buff_list" style="display: block; height: 18px;">
+                </ul>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>

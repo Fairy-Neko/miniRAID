@@ -3,6 +3,8 @@
  * @module UI
  */
 
+import { GameData } from "../Core/GameData";
+
 // import * as Phaser from 'phaser'
 
 export class PopupText extends Phaser.GameObjects.BitmapText
@@ -22,7 +24,7 @@ export class PopupText extends Phaser.GameObjects.BitmapText
         velX: number = -64, velY: number = -256,
         accX: number = 0.0, accY: number = 512.0)
     {
-        super(scene, x, y, 'mediumPx', text);
+        super(scene, x, y, GameData.popUpSmallFont ? 'smallPx' : 'mediumPx', text);
 
         this.time = time * 1.5;
         this.velX = velX;
@@ -76,8 +78,10 @@ export class PopUpManager extends Phaser.Scene
 
     preload()
     {
-        this.load.bitmapFont('smallPx', './assets/fonts/smallPx_04b03_0.png', './assets/fonts/smallPx_04b03.fnt');
+        // this.load.bitmapFont('smallPx', './assets/fonts/smallPx_04b03_0.png', './assets/fonts/smallPx_04b03.fnt');
+        this.load.bitmapFont('smallPx', './assets/fonts/smallPx_C_0.png', './assets/fonts/smallPx_C.fnt');
         this.load.bitmapFont('mediumPx', './assets/fonts/mediumPx_04b03_0.png', './assets/fonts/mediumPx_04b03.fnt');
+        this.load.bitmapFont('simsun_o', './assets/fonts/simsun_outlined_0.png', './assets/fonts/simsun_outlined.fnt');
     }
 
     create()

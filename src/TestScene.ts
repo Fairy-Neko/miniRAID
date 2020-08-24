@@ -41,7 +41,7 @@ export class TestScene extends BattleScene
         this.load.image('Grass_Overworld', 'assets/tilemaps/tiles/overworld_tileset_grass.png');
         this.load.tilemapTiledJSON('overworld', 'assets/tilemaps/Overworld_tst.json');
 
-        this.load.spritesheet('elf', 'assets/forestElfMyst.png', { frameWidth: 32, frameHeight: 32, endFrame: 3 });
+        this.load.spritesheet('elf', 'assets/img/spritesheets/forestElfMyst.png', { frameWidth: 32, frameHeight: 32, endFrame: 3 });
 
         this.load.json('itemData', 'assets/dataSheets/Items.json');
     }

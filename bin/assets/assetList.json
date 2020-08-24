@@ -1,6 +1,6 @@
 {
     "sheet_forestelf_myst": {
-        "url": "./assets/forestElfMyst.png",
+        "url": "./assets/img/spritesheets/forestElfMyst.png",
         "type": "spritesheet",
         "frameConfig": {
             "frameWidth": 32,
@@ -26,7 +26,7 @@
         }
     },
     "sheet_gripe_run_right": {
-        "url": "./assets/gripe_run_right.png",
+        "url": "./assets/img/spritesheets/gripe_run_right.png",
         "type": "spritesheet",
         "frameConfig": {
             "frameWidth": 32,
@@ -52,7 +52,7 @@
         }
     },
     "img_iced_fx": {
-        "url": "./assets/iced_fx.png",
+        "url": "./assets/img/iced_fx.png",
         "type": "image"
     }
 }

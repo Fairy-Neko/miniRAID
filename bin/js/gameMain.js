@@ -264,11 +264,14 @@ define("Engine/DynamicLoader/DynamicLoaderScene", ["require", "exports", "Engine
         }
         preload() {
             this.load.json('assetList', './assets/assetList.json');
+            this.load.bitmapFont('simsun', './assets/fonts/simsun_outlined_0.png', './assets/fonts/simsun_outlined.fnt');
         }
         create() {
             super.create();
-            this.label = this.add.text(0, 0, 'Loading ... [100.0%]');
-            this.label.setBackgroundColor('#000000');
+            this.label = this.add.bitmapText(0, 0, 'simsun', 'Loading ... [100.0%]');
+            // this.label.setBackgroundColor('#000000');
+            // this.label.setFontFamily('smallPx, 宋体, SimSun, Consolas');
+            // this.label.setFontSize(12);
             this.assetList = this.cache.json.get('assetList');
             this.pools.set("image", {
                 "load": this.scene.scene.load.image,
@@ -317,7 +320,7 @@ define("Engine/DynamicLoader/DynamicLoaderScene", ["require", "exports", "Engine
             else {
                 // this.label.setVisible(false);
                 this.label.setVisible(true);
-                this.label.text = `(DEBUG MESSAGE) Dynamic loader idle ...`;
+                this.label.text = `(DEBUG MESSAGE) Dynamic loader idle ...\n动态加载器闲置中 | <- 只是试一下Unicode渲染x`;
             }
             if (this.queue.length > 0) {
                 for (let i = 0; i < this.queue.length; i++) {
@@ -793,17 +796,95 @@ define("Engine/Core/DataBackend", ["require", "exports", "Engine/Events/EventSys
     }
     exports.DataBackend = DataBackend;
 });
+/** @packageDocumentation @module Core */
+define("Engine/Core/GameData", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var GameData;
+    (function (GameData) {
+        GameData.damageType = {
+            slash: "physical",
+            knock: "physical",
+            pierce: "physical",
+            fire: "elemental",
+            ice: "elemental",
+            water: "elemental",
+            nature: "elemental",
+            wind: "elemental",
+            thunder: "elemental",
+            // Let them just add 0 (as themselves when calculating) for convinence
+            light: "pure",
+            dark: "pure",
+            physical: "pure",
+            elemental: "pure",
+            heal: "pure",
+            pure: "pure",
+        };
+        GameData.critMultiplier = {
+            slash: 2.0,
+            knock: 1.6,
+            pierce: 2.5,
+            fire: 2.0,
+            ice: 2.0,
+            water: 1.6,
+            nature: 2.0,
+            wind: 2.5,
+            thunder: 2.5,
+            light: 1.6,
+            dark: 1.6,
+            heal: 2.0,
+        };
+        let Elements;
+        (function (Elements) {
+            Elements["slash"] = "slash";
+            Elements["knock"] = "knock";
+            Elements["pierce"] = "pierce";
+            Elements["fire"] = "fire";
+            Elements["ice"] = "ice";
+            Elements["water"] = "water";
+            Elements["nature"] = "nature";
+            Elements["wind"] = "wind";
+            Elements["thunder"] = "thunder";
+            Elements["light"] = "light";
+            Elements["dark"] = "dark";
+            Elements["heal"] = "heal";
+        })(Elements = GameData.Elements || (GameData.Elements = {}));
+        GameData.LeafTypesZERO = { fire: 0, water: 0, ice: 0, wind: 0, nature: 0, light: 0, thunder: 0, slash: 0, pierce: 0, knock: 0, dark: 0, heal: 0 };
+        GameData.ElementColors = {
+            slash: Phaser.Display.Color.HexStringToColor("#ffffff"),
+            knock: Phaser.Display.Color.HexStringToColor("#ffffff"),
+            pierce: Phaser.Display.Color.HexStringToColor("#ffffff"),
+            fire: Phaser.Display.Color.HexStringToColor("#ffa342"),
+            ice: Phaser.Display.Color.HexStringToColor("#72ffe2"),
+            water: Phaser.Display.Color.HexStringToColor("#5b8fff"),
+            nature: Phaser.Display.Color.HexStringToColor("#b1ed1a"),
+            wind: Phaser.Display.Color.HexStringToColor("#aaffc8"),
+            thunder: Phaser.Display.Color.HexStringToColor("#fffb21"),
+            light: Phaser.Display.Color.HexStringToColor("#fffbd1"),
+            dark: Phaser.Display.Color.HexStringToColor("#8d47bf"),
+            miss: Phaser.Display.Color.HexStringToColor("#ff19e0"),
+            heal: Phaser.Display.Color.HexStringToColor("#66f95c"),
+        };
+        GameData.playerMax = 8;
+        GameData.playerSparse = 12;
+        GameData.playerSparseInc = 2;
+        GameData.useAutomove = true;
+        GameData.moveThreshold = 150;
+        GameData.popUpSmallFont = true;
+        GameData.healTaunt = 2;
+    })(GameData = exports.GameData || (exports.GameData = {}));
+});
 /**
  * @packageDocumentation
  * @module UI
  */
-define("Engine/UI/PopUpManager", ["require", "exports"], function (require, exports) {
+define("Engine/UI/PopUpManager", ["require", "exports", "Engine/Core/GameData"], function (require, exports, GameData_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     // import * as Phaser from 'phaser'
     class PopupText extends Phaser.GameObjects.BitmapText {
         constructor(scene, x, y, text, color, time = 1.0, velX = -64, velY = -256, accX = 0.0, accY = 512.0) {
-            super(scene, x, y, 'mediumPx', text);
+            super(scene, x, y, GameData_1.GameData.popUpSmallFont ? 'smallPx' : 'mediumPx', text);
             this.time = time * 1.5;
             this.velX = velX;
             this.velY = velY;
@@ -843,8 +924,10 @@ define("Engine/UI/PopUpManager", ["require", "exports"], function (require, expo
             return PopUpManager.instance;
         }
         preload() {
-            this.load.bitmapFont('smallPx', './assets/fonts/smallPx_04b03_0.png', './assets/fonts/smallPx_04b03.fnt');
+            // this.load.bitmapFont('smallPx', './assets/fonts/smallPx_04b03_0.png', './assets/fonts/smallPx_04b03.fnt');
+            this.load.bitmapFont('smallPx', './assets/fonts/smallPx_C_0.png', './assets/fonts/smallPx_C.fnt');
             this.load.bitmapFont('mediumPx', './assets/fonts/mediumPx_04b03_0.png', './assets/fonts/mediumPx_04b03.fnt');
+            this.load.bitmapFont('simsun_o', './assets/fonts/simsun_outlined_0.png', './assets/fonts/simsun_outlined.fnt');
         }
         create() {
             this.textList = new Set();
@@ -938,85 +1021,8 @@ define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener", "En
     }
     exports.Buff = Buff;
 });
-/** @packageDocumentation @module Core */
-define("Engine/Core/GameData", ["require", "exports"], function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var GameData;
-    (function (GameData) {
-        GameData.damageType = {
-            slash: "physical",
-            knock: "physical",
-            pierce: "physical",
-            fire: "elemental",
-            ice: "elemental",
-            water: "elemental",
-            nature: "elemental",
-            wind: "elemental",
-            thunder: "elemental",
-            // Let them just add 0 (as themselves when calculating) for convinence
-            light: "pure",
-            dark: "pure",
-            physical: "pure",
-            elemental: "pure",
-            heal: "pure",
-            pure: "pure",
-        };
-        GameData.critMultiplier = {
-            slash: 2.0,
-            knock: 1.6,
-            pierce: 2.5,
-            fire: 2.0,
-            ice: 2.0,
-            water: 1.6,
-            nature: 2.0,
-            wind: 2.5,
-            thunder: 2.5,
-            light: 1.6,
-            dark: 1.6,
-            heal: 2.0,
-        };
-        let Elements;
-        (function (Elements) {
-            Elements["slash"] = "slash";
-            Elements["knock"] = "knock";
-            Elements["pierce"] = "pierce";
-            Elements["fire"] = "fire";
-            Elements["ice"] = "ice";
-            Elements["water"] = "water";
-            Elements["nature"] = "nature";
-            Elements["wind"] = "wind";
-            Elements["thunder"] = "thunder";
-            Elements["light"] = "light";
-            Elements["dark"] = "dark";
-            Elements["heal"] = "heal";
-        })(Elements = GameData.Elements || (GameData.Elements = {}));
-        GameData.LeafTypesZERO = { fire: 0, water: 0, ice: 0, wind: 0, nature: 0, light: 0, thunder: 0, slash: 0, pierce: 0, knock: 0, dark: 0, heal: 0 };
-        GameData.ElementColors = {
-            slash: Phaser.Display.Color.HexStringToColor("#ffffff"),
-            knock: Phaser.Display.Color.HexStringToColor("#ffffff"),
-            pierce: Phaser.Display.Color.HexStringToColor("#ffffff"),
-            fire: Phaser.Display.Color.HexStringToColor("#ffa342"),
-            ice: Phaser.Display.Color.HexStringToColor("#72ffe2"),
-            water: Phaser.Display.Color.HexStringToColor("#5b8fff"),
-            nature: Phaser.Display.Color.HexStringToColor("#b1ed1a"),
-            wind: Phaser.Display.Color.HexStringToColor("#aaffc8"),
-            thunder: Phaser.Display.Color.HexStringToColor("#fffb21"),
-            light: Phaser.Display.Color.HexStringToColor("#fffbd1"),
-            dark: Phaser.Display.Color.HexStringToColor("#8d47bf"),
-            miss: Phaser.Display.Color.HexStringToColor("#ff19e0"),
-            heal: Phaser.Display.Color.HexStringToColor("#66f95c"),
-        };
-        GameData.playerMax = 8;
-        GameData.playerSparse = 12;
-        GameData.playerSparseInc = 2;
-        GameData.useAutomove = false;
-        GameData.moveThreshold = 150;
-        GameData.healTaunt = 2;
-    })(GameData = exports.GameData || (exports.GameData = {}));
-});
 /** @packageDocumentation @moduleeDocumentation @module Agent */
-define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "Engine/GameObjects/Mob", "Engine/Core/GameData", "Engine/Core/UnitManager", "Engine/UI/PopUpManager"], function (require, exports, MobAgent_1, Mob_1, GameData_1, UnitManager_1, PopUpManager_2) {
+define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "Engine/GameObjects/Mob", "Engine/Core/GameData", "Engine/Core/UnitManager", "Engine/UI/PopUpManager"], function (require, exports, MobAgent_1, Mob_1, GameData_2, UnitManager_1, PopUpManager_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class PlayerAgentBase extends MobAgent_1.MobAgent {
@@ -1032,7 +1038,7 @@ define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "
             super(parentMob);
             this.OOMwarned = false;
             // Will the player move automatically (to nearest mob) if it is free ?
-            this.autoMove = GameData_1.GameData.useAutomove;
+            this.autoMove = GameData_2.GameData.useAutomove;
             // this.autoMove = true;
             // idleCount will count down from idleFrame if player is in idle (-1 / frame) to smooth the animation.
             // Only if idleCount = 0, the player will be "idle".
@@ -1047,7 +1053,7 @@ define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "
             // TODO: smooth when hit world object ?
         }
         updateMob(player, dt) {
-            this.autoMove = GameData_1.GameData.useAutomove;
+            this.autoMove = GameData_2.GameData.useAutomove;
             this.footPos = new Phaser.Math.Vector2(player.x, player.y);
             if (Mob_1.Mob.checkAlive(player) === true) {
                 // Low Mana warning
@@ -1141,8 +1147,10 @@ define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "
                         // if(player.mobData.currentWeapon.isInRange(player, targets))
                         // {
                         if (player.mobData.currentMana > player.mobData.currentWeapon.manaCost) {
-                            player.mobData.currentMana -= player.mobData.currentWeapon.manaCost;
-                            player.mobData.currentWeapon.attack(player, targets);
+                            let result = player.mobData.currentWeapon.attack(player, targets);
+                            if (result) {
+                                player.mobData.currentMana -= player.mobData.currentWeapon.manaCost;
+                            }
                         }
                         // }
                         // }
@@ -1178,7 +1186,7 @@ define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "
     exports.Simple = Simple;
 });
 /** @packageDocumentation @module Core */
-define("Engine/Core/UnitManager", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/GameData"], function (require, exports, Mob_2, GameData_2) {
+define("Engine/Core/UnitManager", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/GameData"], function (require, exports, Mob_2, GameData_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class UnitManager {
@@ -1301,7 +1309,7 @@ define("Engine/Core/UnitManager", ["require", "exports", "Engine/GameObjects/Mob
                 }
                 this.origin.set(pointer.x, pointer.y);
                 var playerNum = 0;
-                var playerSparse = GameData_2.GameData.playerSparse + GameData_2.GameData.playerSparseInc * this.selectedPlayerCount;
+                var playerSparse = GameData_3.GameData.playerSparse + GameData_3.GameData.playerSparseInc * this.selectedPlayerCount;
                 if (this.sparseKey.isDown) {
                     playerSparse = 60;
                 }
@@ -1429,7 +1437,7 @@ define("Engine/Core/UnitManager", ["require", "exports", "Engine/GameObjects/Mob
     UnitManager.NOOP = (a) => true;
 });
 /** @packageDocumentation @module Core */
-define("Engine/Core/BattleMonitor", ["require", "exports", "Engine/Core/GameData", "Engine/Core/UnitManager"], function (require, exports, GameData_3, UnitManager_2) {
+define("Engine/Core/BattleMonitor", ["require", "exports", "Engine/Core/GameData", "Engine/Core/UnitManager"], function (require, exports, GameData_4, UnitManager_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class BattleMonitor {
@@ -1464,7 +1472,7 @@ define("Engine/Core/BattleMonitor", ["require", "exports", "Engine/Core/GameData
                     spell = dmg.spell.name;
                 }
                 if (source.isPlayer === true) {
-                    if (dmg.type !== GameData_3.GameData.Elements.heal) {
+                    if (dmg.type !== GameData_4.GameData.Elements.heal) {
                         // Create a dict if it does not exist
                         this.damageDict[source.name] = this.damageDict[source.name] ||
                             {
@@ -1586,7 +1594,7 @@ define("Engine/Core/BattleMonitor", ["require", "exports", "Engine/Core/GameData
     exports.BattleMonitor = BattleMonitor;
 });
 /** @packageDocumentation @module Core */
-define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem", "Engine/Core/EquipmentCore", "Engine/Structs/QuerySet", "Engine/Core/MobListener", "Engine/Core/DataBackend", "Engine/Core/Buff", "Engine/Core/GameData", "Engine/Core/BattleMonitor"], function (require, exports, EventSystem, EquipmentCore_1, QuerySet_1, MobListener_2, DataBackend_1, Buff_1, GameData_4, BattleMonitor_1) {
+define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem", "Engine/Core/EquipmentCore", "Engine/Structs/QuerySet", "Engine/Core/MobListener", "Engine/Core/DataBackend", "Engine/Core/Buff", "Engine/Core/GameData", "Engine/Core/BattleMonitor"], function (require, exports, EventSystem, EquipmentCore_1, QuerySet_1, MobListener_2, DataBackend_1, Buff_1, GameData_5, BattleMonitor_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     EventSystem = __importStar(EventSystem);
@@ -2065,7 +2073,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             // 20pts of power = 100% more damage
             if (damageInfo.source) {
                 damageInfo.value = Math.ceil(damageInfo.value *
-                    (Math.pow(1.0353, damageInfo.source.battleStats.attackPower[GameData_4.GameData.damageType[damageInfo.type]] +
+                    (Math.pow(1.0353, damageInfo.source.battleStats.attackPower[GameData_5.GameData.damageType[damageInfo.type]] +
                         damageInfo.source.battleStats.attackPower[damageInfo.type])));
             }
             // damage% = 0.9659 ^ resist
@@ -2073,11 +2081,11 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             // which will reach 50% damage reducement at 20 points.
             // TODO: it should all correspond to current level (resist based on source level, atkPower based on target level, same as healing)
             damageInfo.value = Math.ceil(damageInfo.value *
-                (Math.pow(0.9659, this.battleStats.resist[GameData_4.GameData.damageType[damageInfo.type]] +
+                (Math.pow(0.9659, this.battleStats.resist[GameData_5.GameData.damageType[damageInfo.type]] +
                     this.battleStats.resist[damageInfo.type])));
             // Apply criticals
             damageInfo.value = Math.ceil(damageInfo.value *
-                (damageInfo.isCrit ? GameData_4.GameData.critMultiplier[damageInfo.type] : 1.0));
+                (damageInfo.isCrit ? GameData_5.GameData.critMultiplier[damageInfo.type] : 1.0));
             // Overdeals
             let realDmg = Math.min(this.currentHealth, damageInfo.value);
             damageInfo.overdeal = damageInfo.value - realDmg;
@@ -2132,7 +2140,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             healInfo.value = Math.ceil(healInfo.value *
                 (Math.pow(0.9659, this.battleStats.resist.heal)));
             healInfo.value = Math.ceil(healInfo.value
-                * (healInfo.isCrit ? GameData_4.GameData.critMultiplier.heal : 1.0));
+                * (healInfo.isCrit ? GameData_5.GameData.critMultiplier.heal : 1.0));
             // calculate overHealing using current HP and max HP.
             let realHeal = Math.min(healInfo.target.maxHealth - healInfo.target.currentHealth, healInfo.value);
             healInfo.overdeal = healInfo.value - realHeal;
@@ -2184,11 +2192,11 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
     exports.MobData = MobData;
 });
 /** @packageDocumentation @module Core */
-define("Engine/Core/Helper", ["require", "exports", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/Core/GameData"], function (require, exports, UnitManager_3, Spell_1, GameData_5) {
+define("Engine/Core/Helper", ["require", "exports", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/Core/GameData"], function (require, exports, UnitManager_3, Spell_1, GameData_6) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function HealDmg(info) {
-        if (info.type === GameData_5.GameData.Elements.heal) {
+        if (info.type === GameData_6.GameData.Elements.heal) {
             return info.target.receiveHeal(info);
         }
         else {
@@ -2494,7 +2502,7 @@ define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListe
             this.weaponGaugeMax = -1;
         }
         isInRange(mob, target) {
-            throw new Error("Method not implemented.");
+            return (mob.footPos().distance(target.footPos()) < (this.activeRange + mob.mobData.battleStats.attackRange));
         }
         grabTargets(mob) {
             return [];
@@ -2509,7 +2517,12 @@ define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListe
             this.wpsubType = WeaponType[this.itemData.sClass];
         }
         attack(source, target, triggerCD = true) {
+            let flag = false;
             this.isReadyWrapper(() => {
+                target = target.filter((v) => this.isInRange(source, v));
+                if (target.length <= 0) {
+                    return;
+                }
                 this.doRegularAttack(source, target);
                 if (triggerCD) {
                     this.triggerCD();
@@ -2521,7 +2534,9 @@ define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListe
                         this.doSpecialAttack(source, target);
                     }
                 }
+                flag = true;
             })();
+            return flag;
         }
         syncStats(mob) {
             this.cooldownMax = mob.getAttackSpeed();
@@ -2534,9 +2549,7 @@ define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListe
         doRegularAttack(source, target) {
             throw new Error("Method not implemented.");
         }
-        doSpecialAttack(source, target) {
-            // throw new Error("Method not implemented.")
-        }
+        doSpecialAttack(source, target) { }
     }
     exports.Weapon = Weapon;
     class Accessory extends Equipable {
@@ -2729,7 +2742,7 @@ define("Engine/Core/ObjectPopulator", ["require", "exports"], function (require,
     exports.ObjectPopulator = ObjectPopulator;
 });
 /** @packageDocumentation @module GameEntity */
-define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/Core/MobData", "Engine/Core/UnitManager", "Engine/Core/EquipmentCore", "Engine/UI/PopUpManager", "Engine/Core/ObjectPopulator", "Engine/Core/GameData"], function (require, exports, dPhysSprite_2, MobData_1, UnitManager_4, EquipmentCore_2, PopUpManager_3, ObjectPopulator_1, GameData_6) {
+define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/Core/MobData", "Engine/Core/UnitManager", "Engine/Core/EquipmentCore", "Engine/UI/PopUpManager", "Engine/Core/ObjectPopulator", "Engine/Core/GameData"], function (require, exports, dPhysSprite_2, MobData_1, UnitManager_4, EquipmentCore_2, PopUpManager_3, ObjectPopulator_1, GameData_7) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Mob extends dPhysSprite_2.dPhysSprite {
@@ -2889,14 +2902,14 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
             if (result.isAvoid) {
                 if (_damageInfo.popUp == true) {
                     var popUpPos = this.getTopCenter();
-                    PopUpManager_3.PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, GameData_6.GameData.ElementColors['miss']);
+                    PopUpManager_3.PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, GameData_7.GameData.ElementColors['miss']);
                 }
                 return result;
             }
             // Mob itself only do rendering popUp texts
             if (_damageInfo.popUp == true && result.value > 0) {
                 var popUpPos = this.getTopCenter();
-                PopUpManager_3.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_6.GameData.ElementColors[result.type]);
+                PopUpManager_3.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_7.GameData.ElementColors[result.type]);
                 // // popUp texts on unit frames
                 // // fade from the edge of currentHealth to the left
                 // if(this.data.isPlayer)
@@ -2950,7 +2963,7 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
                 'isCrit': _healInfo.isCrit,
                 'isAvoid': _healInfo.isAvoid,
                 'isBlock': _healInfo.isBlock,
-                'type': GameData_6.GameData.Elements.heal,
+                'type': GameData_7.GameData.Elements.heal,
                 'overdeal': 0
             };
             if (Mob.checkAlive(this) == false) {
@@ -2984,10 +2997,10 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
                 // }
                 var popUpPos = this.getTopCenter();
                 if (result.overdeal > 0) {
-                    PopUpManager_3.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : "") + " <" + result.overdeal.toString() + ">", popUpPos.x, popUpPos.y, GameData_6.GameData.ElementColors['heal'], 1.0, 64, -256);
+                    PopUpManager_3.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : "") + " <" + result.overdeal.toString() + ">", popUpPos.x, popUpPos.y, GameData_7.GameData.ElementColors['heal'], 1.0, 64, -256);
                 }
                 else {
-                    PopUpManager_3.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_6.GameData.ElementColors['heal'], 1.0, 64, -256);
+                    PopUpManager_3.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_7.GameData.ElementColors['heal'], 1.0, 64, -256);
                 }
                 // // popUp texts on unit frames
                 // // fade from left to the the edge of currentHealth
@@ -3195,14 +3208,14 @@ define("Engine/GameObjects/Projectile", ["require", "exports", "Engine/GameObjec
     exports.Projectile = Projectile;
 });
 /** @packageDocumentation @module Buffs */
-define("Buffs/HDOT", ["require", "exports", "Engine/Core/Buff", "Engine/Core/GameData", "Engine/Core/Helper", "Engine/GameObjects/Spell"], function (require, exports, Buff_2, GameData_7, Helper_2, Spell_3) {
+define("Buffs/HDOT", ["require", "exports", "Engine/Core/Buff", "Engine/Core/GameData", "Engine/Core/Helper", "Engine/GameObjects/Spell"], function (require, exports, Buff_2, GameData_8, Helper_2, Spell_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class HDOT extends Buff_2.Buff {
         constructor(settings, type, vMin = 1, vMax = 3, vGap = 0.57) {
             settings.name = settings.name || 'XOT';
             settings.popupName = settings.popupName || settings.name || 'XOT!';
-            settings.color = settings.color || GameData_7.GameData.ElementColors[type] || Phaser.Display.Color.HexStringToColor('#0066ff');
+            settings.color = settings.color || GameData_8.GameData.ElementColors[type] || Phaser.Display.Color.HexStringToColor('#0066ff');
             //settings.iconId
             super(settings);
             //this.toolTip
@@ -3233,7 +3246,7 @@ define("Buffs/HDOT", ["require", "exports", "Engine/Core/Buff", "Engine/Core/Gam
     exports.HDOT = HDOT;
 });
 /** @packageDocumentation @module Weapons */
-define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/GameObjects/Projectile", "Engine/Core/Helper", "Engine/Core/GameData", "Buffs/HDOT"], function (require, exports, EquipmentCore_3, UnitManager_6, Spell_4, Projectile_1, Helper_3, GameData_8, HDOT_1) {
+define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/GameObjects/Projectile", "Engine/Core/Helper", "Engine/Core/GameData", "Buffs/HDOT"], function (require, exports, EquipmentCore_3, UnitManager_6, Spell_4, Projectile_1, Helper_3, GameData_9, HDOT_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class CometWand extends EquipmentCore_3.Weapon {
@@ -3243,8 +3256,8 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
             this.baseAttackMin = 6;
             this.baseAttackMax = 18;
             this.baseAttackSpeed = 1.5;
-            this.targetCount = 1;
-            this.activeRange = 200;
+            this.targetCount = 4;
+            this.activeRange = 2000;
             this.manaCost = 4;
             this.weaponGaugeMax = 25;
             this.weaponGaugeIncreasement = function (mob) { return mob.mobData.baseStats.mag; };
@@ -3254,46 +3267,46 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
         }
         onBaseStatCalculation(mob) {
             // Add stats to the mob
-            mob.baseStats.mag += 200;
+            // mob.baseStats.mag += 200;
         }
         doRegularAttack(source, target) {
-            let targetMob = target[0];
-            new Projectile_1.Projectile(source.x, source.y, 'img_iced_fx', {
-                'info': { 'name': this.name, 'flags': new Set([Spell_4.SpellFlags.isDamage, Spell_4.SpellFlags.hasTarget]) },
-                'source': source,
-                'target': targetMob,
-                'speed': 150,
-                'onMobHit': (self, mob) => { self.dieAfter(self.HealDmg, [mob, Helper_3.getRandomInt(6, 18), GameData_8.GameData.Elements.ice], mob); },
-                // 'onMobHit': (self: Spell, mob: Mob) =>
-                // {
-                //     self.dieAfter(
-                //         () => AoE((m: Mob) =>
-                //         {
-                //             self.HealDmg(m, getRandomInt(6, 18), 'ice')
-                //         }, self.getPosition(), 100, self.targeting), [], mob);
-                // },
-                'color': Phaser.Display.Color.HexStringToColor("#77ffff"),
-                'chasingRange': 400,
-                'chasingPower': 1.0,
-            });
+            for (let targetMob of target)
+                new Projectile_1.Projectile(source.x, source.y, 'img_iced_fx', {
+                    'info': { 'name': this.name, 'flags': new Set([Spell_4.SpellFlags.isDamage, Spell_4.SpellFlags.hasTarget]) },
+                    'source': source,
+                    'target': targetMob,
+                    'speed': 150,
+                    'onMobHit': (self, mob) => { self.dieAfter(self.HealDmg, [mob, Helper_3.getRandomInt(6, 18), GameData_9.GameData.Elements.ice], mob); },
+                    // 'onMobHit': (self: Spell, mob: Mob) =>
+                    // {
+                    //     self.dieAfter(
+                    //         () => AoE((m: Mob) =>
+                    //         {
+                    //             self.HealDmg(m, getRandomInt(6, 18), 'ice')
+                    //         }, self.getPosition(), 100, self.targeting), [], mob);
+                    // },
+                    'color': Phaser.Display.Color.HexStringToColor("#77ffff"),
+                    'chasingRange': 400,
+                    'chasingPower': 1.0,
+                });
         }
         doSpecialAttack(source, target) {
-            let targetMob = target[0];
-            new Projectile_1.Projectile(source.x, source.y, 'img_iced_fx', {
-                'info': { 'name': this.name, 'flags': new Set([Spell_4.SpellFlags.isDamage, Spell_4.SpellFlags.hasTarget]) },
-                'source': source,
-                'target': targetMob,
-                'speed': 250,
-                'onMobHit': (self, mob) => {
-                    self.dieAfter(() => Helper_3.AoE((m) => {
-                        // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
-                        m.receiveBuff(source, new HDOT_1.HDOT({ 'source': source.mobData, 'countTime': true, 'popupColor': GameData_8.GameData.ElementColors[GameData_8.GameData.Elements.fire], 'popupName': 'Burnt' }, GameData_8.GameData.Elements.fire, 5, 8, 0.2));
-                    }, self.getPosition(), 100, self.targeting), [], mob);
-                },
-                'color': Phaser.Display.Color.HexStringToColor("#ff3333"),
-                'chasingRange': 400,
-                'chasingPower': 5.0,
-            });
+            for (let targetMob of target)
+                new Projectile_1.Projectile(source.x, source.y, 'img_iced_fx', {
+                    'info': { 'name': this.name, 'flags': new Set([Spell_4.SpellFlags.isDamage, Spell_4.SpellFlags.hasTarget]) },
+                    'source': source,
+                    'target': targetMob,
+                    'speed': 250,
+                    'onMobHit': (self, mob) => {
+                        self.dieAfter(() => Helper_3.AoE((m) => {
+                            // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
+                            m.receiveBuff(source, new HDOT_1.HDOT({ 'source': source.mobData, 'countTime': true, 'popupColor': GameData_9.GameData.ElementColors[GameData_9.GameData.Elements.fire], 'popupName': 'Burnt' }, GameData_9.GameData.Elements.fire, 5, 8, 0.2));
+                        }, self.getPosition(), 100, self.targeting), [], mob);
+                    },
+                    'color': Phaser.Display.Color.HexStringToColor("#ff3333"),
+                    'chasingRange': 400,
+                    'chasingPower': 5.0,
+                });
         }
         grabTargets(mob) {
             return UnitManager_6.UnitManager.getCurrent().getNearest(mob.footPos(), !mob.mobData.isPlayer, this.targetCount);
@@ -3347,7 +3360,7 @@ define("Lists/AgentList", ["require", "exports", "Agents/SimpleAgents"], functio
     };
 });
 /** @packageDocumentation @module BattleScene */
-define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/Staff", "Agents/PlayerAgents", "Agents/SimpleAgents", "Engine/Core/Helper", "Engine/Core/InventoryCore", "Lists/ItemList", "Engine/Core/ObjectPopulator", "Lists/ObjectList", "Lists/AgentList", "Engine/Core/GameData", "Buffs/HDOT"], function (require, exports, BattleScene_1, Mob_7, MobData_2, Staff_2, PlayerAgents, SimpleAgents_2, Helper_4, InventoryCore_3, ItemList_1, ObjectPopulator_3, ObjectList_1, AgentList_1, GameData_9, HDOT_2) {
+define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/Staff", "Agents/PlayerAgents", "Agents/SimpleAgents", "Engine/Core/Helper", "Engine/Core/InventoryCore", "Lists/ItemList", "Engine/Core/ObjectPopulator", "Lists/ObjectList", "Lists/AgentList", "Engine/Core/GameData", "Buffs/HDOT"], function (require, exports, BattleScene_1, Mob_7, MobData_2, Staff_2, PlayerAgents, SimpleAgents_2, Helper_4, InventoryCore_3, ItemList_1, ObjectPopulator_3, ObjectList_1, AgentList_1, GameData_10, HDOT_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     PlayerAgents = __importStar(PlayerAgents);
@@ -3363,7 +3376,7 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
             this.load.image('logo', 'assets/BlueHGRMJsm.png');
             this.load.image('Grass_Overworld', 'assets/tilemaps/tiles/overworld_tileset_grass.png');
             this.load.tilemapTiledJSON('overworld', 'assets/tilemaps/Overworld_tst.json');
-            this.load.spritesheet('elf', 'assets/forestElfMyst.png', { frameWidth: 32, frameHeight: 32, endFrame: 3 });
+            this.load.spritesheet('elf', 'assets/img/spritesheets/forestElfMyst.png', { frameWidth: 32, frameHeight: 32, endFrame: 3 });
             this.load.json('itemData', 'assets/dataSheets/Items.json');
         }
         create() {
@@ -3392,7 +3405,7 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
                 this.girl.mobData.weaponRight = new Staff_2.CometWand();
                 this.girl.mobData.currentWeapon = this.girl.mobData.weaponRight;
                 this.girl.mobData.addListener(this.girl.mobData.weaponRight);
-                this.girl.receiveBuff(this.girl, new HDOT_2.HDOT({ 'source': this.girl.mobData, 'countTime': false, 'name': 'GodHeal' }, GameData_9.GameData.Elements.heal, 10, 18, 1.66));
+                this.girl.receiveBuff(this.girl, new HDOT_2.HDOT({ 'source': this.girl.mobData, 'countTime': false, 'name': 'GodHeal' }, GameData_10.GameData.Elements.heal, 10, 18, 1.66));
                 this.addMob(this.girl);
             }
             let woodlog = new Mob_7.Mob(this, 300, 200, 'sheet_forestelf_myst', {
@@ -3425,7 +3438,7 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
             // console.log("Mana: " + this.girl.mobData.currentMana.toString() + " / " + this.girl.mobData.maxMana.toString());
             if (this.hc < 0) {
                 this.hc = this.hcM;
-                Helper_4.HealDmg({ 'source': this.h, 'target': this.h, type: GameData_9.GameData.Elements.heal, value: 5 });
+                Helper_4.HealDmg({ 'source': this.h, 'target': this.h, type: GameData_10.GameData.Elements.heal, value: 5 });
             }
             this.hc -= dt * 0.001;
         }
@@ -3442,12 +3455,17 @@ define("SimpleGame", ["require", "exports", "TestScene", "Engine/DynamicLoader/D
                 type: Phaser.AUTO,
                 width: 1024,
                 height: 640,
+                resolution: window.devicePixelRatio,
                 scene: [TestScene_1.TestScene],
                 banner: true,
                 title: 'miniRAID',
                 url: 'https://updatestage.littlegames.app',
                 version: 'er. CoreDev',
                 parent: 'GameFrame',
+                render: {
+                    pixelArt: true,
+                    roundPixels: true
+                }
             };
             this.gameRef = new Phaser.Game(config);
             this.gameRef.scene.add('DynamicLoaderScene', DynamicLoaderScene_3.DynamicLoaderScene.getSingleton(), true);

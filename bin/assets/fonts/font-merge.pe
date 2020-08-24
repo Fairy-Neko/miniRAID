@@ -1,0 +1,16 @@
+# Pre-operation for some non-standard Chinese font file
+Open("SimSun.ttf")
+SelectAll()
+ScaleToEm(1024)
+Generate("temp.ttf", "", 0x14)
+Close()
+
+# Open English font and merge to the Chinese font
+Open("dogicapixel.ttf")
+SelectAll()
+ScaleToEm(1024)
+
+MergeFonts("temp.ttf")
+SetFontNames("FontName", "Font Family", "Full Name", "Style", "")
+Generate("font_merged.ttf", "", 0x14)
+Close()

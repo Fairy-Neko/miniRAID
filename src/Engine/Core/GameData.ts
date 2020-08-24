@@ -80,8 +80,10 @@ export namespace GameData
     export const playerMax: number = 8;
     export let playerSparse: number = 12;
     export let playerSparseInc: number = 2;
-    export let useAutomove: boolean = false;
+    export let useAutomove: boolean = true;
     export let moveThreshold: number = 150;
+
+    export let popUpSmallFont: boolean = true;
 
     export const healTaunt: number = 2;
 }

@@ -15,12 +15,17 @@ export class InitPhaser
             type: Phaser.AUTO,
             width: 1024,
             height: 640,
+            resolution: window.devicePixelRatio,
             scene: [TestScene],
             banner: true,
             title: 'miniRAID',
             url: 'https://updatestage.littlegames.app',
             version: 'er. CoreDev',
             parent: 'GameFrame',
+            render: {
+                pixelArt: true,
+                roundPixels: true
+            }
         }
 
         this.gameRef = new Phaser.Game(config);
