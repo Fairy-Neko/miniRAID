@@ -226,8 +226,6 @@ export namespace mRTypes
         isAvoid?: boolean;
         isBlock?: boolean;
         spell?: SpellInfo;
-
-        detailedSource?: Map<MobData.MobData, number>;
     }
 
     export interface DamageHeal_FrontEnd

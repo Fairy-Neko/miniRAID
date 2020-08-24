@@ -239,8 +239,6 @@ export class Mob extends dPhysSprite
             'type': _damageInfo.type,
             // 'type'   : _damageInfo.type,
             'overdeal': 0,
-
-            'detailedSource': new Map([[_damageInfo.source.mobData, _damageInfo.value]]),
         };
 
         if (Mob.checkAlive(this) == false)

@@ -10,6 +10,7 @@ import { MobListener, MobListenerType } from "./MobListener";
 import { DataBackend } from "./DataBackend";
 import { Buff } from "./Buff";
 import { GameData } from "./GameData";
+import { BattleMonitor } from "./BattleMonitor";
 
 /*
 Idle (canCastSpell):
@@ -669,7 +670,6 @@ export class MobData extends EventSystem.EventElement
                 damageInfo.target.getPercentage(damageInfo.target.battleStats.avoid));
         }
 
-        let originalDmgValue = damageInfo.value; // Used to multiply the contribution of every source
         this.updateListeners(damageInfo.target, 'receiveDamage', damageInfo);
         if (damageInfo.source)
         {
@@ -716,9 +716,12 @@ export class MobData extends EventSystem.EventElement
             damageInfo.value *
             (damageInfo.isCrit ? GameData.critMultiplier[damageInfo.type] : 1.0));
 
-        // Let everyone know what is happening
-        // damageObj.damage = finalDmg;
+        // Overdeals
+        let realDmg: number = Math.min(this.currentHealth, damageInfo.value);
+        damageInfo.overdeal = damageInfo.value - realDmg;
+        damageInfo.value = realDmg;
 
+        // Let everyone know what is happening
         this.updateListeners(damageInfo.target, 'receiveDamageFinal', damageInfo);
         if (damageInfo.source)
         {
@@ -726,16 +729,12 @@ export class MobData extends EventSystem.EventElement
         }
 
         // Decrese HP
-        // Check if I am dead
-        let realDmg: number = 0;
-        realDmg += Math.min(this.currentHealth, damageInfo.value);
         this.currentHealth -= realDmg;
-        damageInfo.overdeal = damageInfo.value - realDmg;
-        damageInfo.value = realDmg;
-        // game.data.monitor.addDamage(damageInfo.value[dmg], dmg, damageInfo.source, damageInfo.target, damageInfo.isCrit, damageInfo.spell);
 
-        // TODO: modify damageInfo.detailedSource
+        // Register this to BattleMonitor
+        BattleMonitor.getSingleton().add(damageInfo);
 
+        // Check if I am dead
         if (this.currentHealth <= 0)
         {
             // Let everyone know what is happening
@@ -816,7 +815,9 @@ export class MobData extends EventSystem.EventElement
 
         // Increase the HP.
         this.currentHealth += healInfo.value;
-        // game.data.monitor.addHeal(healInfo.value.heal, healInfo.overdeal.heal, healInfo.source, healInfo.target, healInfo.isCrit, healInfo.spell);
+
+        // Register this to BattleMonitor
+        BattleMonitor.getSingleton().add(healInfo);
 
         return healInfo;
     }

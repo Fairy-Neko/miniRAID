@@ -7,6 +7,7 @@ import { UnitManager } from '../Core/UnitManager';
 import { Spell } from '../GameObjects/Spell';
 import { DynamicLoaderScene } from '../DynamicLoader/DynamicLoaderScene';
 import { ObjectPopulator } from '../Core/ObjectPopulator';
+import { BattleMonitor } from '../Core/BattleMonitor';
 
 export class BattleScene extends Phaser.Scene 
 {
@@ -32,6 +33,7 @@ export class BattleScene extends Phaser.Scene
 
     mapReady: boolean;
     loadingScreen: Phaser.GameObjects.Image;
+    battleMonitor: BattleMonitor;
 
     constructor(debug: boolean = false, mapToLoad = "playground") 
     {
@@ -146,6 +148,7 @@ export class BattleScene extends Phaser.Scene
         }
         console.log(this.map);
         this.mapReady = true;
+        this.battleMonitor = BattleMonitor.getSingleton();
     }
 
     // Handle when spell hits a mob it targets
@@ -174,7 +177,8 @@ export class BattleScene extends Phaser.Scene
             this.children.each((item: Phaser.GameObjects.GameObject) => { item.update(dt / 1000.0); });
             this.unitMgr.update(dt / 1000.0);
 
-            this.updateScene(time, dt);
+            this.updateScene(time, dt / 1000.0);
+            BattleMonitor.getSingleton().update(dt / 1000.0);
         }
     }
 

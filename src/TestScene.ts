@@ -71,7 +71,7 @@ export class TestScene extends BattleScene
                 'idleAnim': 'move',
                 'moveAnim': 'move',
                 'deadAnim': 'move',
-                'backendData': new MobData({ name: 'testGirl', 'isPlayer': true, 'attackSpeed': 40 - 5 * i, 'mag': 13 - 2 * i, 'manaRegen': 2 + 6 * i }),
+                'backendData': new MobData({ name: 'testGirl' + i, 'isPlayer': true, 'attackSpeed': 40 - 5 * i, 'mag': 13 - 2 * i, 'manaRegen': 2 + 6 * i }),
                 'agent': PlayerAgents.Simple,
             });
             this.girl.mobData.battleStats.attackPower.ice = 10;
