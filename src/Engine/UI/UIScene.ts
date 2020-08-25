@@ -90,9 +90,9 @@ export class UIScene extends Phaser.Scene
             let y = 522 + Math.floor(cnt / 4) * 70;
 
             let tmp = new UnitFrame(this, x, y, player);
-            let bF = new BuffFrame(this, x - 28, y + 37, x - 28, y + 37, 160, 30, player.mobData);
+            // let bF = new BuffFrame(this, x - 28, y + 37, x - 28, y + 37, 160, 30, player.mobData);
             // let tmp = new UnitFrame(this, 20, 20 + cnt * 70, player);
-            this.add.existing(bF);
+            // this.add.existing(bF);
             this.add.existing(tmp);
             this.unitFrames.push(tmp);
             cnt += 1;

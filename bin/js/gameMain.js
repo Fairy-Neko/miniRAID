@@ -1482,7 +1482,7 @@ define("Engine/UI/ScrollMaskedContainer", ["require", "exports"], function (requ
  * @packageDocumentation
  * @module UI
  */
-define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "Engine/DynamicLoader/dSprite", "Engine/UI/Localization", "Engine/UI/ScrollMaskedContainer"], function (require, exports, ProgressBar_1, dSprite_1, Localization_1, ScrollMaskedContainer_1) {
+define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "Engine/DynamicLoader/dSprite", "Engine/UI/Localization"], function (require, exports, ProgressBar_1, dSprite_1, Localization_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class WeaponFrame extends Phaser.GameObjects.Container {
@@ -1562,20 +1562,34 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
         }
     }
     exports.BuffIcon = BuffIcon;
-    class BuffFrame extends ScrollMaskedContainer_1.ScrollMaskedContainer {
+    // export class BuffFrame extends ScrollMaskedContainer
+    class BuffFrame extends Phaser.GameObjects.Container {
         constructor(scene, x, y, globalX, globalY, width, height, target) {
-            super(scene, x, y, width, height, ScrollMaskedContainer_1.ScrollDirc.Horizontal, globalX, globalY);
+            // super(scene, x, y, width, height, ScrollDirc.Horizontal, globalX, globalY);
+            super(scene, x, y);
             this.target = target;
             this.icons = [];
             let len = 0;
+            this.more = new dSprite_1.dSprite(this.scene, 200, 1, 'img_more_buff');
+            this.more.alpha = 0.0;
+            this.more.setOrigin(0, 0);
+            this.add(this.more);
             let buffList = this.obtainList();
+            let bLen = buffList.length;
+            buffList = buffList.slice(0, 6);
             for (let buff of buffList) {
                 let bI = new BuffIcon(this.scene, len, 0, buff);
                 len += bI.len + 2;
                 this.icons.push(bI);
                 this.add(bI);
             }
-            this.updateContentLength();
+            if (bLen > 6) {
+                this.hasMore(len);
+            }
+            else {
+                this.noMore();
+            }
+            // this.updateContentLength();
         }
         compare(a, b) {
             if (a.UIimportant && (!b.UIimportant)) {
@@ -1611,9 +1625,26 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
         //     }
         //     this.each((obj: Phaser.GameObjects.GameObject) => { obj.update(); });
         // }
+        hasMore(len) {
+            this.scene.tweens.add({
+                targets: this.more,
+                x: len,
+                alpha: 1,
+                duration: 100,
+            });
+        }
+        noMore() {
+            this.scene.tweens.add({
+                targets: this.more,
+                alpha: 0,
+                duration: 100,
+            });
+        }
         update(time, dt) {
             if (this.target._buffListDirty) {
                 let newList = this.obtainList();
+                let bLen = newList.length;
+                newList = newList.slice(0, 6);
                 let newIcons = [];
                 let iOld = 0;
                 let iNew = 0;
@@ -1645,7 +1676,8 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
                         else {
                             // iNew is a new buff
                             // Add iNew to the container
-                            let bI = new BuffIcon(this.scene, 0, 0, newList[iNew]);
+                            let bI = new BuffIcon(this.scene, 160, 0, newList[iNew]);
+                            bI.alpha = 0.0;
                             newIcons.push(bI);
                             this.add(bI);
                             iNew++;
@@ -1669,11 +1701,18 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
                     this.scene.tweens.add({
                         targets: icon,
                         x: len,
+                        alpha: 1.0,
                         duration: 100,
                     });
                     len += icon.len + 2;
                 }
-                this.updateContentLength();
+                if (bLen > 6) {
+                    this.hasMore(len);
+                }
+                else {
+                    this.noMore();
+                }
+                // this.updateContentLength();
             }
             this.each((obj) => { obj.update(); });
         }
@@ -1711,9 +1750,9 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
                 return [target.mobData.currentMana, target.mobData.maxMana];
             }, 70, 11, 1, true, 0x222222, 0x20604F, 0x33A6B8, true, 'smallPx_HUD', ProgressBar_1.TextAlignment.Left, 5, 2, 0xffffff));
             // // Buffs
-            // let bF = new BuffFrame(this.scene, -28, 37, x - 28, y + 37, 160, 30, this.targetMob.mobData);
-            // bF.depth = 0;
-            // this.add(bF);
+            let bF = new BuffFrame(this.scene, -28, 37, x - 28, y + 37, 160, 30, this.targetMob.mobData);
+            bF.depth = 0;
+            this.add(bF);
             // Current Spell
             this.castingBar = new ProgressBar_1.ProgressBar(this.scene, 10, 35, () => {
                 return [0.3, 1.8];
@@ -1914,7 +1953,7 @@ define("Engine/Core/BattleMonitor", ["require", "exports", "Engine/Core/GameData
  * @packageDocumentation
  * @module UI
  */
-define("Engine/UI/MonitorFrame", ["require", "exports", "Engine/Core/BattleMonitor", "Engine/UI/Localization", "Engine/Core/GameData", "Engine/UI/ScrollMaskedContainer"], function (require, exports, BattleMonitor_1, Localization_2, GameData_5, ScrollMaskedContainer_2) {
+define("Engine/UI/MonitorFrame", ["require", "exports", "Engine/Core/BattleMonitor", "Engine/UI/Localization", "Engine/Core/GameData", "Engine/UI/ScrollMaskedContainer"], function (require, exports, BattleMonitor_1, Localization_2, GameData_5, ScrollMaskedContainer_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class MonitorRow extends Phaser.GameObjects.Container {
@@ -1983,7 +2022,7 @@ define("Engine/UI/MonitorFrame", ["require", "exports", "Engine/Core/BattleMonit
         }
     }
     exports.MonitorRow = MonitorRow;
-    class MonitorFrame extends ScrollMaskedContainer_2.ScrollMaskedContainer {
+    class MonitorFrame extends ScrollMaskedContainer_1.ScrollMaskedContainer {
         constructor(scene, x, y, fetchFunc, width = 125, height = 120) {
             super(scene, x, y, width, height);
             this.rows = [];
@@ -2080,9 +2119,9 @@ define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "En
                 let x = 35 + (cnt % 4) * 180;
                 let y = 522 + Math.floor(cnt / 4) * 70;
                 let tmp = new UnitFrame_1.UnitFrame(this, x, y, player);
-                let bF = new UnitFrame_1.BuffFrame(this, x - 28, y + 37, x - 28, y + 37, 160, 30, player.mobData);
+                // let bF = new BuffFrame(this, x - 28, y + 37, x - 28, y + 37, 160, 30, player.mobData);
                 // let tmp = new UnitFrame(this, 20, 20 + cnt * 70, player);
-                this.add.existing(bF);
+                // this.add.existing(bF);
                 this.add.existing(tmp);
                 this.unitFrames.push(tmp);
                 cnt += 1;

@@ -135,19 +135,31 @@ export class BuffIcon extends Phaser.GameObjects.Container
     }
 }
 
-export class BuffFrame extends ScrollMaskedContainer
+// export class BuffFrame extends ScrollMaskedContainer
+export class BuffFrame extends Phaser.GameObjects.Container
 {
     target: MobData;
     icons: BuffIcon[];
+    more: dSprite;
 
     constructor(scene: Phaser.Scene, x: number, y: number, globalX: number, globalY: number, width: number, height: number, target: MobData)
     {
-        super(scene, x, y, width, height, ScrollDirc.Horizontal, globalX, globalY);
+        // super(scene, x, y, width, height, ScrollDirc.Horizontal, globalX, globalY);
+        super(scene, x, y);
         this.target = target;
 
         this.icons = [];
         let len = 0;
+
+        this.more = new dSprite(this.scene, 200, 1, 'img_more_buff');
+        this.more.alpha = 0.0;
+        this.more.setOrigin(0, 0)
+        this.add(this.more);
+
         let buffList = this.obtainList();
+        let bLen = buffList.length;
+        buffList = buffList.slice(0, 6);
+
         for (let buff of buffList)
         {
             let bI = new BuffIcon(this.scene, len, 0, buff);
@@ -155,7 +167,10 @@ export class BuffFrame extends ScrollMaskedContainer
             this.icons.push(bI);
             this.add(bI);
         }
-        this.updateContentLength();
+
+        if (bLen > 6) { this.hasMore(len); }
+        else { this.noMore(); }
+        // this.updateContentLength();
     }
 
     compare(a: Buff, b: Buff): number
@@ -196,11 +211,33 @@ export class BuffFrame extends ScrollMaskedContainer
     //     this.each((obj: Phaser.GameObjects.GameObject) => { obj.update(); });
     // }
 
+    hasMore(len: number)
+    {
+        this.scene.tweens.add({
+            targets: this.more,
+            x: len,
+            alpha: 1,
+            duration: 100,
+        });
+    }
+
+    noMore()
+    {
+        this.scene.tweens.add({
+            targets: this.more,
+            alpha: 0,
+            duration: 100,
+        });
+    }
+
     update(time: number, dt: number)
     {
         if (this.target._buffListDirty)
         {
             let newList = this.obtainList();
+            let bLen = newList.length;
+            newList = newList.slice(0, 6);
+
             let newIcons = [];
             let iOld = 0;
             let iNew = 0;
@@ -242,7 +279,8 @@ export class BuffFrame extends ScrollMaskedContainer
                     {
                         // iNew is a new buff
                         // Add iNew to the container
-                        let bI = new BuffIcon(this.scene, 0, 0, newList[iNew]);
+                        let bI = new BuffIcon(this.scene, 160, 0, newList[iNew]);
+                        bI.alpha = 0.0;
                         newIcons.push(bI);
                         this.add(bI);
                         iNew++;
@@ -271,12 +309,16 @@ export class BuffFrame extends ScrollMaskedContainer
                 this.scene.tweens.add({
                     targets: icon,
                     x: len,
+                    alpha: 1.0,
                     duration: 100,
                 });
                 len += icon.len + 2;
             }
 
-            this.updateContentLength();
+            if (bLen > 6) { this.hasMore(len); }
+            else { this.noMore(); }
+
+            // this.updateContentLength();
         }
 
         this.each((obj: Phaser.GameObjects.GameObject) => { obj.update(); });
@@ -335,9 +377,9 @@ export class UnitFrame extends Phaser.GameObjects.Container
         }, 70, 11, 1, true, 0x222222, 0x20604F, 0x33A6B8, true, 'smallPx_HUD', TextAlignment.Left, 5, 2, 0xffffff));
 
         // // Buffs
-        // let bF = new BuffFrame(this.scene, -28, 37, x - 28, y + 37, 160, 30, this.targetMob.mobData);
-        // bF.depth = 0;
-        // this.add(bF);
+        let bF = new BuffFrame(this.scene, -28, 37, x - 28, y + 37, 160, 30, this.targetMob.mobData);
+        bF.depth = 0;
+        this.add(bF);
 
         // Current Spell
         this.castingBar = new ProgressBar(this.scene, 10, 35, () =>

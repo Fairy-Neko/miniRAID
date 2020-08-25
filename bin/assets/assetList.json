@@ -66,5 +66,9 @@
     "img_imp_buff_icon_test": {
         "url": "./assets/img/buff_icons/test_imp.png",
         "type": "image"
+    },
+    "img_more_buff": {
+        "url": "./assets/img/buff_icons/more.png",
+        "type": "image"
     }
 }
