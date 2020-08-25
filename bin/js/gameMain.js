@@ -264,13 +264,13 @@ define("Engine/DynamicLoader/DynamicLoaderScene", ["require", "exports", "Engine
         }
         preload() {
             this.load.json('assetList', './assets/assetList.json');
-            this.load.bitmapFont('simsun', './assets/fonts/simsun_outlined_0.png', './assets/fonts/simsun_outlined.fnt');
+            this.load.bitmapFont('smallPx', './assets/fonts/smallPx_C_0.png', './assets/fonts/smallPx_C.fnt');
         }
         create() {
             super.create();
-            this.label = this.add.bitmapText(0, 0, 'simsun', 'Loading ... [100.0%]');
+            this.label = this.add.bitmapText(0, 0, 'smallPx', 'Loading ... [100.0%]');
             // this.label.setBackgroundColor('#000000');
-            // this.label.setFontFamily('smallPx, 宋体, SimSun, Consolas');
+            // this.label.setFontFamily('宋体, SimSun, Consolas');
             // this.label.setFontSize(12);
             this.assetList = this.cache.json.get('assetList');
             this.pools.set("image", {
@@ -320,7 +320,7 @@ define("Engine/DynamicLoader/DynamicLoaderScene", ["require", "exports", "Engine
             else {
                 // this.label.setVisible(false);
                 this.label.setVisible(true);
-                this.label.text = `(DEBUG MESSAGE) Dynamic loader idle ...\n动态加载器闲置中 | <- 只是试一下Unicode渲染x`;
+                this.label.text = `Dynamic loader idle ...`;
             }
             if (this.queue.length > 0) {
                 for (let i = 0; i < this.queue.length; i++) {
@@ -874,155 +874,68 @@ define("Engine/Core/GameData", ["require", "exports"], function (require, export
         GameData.healTaunt = 2;
     })(GameData = exports.GameData || (exports.GameData = {}));
 });
-/**
- * @packageDocumentation
- * @module UI
- */
-define("Engine/UI/PopUpManager", ["require", "exports", "Engine/Core/GameData"], function (require, exports, GameData_1) {
+/** @packageDocumentation @module UI */
+define("Engine/UI/ProgressBar", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    // import * as Phaser from 'phaser'
-    class PopupText extends Phaser.GameObjects.BitmapText {
-        constructor(scene, x, y, text, color, time = 1.0, velX = -64, velY = -256, accX = 0.0, accY = 512.0) {
-            super(scene, x, y, GameData_1.GameData.popUpSmallFont ? 'smallPx' : 'mediumPx', text);
-            this.time = time * 1.5;
-            this.velX = velX;
-            this.velY = velY;
-            this.accX = accX;
-            this.accY = accY;
-            this.dead = false;
-            this.setTint(color);
-            this.setLetterSpacing(1);
-            this.setOrigin(0.5, 0.0);
-        }
-        update(dt) {
-            // perhaps we don't need this?
-            super.update();
-            this.time -= dt;
-            if (this.time < 0) {
-                this.dead = true;
-                return;
+    var TextAlignment;
+    (function (TextAlignment) {
+        TextAlignment[TextAlignment["Left"] = 0] = "Left";
+        TextAlignment[TextAlignment["Center"] = 1] = "Center";
+        TextAlignment[TextAlignment["Right"] = 2] = "Right";
+    })(TextAlignment = exports.TextAlignment || (exports.TextAlignment = {}));
+    class ProgressBar extends Phaser.GameObjects.Container {
+        constructor(scene, x, y, fetchValue = undefined, width = 100, height = 10, border = 1, outlineColor = 0xffffff, bgColor = 0x20604f, fillColor = 0x1b813e, showText = true, fontKey = 'smallPx_HUD', align = TextAlignment.Left, textX = 0, textY = 0, textColor = 0xffffff) {
+            super(scene, x, y);
+            this.fetchFunc = fetchValue;
+            this.out = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, width, height, outlineColor);
+            this.out.setOrigin(0);
+            this.bg = new Phaser.GameObjects.Rectangle(this.scene, border, border, width - border * 2, height - border * 2, bgColor);
+            this.bg.setOrigin(0);
+            this.bg.setPosition(border, border);
+            this.fill = new Phaser.GameObjects.Rectangle(this.scene, border, border, width - border * 2, height - border * 2, fillColor);
+            this.fill.setOrigin(0);
+            this.fill.setPosition(border, border);
+            this.text = new Phaser.GameObjects.BitmapText(this.scene, textX, textY, fontKey, '0/0');
+            this.text.setOrigin(align * 0.5, 0);
+            this.text.setTint(textColor);
+            if (border > 0) {
+                this.add(this.out);
             }
-            this.x += this.velX * dt;
-            this.y += this.velY * dt;
-            this.velX += this.accX * dt;
-            this.velY += this.accY * dt;
-            this.alpha = this.time;
-        }
-    }
-    exports.PopupText = PopupText;
-    class PopUpManager extends Phaser.Scene {
-        constructor() {
-            super(...arguments);
-            this.loaded = false;
-        }
-        static getSingleton() {
-            if (!PopUpManager.instance) {
-                PopUpManager.instance = new PopUpManager({ key: 'PopupManagerScene' });
-                console.log("registering Popup Manager...");
+            this.add(this.bg);
+            this.add(this.fill);
+            if (showText) {
+                this.add(this.text);
             }
-            return PopUpManager.instance;
-        }
-        preload() {
-            // this.load.bitmapFont('smallPx', './assets/fonts/smallPx_04b03_0.png', './assets/fonts/smallPx_04b03.fnt');
-            this.load.bitmapFont('smallPx', './assets/fonts/smallPx_C_0.png', './assets/fonts/smallPx_C.fnt');
-            this.load.bitmapFont('mediumPx', './assets/fonts/mediumPx_04b03_0.png', './assets/fonts/mediumPx_04b03.fnt');
-            this.load.bitmapFont('simsun_o', './assets/fonts/simsun_outlined_0.png', './assets/fonts/simsun_outlined.fnt');
-        }
-        create() {
-            this.textList = new Set();
-            this.loaded = true;
-        }
-        addText(text, posX = 100, posY = 100, color = new Phaser.Display.Color(255, 255, 255, 255), time = 1.0, velX = -64, velY = -256, // jumping speed
-        accX = 0.0, // gravity
-        accY = 512) {
-            if (this.loaded) {
-                let txt = new PopupText(this, posX, posY, text, color.color, time, velX, velY, accX, accY);
-                this.add.existing(txt);
-            }
+            this.fillMaxLength = width - border * 2;
+            this.maxV = 100;
+            this.curV = 100;
         }
         update(time, dt) {
-            this.children.each((item) => {
-                item.update(dt / 1000.0);
-                if (item instanceof PopupText) {
-                    if (item.dead) {
-                        item.destroy();
-                    }
-                }
-            });
-            // for(let txt of this.textList)
-            // {
-            //     txt.update(dt);
-            //     if(txt.dead)
-            //     {
-            //         this.textList.delete(txt);
-            //     }
-            // }
-        }
-    }
-    exports.PopUpManager = PopUpManager;
-});
-/** @packageDocumentation @module Core */
-define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener", "Engine/UI/PopUpManager"], function (require, exports, MobListener_1, PopUpManager_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    class Buff extends MobListener_1.MobListener {
-        constructor(settings) {
-            super();
-            //Name of the buff
-            this.name = settings.name || "buff";
-            //This listener is a buff
-            this.type = MobListener_1.MobListenerType.Buff;
-            //Does this buff counts time?
-            this.countTime = ((settings.countTime === undefined) ? true : settings.countTime);
-            //time in seconds, indicates the durtion of buff
-            this.timeMax = settings.time || 1.0;
-            //time in seconds, will automatically reduce by time
-            this.timeRemain = settings.time || this.timeMax;
-            //Is the buff over? (should be removed from buff list)
-            this.isOver = false;
-            //stacks of the buff (if any)
-            this.stacks = settings.stacks || 1;
-            this.stackable = settings.stackable || false;
-            this.maxStack = settings.maxStack || 3;
-            //cellIndex of this buff in the buffIcons image, might be shown under boss lifebar / player lifebar
-            this.iconId = settings.iconId || 0;
-            //the color used for UI rendering
-            this.color = settings.color || Phaser.Display.Color.HexStringToColor('#56CDEF');
-            //when the buff was attached or triggered, a small text will pop up like damages e.g. "SLOWED!"
-            this.popupName = settings.popupName || "buff";
-            //Color for the popup text. default is this.color.
-            this.popupColor = settings.popupColor || this.color;
-            //Where does this buff come from?
-            this.source = settings.source || undefined;
-            this.toolTip = { title: "Buff", text: "lol." };
-        }
-        popUp(mob) {
-            let popUpPos = mob.getTopCenter();
-            PopUpManager_1.PopUpManager.getSingleton().addText(this.popupName, popUpPos.x, popUpPos.y, this.popupColor, 1.0, 0, -64, 0, 64);
-        }
-        update(self, dt) {
-            super.update(self, dt);
-            if (this.countTime == true) {
-                this.timeRemain -= dt;
-                if (this.timeRemain < 0) {
-                    this.isOver = true;
-                }
+            if (this.fetchFunc) {
+                let v = this.fetchFunc();
+                this.setValue(v[0], v[1]);
             }
         }
-        showToolTip() {
-            // TODO
-        }
-        /**
-         * Addes one stack of itself.
-         */
-        addStack() {
+        setValue(value, max = undefined) {
+            if (max === undefined) {
+                max = this.maxV;
+            }
+            // this.fill.width = this.fillMaxLength * (value / max);
+            this.scene.tweens.add({
+                targets: this.fill,
+                width: this.fillMaxLength * (value / max),
+                yoyo: false,
+                repeat: 0,
+                duration: 100,
+            });
+            this.text.text = value.toFixed(0) + "/" + max.toFixed(0);
         }
     }
-    exports.Buff = Buff;
+    exports.ProgressBar = ProgressBar;
 });
 /** @packageDocumentation @moduleeDocumentation @module Agent */
-define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "Engine/GameObjects/Mob", "Engine/Core/GameData", "Engine/Core/UnitManager", "Engine/UI/PopUpManager"], function (require, exports, MobAgent_1, Mob_1, GameData_2, UnitManager_1, PopUpManager_2) {
+define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "Engine/GameObjects/Mob", "Engine/Core/GameData", "Engine/Core/UnitManager", "Engine/UI/PopUpManager"], function (require, exports, MobAgent_1, Mob_1, GameData_1, UnitManager_1, PopUpManager_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class PlayerAgentBase extends MobAgent_1.MobAgent {
@@ -1038,7 +951,7 @@ define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "
             super(parentMob);
             this.OOMwarned = false;
             // Will the player move automatically (to nearest mob) if it is free ?
-            this.autoMove = GameData_2.GameData.useAutomove;
+            this.autoMove = GameData_1.GameData.useAutomove;
             // this.autoMove = true;
             // idleCount will count down from idleFrame if player is in idle (-1 / frame) to smooth the animation.
             // Only if idleCount = 0, the player will be "idle".
@@ -1053,14 +966,14 @@ define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "
             // TODO: smooth when hit world object ?
         }
         updateMob(player, dt) {
-            this.autoMove = GameData_2.GameData.useAutomove;
+            this.autoMove = GameData_1.GameData.useAutomove;
             this.footPos = new Phaser.Math.Vector2(player.x, player.y);
             if (Mob_1.Mob.checkAlive(player) === true) {
                 // Low Mana warning
                 if (player.mobData.currentMana < (player.mobData.currentWeapon.manaCost * player.mobData.modifiers.resourceCost)) {
                     if (!this.OOMwarned) {
                         let _p = player.getTopCenter();
-                        PopUpManager_2.PopUpManager.getSingleton().addText("*OOM*", _p.x, _p.y, Phaser.Display.Color.HexStringToColor("#45beff"), 1.0, 0);
+                        PopUpManager_1.PopUpManager.getSingleton().addText("*OOM*", _p.x, _p.y, Phaser.Display.Color.HexStringToColor("#45beff"), 1.0, 0);
                     }
                     this.OOMwarned = true;
                 }
@@ -1186,7 +1099,7 @@ define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "
     exports.Simple = Simple;
 });
 /** @packageDocumentation @module Core */
-define("Engine/Core/UnitManager", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/GameData"], function (require, exports, Mob_2, GameData_3) {
+define("Engine/Core/UnitManager", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/GameData"], function (require, exports, Mob_2, GameData_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class UnitManager {
@@ -1309,7 +1222,7 @@ define("Engine/Core/UnitManager", ["require", "exports", "Engine/GameObjects/Mob
                 }
                 this.origin.set(pointer.x, pointer.y);
                 var playerNum = 0;
-                var playerSparse = GameData_3.GameData.playerSparse + GameData_3.GameData.playerSparseInc * this.selectedPlayerCount;
+                var playerSparse = GameData_2.GameData.playerSparse + GameData_2.GameData.playerSparseInc * this.selectedPlayerCount;
                 if (this.sparseKey.isDown) {
                     playerSparse = 60;
                 }
@@ -1436,8 +1349,202 @@ define("Engine/Core/UnitManager", ["require", "exports", "Engine/GameObjects/Mob
     UnitManager.IDENTITY = (a, b) => 0;
     UnitManager.NOOP = (a) => true;
 });
+/**
+ * @packageDocumentation
+ * @module UI
+ */
+define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "Engine/Core/UnitManager"], function (require, exports, ProgressBar_1, UnitManager_2) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class UnitFrame extends Phaser.GameObjects.Container {
+        constructor(scene, x, y) {
+            super(scene, x, y);
+            this.add(new Phaser.GameObjects.BitmapText(this.scene, 0, 0, 'simsun_o', "testGirl0: 魔法值"));
+            // this.add(new Phaser.GameObjects.BitmapText(this.scene, 0, 3, 'smallPx', "Mana of testGirl0"));
+            this.add(new ProgressBar_1.ProgressBar(this.scene, 0, 14, () => {
+                let a = Array.from(UnitManager_2.UnitManager.getCurrent().player.values());
+                return [a[0].mobData.currentMana, a[0].mobData.maxMana];
+            }, 100, 3, 0, 0x222222, 0x20604F, 0x33A6B8, true, 'smallPx', ProgressBar_1.TextAlignment.Right, 95, 5, 0xffffff));
+        }
+        update(time, dt) {
+            this.each((obj) => { obj.update(); });
+        }
+    }
+    exports.UnitFrame = UnitFrame;
+});
+/**
+ * @packageDocumentation
+ * @module UI
+ */
+define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "Engine/UI/UnitFrame"], function (require, exports, PopUpManager_2, UnitFrame_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class UIScene extends Phaser.Scene {
+        constructor() {
+            super(...arguments);
+            this.loaded = false;
+        }
+        static getSingleton() {
+            if (!UIScene.instance) {
+                UIScene.instance = new UIScene({ key: 'UIScene' });
+                console.log("registering UI Scene...");
+            }
+            return UIScene.instance;
+        }
+        preload() {
+            this.load.bitmapFont('smallPx', './assets/fonts/smallPx_C_0.png', './assets/fonts/smallPx_C.fnt');
+            this.load.bitmapFont('smallPx_HUD', './assets/fonts/smallPx_HUD_0.png', './assets/fonts/smallPx_HUD.fnt');
+            this.load.bitmapFont('mediumPx', './assets/fonts/mediumPx_04b03_0.png', './assets/fonts/mediumPx_04b03.fnt');
+            this.load.bitmapFont('simsun', './assets/fonts/simsun_0.png', './assets/fonts/simsun.fnt');
+            this.load.bitmapFont('simsun_o', './assets/fonts/simsun_outlined_0.png', './assets/fonts/simsun_outlined.fnt');
+            this.add.existing(PopUpManager_2.PopUpManager.register(this));
+        }
+        create() {
+            this.add.existing(new UnitFrame_1.UnitFrame(this, 300, 300));
+        }
+        update(time, dt) {
+            this.children.each((item) => { item.update(time / 1000.0, dt / 1000.0); });
+        }
+    }
+    exports.UIScene = UIScene;
+});
+/**
+ * @packageDocumentation
+ * @module UI
+ */
+define("Engine/UI/PopUpManager", ["require", "exports", "Engine/Core/GameData"], function (require, exports, GameData_3) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    // import * as Phaser from 'phaser'
+    class PopupText extends Phaser.GameObjects.BitmapText {
+        constructor(scene, x, y, text, color, time = 1.0, velX = -64, velY = -256, accX = 0.0, accY = 512.0) {
+            super(scene, x, y, GameData_3.GameData.popUpSmallFont ? 'smallPx' : 'mediumPx', text);
+            this.time = time * 1.5;
+            this.velX = velX;
+            this.velY = velY;
+            this.accX = accX;
+            this.accY = accY;
+            this.dead = false;
+            this.setTint(color);
+            this.setLetterSpacing(1);
+            this.setOrigin(0.5, 0.0);
+        }
+        update(dt) {
+            // perhaps we don't need this?
+            super.update();
+            this.time -= dt;
+            if (this.time < 0) {
+                this.dead = true;
+                return;
+            }
+            this.x += this.velX * dt;
+            this.y += this.velY * dt;
+            this.velX += this.accX * dt;
+            this.velY += this.accY * dt;
+            this.alpha = this.time;
+        }
+    }
+    exports.PopupText = PopupText;
+    class PopUpManager extends Phaser.GameObjects.Container {
+        constructor(scene, x, y) {
+            super(scene, x, y);
+            this.loaded = false;
+            this.textList = new Set();
+            this.loaded = true;
+        }
+        static getSingleton() {
+            if (!PopUpManager.instance) {
+                return undefined;
+                console.log("registering Popup Manager...");
+            }
+            return PopUpManager.instance;
+        }
+        static register(scene, x = 0, y = 0) {
+            PopUpManager.instance = new PopUpManager(scene, x, y);
+            return PopUpManager.instance;
+        }
+        addText(text, posX = 100, posY = 100, color = new Phaser.Display.Color(255, 255, 255, 255), time = 1.0, velX = -64, velY = -256, // jumping speed
+        accX = 0.0, // gravity
+        accY = 512) {
+            if (this.loaded) {
+                let txt = new PopupText(this.scene, posX, posY, text, color.color, time, velX, velY, accX, accY);
+                this.add(txt);
+            }
+        }
+        preUpdate(time, dt) {
+            this.each((item) => {
+                item.update(dt / 1000.0);
+                if (item instanceof PopupText) {
+                    if (item.dead) {
+                        item.destroy();
+                    }
+                }
+            });
+        }
+    }
+    exports.PopUpManager = PopUpManager;
+});
 /** @packageDocumentation @module Core */
-define("Engine/Core/BattleMonitor", ["require", "exports", "Engine/Core/GameData", "Engine/Core/UnitManager"], function (require, exports, GameData_4, UnitManager_2) {
+define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener", "Engine/UI/PopUpManager"], function (require, exports, MobListener_1, PopUpManager_3) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class Buff extends MobListener_1.MobListener {
+        constructor(settings) {
+            super();
+            //Name of the buff
+            this.name = settings.name || "buff";
+            //This listener is a buff
+            this.type = MobListener_1.MobListenerType.Buff;
+            //Does this buff counts time?
+            this.countTime = ((settings.countTime === undefined) ? true : settings.countTime);
+            //time in seconds, indicates the durtion of buff
+            this.timeMax = settings.time || 1.0;
+            //time in seconds, will automatically reduce by time
+            this.timeRemain = settings.time || this.timeMax;
+            //Is the buff over? (should be removed from buff list)
+            this.isOver = false;
+            //stacks of the buff (if any)
+            this.stacks = settings.stacks || 1;
+            this.stackable = settings.stackable || false;
+            this.maxStack = settings.maxStack || 3;
+            //cellIndex of this buff in the buffIcons image, might be shown under boss lifebar / player lifebar
+            this.iconId = settings.iconId || 0;
+            //the color used for UI rendering
+            this.color = settings.color || Phaser.Display.Color.HexStringToColor('#56CDEF');
+            //when the buff was attached or triggered, a small text will pop up like damages e.g. "SLOWED!"
+            this.popupName = settings.popupName || "buff";
+            //Color for the popup text. default is this.color.
+            this.popupColor = settings.popupColor || this.color;
+            //Where does this buff come from?
+            this.source = settings.source || undefined;
+            this.toolTip = { title: "Buff", text: "lol." };
+        }
+        popUp(mob) {
+            let popUpPos = mob.getTopCenter();
+            PopUpManager_3.PopUpManager.getSingleton().addText(this.popupName, popUpPos.x, popUpPos.y, this.popupColor, 1.0, 0, -64, 0, 64);
+        }
+        update(self, dt) {
+            super.update(self, dt);
+            if (this.countTime == true) {
+                this.timeRemain -= dt;
+                if (this.timeRemain < 0) {
+                    this.isOver = true;
+                }
+            }
+        }
+        showToolTip() {
+            // TODO
+        }
+        /**
+         * Addes one stack of itself.
+         */
+        addStack() {
+        }
+    }
+    exports.Buff = Buff;
+});
+/** @packageDocumentation @module Core */
+define("Engine/Core/BattleMonitor", ["require", "exports", "Engine/Core/GameData", "Engine/Core/UnitManager"], function (require, exports, GameData_4, UnitManager_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class BattleMonitor {
@@ -1454,7 +1561,7 @@ define("Engine/Core/BattleMonitor", ["require", "exports", "Engine/Core/GameData
         }
         update(dt) {
             // If there are any enemy on the field
-            if (UnitManager_2.UnitManager.getCurrent().enemy.size > 0) {
+            if (UnitManager_3.UnitManager.getCurrent().enemy.size > 0) {
                 this.time += dt;
             }
         }
@@ -2192,7 +2299,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
     exports.MobData = MobData;
 });
 /** @packageDocumentation @module Core */
-define("Engine/Core/Helper", ["require", "exports", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/Core/GameData"], function (require, exports, UnitManager_3, Spell_1, GameData_6) {
+define("Engine/Core/Helper", ["require", "exports", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/Core/GameData"], function (require, exports, UnitManager_4, Spell_1, GameData_6) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function HealDmg(info) {
@@ -2229,11 +2336,11 @@ define("Engine/Core/Helper", ["require", "exports", "Engine/Core/UnitManager", "
      * @param maxCapture Maximum units that this AoE can capture, <= 0 means no limit. It is recommended to set a non-identity compareFunc when a maxCapture number is set.
      * @param compareFunc The compareing function that will be used when quering the captured unit list. If set, target list will be sorted wrt this function, default is Identity (no sort).
      */
-    function AoE(func, pos, range, targets, maxCapture = -1, compareFunc = UnitManager_3.UnitManager.IDENTITY) {
+    function AoE(func, pos, range, targets, maxCapture = -1, compareFunc = UnitManager_4.UnitManager.IDENTITY) {
         let AoEList = targets == Spell_1.Targeting.Both ?
-            UnitManager_3.UnitManager.getCurrent().getUnitListAll(compareFunc, (a) => { return (a.footPos().distance(pos) < range); })
+            UnitManager_4.UnitManager.getCurrent().getUnitListAll(compareFunc, (a) => { return (a.footPos().distance(pos) < range); })
             :
-                UnitManager_3.UnitManager.getCurrent().getUnitList(compareFunc, (a) => { return (a.footPos().distance(pos) < range); }, targets == Spell_1.Targeting.Player);
+                UnitManager_4.UnitManager.getCurrent().getUnitList(compareFunc, (a) => { return (a.footPos().distance(pos) < range); }, targets == Spell_1.Targeting.Player);
         if (maxCapture > 0) {
             AoEList = AoEList.slice(0, maxCapture);
         }
@@ -2742,7 +2849,7 @@ define("Engine/Core/ObjectPopulator", ["require", "exports"], function (require,
     exports.ObjectPopulator = ObjectPopulator;
 });
 /** @packageDocumentation @module GameEntity */
-define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/Core/MobData", "Engine/Core/UnitManager", "Engine/Core/EquipmentCore", "Engine/UI/PopUpManager", "Engine/Core/ObjectPopulator", "Engine/Core/GameData"], function (require, exports, dPhysSprite_2, MobData_1, UnitManager_4, EquipmentCore_2, PopUpManager_3, ObjectPopulator_1, GameData_7) {
+define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/Core/MobData", "Engine/Core/UnitManager", "Engine/Core/EquipmentCore", "Engine/UI/PopUpManager", "Engine/Core/ObjectPopulator", "Engine/Core/GameData"], function (require, exports, dPhysSprite_2, MobData_1, UnitManager_5, EquipmentCore_2, PopUpManager_4, ObjectPopulator_1, GameData_7) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Mob extends dPhysSprite_2.dPhysSprite {
@@ -2760,11 +2867,11 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
             this.isPlayer = this.mobData.isPlayer;
             if (this.isPlayer === true) {
                 // Is player
-                UnitManager_4.UnitManager.getCurrent().addPlayer(this);
+                UnitManager_5.UnitManager.getCurrent().addPlayer(this);
             }
             else {
                 // Is enemy
-                UnitManager_4.UnitManager.getCurrent().addEnemy(this);
+                UnitManager_5.UnitManager.getCurrent().addEnemy(this);
             }
             this.setGravity(0, 0);
             if (settings.agent) {
@@ -2902,14 +3009,14 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
             if (result.isAvoid) {
                 if (_damageInfo.popUp == true) {
                     var popUpPos = this.getTopCenter();
-                    PopUpManager_3.PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, GameData_7.GameData.ElementColors['miss']);
+                    PopUpManager_4.PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, GameData_7.GameData.ElementColors['miss']);
                 }
                 return result;
             }
             // Mob itself only do rendering popUp texts
             if (_damageInfo.popUp == true && result.value > 0) {
                 var popUpPos = this.getTopCenter();
-                PopUpManager_3.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_7.GameData.ElementColors[result.type]);
+                PopUpManager_4.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_7.GameData.ElementColors[result.type]);
                 // // popUp texts on unit frames
                 // // fade from the edge of currentHealth to the left
                 // if(this.data.isPlayer)
@@ -2997,10 +3104,10 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
                 // }
                 var popUpPos = this.getTopCenter();
                 if (result.overdeal > 0) {
-                    PopUpManager_3.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : "") + " <" + result.overdeal.toString() + ">", popUpPos.x, popUpPos.y, GameData_7.GameData.ElementColors['heal'], 1.0, 64, -256);
+                    PopUpManager_4.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : "") + " <" + result.overdeal.toString() + ">", popUpPos.x, popUpPos.y, GameData_7.GameData.ElementColors['heal'], 1.0, 64, -256);
                 }
                 else {
-                    PopUpManager_3.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_7.GameData.ElementColors['heal'], 1.0, 64, -256);
+                    PopUpManager_4.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_7.GameData.ElementColors['heal'], 1.0, 64, -256);
                 }
                 // // popUp texts on unit frames
                 // // fade from left to the the edge of currentHealth
@@ -3058,7 +3165,7 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
     exports.Mob = Mob;
 });
 /** @packageDocumentation @module BattleScene */
-define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/UnitManager", "Engine/Core/ObjectPopulator", "Engine/Core/BattleMonitor"], function (require, exports, Mob_4, UnitManager_5, ObjectPopulator_2, BattleMonitor_2) {
+define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/UnitManager", "Engine/Core/ObjectPopulator", "Engine/Core/BattleMonitor"], function (require, exports, Mob_4, UnitManager_6, ObjectPopulator_2, BattleMonitor_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class BattleScene extends Phaser.Scene {
@@ -3090,8 +3197,8 @@ define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/Game
             }
         }
         create() {
-            UnitManager_5.UnitManager.resetScene(this);
-            this.unitMgr = UnitManager_5.UnitManager.getCurrent();
+            UnitManager_6.UnitManager.resetScene(this);
+            this.unitMgr = UnitManager_6.UnitManager.getCurrent();
             // Create groups
             this.worldGroup = this.physics.add.group();
             this.commonGroup = this.physics.add.group();
@@ -3246,7 +3353,7 @@ define("Buffs/HDOT", ["require", "exports", "Engine/Core/Buff", "Engine/Core/Gam
     exports.HDOT = HDOT;
 });
 /** @packageDocumentation @module Weapons */
-define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/GameObjects/Projectile", "Engine/Core/Helper", "Engine/Core/GameData", "Buffs/HDOT"], function (require, exports, EquipmentCore_3, UnitManager_6, Spell_4, Projectile_1, Helper_3, GameData_9, HDOT_1) {
+define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/GameObjects/Projectile", "Engine/Core/Helper", "Engine/Core/GameData", "Buffs/HDOT"], function (require, exports, EquipmentCore_3, UnitManager_7, Spell_4, Projectile_1, Helper_3, GameData_9, HDOT_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class CometWand extends EquipmentCore_3.Weapon {
@@ -3258,7 +3365,7 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
             this.baseAttackSpeed = 1.5;
             this.targetCount = 4;
             this.activeRange = 2000;
-            this.manaCost = 4;
+            this.manaCost = 10;
             this.weaponGaugeMax = 25;
             this.weaponGaugeIncreasement = function (mob) { return mob.mobData.baseStats.mag; };
         }
@@ -3309,7 +3416,7 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
                 });
         }
         grabTargets(mob) {
-            return UnitManager_6.UnitManager.getCurrent().getNearest(mob.footPos(), !mob.mobData.isPlayer, this.targetCount);
+            return UnitManager_7.UnitManager.getCurrent().getNearest(mob.footPos(), !mob.mobData.isPlayer, this.targetCount);
         }
     }
     exports.CometWand = CometWand;
@@ -3446,7 +3553,7 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
     exports.TestScene = TestScene;
 });
 /** @packageDocumentation @module GameScene */
-define("SimpleGame", ["require", "exports", "TestScene", "Engine/DynamicLoader/DynamicLoaderScene", "Engine/UI/PopUpManager"], function (require, exports, TestScene_1, DynamicLoaderScene_3, PopUpManager_4) {
+define("SimpleGame", ["require", "exports", "TestScene", "Engine/DynamicLoader/DynamicLoaderScene", "Engine/UI/UIScene"], function (require, exports, TestScene_1, DynamicLoaderScene_3, UIScene_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class InitPhaser {
@@ -3464,12 +3571,14 @@ define("SimpleGame", ["require", "exports", "TestScene", "Engine/DynamicLoader/D
                 parent: 'GameFrame',
                 render: {
                     pixelArt: true,
-                    roundPixels: true
+                    roundPixels: true,
+                    antialias: false,
+                    antialiasGL: false,
                 }
             };
             this.gameRef = new Phaser.Game(config);
             this.gameRef.scene.add('DynamicLoaderScene', DynamicLoaderScene_3.DynamicLoaderScene.getSingleton(), true);
-            this.gameRef.scene.add('PopupManagerScene', PopUpManager_4.PopUpManager.getSingleton(), true);
+            this.gameRef.scene.add('UIScene', UIScene_1.UIScene.getSingleton(), true);
         }
     }
     exports.InitPhaser = InitPhaser;

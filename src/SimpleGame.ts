@@ -2,7 +2,8 @@
 
 import { TestScene } from './TestScene'
 import { DynamicLoaderScene } from './Engine/DynamicLoader/DynamicLoaderScene'
-import { PopUpManager } from './Engine/UI/PopUpManager';
+import { UnitFrame } from './Engine/UI/UnitFrame';
+import { UIScene } from './Engine/UI/UIScene';
 
 export class InitPhaser 
 {
@@ -24,13 +25,15 @@ export class InitPhaser
             parent: 'GameFrame',
             render: {
                 pixelArt: true,
-                roundPixels: true
+                roundPixels: true,
+                antialias: false,
+                antialiasGL: false,
             }
         }
 
         this.gameRef = new Phaser.Game(config);
         this.gameRef.scene.add('DynamicLoaderScene', DynamicLoaderScene.getSingleton(), true);
-        this.gameRef.scene.add('PopupManagerScene', PopUpManager.getSingleton(), true);
+        this.gameRef.scene.add('UIScene', UIScene.getSingleton(), true);
     }
 }
 

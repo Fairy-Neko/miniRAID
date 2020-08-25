@@ -2,10 +2,10 @@
 fileVersion=1
 
 # font settings
-fontName=Zpix
+fontName=04b03
 fontFile=
 charSet=0
-fontSize=12
+fontSize=8
 aa=1
 scaleH=100
 useSmoothing=0
@@ -27,34 +27,33 @@ paddingDown=0
 paddingUp=0
 paddingRight=0
 paddingLeft=0
-spacingHoriz=0
-spacingVert=0
+spacingHoriz=1
+spacingVert=1
 useFixedHeight=0
 forceZero=0
 widthPaddingFactor=0.00
 
 # output file
-outWidth=2048
-outHeight=2048
+outWidth=128
+outHeight=128
 outBitDepth=32
 fontDescFormat=1
 fourChnlPacked=0
 textureFormat=png
 textureCompression=0
-alphaChnl=1
-redChnl=0
-greenChnl=0
-blueChnl=0
+alphaChnl=0
+redChnl=4
+greenChnl=4
+blueChnl=4
 invA=0
 invR=0
 invG=0
 invB=0
 
 # outline
-outlineThickness=1
+outlineThickness=0
 
 # selected chars
-chars=20002-20010,20017-20028,20036-20045,20049-20060,20065-20076,20083-20090,20099-20102,20106-20107
-
+chars=32-126,160
 
 # imported icon images

@@ -41,15 +41,15 @@ export class DynamicLoaderScene extends DraggableScene
     preload()
     {
         this.load.json('assetList', './assets/assetList.json');
-        this.load.bitmapFont('simsun', './assets/fonts/simsun_outlined_0.png', './assets/fonts/simsun_outlined.fnt');
+        this.load.bitmapFont('smallPx', './assets/fonts/smallPx_C_0.png', './assets/fonts/smallPx_C.fnt');
     }
 
     create()
     {
         super.create();
-        this.label = this.add.bitmapText(0, 0, 'simsun', 'Loading ... [100.0%]');
+        this.label = this.add.bitmapText(0, 0, 'smallPx', 'Loading ... [100.0%]');
         // this.label.setBackgroundColor('#000000');
-        // this.label.setFontFamily('smallPx, 宋体, SimSun, Consolas');
+        // this.label.setFontFamily('宋体, SimSun, Consolas');
         // this.label.setFontSize(12);
 
         this.assetList = this.cache.json.get('assetList');
@@ -107,7 +107,7 @@ export class DynamicLoaderScene extends DraggableScene
         {
             // this.label.setVisible(false);
             this.label.setVisible(true);
-            this.label.text = `(DEBUG MESSAGE) Dynamic loader idle ...\n动态加载器闲置中 | <- 只是试一下Unicode渲染x`;
+            this.label.text = `Dynamic loader idle ...`;
         }
 
         if (this.queue.length > 0)

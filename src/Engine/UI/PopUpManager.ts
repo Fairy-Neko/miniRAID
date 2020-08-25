@@ -4,6 +4,7 @@
  */
 
 import { GameData } from "../Core/GameData";
+import { UIScene } from "./UIScene";
 
 // import * as Phaser from 'phaser'
 
@@ -60,7 +61,7 @@ export class PopupText extends Phaser.GameObjects.BitmapText
     }
 }
 
-export class PopUpManager extends Phaser.Scene
+export class PopUpManager extends Phaser.GameObjects.Container
 {
     textList: Set<PopupText>;
     static instance: PopUpManager;
@@ -70,22 +71,21 @@ export class PopUpManager extends Phaser.Scene
     {
         if (!PopUpManager.instance)
         {
-            PopUpManager.instance = new PopUpManager({ key: 'PopupManagerScene' });
+            return undefined;
             console.log("registering Popup Manager...");
         }
         return PopUpManager.instance;
     }
 
-    preload()
+    static register(scene: Phaser.Scene, x: number = 0, y: number = 0): PopUpManager
     {
-        // this.load.bitmapFont('smallPx', './assets/fonts/smallPx_04b03_0.png', './assets/fonts/smallPx_04b03.fnt');
-        this.load.bitmapFont('smallPx', './assets/fonts/smallPx_C_0.png', './assets/fonts/smallPx_C.fnt');
-        this.load.bitmapFont('mediumPx', './assets/fonts/mediumPx_04b03_0.png', './assets/fonts/mediumPx_04b03.fnt');
-        this.load.bitmapFont('simsun_o', './assets/fonts/simsun_outlined_0.png', './assets/fonts/simsun_outlined.fnt');
+        PopUpManager.instance = new PopUpManager(scene, x, y);
+        return PopUpManager.instance;
     }
 
-    create()
+    constructor(scene: Phaser.Scene, x: number, y: number)
     {
+        super(scene, x, y);
         this.textList = new Set<PopupText>();
         this.loaded = true;
     }
@@ -104,14 +104,14 @@ export class PopUpManager extends Phaser.Scene
     {
         if (this.loaded)
         {
-            let txt = new PopupText(this, posX, posY, text, color.color, time, velX, velY, accX, accY);
-            this.add.existing(txt);
+            let txt = new PopupText(this.scene, posX, posY, text, color.color, time, velX, velY, accX, accY);
+            this.add(txt);
         }
     }
 
-    update(time: number, dt: number)
+    preUpdate(time: number, dt: number)
     {
-        this.children.each(
+        this.each(
             (item: Phaser.GameObjects.GameObject) => 
             {
                 item.update(dt / 1000.0);
@@ -124,13 +124,5 @@ export class PopUpManager extends Phaser.Scene
                 }
             }
         );
-        // for(let txt of this.textList)
-        // {
-        //     txt.update(dt);
-        //     if(txt.dead)
-        //     {
-        //         this.textList.delete(txt);
-        //     }
-        // }
     }
 }

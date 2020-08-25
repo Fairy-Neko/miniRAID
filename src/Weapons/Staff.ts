@@ -25,7 +25,7 @@ export class CometWand extends Weapon
         this.targetCount = 4;
         this.activeRange = 2000;
 
-        this.manaCost = 4;
+        this.manaCost = 10;
 
         this.weaponGaugeMax = 25;
         this.weaponGaugeIncreasement = function (mob: Mob) { return mob.mobData.baseStats.mag; };
