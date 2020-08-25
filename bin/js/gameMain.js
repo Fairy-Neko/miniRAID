@@ -499,7 +499,7 @@ define("Engine/DynamicLoader/dPhysSprite", ["require", "exports", "Engine/Dynami
             return [];
         }
         onLoadComplete(key, type, fileObj) {
-            if (key == this.textureToLoad) {
+            if (key == this.textureToLoad && this.scene) {
                 this.loadComplete = true;
                 this.setTexture(this.textureToLoad, this.frameToLoad);
                 // Play cached animation

@@ -76,7 +76,7 @@ export class dPhysSprite extends Phaser.Physics.Arcade.Sprite implements Dynamic
 
     onLoadComplete(key: string, type: string, fileObj: any): void
     {
-        if (key == this.textureToLoad)
+        if (key == this.textureToLoad && this.scene)
         {
             this.loadComplete = true;
             this.setTexture(this.textureToLoad, this.frameToLoad);
