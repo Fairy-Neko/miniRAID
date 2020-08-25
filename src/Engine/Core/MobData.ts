@@ -295,9 +295,19 @@ export class MobData extends EventSystem.EventElement
         this.parentMob = undefined;
     }
 
-    switchWeapon(): void
+    canSwitchWeapon(): boolean
     {
-        this.shouldSwitchWeapon = true;
+        return typeof this.anotherWeapon !== "undefined"
+    }
+
+    switchWeapon(): boolean
+    {
+        if (this.canSwitchWeapon())
+        {
+            this.shouldSwitchWeapon = true;
+            return true;
+        }
+        return false;
     }
 
     getPercentage(parameter: number): number
@@ -346,7 +356,7 @@ export class MobData extends EventSystem.EventElement
         {
             this.shouldSwitchWeapon = false;
 
-            if (typeof this.anotherWeapon !== "undefined")
+            if (this.canSwitchWeapon())
             {
                 var tmp = this.currentWeapon;
                 this.currentWeapon = this.anotherWeapon;
@@ -446,20 +456,29 @@ export class MobData extends EventSystem.EventElement
         }
     }
 
-    addBuff(buff: Buff)
+    addBuff(buff: Buff): boolean
     {
+        let flag: boolean = true;
         this.addListener(buff, buff.source, (arg: MobListener): boolean =>
         {
+            flag = false;
             if (arg instanceof Buff)
             {
                 if (arg.stackable === true)
                 {
-                    arg.addStack();
+                    flag = arg.addStack(buff.timeRemain[0]);
                     // arg.emit('added', undefined, this, arg.source);
                 }
+
+                buff.discard();
+                buff.timeRemain = [];
+                buff.stacks = 0;
+                buff.isOver = true;
             }
             return false;
         });
+
+        return flag;
     }
 
     hasBuff(buff: Buff): boolean
@@ -588,7 +607,7 @@ export class MobData extends EventSystem.EventElement
 
             attackPower: {
                 physical: 0,
-                elemental: 0,
+                elemental: 100,
                 pure: 0, // It should always be 0
 
                 slash: 0,
@@ -615,7 +634,7 @@ export class MobData extends EventSystem.EventElement
             avoid: 0,
 
             // Percentage
-            crit: 0, // Should crit have types? e.g. physical elemental etc.
+            crit: 10, // Should crit have types? e.g. physical elemental etc.
             antiCrit: 0,
 
             // Parry for shield should calculate inside the shield itself when onReceiveDamage().

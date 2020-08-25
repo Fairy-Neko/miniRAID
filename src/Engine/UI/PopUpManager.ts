@@ -5,6 +5,7 @@
 
 import { GameData } from "../Core/GameData";
 import { UIScene } from "./UIScene";
+import { mRTypes } from "../Core/mRTypes";
 
 // import * as Phaser from 'phaser'
 
@@ -23,9 +24,17 @@ export class PopupText extends Phaser.GameObjects.BitmapText
         color: number,
         time: number = 1.0,
         velX: number = -64, velY: number = -256,
-        accX: number = 0.0, accY: number = 512.0)
+        accX: number = 0.0, accY: number = 512.0, isBuff: boolean = false)
     {
-        super(scene, x, y, GameData.popUpSmallFont ? 'smallPx' : 'mediumPx', text);
+        if (isBuff)
+        {
+            let font = GameData.popUpBuffLanguage == mRTypes.Languages.ENG ? (GameData.popUpSmallFont ? 'smallPx' : 'mediumPx') : 'simsun_o';
+            super(scene, x, y, font, text);
+        }
+        else
+        {
+            super(scene, x, y, GameData.popUpSmallFont ? 'smallPx' : 'mediumPx', text);
+        }
 
         this.time = time * 1.5;
         this.velX = velX;
@@ -87,6 +96,10 @@ export class PopUpManager extends Phaser.GameObjects.Container
     {
         super(scene, x, y);
         this.textList = new Set<PopupText>();
+    }
+
+    hasLoaded()
+    {
         this.loaded = true;
     }
 
@@ -105,6 +118,25 @@ export class PopUpManager extends Phaser.GameObjects.Container
         if (this.loaded)
         {
             let txt = new PopupText(this.scene, posX, posY, text, color.color, time, velX, velY, accX, accY);
+            this.add(txt);
+        }
+    }
+
+    addText_nonDigit(
+        text: string,
+        posX: number = 100,
+        posY: number = 100,
+        color: Phaser.Display.Color = new Phaser.Display.Color(255, 255, 255, 255),
+        time: number = 1.0,
+        velX: number = -64,
+        velY: number = -256, // jumping speed
+        accX: number = 0.0,   // gravity
+        accY: number = 512,// gravity
+    )
+    {
+        if (this.loaded)
+        {
+            let txt = new PopupText(this.scene, posX, posY, text, color.color, time, velX, velY, accX, accY, true);
             this.add(txt);
         }
     }

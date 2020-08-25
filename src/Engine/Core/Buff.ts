@@ -6,14 +6,16 @@ import { MobListener, MobListenerType } from "./MobListener";
 import { MobData } from "./MobData";
 import { Mob } from "../GameObjects/Mob";
 import { PopUpManager } from "../UI/PopUpManager";
+import { GameData } from "./GameData";
+import { _ } from "../UI/Localization";
 
 export class Buff extends MobListener
 {
     name: string;
 
     countTime: boolean;
-    timeMax: number;
-    timeRemain: number;
+    // timeMax: number;
+    timeRemain: number[];
 
     stacks: integer;
     stackable: boolean;
@@ -22,7 +24,7 @@ export class Buff extends MobListener
 
     iconId: integer;
     color: Phaser.Display.Color; // ?
-    popupName: string;
+    popupName: { [index: string]: string } | string;
     popupColor: Phaser.Display.Color;
 
     source: MobData;
@@ -42,10 +44,10 @@ export class Buff extends MobListener
         this.countTime = ((settings.countTime === undefined) ? true : settings.countTime);
 
         //time in seconds, indicates the durtion of buff
-        this.timeMax = settings.time || 1.0;
+        // this.timeMax = settings.time || 1.0;
 
         //time in seconds, will automatically reduce by time
-        this.timeRemain = settings.time || this.timeMax;
+        this.timeRemain = [settings.time];// || this.timeMax;
 
         //Is the buff over? (should be removed from buff list)
         this.isOver = false;
@@ -77,8 +79,8 @@ export class Buff extends MobListener
     {
         let popUpPos = mob.getTopCenter();
 
-        PopUpManager.getSingleton().addText(
-            this.popupName,
+        PopUpManager.getSingleton().addText_nonDigit(
+            (typeof this.popupName === 'string') ? _(this.popupName) : this.popupName[GameData.popUpBuffLanguage],
             popUpPos.x, popUpPos.y,
             this.popupColor,
             1.0, 0, -64, 0, 64
@@ -91,8 +93,19 @@ export class Buff extends MobListener
 
         if (this.countTime == true)
         {
-            this.timeRemain -= dt;
-            if (this.timeRemain < 0)
+            for (let i = 0; i < this.timeRemain.length; i++)
+            {
+                this.timeRemain[i] -= dt;
+                if (this.timeRemain[i] <= 0)
+                {
+                    this.stacks -= 1;
+                }
+            }
+
+            this.timeRemain = this.timeRemain.filter((v: number) => (v > 0));
+
+            // console.log(this.stacks);
+            if (this.stacks == 0)
             {
                 this.isOver = true;
             }
@@ -107,7 +120,19 @@ export class Buff extends MobListener
     /**
      * Addes one stack of itself.
      */
-    addStack()
+    addStack(time: number): boolean
     {
+        if (this.stacks < this.maxStack)
+        {
+            this.stacks += 1;
+            this.timeRemain.push(time);
+            return true;
+        }
+        return false;
+    }
+
+    keyFn(): string
+    {
+        return `${this.name}-${this.source.name}`;
     }
 }

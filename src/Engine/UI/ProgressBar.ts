@@ -84,7 +84,7 @@ export class ProgressBar extends Phaser.GameObjects.Container
 
         this.scene.tweens.add({
             targets: this.fill,
-            width: this.fillMaxLength * (value / max),
+            width: this.fillMaxLength * Math.max(0.0, Math.min(1.0, value / max)),
             yoyo: false,
             repeat: 0,
             duration: 100,

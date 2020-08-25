@@ -29,7 +29,8 @@ export namespace BattleData
         player: MobData,
     }
 
-    export type MonitorOutput = [{ number: number; length: number; slices: [number, number]; colors: [string, string]; player: MobData }];
+    export type MonitorOutputRow = { number: number; length: number; slices: [number, number]; colors: [number, number]; player: MobData };
+    export type MonitorOutput = [MonitorOutputRow];
 }
 
 export class BattleMonitor
@@ -171,8 +172,8 @@ export class BattleMonitor
                     this.damageDict[player].normal,
                     this.damageDict[player].crit],
                 colors: [
-                    "#ffc477",
-                    "#ff7777"],
+                    0xffc477,
+                    0xff7777],
                 player: this.damageDict[player].player
             });
         }
@@ -204,8 +205,8 @@ export class BattleMonitor
                     this.healDict[player].real,
                     this.healDict[player].over],
                 colors: [
-                    "#00ff00",
-                    "#ff0000"],
+                    0x00ff00,
+                    0xff0000],
                 player: this.healDict[player].player
             });
         }

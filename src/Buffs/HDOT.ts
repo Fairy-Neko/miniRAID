@@ -51,7 +51,7 @@ export class HDOT extends Buff
                 'source': this.source.parentMob,
                 'target': mob.parentMob,
                 'type': this.vType,
-                'value': getRandomInt(this.vMin, this.vMax),
+                'value': getRandomInt(this.vMin, this.vMax) * this.stacks,
                 'spell': { 'name': this.name, 'flags': new Set([SpellFlags.overTime]) },
                 'popUp': true,
             });

@@ -49,7 +49,7 @@ export class CometWand extends Weapon
                 'info': { 'name': this.name, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },
                 'source': source,
                 'target': targetMob,
-                'speed': 150,
+                'speed': 450,
                 'onMobHit': (self: Spell, mob: Mob) => { self.dieAfter(self.HealDmg, [mob, getRandomInt(6, 18), GameData.Elements.ice], mob); },
                 // 'onMobHit': (self: Spell, mob: Mob) =>
                 // {
@@ -72,14 +72,14 @@ export class CometWand extends Weapon
                 'info': { 'name': this.name, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },
                 'source': source,
                 'target': targetMob,
-                'speed': 250,
+                'speed': 600,
                 'onMobHit': (self: Spell, mob: Mob) =>
                 {
                     self.dieAfter(
                         () => AoE((m: Mob) =>
                         {
                             // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
-                            m.receiveBuff(source, new HDOT({ 'source': source.mobData, 'countTime': true, 'popupColor': GameData.ElementColors[GameData.Elements.fire], 'popupName': 'Burnt' }, GameData.Elements.fire, 5, 8, 0.2));
+                            m.receiveBuff(source, new HDOT({ 'source': source.mobData, 'countTime': true, 'popupColor': GameData.ElementColors[GameData.Elements.fire], 'popupName': 'buff_burnt', 'time': 15.0, 'stackable': true, 'maxStack': 10 }, GameData.Elements.fire, 20, 30, 0.5));
                         }, self.getPosition(), 100, self.targeting), [], mob);
                 },
                 'color': Phaser.Display.Color.HexStringToColor("#ff3333"),

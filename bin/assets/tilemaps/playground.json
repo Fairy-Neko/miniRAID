@@ -378,7 +378,7 @@
                         {
                          "name":"agentType",
                          "type":"string",
-                         "value":"keepMoving"
+                         "value":"None"
                         }, 
                         {
                          "name":"framewidth",
@@ -388,7 +388,7 @@
                         {
                          "name":"health",
                          "type":"float",
-                         "value":1000
+                         "value":10000000
                         }, 
                         {
                          "name":"image",
@@ -415,7 +415,7 @@
                         {
                          "name":"agentType",
                          "type":"string",
-                         "value":"keepMoving"
+                         "value":"None"
                         }, 
                         {
                          "name":"framewidth",
@@ -425,7 +425,7 @@
                         {
                          "name":"health",
                          "type":"float",
-                         "value":1000
+                         "value":10000000
                         }, 
                         {
                          "name":"image",
@@ -452,7 +452,7 @@
                         {
                          "name":"agentType",
                          "type":"string",
-                         "value":"keepMoving"
+                         "value":"None"
                         }, 
                         {
                          "name":"framewidth",
@@ -462,7 +462,7 @@
                         {
                          "name":"health",
                          "type":"float",
-                         "value":1000
+                         "value":10000000
                         }, 
                         {
                          "name":"image",
@@ -489,7 +489,7 @@
                         {
                          "name":"agentType",
                          "type":"string",
-                         "value":"keepMoving"
+                         "value":"None"
                         }, 
                         {
                          "name":"framewidth",
@@ -499,7 +499,7 @@
                         {
                          "name":"health",
                          "type":"float",
-                         "value":1000
+                         "value":10000000
                         }, 
                         {
                          "name":"image",
@@ -526,7 +526,7 @@
                         {
                          "name":"agentType",
                          "type":"string",
-                         "value":"keepMoving"
+                         "value":"None"
                         }, 
                         {
                          "name":"framewidth",
@@ -536,7 +536,7 @@
                         {
                          "name":"health",
                          "type":"float",
-                         "value":1000
+                         "value":10000000
                         }, 
                         {
                          "name":"image",
@@ -563,7 +563,7 @@
                         {
                          "name":"agentType",
                          "type":"string",
-                         "value":"keepMoving"
+                         "value":"None"
                         }, 
                         {
                          "name":"framewidth",
@@ -573,7 +573,7 @@
                         {
                          "name":"health",
                          "type":"float",
-                         "value":1000
+                         "value":10000000
                         }, 
                         {
                          "name":"image",
@@ -600,7 +600,7 @@
                         {
                          "name":"agentType",
                          "type":"string",
-                         "value":"keepMoving"
+                         "value":"None"
                         }, 
                         {
                          "name":"framewidth",
@@ -610,7 +610,7 @@
                         {
                          "name":"health",
                          "type":"float",
-                         "value":1000
+                         "value":10000000
                         }, 
                         {
                          "name":"image",
@@ -637,7 +637,7 @@
                         {
                          "name":"agentType",
                          "type":"string",
-                         "value":"keepMoving"
+                         "value":"None"
                         }, 
                         {
                          "name":"framewidth",
@@ -647,7 +647,7 @@
                         {
                          "name":"health",
                          "type":"float",
-                         "value":1000
+                         "value":10000000
                         }, 
                         {
                          "name":"image",

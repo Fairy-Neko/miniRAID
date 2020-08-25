@@ -147,72 +147,72 @@
   </object>
   <object id="178" name="testMob" type="mob" x="386.986" y="150.584" width="32" height="32" rotation="90">
    <properties>
-    <property name="agentType" value="keepMoving"/>
+    <property name="agentType" value="None"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="health" type="float" value="1000"/>
+    <property name="health" type="float" value="1e+07"/>
     <property name="image" value="gripe_run_right"/>
     <property name="vit" type="float" value="10"/>
    </properties>
   </object>
   <object id="181" name="testMob" type="mob" x="293.282" y="175.081" width="32" height="32" rotation="90">
    <properties>
-    <property name="agentType" value="keepMoving"/>
+    <property name="agentType" value="None"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="health" type="float" value="1000"/>
+    <property name="health" type="float" value="1e+07"/>
     <property name="image" value="gripe_run_right"/>
     <property name="vit" type="float" value="10"/>
    </properties>
   </object>
   <object id="182" name="testMob" type="mob" x="341.053" y="163.445" width="32" height="32" rotation="90">
    <properties>
-    <property name="agentType" value="keepMoving"/>
+    <property name="agentType" value="None"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="health" type="float" value="1000"/>
+    <property name="health" type="float" value="1e+07"/>
     <property name="image" value="gripe_run_right"/>
     <property name="vit" type="float" value="10"/>
    </properties>
   </object>
   <object id="183" name="testMob" type="mob" x="246.737" y="196.517" width="32" height="32" rotation="90">
    <properties>
-    <property name="agentType" value="keepMoving"/>
+    <property name="agentType" value="None"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="health" type="float" value="1000"/>
+    <property name="health" type="float" value="1e+07"/>
     <property name="image" value="gripe_run_right"/>
     <property name="vit" type="float" value="10"/>
    </properties>
   </object>
   <object id="184" name="testMob" type="mob" x="203.867" y="225.914" width="32" height="32" rotation="90">
    <properties>
-    <property name="agentType" value="keepMoving"/>
+    <property name="agentType" value="None"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="health" type="float" value="1000"/>
+    <property name="health" type="float" value="1e+07"/>
     <property name="image" value="gripe_run_right"/>
     <property name="vit" type="float" value="10"/>
    </properties>
   </object>
   <object id="185" name="testMob" type="mob" x="156.708" y="257.761" width="32" height="32" rotation="90">
    <properties>
-    <property name="agentType" value="keepMoving"/>
+    <property name="agentType" value="None"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="health" type="float" value="1000"/>
+    <property name="health" type="float" value="1e+07"/>
     <property name="image" value="gripe_run_right"/>
     <property name="vit" type="float" value="10"/>
    </properties>
   </object>
   <object id="186" name="testMob" type="mob" x="110.775" y="277.971" width="32" height="32" rotation="90">
    <properties>
-    <property name="agentType" value="keepMoving"/>
+    <property name="agentType" value="None"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="health" type="float" value="1000"/>
+    <property name="health" type="float" value="1e+07"/>
     <property name="image" value="gripe_run_right"/>
     <property name="vit" type="float" value="10"/>
    </properties>
   </object>
   <object id="187" name="testMob" type="mob" x="69.1292" y="307.369" width="32" height="32" rotation="90">
    <properties>
-    <property name="agentType" value="keepMoving"/>
+    <property name="agentType" value="None"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="health" type="float" value="1000"/>
+    <property name="health" type="float" value="1e+07"/>
     <property name="image" value="gripe_run_right"/>
     <property name="vit" type="float" value="10"/>
    </properties>

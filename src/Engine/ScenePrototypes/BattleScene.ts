@@ -33,7 +33,7 @@ export class BattleScene extends Phaser.Scene
     tilesetImgPrefix: string = 'assets/tilemaps/tiles/';
 
     mapReady: boolean;
-    loadingScreen: Phaser.GameObjects.Image;
+    loadingScreen: Phaser.GameObjects.Rectangle;
     battleMonitor: BattleMonitor;
 
     constructor(debug: boolean = false, mapToLoad = "playground") 
@@ -98,7 +98,8 @@ export class BattleScene extends Phaser.Scene
         this.physics.add.overlap(this.everyoneTargetingObjectGroup, this.worldGroup, this.spellHitWorldCallback);
 
         // Prepare for load the tilemap
-        this.loadingScreen = this.add.image(512, 640 / 2, 'loadscreen_BG');
+        this.loadingScreen = this.add.rectangle(0, 0, 1024, 680, 0x000000);
+        this.loadingScreen.setOrigin(0);
         this.loadingScreen.displayWidth = 1024;
         this.loadingScreen.displayHeight = 640;
         this.loadingScreen.setDepth(100);

@@ -167,10 +167,10 @@ export class Mob extends dPhysSprite
 
             // Call backend to add the buff.
             // Actually, for the backend, a buff is same as a plain listener (this.data.addListener(listener)).
-            this.mobData.addBuff(buff);
+            let result = this.mobData.addBuff(buff);
 
             // Initial popUp
-            if (popUp == true)
+            if (popUp == true && result)
             {
                 buff.popUp(this);
             }
@@ -423,8 +423,12 @@ export class Mob extends dPhysSprite
             // me.game.world.removeChild(this.HPBar);
             // game.units.removeEnemy(this);
             // me.game.world.removeChild(this);
-            this.agent.parentMob = undefined;
-            this.agent = undefined;
+            if (this.agent)
+            {
+                this.agent.parentMob = undefined;
+                this.agent = undefined;
+            }
+            UnitManager.getCurrent().removeEnemy(this);
             this.destroy();
         }
     }

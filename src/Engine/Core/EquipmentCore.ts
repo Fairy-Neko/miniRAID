@@ -49,6 +49,8 @@ export class Equipable extends MobListener implements Item
     itemID: string;
     itemData: mRTypes.ItemData;
 
+    activated: boolean;
+
     constructor(itemID: string)
     {
         super();

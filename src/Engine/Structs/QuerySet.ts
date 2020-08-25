@@ -27,13 +27,16 @@ export class QuerySet<T>
         if (key)
         {
             this.keyFn = key;
-            this.data = new Map<string, T>();
         }
         else
         {
-            this.keyFn = undefined;
-            this.data = new Set<T>();
+            this.keyFn = (a: T) =>
+            {
+                if ((<any>a).keyFn) { return (<any>a).keyFn(); }
+                else { return a.toString(); }
+            };
         }
+        this.data = new Map<string, T>();
     }
 
     /**

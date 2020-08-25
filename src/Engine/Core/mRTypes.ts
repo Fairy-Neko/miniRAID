@@ -28,7 +28,7 @@ export namespace mRTypes
 
             iconId?: integer;
             color?: Phaser.Display.Color;
-            popupName?: string;
+            popupName?: { [index: string]: string } | string;
             popupColor?: Phaser.Display.Color;
 
             source?: MobData.MobData;
@@ -302,5 +302,12 @@ export namespace mRTypes
     export interface ItemDataStorage
     {
         [index: string]: ItemData;
+    }
+
+    export enum Languages
+    {
+        CHS = 'zh-cn',
+        ENG = 'en-us',
+        JPN = 'jp-ja',
     }
 }

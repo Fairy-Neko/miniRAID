@@ -7,6 +7,9 @@ import { PopUpManager } from "./PopUpManager";
 import { UnitFrame } from "./UnitFrame";
 import { UnitManager } from "../Core/UnitManager";
 import { Mob } from "../GameObjects/Mob";
+import { Localization, _ } from "./Localization";
+import { MonitorFrame } from "./MonitorFrame";
+import { BattleMonitor } from "../Core/BattleMonitor";
 
 export class UIScene extends Phaser.Scene
 {
@@ -33,13 +36,28 @@ export class UIScene extends Phaser.Scene
         this.load.bitmapFont('simsun', './assets/fonts/simsun_0.png', './assets/fonts/simsun.fnt');
         this.load.bitmapFont('simsun_o', './assets/fonts/simsun_outlined_0.png', './assets/fonts/simsun_outlined.fnt');
 
+        this.load.json('locals', './assets/locals.json');
+
         this.add.existing(PopUpManager.register(this));
     }
 
     create()
     {
         this.loaded = true;
+        Localization.setData(this.cache.json.get('locals'));
         this.initUnitFrames();
+        PopUpManager.getSingleton().hasLoaded();
+
+        // this.add.rectangle(750 + 61, 520 + 8, 122, 16, 0x948779);
+        let bt = this.add.bitmapText(755, 532, _("UIFont"), _("Damage Done (DPS)"));
+        bt.setOrigin(0, 1);
+
+        // this.add.rectangle(880 + 61, 520 + 8, 122, 16, 0x948779);
+        bt = this.add.bitmapText(885, 532, _("UIFont"), _("Healing Done (HPS)"));
+        bt.setOrigin(0, 1);
+
+        this.add.existing(new MonitorFrame(this, 750, 536, () => { return BattleMonitor.getSingleton().getDamageList(); }, 122, 114));
+        this.add.existing(new MonitorFrame(this, 880, 536, () => { return BattleMonitor.getSingleton().getHealList(); }, 122, 114));
     }
 
     clearUnitFrame()

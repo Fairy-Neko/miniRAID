@@ -15,6 +15,7 @@ import { ObjectList } from "./Lists/ObjectList";
 import { AgentList } from "./Lists/AgentList";
 import { GameData } from "./Engine/Core/GameData";
 import { HDOT } from "./Buffs/HDOT";
+import { _, Localization } from "./Engine/UI/Localization";
 
 export class TestScene extends BattleScene
 {
@@ -44,12 +45,14 @@ export class TestScene extends BattleScene
         this.load.spritesheet('elf', 'assets/img/spritesheets/forestElfMyst.png', { frameWidth: 32, frameHeight: 32, endFrame: 3 });
 
         this.load.json('itemData', 'assets/dataSheets/Items.json');
+        this.load.json('locals', './assets/locals.json');
     }
 
     create()
     {
         // Create the ItemManager
         ItemManager.setData(this.cache.json.get('itemData'), ItemList);
+        Localization.setData(this.cache.json.get('locals'));
 
         super.create();
     }
@@ -71,7 +74,7 @@ export class TestScene extends BattleScene
                 'idleAnim': 'move',
                 'moveAnim': 'move',
                 'deadAnim': 'move',
-                'backendData': new MobData({ name: 'testGirl' + i, 'isPlayer': true, 'attackSpeed': 40 - 5 * i, 'mag': 13 - 2 * i, 'manaRegen': 2 + 6 * i }),
+                'backendData': new MobData({ name: _('testGirl') + i, 'isPlayer': true, 'attackSpeed': 40 - 5 * i, 'mag': 13 - 1 * i, 'manaRegen': 4 + 1 * i }),
                 'agent': PlayerAgents.Simple,
             });
             this.girl.mobData.battleStats.attackPower.ice = 10;
@@ -79,6 +82,13 @@ export class TestScene extends BattleScene
             this.girl.mobData.battleStats.crit = 5.0;
             this.girl.mobData.weaponRight = new CometWand();
             this.girl.mobData.currentWeapon = this.girl.mobData.weaponRight;
+            this.girl.mobData.currentWeapon.activated = true;
+
+            this.girl.mobData.weaponLeft = new CometWand();
+            this.girl.mobData.weaponLeft.baseAttackSpeed = 0.05;
+            this.girl.mobData.weaponLeft.manaCost = 0;
+            this.girl.mobData.anotherWeapon = this.girl.mobData.weaponLeft;
+
             this.girl.mobData.addListener(this.girl.mobData.weaponRight);
             this.girl.receiveBuff(this.girl, new HDOT({ 'source': this.girl.mobData, 'countTime': false, 'name': 'GodHeal' }, GameData.Elements.heal, 10, 18, 1.66));
             this.addMob(this.girl);

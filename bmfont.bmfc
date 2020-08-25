@@ -2,7 +2,7 @@
 fileVersion=1
 
 # font settings
-fontName=04b03
+fontName=pixelmix
 fontFile=
 charSet=0
 fontSize=8
@@ -54,6 +54,6 @@ invB=0
 outlineThickness=0
 
 # selected chars
-chars=32-126,160
+chars=40-41,44,46,48-57
 
 # imported icon images
