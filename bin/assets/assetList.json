@@ -54,5 +54,9 @@
     "img_iced_fx": {
         "url": "./assets/img/iced_fx.png",
         "type": "image"
+    },
+    "img_weapon_icon_test": {
+        "url": "./assets/img/weapon_icons/test.png",
+        "type": "image"
     }
 }

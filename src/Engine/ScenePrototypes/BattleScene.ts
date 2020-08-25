@@ -8,6 +8,7 @@ import { Spell } from '../GameObjects/Spell';
 import { DynamicLoaderScene } from '../DynamicLoader/DynamicLoaderScene';
 import { ObjectPopulator } from '../Core/ObjectPopulator';
 import { BattleMonitor } from '../Core/BattleMonitor';
+import { UIScene } from '../UI/UIScene';
 
 export class BattleScene extends Phaser.Scene 
 {
@@ -110,7 +111,8 @@ export class BattleScene extends Phaser.Scene
             this.load.image(tileset.name, path);
             console.log(path);
         }
-        this.load.on('complete', this.loadComplete.bind(this));
+
+        this.load.on('complete', () => { this.loadComplete(); UIScene.getSingleton().resetPlayers(); });
         this.load.start();
     }
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.2" orientation="orthogonal" renderorder="right-down" width="32" height="18" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="188">
+<map version="1.4" tiledversion="1.4.2" orientation="orthogonal" renderorder="right-down" width="32" height="16" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="188">
  <editorsettings>
   <export target="playground.json" format="json"/>
  </editorsettings>
@@ -9,10 +9,8 @@
  <tileset firstgid="442" name="object- layer" tilewidth="32" tileheight="32" tilecount="84" columns="14">
   <image source="../../../../../Sharefolder/Research_Projs_Games/PhaserPlayground/bin/assets/tilemaps/tiles/object- layer.png" width="477" height="219"/>
  </tileset>
- <layer id="1" name="water" width="32" height="18">
+ <layer id="1" name="water" width="32" height="16">
   <data encoding="csv">
-52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,
-52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,
 52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,
 52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,
 52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,
@@ -31,7 +29,7 @@
 52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52
 </data>
  </layer>
- <layer id="2" name="ground" width="32" height="18">
+ <layer id="2" name="ground" width="32" height="16">
   <data encoding="csv">
 44,7,8,8,8,8,8,8,9,45,44,45,44,45,44,196,197,198,44,45,44,45,44,45,44,45,44,45,44,45,44,45,
 7,32,29,29,29,29,29,29,30,66,65,66,65,66,65,196,197,198,65,66,65,66,65,66,65,66,65,66,65,73,74,66,
@@ -48,12 +46,10 @@
 44,45,44,44,45,45,196,197,197,197,197,197,197,197,197,197,197,197,197,197,197,197,197,197,197,198,44,65,66,112,129,114,
 65,66,65,65,66,45,196,197,197,197,197,197,197,197,197,197,197,197,197,197,197,197,197,197,197,198,44,65,66,112,129,114,
 44,45,44,65,66,66,217,218,218,218,218,218,218,218,218,218,218,218,218,218,218,218,218,218,218,219,65,65,66,112,129,114,
-65,66,65,66,65,66,65,66,65,66,65,66,65,66,65,66,65,66,65,66,65,66,65,66,65,66,65,91,92,137,115,95,
-44,45,44,45,44,45,44,45,44,45,44,45,44,45,44,45,73,92,93,45,44,45,44,45,91,92,92,115,134,134,95,45,
-65,66,65,66,65,66,65,66,65,66,65,66,65,66,65,66,94,116,136,92,92,92,92,92,137,115,134,135,65,66,65,66
+65,66,65,66,65,66,65,66,65,66,65,66,65,66,65,66,65,66,65,66,65,66,65,66,65,66,65,91,92,137,115,95
 </data>
  </layer>
- <layer id="3" name="object" width="32" height="18">
+ <layer id="3" name="object" width="32" height="16">
   <data encoding="csv">
 482,0,0,0,0,0,0,0,0,0,0,0,0,0,0,468,468,468,0,0,0,0,0,0,0,0,0,0,452,452,452,482,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,480,0,0,0,467,0,0,0,0,0,0,0,0,0,466,466,466,0,
@@ -70,9 +66,7 @@
 0,467,0,0,0,0,487,488,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,491,492,0,0,0,0,0,0,
 0,0,0,0,0,0,501,502,503,0,0,0,0,0,0,0,0,0,0,0,0,0,0,504,505,506,0,0,0,0,0,0,
 0,0,0,0,0,0,515,516,517,0,0,0,0,0,0,0,0,0,0,0,0,0,0,518,519,520,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,467,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,467,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,467,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
  <objectgroup id="4" name="entities">
@@ -160,7 +154,7 @@
     <property name="vit" type="float" value="10"/>
    </properties>
   </object>
-  <object id="181" name="testMob" type="mob" x="292.057" y="200.191" width="32" height="32" rotation="90">
+  <object id="181" name="testMob" type="mob" x="293.282" y="175.081" width="32" height="32" rotation="90">
    <properties>
     <property name="agentType" value="keepMoving"/>
     <property name="framewidth" type="int" value="32"/>
@@ -169,7 +163,7 @@
     <property name="vit" type="float" value="10"/>
    </properties>
   </object>
-  <object id="182" name="testMob" type="mob" x="339.828" y="173.856" width="32" height="32" rotation="90">
+  <object id="182" name="testMob" type="mob" x="341.053" y="163.445" width="32" height="32" rotation="90">
    <properties>
     <property name="agentType" value="keepMoving"/>
     <property name="framewidth" type="int" value="32"/>
@@ -178,7 +172,7 @@
     <property name="vit" type="float" value="10"/>
    </properties>
   </object>
-  <object id="183" name="testMob" type="mob" x="245.512" y="233.876" width="32" height="32" rotation="90">
+  <object id="183" name="testMob" type="mob" x="246.737" y="196.517" width="32" height="32" rotation="90">
    <properties>
     <property name="agentType" value="keepMoving"/>
     <property name="framewidth" type="int" value="32"/>
@@ -187,7 +181,7 @@
     <property name="vit" type="float" value="10"/>
    </properties>
   </object>
-  <object id="184" name="testMob" type="mob" x="198.967" y="270.01" width="32" height="32" rotation="90">
+  <object id="184" name="testMob" type="mob" x="203.867" y="225.914" width="32" height="32" rotation="90">
    <properties>
     <property name="agentType" value="keepMoving"/>
     <property name="framewidth" type="int" value="32"/>
@@ -196,7 +190,7 @@
     <property name="vit" type="float" value="10"/>
    </properties>
   </object>
-  <object id="185" name="testMob" type="mob" x="154.258" y="310.431" width="32" height="32" rotation="90">
+  <object id="185" name="testMob" type="mob" x="156.708" y="257.761" width="32" height="32" rotation="90">
    <properties>
     <property name="agentType" value="keepMoving"/>
     <property name="framewidth" type="int" value="32"/>
@@ -205,7 +199,7 @@
     <property name="vit" type="float" value="10"/>
    </properties>
   </object>
-  <object id="186" name="testMob" type="mob" x="114.45" y="347.789" width="32" height="32" rotation="90">
+  <object id="186" name="testMob" type="mob" x="110.775" y="277.971" width="32" height="32" rotation="90">
    <properties>
     <property name="agentType" value="keepMoving"/>
     <property name="framewidth" type="int" value="32"/>
@@ -214,7 +208,7 @@
     <property name="vit" type="float" value="10"/>
    </properties>
   </object>
-  <object id="187" name="testMob" type="mob" x="70.9665" y="391.273" width="32" height="32" rotation="90">
+  <object id="187" name="testMob" type="mob" x="69.1292" y="307.369" width="32" height="32" rotation="90">
    <properties>
     <property name="agentType" value="keepMoving"/>
     <property name="framewidth" type="int" value="32"/>
@@ -227,7 +221,6 @@
  <objectgroup id="5" name="collision">
   <object id="8" x="-5" y="-12" width="1039.5" height="21"/>
   <object id="9" x="-18" y="-19.5" width="28.5" height="611"/>
-  <object id="10" x="-80" y="567" width="1140" height="30"/>
   <object id="11" x="1013.5" y="-34.5" width="51" height="680.5"/>
   <object id="20" x="196.167" y="71.6667" width="86" height="48.5"/>
   <object id="22" x="191.5" y="122.167" width="59" height="35"/>

@@ -64,10 +64,10 @@ export class TestScene extends BattleScene
 
         this.anims.create({ key: 'move', frames: this.anims.generateFrameNumbers('elf', { start: 0, end: 3, first: 0 }), frameRate: 8, repeat: -1 });
 
-        for (let i = 0; i < 3; i++)
+        for (let i = 0; i < 8; i++)
         {
             // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
-            this.girl = new Mob(this, 930, 220 + i * 100, 'sheet_forestelf_myst', {
+            this.girl = new Mob(this, 930, 220 + i * 30, 'sheet_forestelf_myst', {
                 'idleAnim': 'move',
                 'moveAnim': 'move',
                 'deadAnim': 'move',

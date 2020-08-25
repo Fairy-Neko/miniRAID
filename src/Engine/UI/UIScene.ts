@@ -5,11 +5,15 @@
 
 import { PopUpManager } from "./PopUpManager";
 import { UnitFrame } from "./UnitFrame";
+import { UnitManager } from "../Core/UnitManager";
+import { Mob } from "../GameObjects/Mob";
 
 export class UIScene extends Phaser.Scene
 {
     static instance: UIScene;
     loaded: boolean = false;
+    unitFrames: UnitFrame[] = [];
+    playerCache: Mob[];
 
     static getSingleton(): UIScene
     {
@@ -34,7 +38,42 @@ export class UIScene extends Phaser.Scene
 
     create()
     {
-        this.add.existing(new UnitFrame(this, 300, 300));
+        this.loaded = true;
+        this.initUnitFrames();
+    }
+
+    clearUnitFrame()
+    {
+        for (let u of this.unitFrames)
+        {
+            u.destroy();
+        }
+        this.unitFrames = [];
+    }
+
+    resetPlayers()
+    {
+        this.clearUnitFrame();
+
+        this.playerCache = Array.from(UnitManager.getCurrent().player.values());
+        if (this.loaded)
+        {
+            this.initUnitFrames();
+        }
+    }
+
+    initUnitFrames()
+    {
+        if (this.playerCache === undefined) { return; }
+        let cnt = 0;
+        for (let player of this.playerCache)
+        {
+            let tmp = new UnitFrame(this, 35 + (cnt % 4) * 180, 524 + Math.floor(cnt / 4) * 70, player);
+            // let tmp = new UnitFrame(this, 20, 20 + cnt * 70, player);
+            this.add.existing(tmp);
+            this.unitFrames.push(tmp);
+            cnt += 1;
+        }
     }
 
     update(time: number, dt: number)

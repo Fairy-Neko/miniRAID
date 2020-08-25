@@ -257,10 +257,10 @@ define("Engine/DynamicLoader/DynamicLoaderScene", ["require", "exports", "Engine
             this.pending = new Map();
             this.isLoading = false;
             this.pools = new Map();
-            this.screenX = 10;
-            this.screenY = 10;
-            this.sizeX = 800;
-            this.sizeY = 40;
+            this.screenX = 0;
+            this.screenY = 0;
+            this.sizeX = 1024;
+            this.sizeY = 640;
         }
         preload() {
             this.load.json('assetList', './assets/assetList.json');
@@ -268,7 +268,8 @@ define("Engine/DynamicLoader/DynamicLoaderScene", ["require", "exports", "Engine
         }
         create() {
             super.create();
-            this.label = this.add.bitmapText(0, 0, 'smallPx', 'Loading ... [100.0%]');
+            this.label = this.add.bitmapText(1014, 10, 'smallPx', 'Loading ... [100.0%]');
+            this.label.setOrigin(1, 0);
             // this.label.setBackgroundColor('#000000');
             // this.label.setFontFamily('宋体, SimSun, Consolas');
             // this.label.setFontSize(12);
@@ -885,9 +886,10 @@ define("Engine/UI/ProgressBar", ["require", "exports"], function (require, expor
         TextAlignment[TextAlignment["Right"] = 2] = "Right";
     })(TextAlignment = exports.TextAlignment || (exports.TextAlignment = {}));
     class ProgressBar extends Phaser.GameObjects.Container {
-        constructor(scene, x, y, fetchValue = undefined, width = 100, height = 10, border = 1, outlineColor = 0xffffff, bgColor = 0x20604f, fillColor = 0x1b813e, showText = true, fontKey = 'smallPx_HUD', align = TextAlignment.Left, textX = 0, textY = 0, textColor = 0xffffff) {
+        constructor(scene, x, y, fetchValue = undefined, width = 100, height = 10, border = 1, hasBG = true, outlineColor = 0xffffff, bgColor = 0x20604f, fillColor = 0x1b813e, showText = true, fontKey = 'smallPx_HUD', align = TextAlignment.Left, textX = 0, textY = 0, textColor = 0xffffff, getText = undefined) {
             super(scene, x, y);
             this.fetchFunc = fetchValue;
+            this.getText = getText;
             this.out = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, width, height, outlineColor);
             this.out.setOrigin(0);
             this.bg = new Phaser.GameObjects.Rectangle(this.scene, border, border, width - border * 2, height - border * 2, bgColor);
@@ -902,7 +904,9 @@ define("Engine/UI/ProgressBar", ["require", "exports"], function (require, expor
             if (border > 0) {
                 this.add(this.out);
             }
-            this.add(this.bg);
+            if (hasBG) {
+                this.add(this.bg);
+            }
             this.add(this.fill);
             if (showText) {
                 this.add(this.text);
@@ -929,7 +933,12 @@ define("Engine/UI/ProgressBar", ["require", "exports"], function (require, expor
                 repeat: 0,
                 duration: 100,
             });
-            this.text.text = value.toFixed(0) + "/" + max.toFixed(0);
+            if (this.getText) {
+                this.text.text = this.getText();
+            }
+            else {
+                this.text.text = value.toFixed(0) + "/" + max.toFixed(0);
+            }
         }
     }
     exports.ProgressBar = ProgressBar;
@@ -1353,18 +1362,45 @@ define("Engine/Core/UnitManager", ["require", "exports", "Engine/GameObjects/Mob
  * @packageDocumentation
  * @module UI
  */
-define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "Engine/Core/UnitManager"], function (require, exports, ProgressBar_1, UnitManager_2) {
+define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "Engine/DynamicLoader/dSprite"], function (require, exports, ProgressBar_1, dSprite_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class UnitFrame extends Phaser.GameObjects.Container {
-        constructor(scene, x, y) {
+        constructor(scene, x, y, target) {
             super(scene, x, y);
-            this.add(new Phaser.GameObjects.BitmapText(this.scene, 0, 0, 'simsun_o', "testGirl0: 魔法值"));
+            this.targetMob = target;
+            // this.add(new Phaser.GameObjects.BitmapText(this.scene, 0, 0, 'simsun_o', target.mobData.name + ": 魔法值"));
             // this.add(new Phaser.GameObjects.BitmapText(this.scene, 0, 3, 'smallPx', "Mana of testGirl0"));
-            this.add(new ProgressBar_1.ProgressBar(this.scene, 0, 14, () => {
-                let a = Array.from(UnitManager_2.UnitManager.getCurrent().player.values());
-                return [a[0].mobData.currentMana, a[0].mobData.maxMana];
-            }, 100, 3, 0, 0x222222, 0x20604F, 0x33A6B8, true, 'smallPx', ProgressBar_1.TextAlignment.Right, 95, 5, 0xffffff));
+            // Name
+            let txt = new Phaser.GameObjects.BitmapText(this.scene, 0, 9, 'smallPx', target.mobData.name);
+            txt.setOrigin(0, 1);
+            this.add(txt);
+            // Avatar
+            let avatar = new Phaser.GameObjects.Image(this.scene, 0, 10, 'elf', 0);
+            avatar.setOrigin(1, 0);
+            this.add(avatar);
+            // Weapon, TODO: switch weapons on click
+            this.wpCurrent = new dSprite_1.dSprite(this.scene, 75, 11, 'img_weapon_icon_test');
+            this.wpCurrent.setOrigin(0);
+            this.wpCurrent.setInteractive();
+            this.add(this.wpCurrent);
+            this.wpAlter = new dSprite_1.dSprite(this.scene, 105, 11, 'img_weapon_icon_test');
+            this.wpAlter.setOrigin(0);
+            this.wpAlter.setTint(0x888888);
+            this.wpAlter.setInteractive();
+            this.add(this.wpAlter);
+            // Health
+            this.add(new ProgressBar_1.ProgressBar(this.scene, 0, 10, () => {
+                return [target.mobData.currentHealth, target.mobData.maxHealth];
+            }, 70, 16, 1, true, 0x222222, 0x20604F, 0x1B813E, true, 'smallPx_HUD', ProgressBar_1.TextAlignment.Left, 5, 6, 0xffffff));
+            // Mana
+            this.add(new ProgressBar_1.ProgressBar(this.scene, 0, 25, () => {
+                return [target.mobData.currentMana, target.mobData.maxMana];
+            }, 70, 11, 1, true, 0x222222, 0x20604F, 0x33A6B8, true, 'smallPx_HUD', ProgressBar_1.TextAlignment.Left, 5, 2, 0xffffff));
+            // Current Spell
+            this.add(new ProgressBar_1.ProgressBar(this.scene, 10, 35, () => {
+                return [0.3, 1.8];
+            }, 60, 4, 1, false, 0x222222, 0x20604F, 0xffe8af, true, 'smallPx', ProgressBar_1.TextAlignment.Right, 58, 7, 0xffffff, () => "Wind Blade"));
         }
         update(time, dt) {
             this.each((obj) => { obj.update(); });
@@ -1376,13 +1412,14 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
  * @packageDocumentation
  * @module UI
  */
-define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "Engine/UI/UnitFrame"], function (require, exports, PopUpManager_2, UnitFrame_1) {
+define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "Engine/UI/UnitFrame", "Engine/Core/UnitManager"], function (require, exports, PopUpManager_2, UnitFrame_1, UnitManager_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class UIScene extends Phaser.Scene {
         constructor() {
             super(...arguments);
             this.loaded = false;
+            this.unitFrames = [];
         }
         static getSingleton() {
             if (!UIScene.instance) {
@@ -1400,7 +1437,34 @@ define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "En
             this.add.existing(PopUpManager_2.PopUpManager.register(this));
         }
         create() {
-            this.add.existing(new UnitFrame_1.UnitFrame(this, 300, 300));
+            this.loaded = true;
+            this.initUnitFrames();
+        }
+        clearUnitFrame() {
+            for (let u of this.unitFrames) {
+                u.destroy();
+            }
+            this.unitFrames = [];
+        }
+        resetPlayers() {
+            this.clearUnitFrame();
+            this.playerCache = Array.from(UnitManager_2.UnitManager.getCurrent().player.values());
+            if (this.loaded) {
+                this.initUnitFrames();
+            }
+        }
+        initUnitFrames() {
+            if (this.playerCache === undefined) {
+                return;
+            }
+            let cnt = 0;
+            for (let player of this.playerCache) {
+                let tmp = new UnitFrame_1.UnitFrame(this, 35 + (cnt % 4) * 180, 524 + Math.floor(cnt / 4) * 70, player);
+                // let tmp = new UnitFrame(this, 20, 20 + cnt * 70, player);
+                this.add.existing(tmp);
+                this.unitFrames.push(tmp);
+                cnt += 1;
+            }
         }
         update(time, dt) {
             this.children.each((item) => { item.update(time / 1000.0, dt / 1000.0); });
@@ -3165,7 +3229,7 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
     exports.Mob = Mob;
 });
 /** @packageDocumentation @module BattleScene */
-define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/UnitManager", "Engine/Core/ObjectPopulator", "Engine/Core/BattleMonitor"], function (require, exports, Mob_4, UnitManager_6, ObjectPopulator_2, BattleMonitor_2) {
+define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/UnitManager", "Engine/Core/ObjectPopulator", "Engine/Core/BattleMonitor", "Engine/UI/UIScene"], function (require, exports, Mob_4, UnitManager_6, ObjectPopulator_2, BattleMonitor_2, UIScene_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class BattleScene extends Phaser.Scene {
@@ -3227,7 +3291,7 @@ define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/Game
                 this.load.image(tileset.name, path);
                 console.log(path);
             }
-            this.load.on('complete', this.loadComplete.bind(this));
+            this.load.on('complete', () => { this.loadComplete(); UIScene_1.UIScene.getSingleton().resetPlayers(); });
             this.load.start();
         }
         loadComplete() {
@@ -3497,9 +3561,9 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
             // this.tiles = this.map.addTilesetImage('Grass_Overworld', 'Grass_Overworld');
             // this.terrainLayer = this.map.createStaticLayer('Terrain', this.tiles, 0, 0);
             this.anims.create({ key: 'move', frames: this.anims.generateFrameNumbers('elf', { start: 0, end: 3, first: 0 }), frameRate: 8, repeat: -1 });
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < 8; i++) {
                 // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
-                this.girl = new Mob_7.Mob(this, 930, 220 + i * 100, 'sheet_forestelf_myst', {
+                this.girl = new Mob_7.Mob(this, 930, 220 + i * 30, 'sheet_forestelf_myst', {
                     'idleAnim': 'move',
                     'moveAnim': 'move',
                     'deadAnim': 'move',
@@ -3553,7 +3617,7 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
     exports.TestScene = TestScene;
 });
 /** @packageDocumentation @module GameScene */
-define("SimpleGame", ["require", "exports", "TestScene", "Engine/DynamicLoader/DynamicLoaderScene", "Engine/UI/UIScene"], function (require, exports, TestScene_1, DynamicLoaderScene_3, UIScene_1) {
+define("SimpleGame", ["require", "exports", "TestScene", "Engine/DynamicLoader/DynamicLoaderScene", "Engine/UI/UIScene"], function (require, exports, TestScene_1, DynamicLoaderScene_3, UIScene_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class InitPhaser {
@@ -3561,7 +3625,7 @@ define("SimpleGame", ["require", "exports", "TestScene", "Engine/DynamicLoader/D
             let config = {
                 type: Phaser.AUTO,
                 width: 1024,
-                height: 640,
+                height: 660,
                 resolution: window.devicePixelRatio,
                 scene: [TestScene_1.TestScene],
                 banner: true,
@@ -3578,7 +3642,7 @@ define("SimpleGame", ["require", "exports", "TestScene", "Engine/DynamicLoader/D
             };
             this.gameRef = new Phaser.Game(config);
             this.gameRef.scene.add('DynamicLoaderScene', DynamicLoaderScene_3.DynamicLoaderScene.getSingleton(), true);
-            this.gameRef.scene.add('UIScene', UIScene_1.UIScene.getSingleton(), true);
+            this.gameRef.scene.add('UIScene', UIScene_2.UIScene.getSingleton(), true);
         }
     }
     exports.InitPhaser = InitPhaser;

@@ -10,6 +10,7 @@ export enum TextAlignment
 export class ProgressBar extends Phaser.GameObjects.Container
 {
     fetchFunc: undefined | (() => [number, number]);
+    getText: undefined | (() => string);
     out: Phaser.GameObjects.Rectangle;
     bg: Phaser.GameObjects.Rectangle;
     fill: Phaser.GameObjects.Rectangle;
@@ -23,13 +24,14 @@ export class ProgressBar extends Phaser.GameObjects.Container
         scene: Phaser.Scene, x: number, y: number,
         fetchValue: undefined | (() => [number, number]) = undefined,
         width: number = 100, height: number = 10,
-        border: number = 1,
+        border: number = 1, hasBG: boolean = true,
         outlineColor: number = 0xffffff, bgColor: number = 0x20604f, fillColor: number = 0x1b813e,
-        showText: boolean = true, fontKey: string = 'smallPx_HUD', align: TextAlignment = TextAlignment.Left, textX: number = 0, textY: number = 0, textColor: number = 0xffffff)
+        showText: boolean = true, fontKey: string = 'smallPx_HUD', align: TextAlignment = TextAlignment.Left, textX: number = 0, textY: number = 0, textColor: number = 0xffffff, getText: undefined | (() => string) = undefined)
     {
         super(scene, x, y);
 
         this.fetchFunc = fetchValue;
+        this.getText = getText;
         this.out = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, width, height, outlineColor);
         this.out.setOrigin(0);
         this.bg = new Phaser.GameObjects.Rectangle(this.scene, border, border, width - border * 2, height - border * 2, bgColor);
@@ -47,7 +49,10 @@ export class ProgressBar extends Phaser.GameObjects.Container
         {
             this.add(this.out);
         }
-        this.add(this.bg);
+        if (hasBG)
+        {
+            this.add(this.bg);
+        }
         this.add(this.fill);
         if (showText)
         {
@@ -85,6 +90,13 @@ export class ProgressBar extends Phaser.GameObjects.Container
             duration: 100,
         })
 
-        this.text.text = value.toFixed(0) + "/" + max.toFixed(0);
+        if (this.getText)
+        {
+            this.text.text = this.getText();
+        }
+        else
+        {
+            this.text.text = value.toFixed(0) + "/" + max.toFixed(0);
+        }
     }
 }

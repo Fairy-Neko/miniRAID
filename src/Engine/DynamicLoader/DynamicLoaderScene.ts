@@ -32,10 +32,10 @@ export class DynamicLoaderScene extends DraggableScene
     {
         super({ key: 'DynamicLoaderScene' });
 
-        this.screenX = 10;
-        this.screenY = 10;
-        this.sizeX = 800;
-        this.sizeY = 40;
+        this.screenX = 0;
+        this.screenY = 0;
+        this.sizeX = 1024;
+        this.sizeY = 640;
     }
 
     preload()
@@ -47,7 +47,8 @@ export class DynamicLoaderScene extends DraggableScene
     create()
     {
         super.create();
-        this.label = this.add.bitmapText(0, 0, 'smallPx', 'Loading ... [100.0%]');
+        this.label = this.add.bitmapText(1014, 10, 'smallPx', 'Loading ... [100.0%]');
+        this.label.setOrigin(1, 0);
         // this.label.setBackgroundColor('#000000');
         // this.label.setFontFamily('宋体, SimSun, Consolas');
         // this.label.setFontSize(12);

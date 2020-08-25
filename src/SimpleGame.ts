@@ -15,7 +15,7 @@ export class InitPhaser
         {
             type: Phaser.AUTO,
             width: 1024,
-            height: 640,
+            height: 660,
             resolution: window.devicePixelRatio,
             scene: [TestScene],
             banner: true,
