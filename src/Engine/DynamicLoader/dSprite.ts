@@ -63,7 +63,7 @@ export class dSprite extends Phaser.GameObjects.Sprite implements DynamicLoadObj
 
     onLoadComplete(key: string, type: string, fileObj: any): void
     {
-        if (key == this.textureToLoad)
+        if (key == this.textureToLoad && this.scene)
         {
             this.loadComplete = true;
             this.setTexture(this.textureToLoad, this.frameToLoad);

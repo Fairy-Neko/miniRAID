@@ -86,6 +86,19 @@ export class CometWand extends Weapon
                 'chasingRange': 400,
                 'chasingPower': 5.0,
             });
+
+        AoE((m: Mob) =>
+        {
+            // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
+            if (getRandomInt(0, 3) <= 1)
+            {
+                m.receiveBuff(source, new HDOT({ 'name': 'heal', 'source': source.mobData, 'countTime': true, 'popupColor': GameData.ElementColors[GameData.Elements.heal], 'popupName': 'buff_burnt', 'time': 12.0, 'stackable': true, 'maxStack': 10, 'UIpriority': 0, }, GameData.Elements.heal, 5, 8, 1.0));
+            }
+            else
+            {
+                m.receiveBuff(source, new HDOT({ 'name': 'light', 'source': source.mobData, 'countTime': true, 'popupColor': GameData.ElementColors[GameData.Elements.light], 'popupName': 'buff_burnt', 'time': 12.0, 'stackable': false, 'maxStack': 10, 'UIpriority': 1 }, GameData.Elements.light, 5, 8, 1.0));
+            }
+        }, source.footPos(), 200, Targeting.Player);
     }
 
     grabTargets(mob: Mob): Array<Mob> 

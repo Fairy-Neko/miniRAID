@@ -90,7 +90,7 @@ export class TestScene extends BattleScene
             this.girl.mobData.anotherWeapon = this.girl.mobData.weaponLeft;
 
             this.girl.mobData.addListener(this.girl.mobData.weaponRight);
-            this.girl.receiveBuff(this.girl, new HDOT({ 'source': this.girl.mobData, 'countTime': false, 'name': 'GodHeal' }, GameData.Elements.heal, 10, 18, 1.66));
+            this.girl.receiveBuff(this.girl, new HDOT({ 'source': this.girl.mobData, 'countTime': false, 'name': 'GodHeal', 'UIimportant': true, 'UIpriority': 0, }, GameData.Elements.heal, 20, 38, 0.8));
             this.addMob(this.girl);
         }
 

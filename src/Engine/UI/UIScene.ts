@@ -4,7 +4,7 @@
  */
 
 import { PopUpManager } from "./PopUpManager";
-import { UnitFrame } from "./UnitFrame";
+import { UnitFrame, BuffFrame } from "./UnitFrame";
 import { UnitManager } from "../Core/UnitManager";
 import { Mob } from "../GameObjects/Mob";
 import { Localization, _ } from "./Localization";
@@ -49,15 +49,15 @@ export class UIScene extends Phaser.Scene
         PopUpManager.getSingleton().hasLoaded();
 
         // this.add.rectangle(750 + 61, 520 + 8, 122, 16, 0x948779);
-        let bt = this.add.bitmapText(755, 532, _("UIFont"), _("Damage Done (DPS)"));
+        let bt = this.add.bitmapText(755, 530, _("UIFont"), _("Damage Done (DPS)"));
         bt.setOrigin(0, 1);
 
         // this.add.rectangle(880 + 61, 520 + 8, 122, 16, 0x948779);
-        bt = this.add.bitmapText(885, 532, _("UIFont"), _("Healing Done (HPS)"));
+        bt = this.add.bitmapText(885, 530, _("UIFont"), _("Healing Done (HPS)"));
         bt.setOrigin(0, 1);
 
-        this.add.existing(new MonitorFrame(this, 750, 536, () => { return BattleMonitor.getSingleton().getDamageList(); }, 122, 114));
-        this.add.existing(new MonitorFrame(this, 880, 536, () => { return BattleMonitor.getSingleton().getHealList(); }, 122, 114));
+        this.add.existing(new MonitorFrame(this, 750, 534, () => { return BattleMonitor.getSingleton().getDamageList(); }, 122, 114));
+        this.add.existing(new MonitorFrame(this, 880, 534, () => { return BattleMonitor.getSingleton().getHealList(); }, 122, 114));
     }
 
     clearUnitFrame()
@@ -86,8 +86,13 @@ export class UIScene extends Phaser.Scene
         let cnt = 0;
         for (let player of this.playerCache)
         {
-            let tmp = new UnitFrame(this, 35 + (cnt % 4) * 180, 524 + Math.floor(cnt / 4) * 70, player);
+            let x = 35 + (cnt % 4) * 180;
+            let y = 522 + Math.floor(cnt / 4) * 70;
+
+            let tmp = new UnitFrame(this, x, y, player);
+            let bF = new BuffFrame(this, x - 28, y + 37, x - 28, y + 37, 160, 30, player.mobData);
             // let tmp = new UnitFrame(this, 20, 20 + cnt * 70, player);
+            this.add.existing(bF);
             this.add.existing(tmp);
             this.unitFrames.push(tmp);
             cnt += 1;

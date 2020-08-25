@@ -432,7 +432,7 @@ define("Engine/DynamicLoader/dSprite", ["require", "exports", "Engine/DynamicLoa
             return [];
         }
         onLoadComplete(key, type, fileObj) {
-            if (key == this.textureToLoad) {
+            if (key == this.textureToLoad && this.scene) {
                 this.loadComplete = true;
                 this.setTexture(this.textureToLoad, this.frameToLoad);
                 // Play cached animation
@@ -649,6 +649,7 @@ define("Engine/Structs/QuerySet", ["require", "exports"], function (require, exp
             if (!this.keyFn) {
                 if (!this.data.has(item)) {
                     this.data.add(item);
+                    this.currentTimestamp += 1;
                     return true;
                 }
                 else if (failCallback) {
@@ -663,6 +664,7 @@ define("Engine/Structs/QuerySet", ["require", "exports"], function (require, exp
                 let key = this.keyFn(item);
                 if (!this.data.has(key)) {
                     this.data.set(key, item);
+                    this.currentTimestamp += 1;
                     return true;
                 }
                 else if (failCallback) {
@@ -1400,7 +1402,87 @@ define("Engine/UI/Localization", ["require", "exports", "Engine/Core/GameData"],
  * @packageDocumentation
  * @module UI
  */
-define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "Engine/DynamicLoader/dSprite", "Engine/UI/Localization"], function (require, exports, ProgressBar_1, dSprite_1, Localization_1) {
+define("Engine/UI/ScrollMaskedContainer", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var ScrollDirc;
+    (function (ScrollDirc) {
+        ScrollDirc["Vertical"] = "height";
+        ScrollDirc["Horizontal"] = "width";
+    })(ScrollDirc = exports.ScrollDirc || (exports.ScrollDirc = {}));
+    class ScrollMaskedContainer extends Phaser.GameObjects.Container {
+        constructor(scene, x, y, width, height, dirc = ScrollDirc.Vertical, globalX = undefined, globalY = undefined) {
+            super(scene, x, y);
+            this.rect = this.scene.make.image({ add: false });
+            // this.rect.fillStyle(0x00ffff);
+            // this.rect.fillRect(x, y, width, height);
+            this.rect.x = globalX || x;
+            this.rect.y = globalY || y;
+            this.rect.displayWidth = width;
+            this.rect.displayHeight = height;
+            this.rect.setOrigin(0);
+            let mask = new Phaser.Display.Masks.BitmapMask(this.scene, this.rect);
+            this.mask = mask;
+            this.setSize(width, height);
+            this.setInteractive();
+            this.input.hitArea.x = width / 2;
+            this.input.hitArea.y = height / 2;
+            this.on('wheel', this.onWheel);
+            this.dirc = dirc;
+            if (this.dirc == ScrollDirc.Vertical) {
+                this.contentStart = this.rect.y;
+            }
+            if (this.dirc == ScrollDirc.Horizontal) {
+                this.contentStart = this.rect.x;
+            }
+        }
+        updateContentLength() {
+            let rect = this.getBounds();
+            if (this.dirc == ScrollDirc.Vertical) {
+                this.contentLength = rect.height;
+                this.contentPosition = this.rect.y - rect.y;
+            }
+            else {
+                this.contentLength = rect.width;
+                this.contentPosition = this.rect.x - rect.x;
+            }
+            // this.input.hitArea = rect;
+            this.input.hitArea.width = rect.width;
+            this.input.hitArea.height = rect.height;
+            this.input.hitArea.x = rect.width / 2;
+            this.input.hitArea.y = rect.height / 2;
+            // Reset position
+            if (this.dirc == ScrollDirc.Vertical) {
+                this.contentPosition = Math.max(0, Math.min(this.contentPosition, this.contentLength - this.rect.displayHeight));
+                this.y = this.rect.y - this.contentPosition;
+            }
+            else {
+                this.contentPosition = Math.max(0, Math.min(this.contentPosition, this.contentLength - this.rect.displayWidth));
+                this.x = this.rect.x - this.contentPosition;
+            }
+        }
+        onWheel(evt) {
+            if (this.rect.getBounds().contains(evt.position.x, evt.position.y)) {
+                if (this.dirc == ScrollDirc.Vertical) {
+                    this.contentPosition += evt.deltaY * 0.1;
+                    this.contentPosition = Math.max(0, Math.min(this.contentPosition, this.contentLength - this.rect.displayHeight));
+                    this.y = this.rect.y - this.contentPosition;
+                }
+                else {
+                    this.contentPosition += evt.deltaY * 0.1;
+                    this.contentPosition = Math.max(0, Math.min(this.contentPosition, this.contentLength - this.rect.displayWidth));
+                    this.x = this.rect.x - this.contentPosition;
+                }
+            }
+        }
+    }
+    exports.ScrollMaskedContainer = ScrollMaskedContainer;
+});
+/**
+ * @packageDocumentation
+ * @module UI
+ */
+define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "Engine/DynamicLoader/dSprite", "Engine/UI/Localization", "Engine/UI/ScrollMaskedContainer"], function (require, exports, ProgressBar_1, dSprite_1, Localization_1, ScrollMaskedContainer_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class WeaponFrame extends Phaser.GameObjects.Container {
@@ -1440,6 +1522,163 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
         }
     }
     exports.WeaponFrame = WeaponFrame;
+    class BuffIcon extends Phaser.GameObjects.Container {
+        constructor(scene, x, y, buff, subsTexture, frame) {
+            super(scene, x, y);
+            this.buff = buff;
+            this.isOver = false;
+            this.len = buff.UIimportant ? 26 : 18;
+            let rect = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, buff.UIimportant ? 26 : 18, buff.UIimportant ? 26 : 18, buff.color.clone().darken(20).color);
+            rect.setOrigin(0, 0);
+            this.add(rect);
+            if (scene === undefined) {
+                console.warn("?!");
+            }
+            let dspr = new dSprite_1.dSprite(scene, 1, 1, buff.UIimportant ? 'img_imp_buff_icon_test' : 'img_buff_icon_test', subsTexture, frame);
+            dspr.setOrigin(0);
+            this.add(dspr);
+            if (buff.countTime) {
+                this.timeRemain = new Phaser.GameObjects.Rectangle(this.scene, this.len, 0, this.len, this.len, 0x000000, 0.5);
+                this.timeRemain.setOrigin(1, 0);
+                this.add(this.timeRemain);
+            }
+            if (buff.stackable) {
+                this.stacks = new Phaser.GameObjects.BitmapText(this.scene, this.len - 1, this.len - 1, 'smallPx_HUD', '1');
+                this.stacks.setOrigin(1);
+                this.stacks.setTint(0xffffff);
+                this.stacks.depth = 10;
+                this.add(this.stacks);
+            }
+        }
+        update() {
+            if (this.buff.countTime) {
+                this.timeRemain.width = ((this.buff.timeMax - this.buff.timeRemain[0]) / this.buff.timeMax) * (this.len);
+                this.timeRemain.x = this.len;
+                this.timeRemain.setOrigin(1, 0);
+            }
+            if (this.buff.stackable) {
+                this.stacks.text = this.buff.stacks.toString();
+            }
+        }
+    }
+    exports.BuffIcon = BuffIcon;
+    class BuffFrame extends ScrollMaskedContainer_1.ScrollMaskedContainer {
+        constructor(scene, x, y, globalX, globalY, width, height, target) {
+            super(scene, x, y, width, height, ScrollMaskedContainer_1.ScrollDirc.Horizontal, globalX, globalY);
+            this.target = target;
+            this.icons = [];
+            let len = 0;
+            let buffList = this.obtainList();
+            for (let buff of buffList) {
+                let bI = new BuffIcon(this.scene, len, 0, buff);
+                len += bI.len + 2;
+                this.icons.push(bI);
+                this.add(bI);
+            }
+            this.updateContentLength();
+        }
+        compare(a, b) {
+            if (a.UIimportant && (!b.UIimportant)) {
+                return -1;
+            }
+            else if ((!a.UIimportant) && b.UIimportant) {
+                return 1;
+            }
+            else {
+                return b.UIpriority - a.UIpriority;
+            }
+        }
+        compareIcon(a, b) {
+            return this.compare(a.buff, b.buff);
+        }
+        obtainList() {
+            return this.target.buffList.slice().sort(this.compare);
+        }
+        // update(time: number, dt: number)
+        // {
+        //     if (this.target._buffListDirty)
+        //     {
+        //         this.removeAll(true);
+        //         let len = 0;
+        //         let buffList = this.obtainList();
+        //         for (let buff of buffList)
+        //         {
+        //             let bI = new BuffIcon(this.scene, len, 0, buff);
+        //             len += bI.len + 2;
+        //             this.add(bI);
+        //         }
+        //         this.target._buffListDirty = false;
+        //     }
+        //     this.each((obj: Phaser.GameObjects.GameObject) => { obj.update(); });
+        // }
+        update(time, dt) {
+            if (this.target._buffListDirty) {
+                let newList = this.obtainList();
+                let newIcons = [];
+                let iOld = 0;
+                let iNew = 0;
+                while (iNew < newList.length || iOld < this.icons.length) {
+                    if ((iNew < newList.length && iOld < this.icons.length) && newList[iNew].toString() === this.icons[iOld].buff.toString()) {
+                        iNew++;
+                        iOld++;
+                    }
+                    else if (iNew < newList.length) {
+                        let iiOld = iOld + 1;
+                        let flag = false;
+                        while (iiOld < this.icons.length && this.compare(this.icons[iiOld].buff, newList[iNew]) <= 0) {
+                            // We found the same buff
+                            if (this.icons[iiOld].buff.toString() == newList[iNew].toString()) {
+                                // We need to delete everything between iOld & iiOld
+                                flag = true;
+                                break;
+                            }
+                            iiOld++;
+                        }
+                        if (flag) {
+                            // remove iOld ~ iiOld from the container
+                            for (let ix = iOld; ix < iiOld; ix++) {
+                                this.icons[ix].isOver = true;
+                                this.remove(this.icons[ix], true);
+                            }
+                            iOld = iiOld;
+                        }
+                        else {
+                            // iNew is a new buff
+                            // Add iNew to the container
+                            let bI = new BuffIcon(this.scene, 0, 0, newList[iNew]);
+                            newIcons.push(bI);
+                            this.add(bI);
+                            iNew++;
+                        }
+                    }
+                    else {
+                        // Delete everything after iOld
+                        for (let ix = iOld; ix < this.icons.length; ix++) {
+                            this.icons[ix].isOver = true;
+                            this.remove(this.icons[ix], true);
+                        }
+                        iOld = this.icons.length;
+                    }
+                }
+                this.icons = this.icons.filter((value) => !value.isOver);
+                this.icons.push(...newIcons);
+                // Calculate new positions
+                this.icons = this.icons.sort((a, b) => this.compare(a.buff, b.buff));
+                let len = 0;
+                for (let icon of this.icons) {
+                    this.scene.tweens.add({
+                        targets: icon,
+                        x: len,
+                        duration: 100,
+                    });
+                    len += icon.len + 2;
+                }
+                this.updateContentLength();
+            }
+            this.each((obj) => { obj.update(); });
+        }
+    }
+    exports.BuffFrame = BuffFrame;
     class UnitFrame extends Phaser.GameObjects.Container {
         constructor(scene, x, y, target) {
             super(scene, x, y);
@@ -1471,11 +1710,16 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
             this.add(new ProgressBar_1.ProgressBar(this.scene, 0, 25, () => {
                 return [target.mobData.currentMana, target.mobData.maxMana];
             }, 70, 11, 1, true, 0x222222, 0x20604F, 0x33A6B8, true, 'smallPx_HUD', ProgressBar_1.TextAlignment.Left, 5, 2, 0xffffff));
+            // // Buffs
+            // let bF = new BuffFrame(this.scene, -28, 37, x - 28, y + 37, 160, 30, this.targetMob.mobData);
+            // bF.depth = 0;
+            // this.add(bF);
             // Current Spell
             this.castingBar = new ProgressBar_1.ProgressBar(this.scene, 10, 35, () => {
                 return [0.3, 1.8];
             }, 60, 4, 1, false, 0x222222, 0x20604F, 0xffe8af, true, Localization_1._('UIFont'), ProgressBar_1.TextAlignment.Right, 58, 7, 0xffffff, () => Localization_1._("Wind Blade"));
             this.add(this.castingBar);
+            this.castingBar.depth = 40;
         }
         switchWeapon() {
             // TODO: switch the weapon
@@ -1670,75 +1914,7 @@ define("Engine/Core/BattleMonitor", ["require", "exports", "Engine/Core/GameData
  * @packageDocumentation
  * @module UI
  */
-define("Engine/UI/ScrollMaskedContainer", ["require", "exports"], function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var ScrollDirc;
-    (function (ScrollDirc) {
-        ScrollDirc["Vertical"] = "height";
-        ScrollDirc["Horizontal"] = "width";
-    })(ScrollDirc = exports.ScrollDirc || (exports.ScrollDirc = {}));
-    class ScrollMaskedContainer extends Phaser.GameObjects.Container {
-        constructor(scene, x, y, width, height, dirc = ScrollDirc.Vertical) {
-            super(scene, x, y);
-            this.rect = this.scene.make.image({ add: false });
-            // this.rect.fillStyle(0x00ffff);
-            // this.rect.fillRect(x, y, width, height);
-            this.rect.x = x;
-            this.rect.y = y;
-            this.rect.displayWidth = width;
-            this.rect.displayHeight = height;
-            this.rect.setOrigin(0);
-            let mask = new Phaser.Display.Masks.BitmapMask(this.scene, this.rect);
-            this.mask = mask;
-            this.setSize(width, height);
-            this.setInteractive();
-            this.input.hitArea.x = width / 2;
-            this.input.hitArea.y = height / 2;
-            this.on('wheel', this.onWheel);
-            this.dirc = dirc;
-            if (this.dirc == ScrollDirc.Vertical) {
-                this.contentStart = y;
-            }
-            if (this.dirc == ScrollDirc.Horizontal) {
-                this.contentStart = x;
-            }
-        }
-        updateContentLength() {
-            let rect = this.getBounds();
-            if (this.dirc == ScrollDirc.Vertical) {
-                this.contentLength = rect.height;
-                this.contentPosition = this.y - rect.y;
-            }
-            else {
-                this.contentLength = rect.width;
-                this.contentPosition = this.x - rect.x;
-            }
-            console.log(this.contentPosition);
-            console.log(this.contentLength);
-        }
-        onWheel(evt) {
-            if (this.rect.getBounds().contains(evt.position.x, evt.position.y)) {
-                if (this.dirc == ScrollDirc.Vertical) {
-                    this.contentPosition += evt.deltaY * 0.1;
-                    this.contentPosition = Math.max(0, Math.min(this.contentPosition, this.contentLength - this.rect.displayHeight));
-                    this.y = this.rect.y - this.contentPosition;
-                }
-                else {
-                    this.contentPosition += evt.deltaY * 0.1;
-                    this.contentPosition = Math.max(0, Math.min(this.contentPosition, this.contentLength - this.rect.displayWidth));
-                    this.x = this.rect.x - this.contentPosition;
-                }
-            }
-        }
-    }
-    exports.ScrollMaskedContainer = ScrollMaskedContainer;
-});
-/**
- * @packageDocumentation
- * @module UI
- */
-define("Engine/UI/MonitorFrame", ["require", "exports", "Engine/Core/BattleMonitor", "Engine/UI/Localization", "Engine/Core/GameData", "Engine/UI/ScrollMaskedContainer"], function (require, exports, BattleMonitor_1, Localization_2, GameData_5, ScrollMaskedContainer_1) {
+define("Engine/UI/MonitorFrame", ["require", "exports", "Engine/Core/BattleMonitor", "Engine/UI/Localization", "Engine/Core/GameData", "Engine/UI/ScrollMaskedContainer"], function (require, exports, BattleMonitor_1, Localization_2, GameData_5, ScrollMaskedContainer_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class MonitorRow extends Phaser.GameObjects.Container {
@@ -1807,7 +1983,7 @@ define("Engine/UI/MonitorFrame", ["require", "exports", "Engine/Core/BattleMonit
         }
     }
     exports.MonitorRow = MonitorRow;
-    class MonitorFrame extends ScrollMaskedContainer_1.ScrollMaskedContainer {
+    class MonitorFrame extends ScrollMaskedContainer_2.ScrollMaskedContainer {
         constructor(scene, x, y, fetchFunc, width = 125, height = 120) {
             super(scene, x, y, width, height);
             this.rows = [];
@@ -1874,13 +2050,13 @@ define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "En
             this.initUnitFrames();
             PopUpManager_2.PopUpManager.getSingleton().hasLoaded();
             // this.add.rectangle(750 + 61, 520 + 8, 122, 16, 0x948779);
-            let bt = this.add.bitmapText(755, 532, Localization_3._("UIFont"), Localization_3._("Damage Done (DPS)"));
+            let bt = this.add.bitmapText(755, 530, Localization_3._("UIFont"), Localization_3._("Damage Done (DPS)"));
             bt.setOrigin(0, 1);
             // this.add.rectangle(880 + 61, 520 + 8, 122, 16, 0x948779);
-            bt = this.add.bitmapText(885, 532, Localization_3._("UIFont"), Localization_3._("Healing Done (HPS)"));
+            bt = this.add.bitmapText(885, 530, Localization_3._("UIFont"), Localization_3._("Healing Done (HPS)"));
             bt.setOrigin(0, 1);
-            this.add.existing(new MonitorFrame_1.MonitorFrame(this, 750, 536, () => { return BattleMonitor_2.BattleMonitor.getSingleton().getDamageList(); }, 122, 114));
-            this.add.existing(new MonitorFrame_1.MonitorFrame(this, 880, 536, () => { return BattleMonitor_2.BattleMonitor.getSingleton().getHealList(); }, 122, 114));
+            this.add.existing(new MonitorFrame_1.MonitorFrame(this, 750, 534, () => { return BattleMonitor_2.BattleMonitor.getSingleton().getDamageList(); }, 122, 114));
+            this.add.existing(new MonitorFrame_1.MonitorFrame(this, 880, 534, () => { return BattleMonitor_2.BattleMonitor.getSingleton().getHealList(); }, 122, 114));
         }
         clearUnitFrame() {
             for (let u of this.unitFrames) {
@@ -1901,8 +2077,12 @@ define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "En
             }
             let cnt = 0;
             for (let player of this.playerCache) {
-                let tmp = new UnitFrame_1.UnitFrame(this, 35 + (cnt % 4) * 180, 524 + Math.floor(cnt / 4) * 70, player);
+                let x = 35 + (cnt % 4) * 180;
+                let y = 522 + Math.floor(cnt / 4) * 70;
+                let tmp = new UnitFrame_1.UnitFrame(this, x, y, player);
+                let bF = new UnitFrame_1.BuffFrame(this, x - 28, y + 37, x - 28, y + 37, 160, 30, player.mobData);
                 // let tmp = new UnitFrame(this, 20, 20 + cnt * 70, player);
+                this.add.existing(bF);
                 this.add.existing(tmp);
                 this.unitFrames.push(tmp);
                 cnt += 1;
@@ -2020,7 +2200,7 @@ define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener", "En
             //Does this buff counts time?
             this.countTime = ((settings.countTime === undefined) ? true : settings.countTime);
             //time in seconds, indicates the durtion of buff
-            // this.timeMax = settings.time || 1.0;
+            this.timeMax = settings.time || 1.0;
             //time in seconds, will automatically reduce by time
             this.timeRemain = [settings.time]; // || this.timeMax;
             //Is the buff over? (should be removed from buff list)
@@ -2040,6 +2220,8 @@ define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener", "En
             //Where does this buff come from?
             this.source = settings.source || undefined;
             this.toolTip = { title: "Buff", text: "lol." };
+            this.UIimportant = (settings.UIimportant === undefined) ? false : settings.UIimportant;
+            this.UIpriority = (settings.UIpriority === undefined) ? 0 : settings.UIpriority;
         }
         popUp(mob) {
             let popUpPos = mob.getTopCenter();
@@ -2384,9 +2566,11 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             }
         }
         addBuff(buff) {
+            let dirty = true;
             let flag = true;
             this.addListener(buff, buff.source, (arg) => {
                 flag = false;
+                dirty = false;
                 if (arg instanceof Buff_1.Buff) {
                     if (arg.stackable === true) {
                         flag = arg.addStack(buff.timeRemain[0]);
@@ -2399,6 +2583,10 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
                 }
                 return false;
             });
+            if (dirty) {
+                this.buffList = (this.listeners.query('buff'));
+                this._buffListDirty = true;
+            }
             return flag;
         }
         hasBuff(buff) {
@@ -2420,6 +2608,10 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             }
             // TODO: Who removed this listener ?
             if (this.listeners.removeItem(listener)) {
+                if (listener.type === MobListener_2.MobListenerType.Buff) {
+                    this.buffList = (this.listeners.query('buff'));
+                    this._buffListDirty = true;
+                }
                 // listener.emit('remove', undefined, this, source);
                 listener._beRemoved(this, source);
                 this.unlistenAll(listener);
@@ -3822,6 +4014,15 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
                     'chasingRange': 400,
                     'chasingPower': 5.0,
                 });
+            Helper_3.AoE((m) => {
+                // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
+                if (Helper_3.getRandomInt(0, 3) <= 1) {
+                    m.receiveBuff(source, new HDOT_1.HDOT({ 'name': 'heal', 'source': source.mobData, 'countTime': true, 'popupColor': GameData_12.GameData.ElementColors[GameData_12.GameData.Elements.heal], 'popupName': 'buff_burnt', 'time': 12.0, 'stackable': true, 'maxStack': 10, 'UIpriority': 0, }, GameData_12.GameData.Elements.heal, 5, 8, 1.0));
+                }
+                else {
+                    m.receiveBuff(source, new HDOT_1.HDOT({ 'name': 'light', 'source': source.mobData, 'countTime': true, 'popupColor': GameData_12.GameData.ElementColors[GameData_12.GameData.Elements.light], 'popupName': 'buff_burnt', 'time': 12.0, 'stackable': false, 'maxStack': 10, 'UIpriority': 1 }, GameData_12.GameData.Elements.light, 5, 8, 1.0));
+                }
+            }, source.footPos(), 200, Spell_4.Targeting.Player);
         }
         grabTargets(mob) {
             return UnitManager_7.UnitManager.getCurrent().getNearest(mob.footPos(), !mob.mobData.isPlayer, this.targetCount);
@@ -3927,7 +4128,7 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
                 this.girl.mobData.weaponLeft.manaCost = 0;
                 this.girl.mobData.anotherWeapon = this.girl.mobData.weaponLeft;
                 this.girl.mobData.addListener(this.girl.mobData.weaponRight);
-                this.girl.receiveBuff(this.girl, new HDOT_2.HDOT({ 'source': this.girl.mobData, 'countTime': false, 'name': 'GodHeal' }, GameData_13.GameData.Elements.heal, 10, 18, 1.66));
+                this.girl.receiveBuff(this.girl, new HDOT_2.HDOT({ 'source': this.girl.mobData, 'countTime': false, 'name': 'GodHeal', 'UIimportant': true, 'UIpriority': 0, }, GameData_13.GameData.Elements.heal, 20, 38, 0.8));
                 this.addMob(this.girl);
             }
             let woodlog = new Mob_7.Mob(this, 300, 200, 'sheet_forestelf_myst', {

@@ -94,6 +94,7 @@ export class QuerySet<T>
             if (!(<Set<T>>this.data).has(item))
             {
                 (<Set<T>>this.data).add(item);
+                this.currentTimestamp += 1;
                 return true;
             }
             else if (failCallback)
@@ -113,6 +114,7 @@ export class QuerySet<T>
             if (!(<Map<string, T>>this.data).has(key))
             {
                 (<Map<string, T>>this.data).set(key, item);
+                this.currentTimestamp += 1;
                 return true;
             }
             else if (failCallback)

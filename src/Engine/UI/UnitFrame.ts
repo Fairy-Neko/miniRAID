@@ -10,6 +10,9 @@ import { dSprite } from "../DynamicLoader/dSprite";
 import { Weapon } from "../Core/EquipmentCore";
 import { mRTypes } from "../Core/mRTypes";
 import { _ } from "./Localization";
+import { ScrollMaskedContainer, ScrollDirc } from "./ScrollMaskedContainer";
+import { MobData } from "../Core/MobData";
+import { Buff } from "../Core/Buff";
 
 export class WeaponFrame extends Phaser.GameObjects.Container
 {
@@ -69,12 +72,224 @@ export class WeaponFrame extends Phaser.GameObjects.Container
     }
 }
 
+export class BuffIcon extends Phaser.GameObjects.Container
+{
+    timeRemain: Phaser.GameObjects.Rectangle;
+    stacks: Phaser.GameObjects.BitmapText;
+    buff: Buff;
+    len: number;
+    isOver: boolean;
+
+    constructor(scene: Phaser.Scene, x: number, y: number, buff: Buff, subsTexture?: string, frame?: string | integer)
+    {
+        super(scene, x, y);
+
+        this.buff = buff;
+        this.isOver = false;
+
+        this.len = buff.UIimportant ? 26 : 18;
+
+        let rect = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, buff.UIimportant ? 26 : 18, buff.UIimportant ? 26 : 18, buff.color.clone().darken(20).color);
+        rect.setOrigin(0, 0);
+        this.add(rect);
+
+        if (scene === undefined)
+        {
+            console.warn("?!");
+        }
+
+        let dspr = new dSprite(scene, 1, 1, buff.UIimportant ? 'img_imp_buff_icon_test' : 'img_buff_icon_test', subsTexture, frame);
+        dspr.setOrigin(0);
+        this.add(dspr);
+
+        if (buff.countTime)
+        {
+            this.timeRemain = new Phaser.GameObjects.Rectangle(this.scene, this.len, 0, this.len, this.len, 0x000000, 0.5);
+            this.timeRemain.setOrigin(1, 0);
+            this.add(this.timeRemain);
+        }
+
+        if (buff.stackable)
+        {
+            this.stacks = new Phaser.GameObjects.BitmapText(this.scene, this.len - 1, this.len - 1, 'smallPx_HUD', '1');
+            this.stacks.setOrigin(1);
+            this.stacks.setTint(0xffffff);
+            this.stacks.depth = 10;
+            this.add(this.stacks);
+        }
+    }
+
+    update()
+    {
+        if (this.buff.countTime)
+        {
+            this.timeRemain.width = ((this.buff.timeMax - this.buff.timeRemain[0]) / this.buff.timeMax) * (this.len);
+            this.timeRemain.x = this.len;
+            this.timeRemain.setOrigin(1, 0);
+        }
+
+        if (this.buff.stackable)
+        {
+            this.stacks.text = this.buff.stacks.toString();
+        }
+    }
+}
+
+export class BuffFrame extends ScrollMaskedContainer
+{
+    target: MobData;
+    icons: BuffIcon[];
+
+    constructor(scene: Phaser.Scene, x: number, y: number, globalX: number, globalY: number, width: number, height: number, target: MobData)
+    {
+        super(scene, x, y, width, height, ScrollDirc.Horizontal, globalX, globalY);
+        this.target = target;
+
+        this.icons = [];
+        let len = 0;
+        let buffList = this.obtainList();
+        for (let buff of buffList)
+        {
+            let bI = new BuffIcon(this.scene, len, 0, buff);
+            len += bI.len + 2;
+            this.icons.push(bI);
+            this.add(bI);
+        }
+        this.updateContentLength();
+    }
+
+    compare(a: Buff, b: Buff): number
+    {
+        if (a.UIimportant && (!b.UIimportant)) { return -1; }
+        else if ((!a.UIimportant) && b.UIimportant) { return 1; }
+        else
+        {
+            return b.UIpriority - a.UIpriority;
+        }
+    }
+
+    compareIcon(a: BuffIcon, b: BuffIcon): number
+    {
+        return this.compare(a.buff, b.buff);
+    }
+
+    obtainList(): Buff[]
+    {
+        return this.target.buffList.slice().sort(this.compare);
+    }
+
+    // update(time: number, dt: number)
+    // {
+    //     if (this.target._buffListDirty)
+    //     {
+    //         this.removeAll(true);
+    //         let len = 0;
+    //         let buffList = this.obtainList();
+    //         for (let buff of buffList)
+    //         {
+    //             let bI = new BuffIcon(this.scene, len, 0, buff);
+    //             len += bI.len + 2;
+    //             this.add(bI);
+    //         }
+    //         this.target._buffListDirty = false;
+    //     }
+    //     this.each((obj: Phaser.GameObjects.GameObject) => { obj.update(); });
+    // }
+
+    update(time: number, dt: number)
+    {
+        if (this.target._buffListDirty)
+        {
+            let newList = this.obtainList();
+            let newIcons = [];
+            let iOld = 0;
+            let iNew = 0;
+
+            while (iNew < newList.length || iOld < this.icons.length)
+            {
+                if ((iNew < newList.length && iOld < this.icons.length) && newList[iNew].toString() === this.icons[iOld].buff.toString())
+                {
+                    iNew++;
+                    iOld++;
+                }
+                else if (iNew < newList.length)
+                {
+                    let iiOld = iOld + 1;
+                    let flag = false;
+                    while (iiOld < this.icons.length && this.compare(this.icons[iiOld].buff, newList[iNew]) <= 0)
+                    {
+                        // We found the same buff
+                        if (this.icons[iiOld].buff.toString() == newList[iNew].toString())
+                        {
+                            // We need to delete everything between iOld & iiOld
+                            flag = true;
+                            break;
+                        }
+                        iiOld++;
+                    }
+
+                    if (flag)
+                    {
+                        // remove iOld ~ iiOld from the container
+                        for (let ix = iOld; ix < iiOld; ix++)
+                        {
+                            this.icons[ix].isOver = true;
+                            this.remove(this.icons[ix], true);
+                        }
+                        iOld = iiOld;
+                    }
+                    else
+                    {
+                        // iNew is a new buff
+                        // Add iNew to the container
+                        let bI = new BuffIcon(this.scene, 0, 0, newList[iNew]);
+                        newIcons.push(bI);
+                        this.add(bI);
+                        iNew++;
+                    }
+                }
+                else
+                {
+                    // Delete everything after iOld
+                    for (let ix = iOld; ix < this.icons.length; ix++)
+                    {
+                        this.icons[ix].isOver = true;
+                        this.remove(this.icons[ix], true);
+                    }
+                    iOld = this.icons.length;
+                }
+            }
+
+            this.icons = this.icons.filter((value: BuffIcon) => !value.isOver);
+            this.icons.push(...newIcons);
+
+            // Calculate new positions
+            this.icons = this.icons.sort((a: BuffIcon, b: BuffIcon) => this.compare(a.buff, b.buff));
+            let len = 0;
+            for (let icon of this.icons)
+            {
+                this.scene.tweens.add({
+                    targets: icon,
+                    x: len,
+                    duration: 100,
+                });
+                len += icon.len + 2;
+            }
+
+            this.updateContentLength();
+        }
+
+        this.each((obj: Phaser.GameObjects.GameObject) => { obj.update(); });
+    }
+}
+
 export class UnitFrame extends Phaser.GameObjects.Container
 {
     wpCurrent: WeaponFrame;
     wpAlter: WeaponFrame;
     castingBar: ProgressBar;
     targetMob: Mob;
+    buffFrame: BuffFrame;
 
     constructor(scene: Phaser.Scene, x: number, y: number, target: Mob)
     {
@@ -119,12 +334,18 @@ export class UnitFrame extends Phaser.GameObjects.Container
             return [target.mobData.currentMana, target.mobData.maxMana];
         }, 70, 11, 1, true, 0x222222, 0x20604F, 0x33A6B8, true, 'smallPx_HUD', TextAlignment.Left, 5, 2, 0xffffff));
 
+        // // Buffs
+        // let bF = new BuffFrame(this.scene, -28, 37, x - 28, y + 37, 160, 30, this.targetMob.mobData);
+        // bF.depth = 0;
+        // this.add(bF);
+
         // Current Spell
         this.castingBar = new ProgressBar(this.scene, 10, 35, () =>
         {
             return [0.3, 1.8];
         }, 60, 4, 1, false, 0x222222, 0x20604F, 0xffe8af, true, _('UIFont'), TextAlignment.Right, 58, 7, 0xffffff, () => _("Wind Blade"));
         this.add(this.castingBar);
+        this.castingBar.depth = 40;
     }
 
     switchWeapon()

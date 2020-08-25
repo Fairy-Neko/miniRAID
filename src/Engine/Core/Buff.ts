@@ -14,7 +14,7 @@ export class Buff extends MobListener
     name: string;
 
     countTime: boolean;
-    // timeMax: number;
+    timeMax: number;
     timeRemain: number[];
 
     stacks: integer;
@@ -30,6 +30,9 @@ export class Buff extends MobListener
     source: MobData;
     toolTip: mRTypes.HTMLToolTip;
 
+    UIimportant: boolean;
+    UIpriority: number;
+
     constructor(settings: mRTypes.Settings.Buff)
     {
         super();
@@ -44,7 +47,7 @@ export class Buff extends MobListener
         this.countTime = ((settings.countTime === undefined) ? true : settings.countTime);
 
         //time in seconds, indicates the durtion of buff
-        // this.timeMax = settings.time || 1.0;
+        this.timeMax = settings.time || 1.0;
 
         //time in seconds, will automatically reduce by time
         this.timeRemain = [settings.time];// || this.timeMax;
@@ -73,6 +76,8 @@ export class Buff extends MobListener
         this.source = settings.source || undefined;
 
         this.toolTip = { title: "Buff", text: "lol." };
+        this.UIimportant = (settings.UIimportant === undefined) ? false : settings.UIimportant;
+        this.UIpriority = (settings.UIpriority === undefined) ? 0 : settings.UIpriority;
     }
 
     popUp(mob: Mob)

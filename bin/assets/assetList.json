@@ -58,5 +58,13 @@
     "img_weapon_icon_test": {
         "url": "./assets/img/weapon_icons/test.png",
         "type": "image"
+    },
+    "img_buff_icon_test": {
+        "url": "./assets/img/buff_icons/test.png",
+        "type": "image"
+    },
+    "img_imp_buff_icon_test": {
+        "url": "./assets/img/buff_icons/test_imp.png",
+        "type": "image"
     }
 }

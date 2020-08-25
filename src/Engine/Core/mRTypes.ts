@@ -32,6 +32,9 @@ export namespace mRTypes
             popupColor?: Phaser.Display.Color;
 
             source?: MobData.MobData;
+
+            UIimportant?: boolean;
+            UIpriority?: number;
         }
 
         export interface SpellData

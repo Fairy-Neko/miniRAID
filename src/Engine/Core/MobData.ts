@@ -112,7 +112,8 @@ export class MobData extends EventSystem.EventElement
     ID: number;
 
     listeners: QuerySet<MobListener>;
-    // buffList: Set<Buff>;
+    buffList: Buff[];
+    _buffListDirty: boolean; // Used to tell HUD when to update buff list
 
     mobConstructor: mRTypes.MobConstructor;
     parentMob?: Mob;
@@ -458,10 +459,12 @@ export class MobData extends EventSystem.EventElement
 
     addBuff(buff: Buff): boolean
     {
+        let dirty: boolean = true;
         let flag: boolean = true;
         this.addListener(buff, buff.source, (arg: MobListener): boolean =>
         {
             flag = false;
+            dirty = false;
             if (arg instanceof Buff)
             {
                 if (arg.stackable === true)
@@ -477,6 +480,12 @@ export class MobData extends EventSystem.EventElement
             }
             return false;
         });
+
+        if (dirty)
+        {
+            this.buffList = <Buff[]>(this.listeners.query('buff'));
+            this._buffListDirty = true;
+        }
 
         return flag;
     }
@@ -511,6 +520,11 @@ export class MobData extends EventSystem.EventElement
         // TODO: Who removed this listener ?
         if (this.listeners.removeItem(listener))
         {
+            if (listener.type === MobListenerType.Buff)
+            {
+                this.buffList = <Buff[]>(this.listeners.query('buff'));
+                this._buffListDirty = true;
+            }
             // listener.emit('remove', undefined, this, source);
             listener._beRemoved(this, source);
             this.unlistenAll(listener);
