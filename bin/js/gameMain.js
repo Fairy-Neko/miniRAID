@@ -1763,7 +1763,7 @@ define("Engine/UI/MonitorFrame", ["require", "exports", "Engine/Core/BattleMonit
             this.slOne.setOrigin(0);
             this.add(this.slOne);
             this.playerName = new Phaser.GameObjects.BitmapText(this.scene, 2, height - 2 - textGap, Localization_2._("UIFont"), "Player");
-            this.playerName.setTint(0xaaaaaa);
+            this.playerName.setAlpha(0.5);
             this.playerName.setOrigin(0, 1);
             this.valueText = new Phaser.GameObjects.BitmapText(this.scene, this.refWidth + 2, height - 2 - textGap, "smallPx_HUD", "255,630");
             this.valueText.setOrigin(1, 1);
