@@ -11,6 +11,8 @@ import { ProgressBar } from "../UI/ProgressBar";
 import { parse } from 'papaparse';
 import { mRTypes } from "../Core/mRTypes";
 import { Buff } from "../Core/Buff";
+import Cookies from "js-cookie";
+import { GameData } from "../Core/GameData";
 
 /**
  * Handles all necessary assets that must be loaded before the game start.
@@ -22,6 +24,12 @@ export class GamePreloadScene extends Phaser.Scene
 
     create()
     {
+        // Set Language
+        let sbox = <HTMLSelectElement>(document.getElementById("Language"));
+        let slang = Cookies.get('language') || sbox.options[sbox.selectedIndex].value;
+        GameData.mainLanguage = <any>slang;
+        sbox.selectedIndex = slang === 'zh-cn' ? 0 : (slang === 'en-us' ? 1 : 2);
+
         this.load.bitmapFont('smallPx', './assets/fonts/smallPx_C_0.png', './assets/fonts/smallPx_C.fnt');
         this.load.bitmapFont('smallPx_HUD', './assets/fonts/smallPx_HUD_0.png', './assets/fonts/smallPx_HUD.fnt');
         this.load.bitmapFont('mediumPx', './assets/fonts/mediumPx_04b03_0.png', './assets/fonts/mediumPx_04b03.fnt');

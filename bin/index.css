@@ -44,6 +44,7 @@ div
 #tooltip:lang(ja)
 {
     font-family: "MS PGothic", "Osaka", Arial, sans-serif;
+    letter-spacing: 0.5px;
 }
 
 @media

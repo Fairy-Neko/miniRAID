@@ -132,7 +132,7 @@ export class Buff extends MobListener
     {
         let tt = this.preToolTip();
         return {
-            "title": `<div><p><span>${tt.title || this.getTitle()}</span><span>(${this.timeRemain.length > 0 ? this.timeRemain[0].toFixed(1) : 0}s)</span></p></div>`,
+            "title": `<div><p style='margin:0;'><span>${tt.title || this.getTitle()}</span><span>(${this.timeRemain.length > 0 ? this.timeRemain[0].toFixed(1) : 0}s)</span></p></div>`,
 
             "text": `
             <div style = "max-width: 200px">
@@ -142,7 +142,8 @@ export class Buff extends MobListener
                 ${ this.source ? `<p class = "buffFroms"><span></span><span>${_('buffTT_from') + this.source.name}</span></p>` : ``}
             </div>`,
 
-            "color": tt.color
+            "color": tt.color,
+            'bodyStyle': 'margin-left: 0; margin-right: 0;'
         };
     }
 

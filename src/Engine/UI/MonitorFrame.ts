@@ -81,7 +81,7 @@ export class MonitorRow extends Phaser.GameObjects.Container
                 let spell = spV.spell;
                 text +=
                     `<p>
-                    <span>${_(spell)}</span><span style="font-size: 8pt; min-width: 100px; text-align: right">${this.formatNumber(bySpell[spell].total, this.consTotal)}, ${(bySpell[spell].total / this.rowData.number * 100).toFixed(2)}%</span>
+                    <span>${_(spell)}</span><span style="min-width: 100px; text-align: right">${this.formatNumber(bySpell[spell].total, this.consTotal)}, ${(bySpell[spell].total / this.rowData.number * 100).toFixed(2)}%</span>
                 </p>`;
             }
         }
@@ -89,15 +89,15 @@ export class MonitorRow extends Phaser.GameObjects.Container
         text +=
             `<p style = "margin-top: 10px; color: #ffc477">
                 <span>${_("totalDmg") + _("col_normalDmg")}</span>
-                <span style="font-size: 8pt; min-width: 100px; text-align: right">${this.formatNumber(this.rowData.slices[0], this.consTotal)}, ${(this.rowData.slices[0] / this.rowData.number * 100).toFixed(2)}%</span>
+                <span style="min-width: 100px; text-align: right">${this.formatNumber(this.rowData.slices[0], this.consTotal)}, ${(this.rowData.slices[0] / this.rowData.number * 100).toFixed(2)}%</span>
             </p>
             <p style = "color: #ff7777">
                 <span>${_("totalDmg") + _("col_critDmg")}</span>
-                <span style="font-size: 8pt; min-width: 100px; text-align: right">${this.formatNumber(this.rowData.slices[1], this.consTotal)}, ${(this.rowData.slices[1] / this.rowData.number * 100).toFixed(2)}%</span>
+                <span style="min-width: 100px; text-align: right">${this.formatNumber(this.rowData.slices[1], this.consTotal)}, ${(this.rowData.slices[1] / this.rowData.number * 100).toFixed(2)}%</span>
             </p>
             <p style = "color: coral">
                 <span>${_("totalDmg")}</span>
-                <span style="font-size: 8pt; min-width: 100px; text-align: right">${this.formatNumber(this.rowData.number, false)}</span>
+                <span style="min-width: 100px; text-align: right">${this.formatNumber(this.rowData.number, false)}</span>
             </p>`
 
         text += "</div>";

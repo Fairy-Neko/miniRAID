@@ -18,8 +18,8 @@ export class UIScene extends Phaser.Scene
 {
     static instance: UIScene;
     loaded: boolean = false;
-    orgMainLanguage: mRTypes.Languages;
-    orgPopUpLanguage: mRTypes.Languages;
+    orgMainFont: string;
+    orgPopUpFont: string;
     unitFrames: UnitFrame[] = [];
     playerCache: Mob[];
 
@@ -51,10 +51,10 @@ export class UIScene extends Phaser.Scene
 
         if (GameData.mainLanguage !== mRTypes.Languages.ENG || GameData.popUpBuffLanguage !== mRTypes.Languages.ENG)
         {
-            this.orgMainLanguage = GameData.mainLanguage;
-            this.orgPopUpLanguage = GameData.popUpBuffLanguage;
-            GameData.mainLanguage = mRTypes.Languages.ENG;
-            GameData.popUpBuffLanguage = mRTypes.Languages.ENG;
+            this.orgMainFont = Localization.data.main.UIFont[GameData.mainLanguage];
+            this.orgPopUpFont = Localization.data.popUpBuff.buffFont[GameData.popUpBuffLanguage];
+            Localization.data.main.UIFont[GameData.mainLanguage] = 'smallPx';
+            Localization.data.popUpBuff.buffFont[GameData.popUpBuffLanguage] = 'smallPx';
 
             let txt = this.add.bitmapText(10, 10, 'smallPx', "HUD / UI: Loading Unicode Fonts ... ");
             this.load.bitmapFont('simsun', './assets/fonts/simsun_0.png', './assets/fonts/simsun.fnt');
@@ -72,8 +72,8 @@ export class UIScene extends Phaser.Scene
 
     loadComplete()
     {
-        GameData.mainLanguage = this.orgMainLanguage;
-        GameData.popUpBuffLanguage = this.orgPopUpLanguage;
+        Localization.data.main.UIFont[GameData.mainLanguage] = this.orgMainFont;
+        Localization.data.popUpBuff.buffFont[GameData.popUpBuffLanguage] = this.orgPopUpFont;
         this.setupScene();
     }
 
@@ -158,6 +158,10 @@ export class UIScene extends Phaser.Scene
         if (tip.bodyStyle)
         {
             this.toolTip.body.style.cssText = tip.bodyStyle;
+        }
+        else
+        {
+            this.toolTip.body.style.cssText = "";
         }
 
         // set it visible

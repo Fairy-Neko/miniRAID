@@ -5,6 +5,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 /**
  * @packageDocumentation
  * @module Events
@@ -2038,22 +2041,22 @@ define("Engine/UI/MonitorFrame", ["require", "exports", "Engine/Core/BattleMonit
                     let spell = spV.spell;
                     text +=
                         `<p>
-                    <span>${Localization_2._(spell)}</span><span style="font-size: 8pt; min-width: 100px; text-align: right">${this.formatNumber(bySpell[spell].total, this.consTotal)}, ${(bySpell[spell].total / this.rowData.number * 100).toFixed(2)}%</span>
+                    <span>${Localization_2._(spell)}</span><span style="min-width: 100px; text-align: right">${this.formatNumber(bySpell[spell].total, this.consTotal)}, ${(bySpell[spell].total / this.rowData.number * 100).toFixed(2)}%</span>
                 </p>`;
                 }
             }
             text +=
                 `<p style = "margin-top: 10px; color: #ffc477">
                 <span>${Localization_2._("totalDmg") + Localization_2._("col_normalDmg")}</span>
-                <span style="font-size: 8pt; min-width: 100px; text-align: right">${this.formatNumber(this.rowData.slices[0], this.consTotal)}, ${(this.rowData.slices[0] / this.rowData.number * 100).toFixed(2)}%</span>
+                <span style="min-width: 100px; text-align: right">${this.formatNumber(this.rowData.slices[0], this.consTotal)}, ${(this.rowData.slices[0] / this.rowData.number * 100).toFixed(2)}%</span>
             </p>
             <p style = "color: #ff7777">
                 <span>${Localization_2._("totalDmg") + Localization_2._("col_critDmg")}</span>
-                <span style="font-size: 8pt; min-width: 100px; text-align: right">${this.formatNumber(this.rowData.slices[1], this.consTotal)}, ${(this.rowData.slices[1] / this.rowData.number * 100).toFixed(2)}%</span>
+                <span style="min-width: 100px; text-align: right">${this.formatNumber(this.rowData.slices[1], this.consTotal)}, ${(this.rowData.slices[1] / this.rowData.number * 100).toFixed(2)}%</span>
             </p>
             <p style = "color: coral">
                 <span>${Localization_2._("totalDmg")}</span>
-                <span style="font-size: 8pt; min-width: 100px; text-align: right">${this.formatNumber(this.rowData.number, false)}</span>
+                <span style="min-width: 100px; text-align: right">${this.formatNumber(this.rowData.number, false)}</span>
             </p>`;
             text += "</div>";
             return {
@@ -2161,10 +2164,10 @@ define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "En
                 body: tT.querySelector("#body"),
             };
             if (GameData_6.GameData.mainLanguage !== mRTypes_2.mRTypes.Languages.ENG || GameData_6.GameData.popUpBuffLanguage !== mRTypes_2.mRTypes.Languages.ENG) {
-                this.orgMainLanguage = GameData_6.GameData.mainLanguage;
-                this.orgPopUpLanguage = GameData_6.GameData.popUpBuffLanguage;
-                GameData_6.GameData.mainLanguage = mRTypes_2.mRTypes.Languages.ENG;
-                GameData_6.GameData.popUpBuffLanguage = mRTypes_2.mRTypes.Languages.ENG;
+                this.orgMainFont = Localization_3.Localization.data.main.UIFont[GameData_6.GameData.mainLanguage];
+                this.orgPopUpFont = Localization_3.Localization.data.popUpBuff.buffFont[GameData_6.GameData.popUpBuffLanguage];
+                Localization_3.Localization.data.main.UIFont[GameData_6.GameData.mainLanguage] = 'smallPx';
+                Localization_3.Localization.data.popUpBuff.buffFont[GameData_6.GameData.popUpBuffLanguage] = 'smallPx';
                 let txt = this.add.bitmapText(10, 10, 'smallPx', "HUD / UI: Loading Unicode Fonts ... ");
                 this.load.bitmapFont('simsun', './assets/fonts/simsun_0.png', './assets/fonts/simsun.fnt');
                 this.load.bitmapFont('simsun_o', './assets/fonts/simsun_outlined_0.png', './assets/fonts/simsun_outlined.fnt');
@@ -2177,8 +2180,8 @@ define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "En
             this.setupScene();
         }
         loadComplete() {
-            GameData_6.GameData.mainLanguage = this.orgMainLanguage;
-            GameData_6.GameData.popUpBuffLanguage = this.orgPopUpLanguage;
+            Localization_3.Localization.data.main.UIFont[GameData_6.GameData.mainLanguage] = this.orgMainFont;
+            Localization_3.Localization.data.popUpBuff.buffFont[GameData_6.GameData.popUpBuffLanguage] = this.orgPopUpFont;
             this.setupScene();
         }
         setupScene() {
@@ -2240,6 +2243,9 @@ define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "En
             this.toolTip.title.style.color = tip.color;
             if (tip.bodyStyle) {
                 this.toolTip.body.style.cssText = tip.bodyStyle;
+            }
+            else {
+                this.toolTip.body.style.cssText = "";
             }
             // set it visible
             this.toolTip.toolTip.style.display = "inherit";
@@ -2411,7 +2417,7 @@ define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener", "En
         getToolTip() {
             let tt = this.preToolTip();
             return {
-                "title": `<div><p><span>${tt.title || this.getTitle()}</span><span>(${this.timeRemain.length > 0 ? this.timeRemain[0].toFixed(1) : 0}s)</span></p></div>`,
+                "title": `<div><p style='margin:0;'><span>${tt.title || this.getTitle()}</span><span>(${this.timeRemain.length > 0 ? this.timeRemain[0].toFixed(1) : 0}s)</span></p></div>`,
                 "text": `
             <div style = "max-width: 200px">
                 <p>
@@ -2419,7 +2425,8 @@ define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener", "En
                 </p>
                 ${this.source ? `<p class = "buffFroms"><span></span><span>${Localization_4._('buffTT_from') + this.source.name}</span></p>` : ``}
             </div>`,
-                "color": tt.color
+                "color": tt.color,
+                'bodyStyle': 'margin-left: 0; margin-right: 0;'
             };
         }
         /**
@@ -4573,9 +4580,10 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
     exports.TestScene = TestScene;
 });
 /** @packageDocumentation @module ScenePrototypes */
-define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine/UI/Localization", "Engine/DynamicLoader/DynamicLoaderScene", "Engine/UI/UIScene", "TestScene", "Engine/Core/InventoryCore", "Lists/ItemList", "Engine/UI/ProgressBar", "papaparse", "Engine/Core/Buff"], function (require, exports, Localization_8, DynamicLoaderScene_3, UIScene_4, TestScene_1, InventoryCore_3, ItemList_1, ProgressBar_3, papaparse_1, Buff_5) {
+define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine/UI/Localization", "Engine/DynamicLoader/DynamicLoaderScene", "Engine/UI/UIScene", "TestScene", "Engine/Core/InventoryCore", "Lists/ItemList", "Engine/UI/ProgressBar", "papaparse", "Engine/Core/Buff", "js-cookie", "Engine/Core/GameData"], function (require, exports, Localization_8, DynamicLoaderScene_3, UIScene_4, TestScene_1, InventoryCore_3, ItemList_1, ProgressBar_3, papaparse_1, Buff_5, js_cookie_1, GameData_16) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    js_cookie_1 = __importDefault(js_cookie_1);
     /**
      * Handles all necessary assets that must be loaded before the game start.
      * May also perform necessary processing steps.
@@ -4586,6 +4594,11 @@ define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine
             this.currProgress = 0;
         }
         create() {
+            // Set Language
+            let sbox = (document.getElementById("Language"));
+            let slang = js_cookie_1.default.get('language') || sbox.options[sbox.selectedIndex].value;
+            GameData_16.GameData.mainLanguage = slang;
+            sbox.selectedIndex = slang === 'zh-cn' ? 0 : (slang === 'en-us' ? 1 : 2);
             this.load.bitmapFont('smallPx', './assets/fonts/smallPx_C_0.png', './assets/fonts/smallPx_C.fnt');
             this.load.bitmapFont('smallPx_HUD', './assets/fonts/smallPx_HUD_0.png', './assets/fonts/smallPx_HUD.fnt');
             this.load.bitmapFont('mediumPx', './assets/fonts/mediumPx_04b03_0.png', './assets/fonts/mediumPx_04b03.fnt');
