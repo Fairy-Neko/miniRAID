@@ -28,13 +28,15 @@ export namespace mRTypes
 
             iconId?: integer;
             color?: Phaser.Display.Color;
-            popupName?: { [index: string]: string } | string;
+            popupName?: string;
             popupColor?: Phaser.Display.Color;
 
             source?: MobData.MobData;
 
             UIimportant?: boolean;
             UIpriority?: number;
+
+            toolTip?: string;
         }
 
         export interface SpellData
@@ -277,7 +279,7 @@ export namespace mRTypes
     {
         title: string;
         text: string;
-        color?: Phaser.Display.Color;
+        color?: string;
     }
 
     export interface ItemData

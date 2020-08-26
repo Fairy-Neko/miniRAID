@@ -4,6 +4,7 @@
  */
 
 import { GameData } from "../Core/GameData";
+import { mRTypes } from "../Core/mRTypes";
 
 export class Localization
 {
@@ -14,17 +15,17 @@ export class Localization
         Localization.data = data;
     }
 
-    static getStr(s: string): any
+    static getStr(s: string, overrideLanguage?: mRTypes.Languages): any
     {
         if (Localization.data)
         {
             if (Localization.data.main.hasOwnProperty(s))
             {
-                return Localization.data.main[s][GameData.mainLanguage];
+                return Localization.data.main[s][overrideLanguage || GameData.mainLanguage];
             }
             else if (Localization.data.popUpBuff.hasOwnProperty(s))
             {
-                return Localization.data.popUpBuff[s][GameData.popUpBuffLanguage];
+                return Localization.data.popUpBuff[s][overrideLanguage || GameData.popUpBuffLanguage];
             }
 
             return s;
@@ -33,7 +34,7 @@ export class Localization
     }
 }
 
-export function _(s: string): any
+export function _(s: string, overrideLanguage?: mRTypes.Languages): any
 {
-    return Localization.getStr(s);
+    return Localization.getStr(s, overrideLanguage);
 }

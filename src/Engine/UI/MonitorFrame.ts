@@ -9,6 +9,8 @@ import { _ } from "./Localization";
 import { Game } from "phaser";
 import { GameData } from "../Core/GameData";
 import { ScrollMaskedContainer } from "./ScrollMaskedContainer";
+import { UIScene } from "./UIScene";
+import { mRTypes } from "../Core/mRTypes";
 
 export class MonitorRow extends Phaser.GameObjects.Container
 {
@@ -31,8 +33,8 @@ export class MonitorRow extends Phaser.GameObjects.Container
 
         this.bg = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, 2 + this.refWidth, height, bgColor, 0.2);
         this.bg.setOrigin(0);
-        this.bg.on('pointerover', () => { this.bg.fillAlpha = 0.6; });
-        this.bg.on('pointerout', () => { this.bg.fillAlpha = 0.2; });
+        this.bg.on('pointerover', () => { this.bg.fillAlpha = 0.6; UIScene.getSingleton().showToolTip(this.getToolTip()); });
+        this.bg.on('pointerout', () => { this.bg.fillAlpha = 0.2; UIScene.getSingleton().hideToolTip(); });
         this.bg.on('pointerdown', () => { if (this.rowData) { console.log(this.rowData.player); } });
         this.bg.on('wheel', (evt: Phaser.Input.Pointer) => { (<ScrollMaskedContainer>this.parentContainer).onWheel(evt); });
         this.add(this.bg);
@@ -55,6 +57,56 @@ export class MonitorRow extends Phaser.GameObjects.Container
         this.add(this.valueText);
 
         this.setRow(undefined, 0, 0);
+    }
+
+    getToolTip(): mRTypes.HTMLToolTip
+    {
+        let text = "<div>";
+        let playerData = BattleMonitor.getSingleton().damageDict[this.rowData.player.name];
+        if (playerData)
+        {
+            let bySpell = playerData.spellDict;
+            let allSpell = [];
+            for (let spell in bySpell)
+            {
+                allSpell.push({ spell: spell, val: bySpell[spell].total });
+            }
+            allSpell.sort((a, b) =>
+            {
+                return b.val - a.val;
+            });
+
+            for (let spV of allSpell)
+            {
+                let spell = spV.spell;
+                text +=
+                    `<p>
+                    <span style="max-width: 120px;">${_(spell)}</span><span style="font-size: 8pt">${this.formatNumber(bySpell[spell].total, this.consTotal)}, ${(bySpell[spell].total / this.rowData.number * 100).toFixed(2)}%</span>
+                </p>`;
+            }
+        }
+
+        text +=
+            `<p style = "margin-top: 10px; color: #ffc477">
+                <span>${_("totalDmg") + _("col_normalDmg")}</span>
+                <span style="font-size: 8pt">${this.formatNumber(this.rowData.slices[0], this.consTotal)}, ${(this.rowData.slices[0] / this.rowData.number * 100).toFixed(2)}%</span>
+            </p>
+            <p style = "color: #ff7777">
+                <span>${_("totalDmg") + _("col_critDmg")}</span>
+                <span style="font-size: 8pt">${this.formatNumber(this.rowData.slices[1], this.consTotal)}, ${(this.rowData.slices[1] / this.rowData.number * 100).toFixed(2)}%</span>
+            </p>
+            <p style = "color: coral">
+                <span>${_("totalDmg")}</span>
+                <span style="font-size: 8pt">${this.formatNumber(this.rowData.number, false)}</span>
+            </p>`
+
+        text += "</div>";
+
+        return {
+            title: this.rowData.player.name,
+            text: text,
+            color: "#ffffff",
+        }
     }
 
     formatNumber(num: number, cons: boolean): string

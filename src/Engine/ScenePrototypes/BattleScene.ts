@@ -9,6 +9,7 @@ import { DynamicLoaderScene } from '../DynamicLoader/DynamicLoaderScene';
 import { ObjectPopulator } from '../Core/ObjectPopulator';
 import { BattleMonitor } from '../Core/BattleMonitor';
 import { UIScene } from '../UI/UIScene';
+import { ProgressBar } from '../UI/ProgressBar';
 
 export class BattleScene extends Phaser.Scene 
 {
@@ -35,6 +36,9 @@ export class BattleScene extends Phaser.Scene
     mapReady: boolean;
     loadingScreen: Phaser.GameObjects.Rectangle;
     battleMonitor: BattleMonitor;
+
+    currProgress: number = 0;
+    pBar: ProgressBar;
 
     constructor(debug: boolean = false, mapToLoad = "playground") 
     {
@@ -113,6 +117,11 @@ export class BattleScene extends Phaser.Scene
             console.log(path);
         }
 
+        this.pBar = new ProgressBar(this, 400, 310, () => [this.currProgress, 1.0], 224, 20, 5, false, 0x444444, 0x000000, 0xade0ee, false);
+        this.pBar.setDepth(1000);
+        this.add.existing(this.pBar);
+        this.load.on('progress', (value: number) => { this.currProgress = value; });
+
         this.load.on('complete', () => { this.loadComplete(); UIScene.getSingleton().resetPlayers(); });
         this.load.start();
     }
@@ -125,6 +134,14 @@ export class BattleScene extends Phaser.Scene
             yoyo: false,
             repeat: 0
         });
+
+        // Remove the loading bar
+        this.tweens.add({
+            targets: this.pBar,
+            alpha: 0,
+            duration: 300,
+        }).on('complete', () => { this.pBar.destroy(); this.pBar = undefined; });
+
         for (let tileset of this.map.tilesets)
         {
             this.map.addTilesetImage(tileset.name, tileset.name);
@@ -182,6 +199,10 @@ export class BattleScene extends Phaser.Scene
 
             this.updateScene(time, dt / 1000.0);
             BattleMonitor.getSingleton().update(dt / 1000.0);
+        }
+        else if (this.pBar)
+        {
+            this.pBar.update(time, dt / 1000.0);
         }
     }
 

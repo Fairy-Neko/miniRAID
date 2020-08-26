@@ -7,12 +7,14 @@ import { MobData } from "../Engine/Core/MobData";
 import { GameData } from "../Engine/Core/GameData";
 import { HealDmg, getRandomFloat, getRandomInt } from "../Engine/Core/Helper";
 import { SpellFlags } from "../Engine/GameObjects/Spell";
+import { _ } from "../Engine/UI/Localization";
 
 export class HDOT extends Buff
 {
     vMin: number;
     vMax: number;
     vGap: number;
+    typeStr: string;
 
     timer: number;
     vCount: number;
@@ -33,6 +35,7 @@ export class HDOT extends Buff
         this.vMax = vMax;
         this.vGap = vGap; // do not use cooldown for accurate timing
         this.vType = type;
+        this.typeStr = _(this.vType);
         this.timer = 0;
         this.vCount = -1; // Initial tick
     }
@@ -56,5 +59,14 @@ export class HDOT extends Buff
                 'popUp': true,
             });
         }
+    }
+
+    preToolTip(): mRTypes.HTMLToolTip
+    {
+        let tt = super.preToolTip();
+        tt.text += "<br>";
+        tt.text += eval("`" + _("_tt_HDOT") + "`");
+
+        return tt;
     }
 }

@@ -28,7 +28,7 @@ export class Buff extends MobListener
     popupColor: Phaser.Display.Color;
 
     source: MobData;
-    toolTip: mRTypes.HTMLToolTip;
+    toolTip: string;
 
     UIimportant: boolean;
     UIpriority: number;
@@ -74,8 +74,12 @@ export class Buff extends MobListener
 
         //Where does this buff come from?
         this.source = settings.source || undefined;
+        if (this.source === undefined)
+        {
+            console.warn(`Buff "${_(this.name)}" did not have a source. Did you forgot it ?`);
+        }
 
-        this.toolTip = { title: "Buff", text: "lol." };
+        this.toolTip = settings.toolTip || "LOL.";
         this.UIimportant = (settings.UIimportant === undefined) ? false : settings.UIimportant;
         this.UIpriority = (settings.UIpriority === undefined) ? 0 : settings.UIpriority;
     }
@@ -117,9 +121,29 @@ export class Buff extends MobListener
         }
     }
 
-    showToolTip()
+    preToolTip(): mRTypes.HTMLToolTip { return { title: undefined, text: "", color: Phaser.Display.Color.RGBToString(this.color.red, this.color.green, this.color.blue) }; }
+
+    getTitle(): string
     {
-        // TODO
+        return _(this.name) + (this.stackable ? ` (${this.stacks})` : "");
+    }
+
+    getToolTip(): mRTypes.HTMLToolTip
+    {
+        let tt = this.preToolTip();
+        return {
+            "title": `<div><p><span>${tt.title || this.getTitle()}</span><span>(${this.timeRemain[0].toFixed(1)}s)</span></p></div>`,
+
+            "text": `
+            <div style = "max-width: 200px">
+                <p>
+                    ${eval("`" + _(this.toolTip) + "`") + tt.text}
+                </p>
+                ${ this.source ? `<p class = "buffFroms"><span></span><span>${_('buffTT_from') + this.source.name}</span></p>` : ``}
+            </div>`,
+
+            "color": tt.color
+        };
     }
 
     /**
@@ -139,5 +163,16 @@ export class Buff extends MobListener
     keyFn(): string
     {
         return `${this.name}-${this.source.name}`;
+    }
+
+    static parsedBuffInfo: { [index: string]: mRTypes.Settings.Buff };
+    static fromKey(key: string, overrideSettings?: mRTypes.Settings.Buff): mRTypes.Settings.Buff
+    {
+        let cached = Buff.parsedBuffInfo[key];
+        if (cached === undefined)
+        {
+            console.warn(`Buff key "${key}" does not exist.`);
+        }
+        return { ...cached, ...overrideSettings };
     }
 }

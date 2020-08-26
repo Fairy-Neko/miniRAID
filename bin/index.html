@@ -10,6 +10,7 @@
 
     <script src="js/require.js"></script>
     <!-- <script src = "js/umd.min.js"></script> -->
+    <!-- <script src="js/papaparse.js"></script> -->
     <script src="js/phaser.min.js"></script>
     <script src="js/gameMain.js"></script>
 
@@ -33,6 +34,45 @@
 <body>
     <div id="GameFrame" oncontextmenu="return false;">
     </div>
+    <!-- Tool tip -->
+    <div id="tooltip" class="followmouse">
+        <h1 id="title">Test Sword 测试</h1>
+        <p id="body">测试 Test message</p>
+    </div>
+
+    <!-- pointermove events -->
+    <script>
+
+        function followMousePosition(t, e) {
+            var rect = t.getBoundingClientRect();
+            if (rect.width === 0) {
+                t.style.left = -1000 + 'px';
+                t.style.top = -1000 + 'px';
+                return;
+            }
+            if (e.pageX + 20 + rect.width >= window.innerWidth) {
+                t.style.left = e.pageX - rect.width - 20 + 'px';
+            }
+            else {
+                t.style.left = e.pageX + 20 + 'px';
+            }
+
+            if (e.pageY - 20 - rect.height <= 0) {
+                t.style.top = e.pageY + 20 + 'px';
+            }
+            else {
+                t.style.top = e.pageY - rect.height - 20 + 'px';
+            }
+        }
+
+        var _ui_tt = document.getElementById("tooltip");
+        document.addEventListener("pointermove", function (e) {
+            followMousePosition(_ui_tt, e);
+        }, true);
+        document.addEventListener("pointerdown", function (e) {
+            followMousePosition(_ui_tt, e);
+        }, true);
+    </script>
 </body>
 
 </html>

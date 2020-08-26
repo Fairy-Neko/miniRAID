@@ -10,13 +10,20 @@ import { Mob } from "../GameObjects/Mob";
 import { Localization, _ } from "./Localization";
 import { MonitorFrame } from "./MonitorFrame";
 import { BattleMonitor } from "../Core/BattleMonitor";
+import { mRTypes } from "../Core/mRTypes";
+import { GameData } from "../Core/GameData";
+import { Game, DOM } from "phaser";
 
 export class UIScene extends Phaser.Scene
 {
     static instance: UIScene;
     loaded: boolean = false;
+    orgMainLanguage: mRTypes.Languages;
+    orgPopUpLanguage: mRTypes.Languages;
     unitFrames: UnitFrame[] = [];
     playerCache: Mob[];
+
+    toolTip: { toolTip: HTMLElement, title: HTMLElement, body: HTMLElement };
 
     static getSingleton(): UIScene
     {
@@ -30,24 +37,59 @@ export class UIScene extends Phaser.Scene
 
     preload()
     {
-        this.load.bitmapFont('smallPx', './assets/fonts/smallPx_C_0.png', './assets/fonts/smallPx_C.fnt');
-        this.load.bitmapFont('smallPx_HUD', './assets/fonts/smallPx_HUD_0.png', './assets/fonts/smallPx_HUD.fnt');
-        this.load.bitmapFont('mediumPx', './assets/fonts/mediumPx_04b03_0.png', './assets/fonts/mediumPx_04b03.fnt');
-        this.load.bitmapFont('simsun', './assets/fonts/simsun_0.png', './assets/fonts/simsun.fnt');
-        this.load.bitmapFont('simsun_o', './assets/fonts/simsun_outlined_0.png', './assets/fonts/simsun_outlined.fnt');
-
-        this.load.json('locals', './assets/locals.json');
-
         this.add.existing(PopUpManager.register(this));
     }
 
     create()
     {
+        let tT = document.getElementById("tooltip");
+        this.toolTip = {
+            toolTip: tT,
+            title: tT.querySelector("#title"),
+            body: tT.querySelector("#body"),
+        };
+
+        if (GameData.mainLanguage !== mRTypes.Languages.ENG || GameData.popUpBuffLanguage !== mRTypes.Languages.ENG)
+        {
+            this.orgMainLanguage = GameData.mainLanguage;
+            this.orgPopUpLanguage = GameData.popUpBuffLanguage;
+            GameData.mainLanguage = mRTypes.Languages.ENG;
+            GameData.popUpBuffLanguage = mRTypes.Languages.ENG;
+
+            let txt = this.add.bitmapText(10, 10, 'smallPx', "HUD / UI: Loading Unicode Fonts ... ");
+            this.load.bitmapFont('simsun', './assets/fonts/simsun_0.png', './assets/fonts/simsun.fnt');
+            this.load.bitmapFont('simsun_o', './assets/fonts/simsun_outlined_0.png', './assets/fonts/simsun_outlined.fnt');
+            this.load.on('complete', () => { this.loadComplete(); });
+            this.load.on('progress', (value: number) => { txt.text = `[${(value * 100).toFixed(1)}%] HUD / UI: Loading Unicode Fonts ... `; });
+            this.load.start();
+        }
+
         this.loaded = true;
-        Localization.setData(this.cache.json.get('locals'));
-        this.initUnitFrames();
         PopUpManager.getSingleton().hasLoaded();
 
+        this.setupScene();
+    }
+
+    loadComplete()
+    {
+        GameData.mainLanguage = this.orgMainLanguage;
+        GameData.popUpBuffLanguage = this.orgPopUpLanguage;
+        this.setupScene();
+    }
+
+    setupScene()
+    {
+        if (this.children.length > 0)
+        {
+            for (let child of this.children.getAll())
+            {
+                child.destroy();
+            }
+        }
+
+        this.add.existing(PopUpManager.register(this));
+        PopUpManager.getSingleton().hasLoaded();
+        this.initUnitFrames();
         // this.add.rectangle(750 + 61, 520 + 8, 122, 16, 0x948779);
         let bt = this.add.bitmapText(755, 530, _("UIFont"), _("Damage Done (DPS)"));
         bt.setOrigin(0, 1);
@@ -102,5 +144,24 @@ export class UIScene extends Phaser.Scene
     update(time: number, dt: number)
     {
         this.children.each((item: Phaser.GameObjects.GameObject) => { item.update(time / 1000.0, dt / 1000.0); });
+    }
+
+    showToolTip(tip: mRTypes.HTMLToolTip)
+    {
+        // change text
+        this.toolTip.title.innerHTML = tip.title;
+        this.toolTip.body.innerHTML = tip.text;
+
+        // change color
+        this.toolTip.title.style.color = tip.color;
+
+        // set it visible
+        this.toolTip.toolTip.style.display = "inherit";
+    }
+
+    hideToolTip()
+    {
+        // set it invisible
+        this.toolTip.toolTip.style.display = "none";
     }
 }

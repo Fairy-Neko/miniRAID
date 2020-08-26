@@ -9,6 +9,7 @@ import { Projectile } from '../Engine/GameObjects/Projectile';
 import { getRandomInt, AoE } from '../Engine/Core/Helper';
 import { GameData } from '../Engine/Core/GameData';
 import { HDOT } from '../Buffs/HDOT';
+import { Buff } from '../Engine/Core/Buff';
 
 export class CometWand extends Weapon
 {
@@ -79,7 +80,7 @@ export class CometWand extends Weapon
                         () => AoE((m: Mob) =>
                         {
                             // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
-                            m.receiveBuff(source, new HDOT({ 'source': source.mobData, 'countTime': true, 'popupColor': GameData.ElementColors[GameData.Elements.fire], 'popupName': 'buff_burnt', 'time': 15.0, 'stackable': true, 'maxStack': 10 }, GameData.Elements.fire, 20, 30, 0.5));
+                            m.receiveBuff(source, new HDOT(Buff.fromKey('test_Burn', { source: source.mobData, time: 15.0, maxStack: 10 }), GameData.Elements.fire, 20, 30, 0.5));
                         }, self.getPosition(), 100, self.targeting), [], mob);
                 },
                 'color': Phaser.Display.Color.HexStringToColor("#ff3333"),
@@ -92,11 +93,11 @@ export class CometWand extends Weapon
             // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
             if (getRandomInt(0, 3) <= 1)
             {
-                m.receiveBuff(source, new HDOT({ 'name': 'heal', 'source': source.mobData, 'countTime': true, 'popupColor': GameData.ElementColors[GameData.Elements.heal], 'popupName': 'buff_burnt', 'time': 12.0, 'stackable': true, 'maxStack': 10, 'UIpriority': 0, }, GameData.Elements.heal, 5, 8, 1.0));
+                m.receiveBuff(source, new HDOT(Buff.fromKey('test_HOT', { source: source.mobData, time: 12.0, maxStack: 10 }), GameData.Elements.heal, 5, 8, 1.0));
             }
             else
             {
-                m.receiveBuff(source, new HDOT({ 'name': 'light', 'source': source.mobData, 'countTime': true, 'popupColor': GameData.ElementColors[GameData.Elements.light], 'popupName': 'buff_burnt', 'time': 12.0, 'stackable': false, 'maxStack': 10, 'UIpriority': 1 }, GameData.Elements.light, 5, 8, 1.0));
+                m.receiveBuff(source, new HDOT(Buff.fromKey('test_Light', { source: source.mobData, time: 12.0 }), GameData.Elements.light, 5, 8, 1.0));
             }
         }, source.footPos(), 200, Targeting.Player);
     }

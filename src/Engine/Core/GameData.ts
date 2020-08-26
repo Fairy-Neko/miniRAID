@@ -84,8 +84,8 @@ export namespace GameData
     export let moveThreshold: number = 150;
 
     export let popUpSmallFont: boolean = true;
-    export let popUpBuffLanguage: string = mRTypes.Languages.ENG;
-    export let mainLanguage: string = mRTypes.Languages.ENG;
+    export let popUpBuffLanguage: mRTypes.Languages = mRTypes.Languages.ENG;
+    export let mainLanguage: mRTypes.Languages = mRTypes.Languages.JPN;
 
     export const healTaunt: number = 2;
 }

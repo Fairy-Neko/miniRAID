@@ -4,6 +4,7 @@ import { TestScene } from './TestScene'
 import { DynamicLoaderScene } from './Engine/DynamicLoader/DynamicLoaderScene'
 import { UnitFrame } from './Engine/UI/UnitFrame';
 import { UIScene } from './Engine/UI/UIScene';
+import { GamePreloadScene } from './Engine/ScenePrototypes/GamePreloadScene';
 
 export class InitPhaser 
 {
@@ -16,8 +17,8 @@ export class InitPhaser
             type: Phaser.AUTO,
             width: 1024,
             height: 660,
-            resolution: window.devicePixelRatio,
-            scene: [TestScene],
+            resolution: 1,
+            scene: [GamePreloadScene],
             banner: true,
             title: 'miniRAID',
             url: 'https://updatestage.littlegames.app',
@@ -32,8 +33,6 @@ export class InitPhaser
         }
 
         this.gameRef = new Phaser.Game(config);
-        this.gameRef.scene.add('DynamicLoaderScene', DynamicLoaderScene.getSingleton(), true);
-        this.gameRef.scene.add('UIScene', UIScene.getSingleton(), true);
     }
 }
 

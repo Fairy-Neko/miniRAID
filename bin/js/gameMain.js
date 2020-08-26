@@ -881,7 +881,7 @@ define("Engine/Core/GameData", ["require", "exports", "Engine/Core/mRTypes"], fu
         GameData.moveThreshold = 150;
         GameData.popUpSmallFont = true;
         GameData.popUpBuffLanguage = mRTypes_1.mRTypes.Languages.ENG;
-        GameData.mainLanguage = mRTypes_1.mRTypes.Languages.ENG;
+        GameData.mainLanguage = mRTypes_1.mRTypes.Languages.JPN;
         GameData.healTaunt = 2;
     })(GameData = exports.GameData || (exports.GameData = {}));
 });
@@ -900,25 +900,25 @@ define("Engine/UI/ProgressBar", ["require", "exports"], function (require, expor
             super(scene, x, y);
             this.fetchFunc = fetchValue;
             this.getText = getText;
-            this.out = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, width, height, outlineColor);
-            this.out.setOrigin(0);
-            this.bg = new Phaser.GameObjects.Rectangle(this.scene, border, border, width - border * 2, height - border * 2, bgColor);
-            this.bg.setOrigin(0);
-            this.bg.setPosition(border, border);
             this.fill = new Phaser.GameObjects.Rectangle(this.scene, border, border, width - border * 2, height - border * 2, fillColor);
             this.fill.setOrigin(0);
             this.fill.setPosition(border, border);
-            this.text = new Phaser.GameObjects.BitmapText(this.scene, textX, textY, fontKey, '0/0');
-            this.text.setOrigin(align * 0.5, 0);
-            this.text.setTint(textColor);
             if (border > 0) {
+                this.out = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, width, height, outlineColor);
+                this.out.setOrigin(0);
                 this.add(this.out);
             }
             if (hasBG) {
+                this.bg = new Phaser.GameObjects.Rectangle(this.scene, border, border, width - border * 2, height - border * 2, bgColor);
+                this.bg.setOrigin(0);
+                this.bg.setPosition(border, border);
                 this.add(this.bg);
             }
             this.add(this.fill);
             if (showText) {
+                this.text = new Phaser.GameObjects.BitmapText(this.scene, textX, textY, fontKey, '0/0');
+                this.text.setOrigin(align * 0.5, 0);
+                this.text.setTint(textColor);
                 this.add(this.text);
             }
             this.fillMaxLength = width - border * 2;
@@ -943,11 +943,13 @@ define("Engine/UI/ProgressBar", ["require", "exports"], function (require, expor
                 repeat: 0,
                 duration: 100,
             });
-            if (this.getText) {
-                this.text.text = this.getText();
-            }
-            else {
-                this.text.text = value.toFixed(0) + "/" + max.toFixed(0);
+            if (this.text) {
+                if (this.getText) {
+                    this.text.text = this.getText();
+                }
+                else {
+                    this.text.text = value.toFixed(0) + "/" + max.toFixed(0);
+                }
             }
         }
     }
@@ -1379,13 +1381,13 @@ define("Engine/UI/Localization", ["require", "exports", "Engine/Core/GameData"],
         static setData(data) {
             Localization.data = data;
         }
-        static getStr(s) {
+        static getStr(s, overrideLanguage) {
             if (Localization.data) {
                 if (Localization.data.main.hasOwnProperty(s)) {
-                    return Localization.data.main[s][GameData_3.GameData.mainLanguage];
+                    return Localization.data.main[s][overrideLanguage || GameData_3.GameData.mainLanguage];
                 }
                 else if (Localization.data.popUpBuff.hasOwnProperty(s)) {
-                    return Localization.data.popUpBuff[s][GameData_3.GameData.popUpBuffLanguage];
+                    return Localization.data.popUpBuff[s][overrideLanguage || GameData_3.GameData.popUpBuffLanguage];
                 }
                 return s;
             }
@@ -1393,8 +1395,8 @@ define("Engine/UI/Localization", ["require", "exports", "Engine/Core/GameData"],
         }
     }
     exports.Localization = Localization;
-    function _(s) {
-        return Localization.getStr(s);
+    function _(s, overrideLanguage) {
+        return Localization.getStr(s, overrideLanguage);
     }
     exports._ = _;
 });
@@ -1482,7 +1484,7 @@ define("Engine/UI/ScrollMaskedContainer", ["require", "exports"], function (requ
  * @packageDocumentation
  * @module UI
  */
-define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "Engine/DynamicLoader/dSprite", "Engine/UI/Localization"], function (require, exports, ProgressBar_1, dSprite_1, Localization_1) {
+define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "Engine/DynamicLoader/dSprite", "Engine/UI/Localization", "Engine/UI/UIScene"], function (require, exports, ProgressBar_1, dSprite_1, Localization_1, UIScene_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class WeaponFrame extends Phaser.GameObjects.Container {
@@ -1549,6 +1551,11 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
                 this.stacks.depth = 10;
                 this.add(this.stacks);
             }
+            rect.setInteractive();
+            rect.on('pointerover', () => {
+                UIScene_1.UIScene.getSingleton().showToolTip(this.buff.getToolTip());
+            });
+            rect.on('pointerout', () => { UIScene_1.UIScene.getSingleton().hideToolTip(); });
         }
         update() {
             if (this.buff.countTime) {
@@ -1698,12 +1705,18 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
                 this.icons = this.icons.sort((a, b) => this.compare(a.buff, b.buff));
                 let len = 0;
                 for (let icon of this.icons) {
-                    this.scene.tweens.add({
-                        targets: icon,
-                        x: len,
-                        alpha: 1.0,
-                        duration: 100,
-                    });
+                    if (false) {
+                        this.scene.tweens.add({
+                            targets: icon,
+                            x: len,
+                            alpha: 1.0,
+                            duration: 0,
+                        });
+                    }
+                    else {
+                        icon.x = len;
+                        icon.alpha = 1.0;
+                    }
                     len += icon.len + 2;
                 }
                 if (bLen > 6) {
@@ -1953,7 +1966,7 @@ define("Engine/Core/BattleMonitor", ["require", "exports", "Engine/Core/GameData
  * @packageDocumentation
  * @module UI
  */
-define("Engine/UI/MonitorFrame", ["require", "exports", "Engine/Core/BattleMonitor", "Engine/UI/Localization", "Engine/Core/GameData", "Engine/UI/ScrollMaskedContainer"], function (require, exports, BattleMonitor_1, Localization_2, GameData_5, ScrollMaskedContainer_1) {
+define("Engine/UI/MonitorFrame", ["require", "exports", "Engine/Core/BattleMonitor", "Engine/UI/Localization", "Engine/Core/GameData", "Engine/UI/ScrollMaskedContainer", "Engine/UI/UIScene"], function (require, exports, BattleMonitor_1, Localization_2, GameData_5, ScrollMaskedContainer_1, UIScene_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class MonitorRow extends Phaser.GameObjects.Container {
@@ -1964,8 +1977,8 @@ define("Engine/UI/MonitorFrame", ["require", "exports", "Engine/Core/BattleMonit
             this.refWidth = refWidth;
             this.bg = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, 2 + this.refWidth, height, bgColor, 0.2);
             this.bg.setOrigin(0);
-            this.bg.on('pointerover', () => { this.bg.fillAlpha = 0.6; });
-            this.bg.on('pointerout', () => { this.bg.fillAlpha = 0.2; });
+            this.bg.on('pointerover', () => { this.bg.fillAlpha = 0.6; UIScene_2.UIScene.getSingleton().showToolTip(this.getToolTip()); });
+            this.bg.on('pointerout', () => { this.bg.fillAlpha = 0.2; UIScene_2.UIScene.getSingleton().hideToolTip(); });
             this.bg.on('pointerdown', () => { if (this.rowData) {
                 console.log(this.rowData.player);
             } });
@@ -1985,6 +1998,46 @@ define("Engine/UI/MonitorFrame", ["require", "exports", "Engine/Core/BattleMonit
             this.add(this.playerName);
             this.add(this.valueText);
             this.setRow(undefined, 0, 0);
+        }
+        getToolTip() {
+            let text = "<div>";
+            let playerData = BattleMonitor_1.BattleMonitor.getSingleton().damageDict[this.rowData.player.name];
+            if (playerData) {
+                let bySpell = playerData.spellDict;
+                let allSpell = [];
+                for (let spell in bySpell) {
+                    allSpell.push({ spell: spell, val: bySpell[spell].total });
+                }
+                allSpell.sort((a, b) => {
+                    return b.val - a.val;
+                });
+                for (let spV of allSpell) {
+                    let spell = spV.spell;
+                    text +=
+                        `<p>
+                    <span style="max-width: 120px;">${Localization_2._(spell)}</span><span style="font-size: 8pt">${this.formatNumber(bySpell[spell].total, this.consTotal)}, ${(bySpell[spell].total / this.rowData.number * 100).toFixed(2)}%</span>
+                </p>`;
+                }
+            }
+            text +=
+                `<p style = "margin-top: 10px; color: #ffc477">
+                <span>${Localization_2._("totalDmg") + Localization_2._("col_normalDmg")}</span>
+                <span style="font-size: 8pt">${this.formatNumber(this.rowData.slices[0], this.consTotal)}, ${(this.rowData.slices[0] / this.rowData.number * 100).toFixed(2)}%</span>
+            </p>
+            <p style = "color: #ff7777">
+                <span>${Localization_2._("totalDmg") + Localization_2._("col_critDmg")}</span>
+                <span style="font-size: 8pt">${this.formatNumber(this.rowData.slices[1], this.consTotal)}, ${(this.rowData.slices[1] / this.rowData.number * 100).toFixed(2)}%</span>
+            </p>
+            <p style = "color: coral">
+                <span>${Localization_2._("totalDmg")}</span>
+                <span style="font-size: 8pt">${this.formatNumber(this.rowData.number, false)}</span>
+            </p>`;
+            text += "</div>";
+            return {
+                title: this.rowData.player.name,
+                text: text,
+                color: "#ffffff",
+            };
         }
         formatNumber(num, cons) {
             let postfix = "";
@@ -2058,7 +2111,7 @@ define("Engine/UI/MonitorFrame", ["require", "exports", "Engine/Core/BattleMonit
  * @packageDocumentation
  * @module UI
  */
-define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "Engine/UI/UnitFrame", "Engine/Core/UnitManager", "Engine/UI/Localization", "Engine/UI/MonitorFrame", "Engine/Core/BattleMonitor"], function (require, exports, PopUpManager_2, UnitFrame_1, UnitManager_3, Localization_3, MonitorFrame_1, BattleMonitor_2) {
+define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "Engine/UI/UnitFrame", "Engine/Core/UnitManager", "Engine/UI/Localization", "Engine/UI/MonitorFrame", "Engine/Core/BattleMonitor", "Engine/Core/mRTypes", "Engine/Core/GameData"], function (require, exports, PopUpManager_2, UnitFrame_1, UnitManager_3, Localization_3, MonitorFrame_1, BattleMonitor_2, mRTypes_2, GameData_6) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class UIScene extends Phaser.Scene {
@@ -2075,19 +2128,45 @@ define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "En
             return UIScene.instance;
         }
         preload() {
-            this.load.bitmapFont('smallPx', './assets/fonts/smallPx_C_0.png', './assets/fonts/smallPx_C.fnt');
-            this.load.bitmapFont('smallPx_HUD', './assets/fonts/smallPx_HUD_0.png', './assets/fonts/smallPx_HUD.fnt');
-            this.load.bitmapFont('mediumPx', './assets/fonts/mediumPx_04b03_0.png', './assets/fonts/mediumPx_04b03.fnt');
-            this.load.bitmapFont('simsun', './assets/fonts/simsun_0.png', './assets/fonts/simsun.fnt');
-            this.load.bitmapFont('simsun_o', './assets/fonts/simsun_outlined_0.png', './assets/fonts/simsun_outlined.fnt');
-            this.load.json('locals', './assets/locals.json');
             this.add.existing(PopUpManager_2.PopUpManager.register(this));
         }
         create() {
+            let tT = document.getElementById("tooltip");
+            this.toolTip = {
+                toolTip: tT,
+                title: tT.querySelector("#title"),
+                body: tT.querySelector("#body"),
+            };
+            if (GameData_6.GameData.mainLanguage !== mRTypes_2.mRTypes.Languages.ENG || GameData_6.GameData.popUpBuffLanguage !== mRTypes_2.mRTypes.Languages.ENG) {
+                this.orgMainLanguage = GameData_6.GameData.mainLanguage;
+                this.orgPopUpLanguage = GameData_6.GameData.popUpBuffLanguage;
+                GameData_6.GameData.mainLanguage = mRTypes_2.mRTypes.Languages.ENG;
+                GameData_6.GameData.popUpBuffLanguage = mRTypes_2.mRTypes.Languages.ENG;
+                let txt = this.add.bitmapText(10, 10, 'smallPx', "HUD / UI: Loading Unicode Fonts ... ");
+                this.load.bitmapFont('simsun', './assets/fonts/simsun_0.png', './assets/fonts/simsun.fnt');
+                this.load.bitmapFont('simsun_o', './assets/fonts/simsun_outlined_0.png', './assets/fonts/simsun_outlined.fnt');
+                this.load.on('complete', () => { this.loadComplete(); });
+                this.load.on('progress', (value) => { txt.text = `[${(value * 100).toFixed(1)}%] HUD / UI: Loading Unicode Fonts ... `; });
+                this.load.start();
+            }
             this.loaded = true;
-            Localization_3.Localization.setData(this.cache.json.get('locals'));
-            this.initUnitFrames();
             PopUpManager_2.PopUpManager.getSingleton().hasLoaded();
+            this.setupScene();
+        }
+        loadComplete() {
+            GameData_6.GameData.mainLanguage = this.orgMainLanguage;
+            GameData_6.GameData.popUpBuffLanguage = this.orgPopUpLanguage;
+            this.setupScene();
+        }
+        setupScene() {
+            if (this.children.length > 0) {
+                for (let child of this.children.getAll()) {
+                    child.destroy();
+                }
+            }
+            this.add.existing(PopUpManager_2.PopUpManager.register(this));
+            PopUpManager_2.PopUpManager.getSingleton().hasLoaded();
+            this.initUnitFrames();
             // this.add.rectangle(750 + 61, 520 + 8, 122, 16, 0x948779);
             let bt = this.add.bitmapText(755, 530, Localization_3._("UIFont"), Localization_3._("Damage Done (DPS)"));
             bt.setOrigin(0, 1);
@@ -2130,6 +2209,19 @@ define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "En
         update(time, dt) {
             this.children.each((item) => { item.update(time / 1000.0, dt / 1000.0); });
         }
+        showToolTip(tip) {
+            // change text
+            this.toolTip.title.innerHTML = tip.title;
+            this.toolTip.body.innerHTML = tip.text;
+            // change color
+            this.toolTip.title.style.color = tip.color;
+            // set it visible
+            this.toolTip.toolTip.style.display = "inherit";
+        }
+        hideToolTip() {
+            // set it invisible
+            this.toolTip.toolTip.style.display = "none";
+        }
     }
     exports.UIScene = UIScene;
 });
@@ -2137,18 +2229,18 @@ define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "En
  * @packageDocumentation
  * @module UI
  */
-define("Engine/UI/PopUpManager", ["require", "exports", "Engine/Core/GameData", "Engine/Core/mRTypes"], function (require, exports, GameData_6, mRTypes_2) {
+define("Engine/UI/PopUpManager", ["require", "exports", "Engine/Core/GameData", "Engine/Core/mRTypes"], function (require, exports, GameData_7, mRTypes_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     // import * as Phaser from 'phaser'
     class PopupText extends Phaser.GameObjects.BitmapText {
         constructor(scene, x, y, text, color, time = 1.0, velX = -64, velY = -256, accX = 0.0, accY = 512.0, isBuff = false) {
             if (isBuff) {
-                let font = GameData_6.GameData.popUpBuffLanguage == mRTypes_2.mRTypes.Languages.ENG ? (GameData_6.GameData.popUpSmallFont ? 'smallPx' : 'mediumPx') : 'simsun_o';
+                let font = GameData_7.GameData.popUpBuffLanguage == mRTypes_3.mRTypes.Languages.ENG ? (GameData_7.GameData.popUpSmallFont ? 'smallPx' : 'mediumPx') : 'simsun_o';
                 super(scene, x, y, font, text);
             }
             else {
-                super(scene, x, y, GameData_6.GameData.popUpSmallFont ? 'smallPx' : 'mediumPx', text);
+                super(scene, x, y, GameData_7.GameData.popUpSmallFont ? 'smallPx' : 'mediumPx', text);
             }
             this.time = time * 1.5;
             this.velX = velX;
@@ -2226,7 +2318,7 @@ define("Engine/UI/PopUpManager", ["require", "exports", "Engine/Core/GameData", 
     exports.PopUpManager = PopUpManager;
 });
 /** @packageDocumentation @module Core */
-define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener", "Engine/UI/PopUpManager", "Engine/Core/GameData", "Engine/UI/Localization"], function (require, exports, MobListener_1, PopUpManager_3, GameData_7, Localization_4) {
+define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener", "Engine/UI/PopUpManager", "Engine/Core/GameData", "Engine/UI/Localization"], function (require, exports, MobListener_1, PopUpManager_3, GameData_8, Localization_4) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Buff extends MobListener_1.MobListener {
@@ -2258,13 +2350,16 @@ define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener", "En
             this.popupColor = settings.popupColor || this.color;
             //Where does this buff come from?
             this.source = settings.source || undefined;
-            this.toolTip = { title: "Buff", text: "lol." };
+            if (this.source === undefined) {
+                console.warn(`Buff "${Localization_4._(this.name)}" did not have a source. Did you forgot it ?`);
+            }
+            this.toolTip = settings.toolTip || "LOL.";
             this.UIimportant = (settings.UIimportant === undefined) ? false : settings.UIimportant;
             this.UIpriority = (settings.UIpriority === undefined) ? 0 : settings.UIpriority;
         }
         popUp(mob) {
             let popUpPos = mob.getTopCenter();
-            PopUpManager_3.PopUpManager.getSingleton().addText_nonDigit((typeof this.popupName === 'string') ? Localization_4._(this.popupName) : this.popupName[GameData_7.GameData.popUpBuffLanguage], popUpPos.x, popUpPos.y, this.popupColor, 1.0, 0, -64, 0, 64);
+            PopUpManager_3.PopUpManager.getSingleton().addText_nonDigit((typeof this.popupName === 'string') ? Localization_4._(this.popupName) : this.popupName[GameData_8.GameData.popUpBuffLanguage], popUpPos.x, popUpPos.y, this.popupColor, 1.0, 0, -64, 0, 64);
         }
         update(self, dt) {
             super.update(self, dt);
@@ -2282,8 +2377,23 @@ define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener", "En
                 }
             }
         }
-        showToolTip() {
-            // TODO
+        preToolTip() { return { title: undefined, text: "", color: Phaser.Display.Color.RGBToString(this.color.red, this.color.green, this.color.blue) }; }
+        getTitle() {
+            return Localization_4._(this.name) + (this.stackable ? ` (${this.stacks})` : "");
+        }
+        getToolTip() {
+            let tt = this.preToolTip();
+            return {
+                "title": `<div><p><span>${tt.title || this.getTitle()}</span><span>(${this.timeRemain[0].toFixed(1)}s)</span></p></div>`,
+                "text": `
+            <div style = "max-width: 200px">
+                <p>
+                    ${eval("`" + Localization_4._(this.toolTip) + "`") + tt.text}
+                </p>
+                ${this.source ? `<p class = "buffFroms"><span></span><span>${Localization_4._('buffTT_from') + this.source.name}</span></p>` : ``}
+            </div>`,
+                "color": tt.color
+            };
         }
         /**
          * Addes one stack of itself.
@@ -2299,11 +2409,18 @@ define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener", "En
         keyFn() {
             return `${this.name}-${this.source.name}`;
         }
+        static fromKey(key, overrideSettings) {
+            let cached = Buff.parsedBuffInfo[key];
+            if (cached === undefined) {
+                console.warn(`Buff key "${key}" does not exist.`);
+            }
+            return Object.assign(Object.assign({}, cached), overrideSettings);
+        }
     }
     exports.Buff = Buff;
 });
 /** @packageDocumentation @module Core */
-define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem", "Engine/Core/EquipmentCore", "Engine/Structs/QuerySet", "Engine/Core/MobListener", "Engine/Core/DataBackend", "Engine/Core/Buff", "Engine/Core/GameData", "Engine/Core/BattleMonitor"], function (require, exports, EventSystem, EquipmentCore_1, QuerySet_1, MobListener_2, DataBackend_1, Buff_1, GameData_8, BattleMonitor_3) {
+define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem", "Engine/Core/EquipmentCore", "Engine/Structs/QuerySet", "Engine/Core/MobListener", "Engine/Core/DataBackend", "Engine/Core/Buff", "Engine/Core/GameData", "Engine/Core/BattleMonitor"], function (require, exports, EventSystem, EquipmentCore_1, QuerySet_1, MobListener_2, DataBackend_1, Buff_1, GameData_9, BattleMonitor_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     EventSystem = __importStar(EventSystem);
@@ -2806,7 +2923,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             // 20pts of power = 100% more damage
             if (damageInfo.source) {
                 damageInfo.value = Math.ceil(damageInfo.value *
-                    (Math.pow(1.0353, damageInfo.source.battleStats.attackPower[GameData_8.GameData.damageType[damageInfo.type]] +
+                    (Math.pow(1.0353, damageInfo.source.battleStats.attackPower[GameData_9.GameData.damageType[damageInfo.type]] +
                         damageInfo.source.battleStats.attackPower[damageInfo.type])));
             }
             // damage% = 0.9659 ^ resist
@@ -2814,11 +2931,11 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             // which will reach 50% damage reducement at 20 points.
             // TODO: it should all correspond to current level (resist based on source level, atkPower based on target level, same as healing)
             damageInfo.value = Math.ceil(damageInfo.value *
-                (Math.pow(0.9659, this.battleStats.resist[GameData_8.GameData.damageType[damageInfo.type]] +
+                (Math.pow(0.9659, this.battleStats.resist[GameData_9.GameData.damageType[damageInfo.type]] +
                     this.battleStats.resist[damageInfo.type])));
             // Apply criticals
             damageInfo.value = Math.ceil(damageInfo.value *
-                (damageInfo.isCrit ? GameData_8.GameData.critMultiplier[damageInfo.type] : 1.0));
+                (damageInfo.isCrit ? GameData_9.GameData.critMultiplier[damageInfo.type] : 1.0));
             // Overdeals
             let realDmg = Math.min(this.currentHealth, damageInfo.value);
             damageInfo.overdeal = damageInfo.value - realDmg;
@@ -2873,7 +2990,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             healInfo.value = Math.ceil(healInfo.value *
                 (Math.pow(0.9659, this.battleStats.resist.heal)));
             healInfo.value = Math.ceil(healInfo.value
-                * (healInfo.isCrit ? GameData_8.GameData.critMultiplier.heal : 1.0));
+                * (healInfo.isCrit ? GameData_9.GameData.critMultiplier.heal : 1.0));
             // calculate overHealing using current HP and max HP.
             let realHeal = Math.min(healInfo.target.maxHealth - healInfo.target.currentHealth, healInfo.value);
             healInfo.overdeal = healInfo.value - realHeal;
@@ -2925,11 +3042,11 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
     exports.MobData = MobData;
 });
 /** @packageDocumentation @module Core */
-define("Engine/Core/Helper", ["require", "exports", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/Core/GameData"], function (require, exports, UnitManager_4, Spell_1, GameData_9) {
+define("Engine/Core/Helper", ["require", "exports", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/Core/GameData"], function (require, exports, UnitManager_4, Spell_1, GameData_10) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function HealDmg(info) {
-        if (info.type === GameData_9.GameData.Elements.heal) {
+        if (info.type === GameData_10.GameData.Elements.heal) {
             return info.target.receiveHeal(info);
         }
         else {
@@ -3484,7 +3601,7 @@ define("Engine/Core/ObjectPopulator", ["require", "exports"], function (require,
     exports.ObjectPopulator = ObjectPopulator;
 });
 /** @packageDocumentation @module GameEntity */
-define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/Core/MobData", "Engine/Core/UnitManager", "Engine/Core/EquipmentCore", "Engine/UI/PopUpManager", "Engine/Core/ObjectPopulator", "Engine/Core/GameData"], function (require, exports, dPhysSprite_2, MobData_1, UnitManager_5, EquipmentCore_2, PopUpManager_4, ObjectPopulator_1, GameData_10) {
+define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/Core/MobData", "Engine/Core/UnitManager", "Engine/Core/EquipmentCore", "Engine/UI/PopUpManager", "Engine/Core/ObjectPopulator", "Engine/Core/GameData"], function (require, exports, dPhysSprite_2, MobData_1, UnitManager_5, EquipmentCore_2, PopUpManager_4, ObjectPopulator_1, GameData_11) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Mob extends dPhysSprite_2.dPhysSprite {
@@ -3644,14 +3761,14 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
             if (result.isAvoid) {
                 if (_damageInfo.popUp == true) {
                     var popUpPos = this.getTopCenter();
-                    PopUpManager_4.PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, GameData_10.GameData.ElementColors['miss']);
+                    PopUpManager_4.PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, GameData_11.GameData.ElementColors['miss']);
                 }
                 return result;
             }
             // Mob itself only do rendering popUp texts
             if (_damageInfo.popUp == true && result.value > 0) {
                 var popUpPos = this.getTopCenter();
-                PopUpManager_4.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_10.GameData.ElementColors[result.type]);
+                PopUpManager_4.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_11.GameData.ElementColors[result.type]);
                 // // popUp texts on unit frames
                 // // fade from the edge of currentHealth to the left
                 // if(this.data.isPlayer)
@@ -3705,7 +3822,7 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
                 'isCrit': _healInfo.isCrit,
                 'isAvoid': _healInfo.isAvoid,
                 'isBlock': _healInfo.isBlock,
-                'type': GameData_10.GameData.Elements.heal,
+                'type': GameData_11.GameData.Elements.heal,
                 'overdeal': 0
             };
             if (Mob.checkAlive(this) == false) {
@@ -3739,10 +3856,10 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
                 // }
                 var popUpPos = this.getTopCenter();
                 if (result.overdeal > 0) {
-                    PopUpManager_4.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : "") + " <" + result.overdeal.toString() + ">", popUpPos.x, popUpPos.y, GameData_10.GameData.ElementColors['heal'], 1.0, 64, -256);
+                    PopUpManager_4.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : "") + " <" + result.overdeal.toString() + ">", popUpPos.x, popUpPos.y, GameData_11.GameData.ElementColors['heal'], 1.0, 64, -256);
                 }
                 else {
-                    PopUpManager_4.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_10.GameData.ElementColors['heal'], 1.0, 64, -256);
+                    PopUpManager_4.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_11.GameData.ElementColors['heal'], 1.0, 64, -256);
                 }
                 // // popUp texts on unit frames
                 // // fade from left to the the edge of currentHealth
@@ -3803,7 +3920,7 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
     exports.Mob = Mob;
 });
 /** @packageDocumentation @module BattleScene */
-define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/UnitManager", "Engine/Core/ObjectPopulator", "Engine/Core/BattleMonitor", "Engine/UI/UIScene"], function (require, exports, Mob_4, UnitManager_6, ObjectPopulator_2, BattleMonitor_4, UIScene_1) {
+define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/UnitManager", "Engine/Core/ObjectPopulator", "Engine/Core/BattleMonitor", "Engine/UI/UIScene", "Engine/UI/ProgressBar"], function (require, exports, Mob_4, UnitManager_6, ObjectPopulator_2, BattleMonitor_4, UIScene_3, ProgressBar_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class BattleScene extends Phaser.Scene {
@@ -3818,6 +3935,7 @@ define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/Game
                 }
             });
             this.tilesetImgPrefix = 'assets/tilemaps/tiles/';
+            this.currProgress = 0;
             this.mapToLoad = mapToLoad;
         }
         preload() {
@@ -3866,7 +3984,11 @@ define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/Game
                 this.load.image(tileset.name, path);
                 console.log(path);
             }
-            this.load.on('complete', () => { this.loadComplete(); UIScene_1.UIScene.getSingleton().resetPlayers(); });
+            this.pBar = new ProgressBar_2.ProgressBar(this, 400, 310, () => [this.currProgress, 1.0], 224, 20, 5, false, 0x444444, 0x000000, 0xade0ee, false);
+            this.pBar.setDepth(1000);
+            this.add.existing(this.pBar);
+            this.load.on('progress', (value) => { this.currProgress = value; });
+            this.load.on('complete', () => { this.loadComplete(); UIScene_3.UIScene.getSingleton().resetPlayers(); });
             this.load.start();
         }
         loadComplete() {
@@ -3876,6 +3998,12 @@ define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/Game
                 yoyo: false,
                 repeat: 0
             });
+            // Remove the loading bar
+            this.tweens.add({
+                targets: this.pBar,
+                alpha: 0,
+                duration: 300,
+            }).on('complete', () => { this.pBar.destroy(); this.pBar = undefined; });
             for (let tileset of this.map.tilesets) {
                 this.map.addTilesetImage(tileset.name, tileset.name);
             }
@@ -3918,6 +4046,9 @@ define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/Game
                 this.updateScene(time, dt / 1000.0);
                 BattleMonitor_4.BattleMonitor.getSingleton().update(dt / 1000.0);
             }
+            else if (this.pBar) {
+                this.pBar.update(time, dt / 1000.0);
+            }
         }
         updateScene(time, dt) { }
     }
@@ -3954,14 +4085,14 @@ define("Engine/GameObjects/Projectile", ["require", "exports", "Engine/GameObjec
     exports.Projectile = Projectile;
 });
 /** @packageDocumentation @module Buffs */
-define("Buffs/HDOT", ["require", "exports", "Engine/Core/Buff", "Engine/Core/GameData", "Engine/Core/Helper", "Engine/GameObjects/Spell"], function (require, exports, Buff_2, GameData_11, Helper_2, Spell_3) {
+define("Buffs/HDOT", ["require", "exports", "Engine/Core/Buff", "Engine/Core/GameData", "Engine/Core/Helper", "Engine/GameObjects/Spell", "Engine/UI/Localization"], function (require, exports, Buff_2, GameData_12, Helper_2, Spell_3, Localization_5) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class HDOT extends Buff_2.Buff {
         constructor(settings, type, vMin = 1, vMax = 3, vGap = 0.57) {
             settings.name = settings.name || 'XOT';
             settings.popupName = settings.popupName || settings.name || 'XOT!';
-            settings.color = settings.color || GameData_11.GameData.ElementColors[type] || Phaser.Display.Color.HexStringToColor('#0066ff');
+            settings.color = settings.color || GameData_12.GameData.ElementColors[type] || Phaser.Display.Color.HexStringToColor('#0066ff');
             //settings.iconId
             super(settings);
             //this.toolTip
@@ -3969,6 +4100,7 @@ define("Buffs/HDOT", ["require", "exports", "Engine/Core/Buff", "Engine/Core/Gam
             this.vMax = vMax;
             this.vGap = vGap; // do not use cooldown for accurate timing
             this.vType = type;
+            this.typeStr = Localization_5._(this.vType);
             this.timer = 0;
             this.vCount = -1; // Initial tick
         }
@@ -3988,11 +4120,17 @@ define("Buffs/HDOT", ["require", "exports", "Engine/Core/Buff", "Engine/Core/Gam
                 });
             }
         }
+        preToolTip() {
+            let tt = super.preToolTip();
+            tt.text += "<br>";
+            tt.text += eval("`" + Localization_5._("_tt_HDOT") + "`");
+            return tt;
+        }
     }
     exports.HDOT = HDOT;
 });
 /** @packageDocumentation @module Weapons */
-define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/GameObjects/Projectile", "Engine/Core/Helper", "Engine/Core/GameData", "Buffs/HDOT"], function (require, exports, EquipmentCore_3, UnitManager_7, Spell_4, Projectile_1, Helper_3, GameData_12, HDOT_1) {
+define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/GameObjects/Projectile", "Engine/Core/Helper", "Engine/Core/GameData", "Buffs/HDOT", "Engine/Core/Buff"], function (require, exports, EquipmentCore_3, UnitManager_7, Spell_4, Projectile_1, Helper_3, GameData_13, HDOT_1, Buff_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class CometWand extends EquipmentCore_3.Weapon {
@@ -4022,7 +4160,7 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
                     'source': source,
                     'target': targetMob,
                     'speed': 450,
-                    'onMobHit': (self, mob) => { self.dieAfter(self.HealDmg, [mob, Helper_3.getRandomInt(6, 18), GameData_12.GameData.Elements.ice], mob); },
+                    'onMobHit': (self, mob) => { self.dieAfter(self.HealDmg, [mob, Helper_3.getRandomInt(6, 18), GameData_13.GameData.Elements.ice], mob); },
                     // 'onMobHit': (self: Spell, mob: Mob) =>
                     // {
                     //     self.dieAfter(
@@ -4046,7 +4184,7 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
                     'onMobHit': (self, mob) => {
                         self.dieAfter(() => Helper_3.AoE((m) => {
                             // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
-                            m.receiveBuff(source, new HDOT_1.HDOT({ 'source': source.mobData, 'countTime': true, 'popupColor': GameData_12.GameData.ElementColors[GameData_12.GameData.Elements.fire], 'popupName': 'buff_burnt', 'time': 15.0, 'stackable': true, 'maxStack': 10 }, GameData_12.GameData.Elements.fire, 20, 30, 0.5));
+                            m.receiveBuff(source, new HDOT_1.HDOT(Buff_3.Buff.fromKey('test_Burn', { source: source.mobData, time: 15.0, maxStack: 10 }), GameData_13.GameData.Elements.fire, 20, 30, 0.5));
                         }, self.getPosition(), 100, self.targeting), [], mob);
                     },
                     'color': Phaser.Display.Color.HexStringToColor("#ff3333"),
@@ -4056,10 +4194,10 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
             Helper_3.AoE((m) => {
                 // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
                 if (Helper_3.getRandomInt(0, 3) <= 1) {
-                    m.receiveBuff(source, new HDOT_1.HDOT({ 'name': 'heal', 'source': source.mobData, 'countTime': true, 'popupColor': GameData_12.GameData.ElementColors[GameData_12.GameData.Elements.heal], 'popupName': 'buff_burnt', 'time': 12.0, 'stackable': true, 'maxStack': 10, 'UIpriority': 0, }, GameData_12.GameData.Elements.heal, 5, 8, 1.0));
+                    m.receiveBuff(source, new HDOT_1.HDOT(Buff_3.Buff.fromKey('test_HOT', { source: source.mobData, time: 12.0, maxStack: 10 }), GameData_13.GameData.Elements.heal, 5, 8, 1.0));
                 }
                 else {
-                    m.receiveBuff(source, new HDOT_1.HDOT({ 'name': 'light', 'source': source.mobData, 'countTime': true, 'popupColor': GameData_12.GameData.ElementColors[GameData_12.GameData.Elements.light], 'popupName': 'buff_burnt', 'time': 12.0, 'stackable': false, 'maxStack': 10, 'UIpriority': 1 }, GameData_12.GameData.Elements.light, 5, 8, 1.0));
+                    m.receiveBuff(source, new HDOT_1.HDOT(Buff_3.Buff.fromKey('test_Light', { source: source.mobData, time: 12.0 }), GameData_13.GameData.Elements.light, 5, 8, 1.0));
                 }
             }, source.footPos(), 200, Spell_4.Targeting.Player);
         }
@@ -4115,7 +4253,7 @@ define("Lists/AgentList", ["require", "exports", "Agents/SimpleAgents"], functio
     };
 });
 /** @packageDocumentation @module BattleScene */
-define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/Staff", "Agents/PlayerAgents", "Agents/SimpleAgents", "Engine/Core/Helper", "Engine/Core/InventoryCore", "Lists/ItemList", "Engine/Core/ObjectPopulator", "Lists/ObjectList", "Lists/AgentList", "Engine/Core/GameData", "Buffs/HDOT", "Engine/UI/Localization"], function (require, exports, BattleScene_1, Mob_7, MobData_2, Staff_2, PlayerAgents, SimpleAgents_2, Helper_4, InventoryCore_3, ItemList_1, ObjectPopulator_3, ObjectList_1, AgentList_1, GameData_13, HDOT_2, Localization_5) {
+define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/Staff", "Agents/PlayerAgents", "Agents/SimpleAgents", "Engine/Core/Helper", "Engine/Core/ObjectPopulator", "Lists/ObjectList", "Lists/AgentList", "Engine/Core/GameData", "Buffs/HDOT", "Engine/UI/Localization", "Engine/Core/Buff"], function (require, exports, BattleScene_1, Mob_7, MobData_2, Staff_2, PlayerAgents, SimpleAgents_2, Helper_4, ObjectPopulator_3, ObjectList_1, AgentList_1, GameData_14, HDOT_2, Localization_6, Buff_4) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     PlayerAgents = __importStar(PlayerAgents);
@@ -4132,15 +4270,11 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
             this.load.image('Grass_Overworld', 'assets/tilemaps/tiles/overworld_tileset_grass.png');
             this.load.tilemapTiledJSON('overworld', 'assets/tilemaps/Overworld_tst.json');
             this.load.spritesheet('elf', 'assets/img/spritesheets/forestElfMyst.png', { frameWidth: 32, frameHeight: 32, endFrame: 3 });
-            this.load.json('itemData', 'assets/dataSheets/Items.json');
-            this.load.json('locals', './assets/locals.json');
         }
-        create() {
-            // Create the ItemManager
-            InventoryCore_3.ItemManager.setData(this.cache.json.get('itemData'), ItemList_1.ItemList);
-            Localization_5.Localization.setData(this.cache.json.get('locals'));
-            super.create();
-        }
+        // create()
+        // {
+        //     super.create();
+        // }
         loadComplete() {
             super.loadComplete();
             // this.map = this.make.tilemap({ key: 'overworld' });
@@ -4153,7 +4287,7 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
                     'idleAnim': 'move',
                     'moveAnim': 'move',
                     'deadAnim': 'move',
-                    'backendData': new MobData_2.MobData({ name: Localization_5._('testGirl') + i, 'isPlayer': true, 'attackSpeed': 40 - 5 * i, 'mag': 13 - 1 * i, 'manaRegen': 4 + 1 * i }),
+                    'backendData': new MobData_2.MobData({ name: Localization_6._('testGirl') + i, 'isPlayer': true, 'attackSpeed': 40 - 5 * i, 'mag': 13 - 1 * i, 'manaRegen': 4 + 1 * i }),
                     'agent': PlayerAgents.Simple,
                 });
                 this.girl.mobData.battleStats.attackPower.ice = 10;
@@ -4167,7 +4301,7 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
                 this.girl.mobData.weaponLeft.manaCost = 0;
                 this.girl.mobData.anotherWeapon = this.girl.mobData.weaponLeft;
                 this.girl.mobData.addListener(this.girl.mobData.weaponRight);
-                this.girl.receiveBuff(this.girl, new HDOT_2.HDOT({ 'source': this.girl.mobData, 'countTime': false, 'name': 'GodHeal', 'UIimportant': true, 'UIpriority': 0, }, GameData_13.GameData.Elements.heal, 20, 38, 0.8));
+                this.girl.receiveBuff(this.girl, new HDOT_2.HDOT(Buff_4.Buff.fromKey('test_GodHeal'), GameData_14.GameData.Elements.heal, 20, 38, 0.8));
                 this.addMob(this.girl);
             }
             let woodlog = new Mob_7.Mob(this, 300, 200, 'sheet_forestelf_myst', {
@@ -4200,15 +4334,144 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
             // console.log("Mana: " + this.girl.mobData.currentMana.toString() + " / " + this.girl.mobData.maxMana.toString());
             if (this.hc < 0) {
                 this.hc = this.hcM;
-                Helper_4.HealDmg({ 'source': this.h, 'target': this.h, type: GameData_13.GameData.Elements.heal, value: 5 });
+                Helper_4.HealDmg({ 'source': this.h, 'target': this.h, type: GameData_14.GameData.Elements.heal, value: 5 });
             }
             this.hc -= dt * 0.001;
         }
     }
     exports.TestScene = TestScene;
 });
+/** @packageDocumentation @module ScenePrototypes */
+define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine/UI/Localization", "Engine/DynamicLoader/DynamicLoaderScene", "Engine/UI/UIScene", "TestScene", "Engine/Core/InventoryCore", "Lists/ItemList", "Engine/UI/ProgressBar", "papaparse", "Engine/Core/Buff"], function (require, exports, Localization_7, DynamicLoaderScene_3, UIScene_4, TestScene_1, InventoryCore_3, ItemList_1, ProgressBar_3, papaparse_1, Buff_5) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    /**
+     * Handles all necessary assets that must be loaded before the game start.
+     * May also perform necessary processing steps.
+     */
+    class GamePreloadScene extends Phaser.Scene {
+        constructor() {
+            super(...arguments);
+            this.currProgress = 0;
+        }
+        create() {
+            this.load.bitmapFont('smallPx', './assets/fonts/smallPx_C_0.png', './assets/fonts/smallPx_C.fnt');
+            this.load.bitmapFont('smallPx_HUD', './assets/fonts/smallPx_HUD_0.png', './assets/fonts/smallPx_HUD.fnt');
+            this.load.bitmapFont('mediumPx', './assets/fonts/mediumPx_04b03_0.png', './assets/fonts/mediumPx_04b03.fnt');
+            this.load.text('locals', './assets/dataSheets/Locals.csv');
+            this.load.json('itemData', 'assets/dataSheets/Items.json');
+            this.load.text('buffData', 'assets/dataSheets/Buffs.csv');
+            this.add.existing(new ProgressBar_3.ProgressBar(this, 400, 310, () => [this.currProgress, 1.0], 224, 20, 5, false, 0x444444, 0x000000, 0xfddac5, false));
+            this.load.on('progress', (value) => { this.currProgress = value; });
+            this.load.on('complete', () => {
+                papaparse_1.parse(this.cache.text.get('locals'), {
+                    complete: (result) => {
+                        Localization_7.Localization.setData(this.parseLocales(result));
+                        // Create the ItemManager
+                        InventoryCore_3.ItemManager.setData(this.cache.json.get('itemData'), ItemList_1.ItemList);
+                        let buffCSV = (this.cache.text.get('buffData'));
+                        papaparse_1.parse(buffCSV, {
+                            complete: (result) => {
+                                Buff_5.Buff.parsedBuffInfo = this.parseBuffs(result);
+                                this.scene.add('TestScene', new TestScene_1.TestScene(), true);
+                                this.scene.add('UIScene', UIScene_4.UIScene.getSingleton(), true);
+                                this.scene.add('DynamicLoaderScene', DynamicLoaderScene_3.DynamicLoaderScene.getSingleton(), true);
+                            }
+                        });
+                    }
+                });
+            });
+            this.load.start();
+        }
+        parseLocales(result) {
+            let localesMain = {};
+            let localesPop = {};
+            let currentRowIdx = 3; // Start from 4th row
+            for (; currentRowIdx < result.data.length; currentRowIdx++) {
+                let row = result.data[currentRowIdx];
+                if (row[0] === "") {
+                    continue;
+                } // This row is empty
+                if (row[1] === "true") {
+                    localesPop[row[0]] = {
+                        "zh-cn": row[2] || "BAD_STR",
+                        "en-us": row[3] || "BAD_STR",
+                        "jp-ja": row[4] || "BAD_STR"
+                    };
+                }
+                else {
+                    localesMain[row[0]] = {
+                        "zh-cn": row[2] || "BAD_STR",
+                        "en-us": row[3] || "BAD_STR",
+                        "jp-ja": row[4] || "BAD_STR"
+                    };
+                }
+            }
+            return { "main": localesMain, "popUpBuff": localesPop };
+        }
+        parseBuffs(result) {
+            let allBuffInfo = {};
+            let currentRowIdx = 3; // Start from 4th row
+            for (; currentRowIdx < result.data.length; currentRowIdx++) {
+                let row = result.data[currentRowIdx];
+                if (row[0] === "") {
+                    continue;
+                } // This row is empty
+                // A: Unique ID
+                let uid = row[0];
+                let buff = {};
+                buff.name = 'name_' + uid;
+                // B, C, D: names
+                let name = {
+                    "zh-cn": row[1],
+                    "en-us": row[2],
+                    "ja-jp": row[3],
+                };
+                Localization_7.Localization.data.main[buff.name] = name;
+                // E: color
+                buff.color = Phaser.Display.Color.HexStringToColor(row[4]);
+                // F, G: countTime, time
+                buff.countTime = row[5] === "true";
+                buff.time = Number.parseFloat(row[6]);
+                // H, I: stackable, maxStack
+                buff.stackable = row[7] === "true";
+                buff.maxStack = Number.parseInt(row[8]);
+                // J, K: imageKey, iconId
+                // row[9]
+                buff.iconId = Number.parseInt(row[10]);
+                // L, M, N: popUpName
+                buff.popupName = 'popUp_' + uid;
+                let pName = {
+                    "zh-cn": row[11],
+                    "en-us": row[12],
+                    "ja-jp": row[13],
+                };
+                Localization_7.Localization.data.popUpBuff[buff.popupName] = pName;
+                // O, P: UIImportant, UIPriority
+                buff.UIimportant = row[14] === "true";
+                buff.UIpriority = Number.parseFloat(row[15]);
+                // Q, R, S: ToolTip
+                buff.toolTip = 'tt_' + uid;
+                let ttText = {
+                    "zh-cn": row[16],
+                    "en-us": row[17],
+                    "ja-jp": row[18],
+                };
+                Localization_7.Localization.data.main[buff.toolTip] = ttText;
+                allBuffInfo[uid] = buff;
+            }
+            console.log("Parsed buffSettings:");
+            console.dir(allBuffInfo);
+            return allBuffInfo;
+        }
+        update(time, dt) {
+            this.children.each((item) => { item.update(time, dt / 1000.0); });
+        }
+    }
+    exports.GamePreloadScene = GamePreloadScene;
+});
 /** @packageDocumentation @module GameScene */
-define("SimpleGame", ["require", "exports", "TestScene", "Engine/DynamicLoader/DynamicLoaderScene", "Engine/UI/UIScene"], function (require, exports, TestScene_1, DynamicLoaderScene_3, UIScene_2) {
+define("SimpleGame", ["require", "exports", "Engine/ScenePrototypes/GamePreloadScene"], function (require, exports, GamePreloadScene_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class InitPhaser {
@@ -4217,8 +4480,8 @@ define("SimpleGame", ["require", "exports", "TestScene", "Engine/DynamicLoader/D
                 type: Phaser.AUTO,
                 width: 1024,
                 height: 660,
-                resolution: window.devicePixelRatio,
-                scene: [TestScene_1.TestScene],
+                resolution: 1,
+                scene: [GamePreloadScene_1.GamePreloadScene],
                 banner: true,
                 title: 'miniRAID',
                 url: 'https://updatestage.littlegames.app',
@@ -4232,8 +4495,6 @@ define("SimpleGame", ["require", "exports", "TestScene", "Engine/DynamicLoader/D
                 }
             };
             this.gameRef = new Phaser.Game(config);
-            this.gameRef.scene.add('DynamicLoaderScene', DynamicLoaderScene_3.DynamicLoaderScene.getSingleton(), true);
-            this.gameRef.scene.add('UIScene', UIScene_2.UIScene.getSingleton(), true);
         }
     }
     exports.InitPhaser = InitPhaser;

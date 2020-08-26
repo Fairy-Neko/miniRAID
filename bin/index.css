@@ -11,89 +11,104 @@ div
     display: block;
 }
 
-.unitHUD
-{
-    font-family: 'smallPx';
-    font-size: 9pt;
-    text-rendering: geometricPrecision;
-}
-
-.unitHUD p
-{
-    margin: 0px;
-    text-align: center;
-}
-
-.progress_bar p
-{
-    color: white;
-}
-
-.cp_content
-{
-    margin-bottom: 5px;
-}
-
-.progress_bar
-{
-    background-color: darkgreen;
-    position: relative;
-
-    height: 20px;
-}
-
-.progress_bar_label
+/*
+* ─── TOOLTIP ────────────────────────────────────────────────────────────────────
+*/
+.followmouse
 {
     position: absolute;
+    pointer-events: none;
+    max-width: 260px;
 
-    width: 100%;
-    height: 100%;
+    z-index: 10000;
+}
 
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-
+#tooltip
+{
+    background-color: #222;
+    color: white;
+    padding: 12px 10px;
     font-size: 12px;
-    font-family: SimSun;
+    font-family: Verdana, open sans, Arial, helvetica neue, Helvetica, sans-serif, 宋体;
+
     line-height: 100%;
-    padding: 0;
+
+    display: none;
+}
+
+@media
+(-webkit-min-device-pixel-ratio: 1.5),
+(-moz-min-device-pixel-ratio: 1.5),
+(-o-min-device-pixel-ratio: 3/2),
+(min-device-pixel-ratio: 1.5)
+{
+    #tooltip
+    {
+        font-family: Verdana, open sans, Arial, helvetica neue, Helvetica, sans-serif, 微软雅黑, 宋体;
+    }
+}
+
+
+#tooltip p
+{
+    line-height: 130%;
+    margin: 3px;
+}
+
+#tooltip h1
+{
+    color: gold;
+    font-size: 13px;
+    margin-bottom: 15px;
+    margin-top: 0;
+    font-weight: normal;
+}
+
+#tooltip div
+{
+    width: 100%;
+    margin-bottom: 1em;
+}
+
+#tooltip div:last-child
+{
     margin: 0;
 }
 
-.progress_bar_label p.bar_num
+#tooltip p span
 {
-    font-family: 'smallPx';
-    font-size: 6pt;
-    /* text-rendering: geometricPrecision; */
-    /* -webkit-font-smoothing: none; */
+    /* white-space: nowrap; */
 }
 
-.bar_head
+#tooltip p span:first-child
 {
-    position: absolute;
-
-    left: 10px;
-    top: 50%;
-    transform: translate(0%, -50%);
+    margin-right: 3em;
 }
 
-.bar_num
+#tooltip strong
 {
-    position: absolute;
-
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    font-weight: normal;
 }
 
-.progress_bar_fill
+#tooltip div p
 {
-    position: absolute;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    line-height: 120%;
+    display: flex;
+    justify-content: space-between;
+}
 
-    background-color: #4CAF50;
-    text-align: center;
+#tooltip div p.rightAligned
+{
+    width: 100%;
+    display: inherit;
+    text-align: right;
+}
 
-    border-right: 1px ridge white;
-
-    height: 100%;
+#tooltip p.buffFroms
+{
+    color: skyblue;
+    margin-top: 15px;
+    /* margin-bottom: 0; */
 }

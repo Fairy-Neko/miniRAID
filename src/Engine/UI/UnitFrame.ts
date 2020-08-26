@@ -13,6 +13,7 @@ import { _ } from "./Localization";
 import { ScrollMaskedContainer, ScrollDirc } from "./ScrollMaskedContainer";
 import { MobData } from "../Core/MobData";
 import { Buff } from "../Core/Buff";
+import { UIScene } from "./UIScene";
 
 export class WeaponFrame extends Phaser.GameObjects.Container
 {
@@ -117,6 +118,13 @@ export class BuffIcon extends Phaser.GameObjects.Container
             this.stacks.depth = 10;
             this.add(this.stacks);
         }
+
+        rect.setInteractive();
+        rect.on('pointerover', () =>
+        {
+            UIScene.getSingleton().showToolTip(this.buff.getToolTip());
+        });
+        rect.on('pointerout', () => { UIScene.getSingleton().hideToolTip(); });
     }
 
     update()
@@ -306,12 +314,21 @@ export class BuffFrame extends Phaser.GameObjects.Container
             let len = 0;
             for (let icon of this.icons)
             {
-                this.scene.tweens.add({
-                    targets: icon,
-                    x: len,
-                    alpha: 1.0,
-                    duration: 100,
-                });
+                if (false)
+                {
+                    this.scene.tweens.add({
+                        targets: icon,
+                        x: len,
+                        alpha: 1.0,
+                        duration: 0,
+                    });
+                }
+                else
+                {
+                    icon.x = len;
+                    icon.alpha = 1.0;
+                }
+
                 len += icon.len + 2;
             }
 

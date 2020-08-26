@@ -32,30 +32,31 @@ export class ProgressBar extends Phaser.GameObjects.Container
 
         this.fetchFunc = fetchValue;
         this.getText = getText;
-        this.out = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, width, height, outlineColor);
-        this.out.setOrigin(0);
-        this.bg = new Phaser.GameObjects.Rectangle(this.scene, border, border, width - border * 2, height - border * 2, bgColor);
-        this.bg.setOrigin(0);
-        this.bg.setPosition(border, border);
+
+
         this.fill = new Phaser.GameObjects.Rectangle(this.scene, border, border, width - border * 2, height - border * 2, fillColor);
         this.fill.setOrigin(0);
         this.fill.setPosition(border, border);
 
-        this.text = new Phaser.GameObjects.BitmapText(this.scene, textX, textY, fontKey, '0/0');
-        this.text.setOrigin(align * 0.5, 0);
-        this.text.setTint(textColor);
-
         if (border > 0)
         {
+            this.out = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, width, height, outlineColor);
+            this.out.setOrigin(0);
             this.add(this.out);
         }
         if (hasBG)
         {
+            this.bg = new Phaser.GameObjects.Rectangle(this.scene, border, border, width - border * 2, height - border * 2, bgColor);
+            this.bg.setOrigin(0);
+            this.bg.setPosition(border, border);
             this.add(this.bg);
         }
         this.add(this.fill);
         if (showText)
         {
+            this.text = new Phaser.GameObjects.BitmapText(this.scene, textX, textY, fontKey, '0/0');
+            this.text.setOrigin(align * 0.5, 0);
+            this.text.setTint(textColor);
             this.add(this.text);
         }
 
@@ -90,13 +91,17 @@ export class ProgressBar extends Phaser.GameObjects.Container
             duration: 100,
         })
 
-        if (this.getText)
+        if (this.text)
         {
-            this.text.text = this.getText();
+            if (this.getText)
+            {
+                this.text.text = this.getText();
+            }
+            else
+            {
+                this.text.text = value.toFixed(0) + "/" + max.toFixed(0);
+            }
         }
-        else
-        {
-            this.text.text = value.toFixed(0) + "/" + max.toFixed(0);
-        }
+
     }
 }

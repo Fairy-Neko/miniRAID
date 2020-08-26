@@ -16,6 +16,7 @@ import { AgentList } from "./Lists/AgentList";
 import { GameData } from "./Engine/Core/GameData";
 import { HDOT } from "./Buffs/HDOT";
 import { _, Localization } from "./Engine/UI/Localization";
+import { Buff } from "./Engine/Core/Buff";
 
 export class TestScene extends BattleScene
 {
@@ -44,18 +45,12 @@ export class TestScene extends BattleScene
 
         this.load.spritesheet('elf', 'assets/img/spritesheets/forestElfMyst.png', { frameWidth: 32, frameHeight: 32, endFrame: 3 });
 
-        this.load.json('itemData', 'assets/dataSheets/Items.json');
-        this.load.json('locals', './assets/locals.json');
     }
 
-    create()
-    {
-        // Create the ItemManager
-        ItemManager.setData(this.cache.json.get('itemData'), ItemList);
-        Localization.setData(this.cache.json.get('locals'));
-
-        super.create();
-    }
+    // create()
+    // {
+    //     super.create();
+    // }
 
     loadComplete() 
     {
@@ -90,7 +85,7 @@ export class TestScene extends BattleScene
             this.girl.mobData.anotherWeapon = this.girl.mobData.weaponLeft;
 
             this.girl.mobData.addListener(this.girl.mobData.weaponRight);
-            this.girl.receiveBuff(this.girl, new HDOT({ 'source': this.girl.mobData, 'countTime': false, 'name': 'GodHeal', 'UIimportant': true, 'UIpriority': 0, }, GameData.Elements.heal, 20, 38, 0.8));
+            this.girl.receiveBuff(this.girl, new HDOT(Buff.fromKey('test_GodHeal'), GameData.Elements.heal, 20, 38, 0.8));
             this.addMob(this.girl);
         }
 
