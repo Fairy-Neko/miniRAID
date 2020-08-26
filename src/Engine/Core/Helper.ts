@@ -93,3 +93,56 @@ export function reverseTarget(target: Targeting): Targeting
     if (target == Targeting.Player) { return Targeting.Enemy; }
     if (target == Targeting.Enemy) { return Targeting.Player; }
 }
+
+export function ColorToStr(color: Phaser.Display.Color): string
+{
+    return Phaser.Display.Color.RGBToString(color.red, color.green, color.blue);
+}
+
+export namespace Helper
+{
+    export namespace toolTip
+    {
+        export function beginSection(): string
+        {
+            return "<div>";
+        }
+
+        export function switchSection(): string
+        {
+            return "</div><div>";
+        }
+
+        export function endSection(): string
+        {
+            return "</div>";
+        }
+
+        export function row(text: string, style?: string): string
+        {
+            if (style)
+            {
+                return "<p style = '" + style + "'>" + text + "</p>";
+            }
+            return "<p>" + text + "</p>";
+        }
+
+        export function column(text: string, style?: string): string
+        {
+            if (style)
+            {
+                return "<span style = '" + style + "'>" + text + "</span>";
+            }
+            return "<span>" + text + "</span>";
+        }
+
+        export function colored(text: string, color: string, style?: string): string
+        {
+            if (style)
+            {
+                return "<strong style='color:" + color + ";" + style + "'>" + text + "</strong>"
+            }
+            return "<strong style='color:" + color + ";'>" + text + "</strong>"
+        }
+    }
+}

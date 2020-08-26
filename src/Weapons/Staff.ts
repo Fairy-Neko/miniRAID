@@ -10,6 +10,7 @@ import { getRandomInt, AoE } from '../Engine/Core/Helper';
 import { GameData } from '../Engine/Core/GameData';
 import { HDOT } from '../Buffs/HDOT';
 import { Buff } from '../Engine/Core/Buff';
+import { _ } from '../Engine/UI/Localization';
 
 export class CometWand extends Weapon
 {
@@ -47,19 +48,11 @@ export class CometWand extends Weapon
     {
         for (let targetMob of target)
             new Projectile(source.x, source.y, 'img_iced_fx', {
-                'info': { 'name': this.name, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },
+                'info': { 'name': this.atkName, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },
                 'source': source,
                 'target': targetMob,
                 'speed': 450,
                 'onMobHit': (self: Spell, mob: Mob) => { self.dieAfter(self.HealDmg, [mob, getRandomInt(6, 18), GameData.Elements.ice], mob); },
-                // 'onMobHit': (self: Spell, mob: Mob) =>
-                // {
-                //     self.dieAfter(
-                //         () => AoE((m: Mob) =>
-                //         {
-                //             self.HealDmg(m, getRandomInt(6, 18), 'ice')
-                //         }, self.getPosition(), 100, self.targeting), [], mob);
-                // },
                 'color': Phaser.Display.Color.HexStringToColor("#77ffff"),
                 'chasingRange': 400,
                 'chasingPower': 1.0,
@@ -70,7 +63,7 @@ export class CometWand extends Weapon
     {
         for (let targetMob of target)
             new Projectile(source.x, source.y, 'img_iced_fx', {
-                'info': { 'name': this.name, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },
+                'info': { 'name': this.spName, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },
                 'source': source,
                 'target': targetMob,
                 'speed': 600,
@@ -80,7 +73,7 @@ export class CometWand extends Weapon
                         () => AoE((m: Mob) =>
                         {
                             // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
-                            m.receiveBuff(source, new HDOT(Buff.fromKey('test_Burn', { source: source.mobData, time: 15.0, maxStack: 10 }), GameData.Elements.fire, 20, 30, 0.5));
+                            m.receiveBuff(source, new HDOT(Buff.fromKey('test_Burn', { source: source.mobData, time: 15.0, maxStack: 10, name: self.name }), GameData.Elements.fire, 20, 30, 0.5));
                         }, self.getPosition(), 100, self.targeting), [], mob);
                 },
                 'color': Phaser.Display.Color.HexStringToColor("#ff3333"),

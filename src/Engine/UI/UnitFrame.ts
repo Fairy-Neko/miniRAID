@@ -58,6 +58,15 @@ export class WeaponFrame extends Phaser.GameObjects.Container
                     return "";
                 }
             }));
+
+        this.wpIcon.on('pointerover', () =>
+        {
+            UIScene.getSingleton().showToolTip(this.targetWeapon.getToolTip());
+        });
+        this.wpIcon.on('pointerout', () =>
+        {
+            UIScene.getSingleton().hideToolTip();
+        })
     }
 
     setWeapon(target: Weapon)

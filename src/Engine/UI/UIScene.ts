@@ -155,8 +155,14 @@ export class UIScene extends Phaser.Scene
         // change color
         this.toolTip.title.style.color = tip.color;
 
+        if (tip.bodyStyle)
+        {
+            this.toolTip.body.style.cssText = tip.bodyStyle;
+        }
+
         // set it visible
         this.toolTip.toolTip.style.display = "inherit";
+        this.toolTip.toolTip.lang = GameData.mainLanguage;
     }
 
     hideToolTip()

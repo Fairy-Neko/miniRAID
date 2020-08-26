@@ -742,9 +742,9 @@ define("Engine/Core/InventoryCore", ["require", "exports"], function (require, e
         }
         static setData(itemData, itemList) {
             this.itemList = itemList;
-            ItemManager.datastorage = JSON.parse(JSON.stringify(itemData)); // Deep copy
+            // ItemManager.datastorage = JSON.parse(JSON.stringify(itemData)); // Deep copy
+            ItemManager.datastorage = itemData;
             for (let key in ItemManager.datastorage) {
-                ((ItemManager.datastorage)[key]).tags = new Set(((ItemManager.datastorage)[key]).tags);
                 ((ItemManager.datastorage)[key]).color = Phaser.Display.Color.HexStringToColor(((ItemManager.datastorage)[key]).color);
             }
         }
@@ -859,21 +859,38 @@ define("Engine/Core/GameData", ["require", "exports", "Engine/Core/mRTypes"], fu
             Elements["heal"] = "heal";
         })(Elements = GameData.Elements || (GameData.Elements = {}));
         GameData.LeafTypesZERO = { fire: 0, water: 0, ice: 0, wind: 0, nature: 0, light: 0, thunder: 0, slash: 0, pierce: 0, knock: 0, dark: 0, heal: 0 };
-        GameData.ElementColors = {
-            slash: Phaser.Display.Color.HexStringToColor("#ffffff"),
-            knock: Phaser.Display.Color.HexStringToColor("#ffffff"),
-            pierce: Phaser.Display.Color.HexStringToColor("#ffffff"),
-            fire: Phaser.Display.Color.HexStringToColor("#ffa342"),
-            ice: Phaser.Display.Color.HexStringToColor("#72ffe2"),
-            water: Phaser.Display.Color.HexStringToColor("#5b8fff"),
-            nature: Phaser.Display.Color.HexStringToColor("#b1ed1a"),
-            wind: Phaser.Display.Color.HexStringToColor("#aaffc8"),
-            thunder: Phaser.Display.Color.HexStringToColor("#fffb21"),
-            light: Phaser.Display.Color.HexStringToColor("#fffbd1"),
-            dark: Phaser.Display.Color.HexStringToColor("#8d47bf"),
-            miss: Phaser.Display.Color.HexStringToColor("#ff19e0"),
-            heal: Phaser.Display.Color.HexStringToColor("#66f95c"),
+        GameData.ElementColorsStr = {
+            slash: "#ffffff",
+            knock: "#ffffff",
+            pierce: "#ffffff",
+            fire: "#ffa342",
+            ice: "#72ffe2",
+            water: "#5b8fff",
+            nature: "#b1ed1a",
+            wind: "#aaffc8",
+            thunder: "#fffb21",
+            light: "#fffbd1",
+            dark: "#8d47bf",
+            miss: "#ff19e0",
+            heal: "#66f95c",
         };
+        GameData.ElementColors = {
+            slash: Phaser.Display.Color.HexStringToColor(GameData.ElementColorsStr['slash']),
+            knock: Phaser.Display.Color.HexStringToColor(GameData.ElementColorsStr['knock']),
+            pierce: Phaser.Display.Color.HexStringToColor(GameData.ElementColorsStr['pierce']),
+            fire: Phaser.Display.Color.HexStringToColor(GameData.ElementColorsStr['fire']),
+            ice: Phaser.Display.Color.HexStringToColor(GameData.ElementColorsStr['ice']),
+            water: Phaser.Display.Color.HexStringToColor(GameData.ElementColorsStr['water']),
+            nature: Phaser.Display.Color.HexStringToColor(GameData.ElementColorsStr['nature']),
+            wind: Phaser.Display.Color.HexStringToColor(GameData.ElementColorsStr['wind']),
+            thunder: Phaser.Display.Color.HexStringToColor(GameData.ElementColorsStr['thunder']),
+            light: Phaser.Display.Color.HexStringToColor(GameData.ElementColorsStr['light']),
+            dark: Phaser.Display.Color.HexStringToColor(GameData.ElementColorsStr['dark']),
+            miss: Phaser.Display.Color.HexStringToColor(GameData.ElementColorsStr['miss']),
+            heal: Phaser.Display.Color.HexStringToColor(GameData.ElementColorsStr['heal']),
+        };
+        GameData.rarityColor = ["#888", "#fff", "#3f3", "#3af", "#fb3", "#faa"];
+        GameData.rarityName = ["rare0", "rare1", "rare2", "rare3", "rare4", "rare5"];
         GameData.playerMax = 8;
         GameData.playerSparse = 12;
         GameData.playerSparseInc = 2;
@@ -881,7 +898,7 @@ define("Engine/Core/GameData", ["require", "exports", "Engine/Core/mRTypes"], fu
         GameData.moveThreshold = 150;
         GameData.popUpSmallFont = true;
         GameData.popUpBuffLanguage = mRTypes_1.mRTypes.Languages.ENG;
-        GameData.mainLanguage = mRTypes_1.mRTypes.Languages.JPN;
+        GameData.mainLanguage = mRTypes_1.mRTypes.Languages.ENG;
         GameData.healTaunt = 2;
     })(GameData = exports.GameData || (exports.GameData = {}));
 });
@@ -1513,6 +1530,12 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
                     return "";
                 }
             }));
+            this.wpIcon.on('pointerover', () => {
+                UIScene_1.UIScene.getSingleton().showToolTip(this.targetWeapon.getToolTip());
+            });
+            this.wpIcon.on('pointerout', () => {
+                UIScene_1.UIScene.getSingleton().hideToolTip();
+            });
         }
         setWeapon(target) {
             this.targetWeapon = target;
@@ -2015,22 +2038,22 @@ define("Engine/UI/MonitorFrame", ["require", "exports", "Engine/Core/BattleMonit
                     let spell = spV.spell;
                     text +=
                         `<p>
-                    <span style="max-width: 120px;">${Localization_2._(spell)}</span><span style="font-size: 8pt">${this.formatNumber(bySpell[spell].total, this.consTotal)}, ${(bySpell[spell].total / this.rowData.number * 100).toFixed(2)}%</span>
+                    <span>${Localization_2._(spell)}</span><span style="font-size: 8pt; min-width: 100px; text-align: right">${this.formatNumber(bySpell[spell].total, this.consTotal)}, ${(bySpell[spell].total / this.rowData.number * 100).toFixed(2)}%</span>
                 </p>`;
                 }
             }
             text +=
                 `<p style = "margin-top: 10px; color: #ffc477">
                 <span>${Localization_2._("totalDmg") + Localization_2._("col_normalDmg")}</span>
-                <span style="font-size: 8pt">${this.formatNumber(this.rowData.slices[0], this.consTotal)}, ${(this.rowData.slices[0] / this.rowData.number * 100).toFixed(2)}%</span>
+                <span style="font-size: 8pt; min-width: 100px; text-align: right">${this.formatNumber(this.rowData.slices[0], this.consTotal)}, ${(this.rowData.slices[0] / this.rowData.number * 100).toFixed(2)}%</span>
             </p>
             <p style = "color: #ff7777">
                 <span>${Localization_2._("totalDmg") + Localization_2._("col_critDmg")}</span>
-                <span style="font-size: 8pt">${this.formatNumber(this.rowData.slices[1], this.consTotal)}, ${(this.rowData.slices[1] / this.rowData.number * 100).toFixed(2)}%</span>
+                <span style="font-size: 8pt; min-width: 100px; text-align: right">${this.formatNumber(this.rowData.slices[1], this.consTotal)}, ${(this.rowData.slices[1] / this.rowData.number * 100).toFixed(2)}%</span>
             </p>
             <p style = "color: coral">
                 <span>${Localization_2._("totalDmg")}</span>
-                <span style="font-size: 8pt">${this.formatNumber(this.rowData.number, false)}</span>
+                <span style="font-size: 8pt; min-width: 100px; text-align: right">${this.formatNumber(this.rowData.number, false)}</span>
             </p>`;
             text += "</div>";
             return {
@@ -2215,8 +2238,12 @@ define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "En
             this.toolTip.body.innerHTML = tip.text;
             // change color
             this.toolTip.title.style.color = tip.color;
+            if (tip.bodyStyle) {
+                this.toolTip.body.style.cssText = tip.bodyStyle;
+            }
             // set it visible
             this.toolTip.toolTip.style.display = "inherit";
+            this.toolTip.toolTip.lang = GameData_6.GameData.mainLanguage;
         }
         hideToolTip() {
             // set it invisible
@@ -2384,7 +2411,7 @@ define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener", "En
         getToolTip() {
             let tt = this.preToolTip();
             return {
-                "title": `<div><p><span>${tt.title || this.getTitle()}</span><span>(${this.timeRemain[0].toFixed(1)}s)</span></p></div>`,
+                "title": `<div><p><span>${tt.title || this.getTitle()}</span><span>(${this.timeRemain.length > 0 ? this.timeRemain[0].toFixed(1) : 0}s)</span></p></div>`,
                 "text": `
             <div style = "max-width: 200px">
                 <p>
@@ -3116,6 +3143,49 @@ define("Engine/Core/Helper", ["require", "exports", "Engine/Core/UnitManager", "
         }
     }
     exports.reverseTarget = reverseTarget;
+    function ColorToStr(color) {
+        return Phaser.Display.Color.RGBToString(color.red, color.green, color.blue);
+    }
+    exports.ColorToStr = ColorToStr;
+    var Helper;
+    (function (Helper) {
+        let toolTip;
+        (function (toolTip) {
+            function beginSection() {
+                return "<div>";
+            }
+            toolTip.beginSection = beginSection;
+            function switchSection() {
+                return "</div><div>";
+            }
+            toolTip.switchSection = switchSection;
+            function endSection() {
+                return "</div>";
+            }
+            toolTip.endSection = endSection;
+            function row(text, style) {
+                if (style) {
+                    return "<p style = '" + style + "'>" + text + "</p>";
+                }
+                return "<p>" + text + "</p>";
+            }
+            toolTip.row = row;
+            function column(text, style) {
+                if (style) {
+                    return "<span style = '" + style + "'>" + text + "</span>";
+                }
+                return "<span>" + text + "</span>";
+            }
+            toolTip.column = column;
+            function colored(text, color, style) {
+                if (style) {
+                    return "<strong style='color:" + color + ";" + style + "'>" + text + "</strong>";
+                }
+                return "<strong style='color:" + color + ";'>" + text + "</strong>";
+            }
+            toolTip.colored = colored;
+        })(toolTip = Helper.toolTip || (Helper.toolTip = {}));
+    })(Helper = exports.Helper || (exports.Helper = {}));
 });
 /** @packageDocumentation @module GameObjects */
 define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/GameObjects/Mob", "Engine/Core/Helper"], function (require, exports, dPhysSprite_1, Mob_3, Helper_1) {
@@ -3283,7 +3353,7 @@ define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/
     exports.DummySpell = DummySpell;
 });
 /** @packageDocumentation @module Core */
-define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListener", "Engine/Core/InventoryCore"], function (require, exports, MobListener_3, InventoryCore_2) {
+define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListener", "Engine/Core/InventoryCore", "Engine/Core/Helper", "Engine/Core/GameData", "Engine/UI/Localization"], function (require, exports, MobListener_3, InventoryCore_2, Helper_2, GameData_11, Localization_5) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var EquipmentType;
@@ -3333,12 +3403,9 @@ define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListe
             };
         }
         assignTags() {
-            let tags = this.itemData.tags;
-            tags.forEach(t => {
-                if (t in EquipmentType) {
-                    this.eqType = EquipmentType[t];
-                }
-            });
+            if (this.itemData.eClass in EquipmentType) {
+                this.eqType = EquipmentType[this.itemData.eClass];
+            }
         }
     }
     exports.Equipable = Equipable;
@@ -3350,6 +3417,14 @@ define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListe
             super(itemID);
             this.weaponGauge = 0;
             this.weaponGaugeMax = -1;
+            this._atkName = this.itemData.atkName;
+            this._spName = this.itemData.spName;
+        }
+        get atkName() {
+            return Localization_5._(this.name) + Localization_5._(':') + Localization_5._(this._atkName);
+        }
+        get spName() {
+            return Localization_5._(this.name) + Localization_5._(':') + Localization_5._(this._spName);
         }
         isInRange(mob, target) {
             return (mob.footPos().distance(target.footPos()) < (this.activeRange + mob.mobData.battleStats.attackRange));
@@ -3400,6 +3475,168 @@ define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListe
             throw new Error("Method not implemented.");
         }
         doSpecialAttack(source, target) { }
+        getDamage(mobData, dmg, dmgType) {
+            if (!mobData) {
+                return { modified: false, value: dmg };
+            }
+            let modified = false;
+            let pwrCorrect = 1.0;
+            pwrCorrect *= Math.pow(1.0353, mobData.battleStats.attackPower[GameData_11.GameData.damageType[dmgType]] + mobData.battleStats.attackPower[dmgType]);
+            if (pwrCorrect > 1.01 || pwrCorrect < 0.99) {
+                modified = true;
+            }
+            return { modified: modified, value: dmg * pwrCorrect };
+        }
+        getAttackTime(mobData, time) {
+            if (!mobData) {
+                return { modified: false, value: time };
+            }
+            let modified = false;
+            let mobSpd = (1 / mobData.modifiers.speed) * (1 / mobData.modifiers.attackSpeed);
+            if (mobSpd < 0.99 || mobSpd > 1.01) {
+                modified = true;
+            }
+            return { modified: modified, value: mobSpd * time };
+        }
+        getAttackRange(mobData, range) {
+            if (!mobData) {
+                return { modified: false, value: range };
+            }
+            let modified = false;
+            if (mobData.battleStats.attackRange > 0) {
+                modified = true;
+            }
+            return { modified: modified, value: mobData.battleStats.attackRange + range };
+        }
+        getResourceCost(mobData, cost) {
+            if (!mobData) {
+                return { modified: false, value: cost };
+            }
+            let modified = false;
+            if (mobData.modifiers.resourceCost < 0.99 || mobData.modifiers.resourceCost > 1.01) {
+                modified = true;
+            }
+            return { modified: modified, value: mobData.modifiers.resourceCost * cost };
+        }
+        getMobDataSafe(mobData, entry, defaultValue) {
+            if (mobData) {
+                let len = entry.length;
+                let currentObj = mobData;
+                for (var i = 0; i < len; i++) {
+                    currentObj = currentObj[entry[i]];
+                    if (!currentObj) {
+                        return defaultValue;
+                    }
+                }
+                return currentObj;
+            }
+            return defaultValue;
+        }
+        getBaseAttackDesc(mobData) {
+            return { title: Localization_5._(this._atkName), body: "无描述。" };
+        }
+        getSpecialAttackDesc(mobData) {
+            return { title: Localization_5._(this._spName), body: "这个武器没有特殊攻击。" };
+        }
+        getToolTip() {
+            // Weapon properties:
+            // Item Level - Rarity / Primary class - Sub class
+            // Attack power (type) / Attack time (DPS)
+            // Attack range
+            // Energy statement 0 / Max value (Energy type)
+            // Equip requirement
+            // Weapon special properties (if any)
+            // Base attack      cost / (Cost per sec)
+            // base attack description
+            // Special attack   energy cost
+            // Special attack description
+            // Weapon description (italic)
+            let ttBody = "<div style = 'max-width: 300px; margin: 0;'>";
+            //
+            // ─── BASIC PROPERTIES ────────────────────────────────────────────
+            //
+            let th = Helper_2.Helper.toolTip;
+            ttBody += th.beginSection();
+            // Item Level - Rarity / Primary class - Sub class
+            ttBody += th.row(th.column(th.colored(Localization_5._(GameData_11.GameData.rarityName[this.itemData.rarity]), GameData_11.GameData.rarityColor[this.itemData.rarity], 'width: 4.5em;') +
+                Localization_5._('itemLevel') + " " + this.itemData.level, 'display:flex;') +
+                th.column(Localization_5._(this.itemData.pClass) +
+                    (this.itemData.sClass !== "" ?
+                        (" - " + Localization_5._(this.itemData.sClass)) :
+                        (""))));
+            // Attack power (type) & Attack time
+            let attackType = GameData_11.GameData.Elements[this.mainElement];
+            let dmgMin = this.getDamage(this.equipper, this.baseAttackMin, attackType);
+            let dmgMax = this.getDamage(this.equipper, this.baseAttackMax, attackType);
+            let atkTime = this.getAttackTime(this.equipper, this.baseAttackSpeed);
+            ttBody += th.row(th.column("<strong style = 'width: 4.5em'>" + Localization_5._("atkDmg") + "</strong>" +
+                th.colored(`${dmgMin.value.toFixed(1)} - ${dmgMax.value.toFixed(1)} `, dmgMin.modified ? 'aqua' : GameData_11.GameData.ElementColorsStr[attackType]) + " " +
+                th.colored(Localization_5._(attackType), GameData_11.GameData.ElementColorsStr[attackType], 'margin-left: 0.45em;'), 'display: flex;') +
+                th.column(th.colored(atkTime.value.toFixed(1), atkTime.modified ? 'aqua' : 'white') + " " + Localization_5._("sec")));
+            // DPS
+            let dpsR = [dmgMin.value / atkTime.value, dmgMax.value / atkTime.value];
+            ttBody += th.row(`<strong style = 'width: 4.5em'>${Localization_5._('wpDPS')}</strong>${((dpsR[0] + dpsR[1]) / 2.0).toFixed(1)}`, 'display: flex;');
+            // Attack range
+            let actRange = this.getAttackRange(this.equipper, this.activeRange);
+            ttBody += th.row(th.column(`<strong style = 'width: 4.5em'>${Localization_5._('wpRange')}</strong>` +
+                th.colored(actRange.value.toFixed(0), actRange.modified ? 'aqua' : 'white') + " px", 'display: flex;'));
+            // Energy statement
+            ttBody += th.row(th.column(`<strong style = 'width: 4.5em'>${Localization_5._('wpGauge')}</strong>${this.weaponGauge.toFixed(0)} / ${this.weaponGaugeMax.toFixed(0)}`, 'display: flex;') +
+                th.column(this.equipper ?
+                    (th.colored("+ " + this.weaponGaugeIncreasement(this.equipper.parentMob), 'aqua') +
+                        ` (${this.energyType})`) :
+                    (this.energyType)));
+            ttBody += th.switchSection();
+            // Equip requirement
+            let isFirst = true;
+            for (let stat in this.statRequirements) {
+                if (this.statRequirements[stat] <= 0) {
+                    continue;
+                }
+                if (isFirst) {
+                    isFirst = false;
+                    ttBody += th.row(`<strong style = ''>${Localization_5._('wpReq')}</strong>${this.statRequirements[stat].toFixed(0)} ${Localization_5._(stat)}`);
+                }
+                else {
+                    ttBody += th.row(th.column(`${this.statRequirements[stat].toFixed(0)} ${Localization_5._(stat)}`, 'padding-left:4.5em'));
+                }
+            }
+            if (isFirst) {
+                ttBody += th.row(Localization_5._('wpNoReq'));
+            }
+            // Weapon special properties (if any)
+            if (false) {
+                ttBody += th.switchSection();
+            }
+            ttBody += th.switchSection();
+            // Base attack
+            let baseDesc = this.getBaseAttackDesc(this.equipper);
+            let rCost = this.getResourceCost(this.equipper, this.manaCost);
+            let thisColor = Helper_2.ColorToStr(this.itemData.color);
+            ttBody += th.row(th.column(Localization_5._('normalAttack') + " " +
+                th.colored(baseDesc.title, thisColor)) +
+                th.column(th.colored(rCost.value.toFixed(0), (rCost.modified) ? 'aqua' : 'white') +
+                    ` ${Localization_5._('mana')} (` +
+                    (rCost.value / atkTime.value).toFixed(1) + ` ${Localization_5._('per sec')})`));
+            ttBody += th.row(baseDesc.body, 'color:darkturquoise; display:block;');
+            ttBody += th.switchSection();
+            let spDesc = this.getSpecialAttackDesc(this.equipper);
+            ttBody += th.row(th.column(Localization_5._('specialAttack') + " " +
+                th.colored(spDesc.title, thisColor)) +
+                th.column(`${this.weaponGaugeMax.toFixed(0)} ${Localization_5._('energy')}`));
+            ttBody += th.row(spDesc.body, 'color:darkturquoise; display:block;');
+            ttBody += th.switchSection();
+            ttBody += "<p style='color: gold;'>" +
+                Localization_5._(this.itemData.toolTipText) + "</p>";
+            ttBody += th.endSection();
+            ttBody += th.endSection();
+            return {
+                title: Localization_5._(this.itemData.showName),
+                text: ttBody,
+                color: thisColor,
+                bodyStyle: "margin-left: 0; margin-right: 0;",
+            };
+        }
     }
     exports.Weapon = Weapon;
     class Accessory extends Equipable {
@@ -3416,7 +3653,7 @@ define("Engine/Core/mRTypes", ["require", "exports"], function (require, exports
         (function (Languages) {
             Languages["CHS"] = "zh-cn";
             Languages["ENG"] = "en-us";
-            Languages["JPN"] = "jp-ja";
+            Languages["JPN"] = "ja-jp";
         })(Languages = mRTypes.Languages || (mRTypes.Languages = {}));
     })(mRTypes = exports.mRTypes || (exports.mRTypes = {}));
 });
@@ -3601,7 +3838,7 @@ define("Engine/Core/ObjectPopulator", ["require", "exports"], function (require,
     exports.ObjectPopulator = ObjectPopulator;
 });
 /** @packageDocumentation @module GameEntity */
-define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/Core/MobData", "Engine/Core/UnitManager", "Engine/Core/EquipmentCore", "Engine/UI/PopUpManager", "Engine/Core/ObjectPopulator", "Engine/Core/GameData"], function (require, exports, dPhysSprite_2, MobData_1, UnitManager_5, EquipmentCore_2, PopUpManager_4, ObjectPopulator_1, GameData_11) {
+define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/Core/MobData", "Engine/Core/UnitManager", "Engine/Core/EquipmentCore", "Engine/UI/PopUpManager", "Engine/Core/ObjectPopulator", "Engine/Core/GameData"], function (require, exports, dPhysSprite_2, MobData_1, UnitManager_5, EquipmentCore_2, PopUpManager_4, ObjectPopulator_1, GameData_12) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Mob extends dPhysSprite_2.dPhysSprite {
@@ -3761,14 +3998,14 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
             if (result.isAvoid) {
                 if (_damageInfo.popUp == true) {
                     var popUpPos = this.getTopCenter();
-                    PopUpManager_4.PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, GameData_11.GameData.ElementColors['miss']);
+                    PopUpManager_4.PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, GameData_12.GameData.ElementColors['miss']);
                 }
                 return result;
             }
             // Mob itself only do rendering popUp texts
             if (_damageInfo.popUp == true && result.value > 0) {
                 var popUpPos = this.getTopCenter();
-                PopUpManager_4.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_11.GameData.ElementColors[result.type]);
+                PopUpManager_4.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_12.GameData.ElementColors[result.type]);
                 // // popUp texts on unit frames
                 // // fade from the edge of currentHealth to the left
                 // if(this.data.isPlayer)
@@ -3822,7 +4059,7 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
                 'isCrit': _healInfo.isCrit,
                 'isAvoid': _healInfo.isAvoid,
                 'isBlock': _healInfo.isBlock,
-                'type': GameData_11.GameData.Elements.heal,
+                'type': GameData_12.GameData.Elements.heal,
                 'overdeal': 0
             };
             if (Mob.checkAlive(this) == false) {
@@ -3856,10 +4093,10 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
                 // }
                 var popUpPos = this.getTopCenter();
                 if (result.overdeal > 0) {
-                    PopUpManager_4.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : "") + " <" + result.overdeal.toString() + ">", popUpPos.x, popUpPos.y, GameData_11.GameData.ElementColors['heal'], 1.0, 64, -256);
+                    PopUpManager_4.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : "") + " <" + result.overdeal.toString() + ">", popUpPos.x, popUpPos.y, GameData_12.GameData.ElementColors['heal'], 1.0, 64, -256);
                 }
                 else {
-                    PopUpManager_4.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_11.GameData.ElementColors['heal'], 1.0, 64, -256);
+                    PopUpManager_4.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_12.GameData.ElementColors['heal'], 1.0, 64, -256);
                 }
                 // // popUp texts on unit frames
                 // // fade from left to the the edge of currentHealth
@@ -4085,14 +4322,14 @@ define("Engine/GameObjects/Projectile", ["require", "exports", "Engine/GameObjec
     exports.Projectile = Projectile;
 });
 /** @packageDocumentation @module Buffs */
-define("Buffs/HDOT", ["require", "exports", "Engine/Core/Buff", "Engine/Core/GameData", "Engine/Core/Helper", "Engine/GameObjects/Spell", "Engine/UI/Localization"], function (require, exports, Buff_2, GameData_12, Helper_2, Spell_3, Localization_5) {
+define("Buffs/HDOT", ["require", "exports", "Engine/Core/Buff", "Engine/Core/GameData", "Engine/Core/Helper", "Engine/GameObjects/Spell", "Engine/UI/Localization"], function (require, exports, Buff_2, GameData_13, Helper_3, Spell_3, Localization_6) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class HDOT extends Buff_2.Buff {
         constructor(settings, type, vMin = 1, vMax = 3, vGap = 0.57) {
             settings.name = settings.name || 'XOT';
             settings.popupName = settings.popupName || settings.name || 'XOT!';
-            settings.color = settings.color || GameData_12.GameData.ElementColors[type] || Phaser.Display.Color.HexStringToColor('#0066ff');
+            settings.color = settings.color || GameData_13.GameData.ElementColors[type] || Phaser.Display.Color.HexStringToColor('#0066ff');
             //settings.iconId
             super(settings);
             //this.toolTip
@@ -4100,7 +4337,7 @@ define("Buffs/HDOT", ["require", "exports", "Engine/Core/Buff", "Engine/Core/Gam
             this.vMax = vMax;
             this.vGap = vGap; // do not use cooldown for accurate timing
             this.vType = type;
-            this.typeStr = Localization_5._(this.vType);
+            this.typeStr = Localization_6._(this.vType);
             this.timer = 0;
             this.vCount = -1; // Initial tick
         }
@@ -4110,11 +4347,11 @@ define("Buffs/HDOT", ["require", "exports", "Engine/Core/Buff", "Engine/Core/Gam
         onUpdate(mob, dt) {
             this.timer += dt;
             for (; this.vCount < Math.floor(this.timer / this.vGap); this.vCount++) {
-                Helper_2.HealDmg({
+                Helper_3.HealDmg({
                     'source': this.source.parentMob,
                     'target': mob.parentMob,
                     'type': this.vType,
-                    'value': Helper_2.getRandomInt(this.vMin, this.vMax) * this.stacks,
+                    'value': Helper_3.getRandomInt(this.vMin, this.vMax) * this.stacks,
                     'spell': { 'name': this.name, 'flags': new Set([Spell_3.SpellFlags.overTime]) },
                     'popUp': true,
                 });
@@ -4123,14 +4360,14 @@ define("Buffs/HDOT", ["require", "exports", "Engine/Core/Buff", "Engine/Core/Gam
         preToolTip() {
             let tt = super.preToolTip();
             tt.text += "<br>";
-            tt.text += eval("`" + Localization_5._("_tt_HDOT") + "`");
+            tt.text += eval("`" + Localization_6._("_tt_HDOT") + "`");
             return tt;
         }
     }
     exports.HDOT = HDOT;
 });
 /** @packageDocumentation @module Weapons */
-define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/GameObjects/Projectile", "Engine/Core/Helper", "Engine/Core/GameData", "Buffs/HDOT", "Engine/Core/Buff"], function (require, exports, EquipmentCore_3, UnitManager_7, Spell_4, Projectile_1, Helper_3, GameData_13, HDOT_1, Buff_3) {
+define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/GameObjects/Projectile", "Engine/Core/Helper", "Engine/Core/GameData", "Buffs/HDOT", "Engine/Core/Buff"], function (require, exports, EquipmentCore_3, UnitManager_7, Spell_4, Projectile_1, Helper_4, GameData_14, HDOT_1, Buff_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class CometWand extends EquipmentCore_3.Weapon {
@@ -4156,19 +4393,11 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
         doRegularAttack(source, target) {
             for (let targetMob of target)
                 new Projectile_1.Projectile(source.x, source.y, 'img_iced_fx', {
-                    'info': { 'name': this.name, 'flags': new Set([Spell_4.SpellFlags.isDamage, Spell_4.SpellFlags.hasTarget]) },
+                    'info': { 'name': this.atkName, 'flags': new Set([Spell_4.SpellFlags.isDamage, Spell_4.SpellFlags.hasTarget]) },
                     'source': source,
                     'target': targetMob,
                     'speed': 450,
-                    'onMobHit': (self, mob) => { self.dieAfter(self.HealDmg, [mob, Helper_3.getRandomInt(6, 18), GameData_13.GameData.Elements.ice], mob); },
-                    // 'onMobHit': (self: Spell, mob: Mob) =>
-                    // {
-                    //     self.dieAfter(
-                    //         () => AoE((m: Mob) =>
-                    //         {
-                    //             self.HealDmg(m, getRandomInt(6, 18), 'ice')
-                    //         }, self.getPosition(), 100, self.targeting), [], mob);
-                    // },
+                    'onMobHit': (self, mob) => { self.dieAfter(self.HealDmg, [mob, Helper_4.getRandomInt(6, 18), GameData_14.GameData.Elements.ice], mob); },
                     'color': Phaser.Display.Color.HexStringToColor("#77ffff"),
                     'chasingRange': 400,
                     'chasingPower': 1.0,
@@ -4177,27 +4406,27 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
         doSpecialAttack(source, target) {
             for (let targetMob of target)
                 new Projectile_1.Projectile(source.x, source.y, 'img_iced_fx', {
-                    'info': { 'name': this.name, 'flags': new Set([Spell_4.SpellFlags.isDamage, Spell_4.SpellFlags.hasTarget]) },
+                    'info': { 'name': this.spName, 'flags': new Set([Spell_4.SpellFlags.isDamage, Spell_4.SpellFlags.hasTarget]) },
                     'source': source,
                     'target': targetMob,
                     'speed': 600,
                     'onMobHit': (self, mob) => {
-                        self.dieAfter(() => Helper_3.AoE((m) => {
+                        self.dieAfter(() => Helper_4.AoE((m) => {
                             // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
-                            m.receiveBuff(source, new HDOT_1.HDOT(Buff_3.Buff.fromKey('test_Burn', { source: source.mobData, time: 15.0, maxStack: 10 }), GameData_13.GameData.Elements.fire, 20, 30, 0.5));
+                            m.receiveBuff(source, new HDOT_1.HDOT(Buff_3.Buff.fromKey('test_Burn', { source: source.mobData, time: 15.0, maxStack: 10, name: self.name }), GameData_14.GameData.Elements.fire, 20, 30, 0.5));
                         }, self.getPosition(), 100, self.targeting), [], mob);
                     },
                     'color': Phaser.Display.Color.HexStringToColor("#ff3333"),
                     'chasingRange': 400,
                     'chasingPower': 5.0,
                 });
-            Helper_3.AoE((m) => {
+            Helper_4.AoE((m) => {
                 // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
-                if (Helper_3.getRandomInt(0, 3) <= 1) {
-                    m.receiveBuff(source, new HDOT_1.HDOT(Buff_3.Buff.fromKey('test_HOT', { source: source.mobData, time: 12.0, maxStack: 10 }), GameData_13.GameData.Elements.heal, 5, 8, 1.0));
+                if (Helper_4.getRandomInt(0, 3) <= 1) {
+                    m.receiveBuff(source, new HDOT_1.HDOT(Buff_3.Buff.fromKey('test_HOT', { source: source.mobData, time: 12.0, maxStack: 10 }), GameData_14.GameData.Elements.heal, 5, 8, 1.0));
                 }
                 else {
-                    m.receiveBuff(source, new HDOT_1.HDOT(Buff_3.Buff.fromKey('test_Light', { source: source.mobData, time: 12.0 }), GameData_13.GameData.Elements.light, 5, 8, 1.0));
+                    m.receiveBuff(source, new HDOT_1.HDOT(Buff_3.Buff.fromKey('test_Light', { source: source.mobData, time: 12.0 }), GameData_14.GameData.Elements.light, 5, 8, 1.0));
                 }
             }, source.footPos(), 200, Spell_4.Targeting.Player);
         }
@@ -4253,7 +4482,7 @@ define("Lists/AgentList", ["require", "exports", "Agents/SimpleAgents"], functio
     };
 });
 /** @packageDocumentation @module BattleScene */
-define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/Staff", "Agents/PlayerAgents", "Agents/SimpleAgents", "Engine/Core/Helper", "Engine/Core/ObjectPopulator", "Lists/ObjectList", "Lists/AgentList", "Engine/Core/GameData", "Buffs/HDOT", "Engine/UI/Localization", "Engine/Core/Buff"], function (require, exports, BattleScene_1, Mob_7, MobData_2, Staff_2, PlayerAgents, SimpleAgents_2, Helper_4, ObjectPopulator_3, ObjectList_1, AgentList_1, GameData_14, HDOT_2, Localization_6, Buff_4) {
+define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/Staff", "Agents/PlayerAgents", "Agents/SimpleAgents", "Engine/Core/Helper", "Engine/Core/ObjectPopulator", "Lists/ObjectList", "Lists/AgentList", "Engine/Core/GameData", "Buffs/HDOT", "Engine/UI/Localization", "Engine/Core/Buff"], function (require, exports, BattleScene_1, Mob_7, MobData_2, Staff_2, PlayerAgents, SimpleAgents_2, Helper_5, ObjectPopulator_3, ObjectList_1, AgentList_1, GameData_15, HDOT_2, Localization_7, Buff_4) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     PlayerAgents = __importStar(PlayerAgents);
@@ -4287,7 +4516,7 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
                     'idleAnim': 'move',
                     'moveAnim': 'move',
                     'deadAnim': 'move',
-                    'backendData': new MobData_2.MobData({ name: Localization_6._('testGirl') + i, 'isPlayer': true, 'attackSpeed': 40 - 5 * i, 'mag': 13 - 1 * i, 'manaRegen': 4 + 1 * i }),
+                    'backendData': new MobData_2.MobData({ name: Localization_7._('testGirl') + i, 'isPlayer': true, 'attackSpeed': 40 - 5 * i, 'mag': 13 - 1 * i, 'manaRegen': 4 + 1 * i }),
                     'agent': PlayerAgents.Simple,
                 });
                 this.girl.mobData.battleStats.attackPower.ice = 10;
@@ -4295,13 +4524,15 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
                 this.girl.mobData.battleStats.crit = 5.0;
                 this.girl.mobData.weaponRight = new Staff_2.CometWand();
                 this.girl.mobData.currentWeapon = this.girl.mobData.weaponRight;
+                this.girl.mobData.currentWeapon.equipper = this.girl.mobData;
                 this.girl.mobData.currentWeapon.activated = true;
                 this.girl.mobData.weaponLeft = new Staff_2.CometWand();
                 this.girl.mobData.weaponLeft.baseAttackSpeed = 0.05;
                 this.girl.mobData.weaponLeft.manaCost = 0;
                 this.girl.mobData.anotherWeapon = this.girl.mobData.weaponLeft;
+                this.girl.mobData.anotherWeapon.equipper = this.girl.mobData;
                 this.girl.mobData.addListener(this.girl.mobData.weaponRight);
-                this.girl.receiveBuff(this.girl, new HDOT_2.HDOT(Buff_4.Buff.fromKey('test_GodHeal'), GameData_14.GameData.Elements.heal, 20, 38, 0.8));
+                this.girl.receiveBuff(this.girl, new HDOT_2.HDOT(Buff_4.Buff.fromKey('test_GodHeal'), GameData_15.GameData.Elements.heal, 20, 38, 0.8));
                 this.addMob(this.girl);
             }
             let woodlog = new Mob_7.Mob(this, 300, 200, 'sheet_forestelf_myst', {
@@ -4334,7 +4565,7 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
             // console.log("Mana: " + this.girl.mobData.currentMana.toString() + " / " + this.girl.mobData.maxMana.toString());
             if (this.hc < 0) {
                 this.hc = this.hcM;
-                Helper_4.HealDmg({ 'source': this.h, 'target': this.h, type: GameData_14.GameData.Elements.heal, value: 5 });
+                Helper_5.HealDmg({ 'source': this.h, 'target': this.h, type: GameData_15.GameData.Elements.heal, value: 5 });
             }
             this.hc -= dt * 0.001;
         }
@@ -4342,7 +4573,7 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
     exports.TestScene = TestScene;
 });
 /** @packageDocumentation @module ScenePrototypes */
-define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine/UI/Localization", "Engine/DynamicLoader/DynamicLoaderScene", "Engine/UI/UIScene", "TestScene", "Engine/Core/InventoryCore", "Lists/ItemList", "Engine/UI/ProgressBar", "papaparse", "Engine/Core/Buff"], function (require, exports, Localization_7, DynamicLoaderScene_3, UIScene_4, TestScene_1, InventoryCore_3, ItemList_1, ProgressBar_3, papaparse_1, Buff_5) {
+define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine/UI/Localization", "Engine/DynamicLoader/DynamicLoaderScene", "Engine/UI/UIScene", "TestScene", "Engine/Core/InventoryCore", "Lists/ItemList", "Engine/UI/ProgressBar", "papaparse", "Engine/Core/Buff"], function (require, exports, Localization_8, DynamicLoaderScene_3, UIScene_4, TestScene_1, InventoryCore_3, ItemList_1, ProgressBar_3, papaparse_1, Buff_5) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     /**
@@ -4359,26 +4590,33 @@ define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine
             this.load.bitmapFont('smallPx_HUD', './assets/fonts/smallPx_HUD_0.png', './assets/fonts/smallPx_HUD.fnt');
             this.load.bitmapFont('mediumPx', './assets/fonts/mediumPx_04b03_0.png', './assets/fonts/mediumPx_04b03.fnt');
             this.load.text('locals', './assets/dataSheets/Locals.csv');
-            this.load.json('itemData', 'assets/dataSheets/Items.json');
+            this.load.text('itemData', 'assets/dataSheets/Items.csv');
             this.load.text('buffData', 'assets/dataSheets/Buffs.csv');
             this.add.existing(new ProgressBar_3.ProgressBar(this, 400, 310, () => [this.currProgress, 1.0], 224, 20, 5, false, 0x444444, 0x000000, 0xfddac5, false));
             this.load.on('progress', (value) => { this.currProgress = value; });
             this.load.on('complete', () => {
-                papaparse_1.parse(this.cache.text.get('locals'), {
-                    complete: (result) => {
-                        Localization_7.Localization.setData(this.parseLocales(result));
-                        // Create the ItemManager
-                        InventoryCore_3.ItemManager.setData(this.cache.json.get('itemData'), ItemList_1.ItemList);
-                        let buffCSV = (this.cache.text.get('buffData'));
-                        papaparse_1.parse(buffCSV, {
-                            complete: (result) => {
-                                Buff_5.Buff.parsedBuffInfo = this.parseBuffs(result);
-                                this.scene.add('TestScene', new TestScene_1.TestScene(), true);
-                                this.scene.add('UIScene', UIScene_4.UIScene.getSingleton(), true);
-                                this.scene.add('DynamicLoaderScene', DynamicLoaderScene_3.DynamicLoaderScene.getSingleton(), true);
-                            }
-                        });
-                    }
+                // https://medium.com/@kishanvikani/parse-multiple-files-using-papa-parse-and-perform-some-synchronous-task-2db18e531ede
+                Promise.all([
+                    this.cache.text.get('locals'),
+                    this.cache.text.get('buffData'),
+                    this.cache.text.get('itemData'),
+                ].map((val) => new Promise((resolve, reject) => papaparse_1.parse(val, {
+                    complete: resolve,
+                    error: reject,
+                })))).then((results) => {
+                    let localesCSV = (results[0]);
+                    let buffsCSV = (results[1]);
+                    let itemsCSV = (results[2]);
+                    Localization_8.Localization.setData(this.parseLocales(localesCSV));
+                    InventoryCore_3.ItemManager.setData(this.parseItems(itemsCSV), ItemList_1.ItemList);
+                    // Create the ItemManager
+                    // ItemManager.setData(this.cache.json.get('itemData'), ItemList);
+                    Buff_5.Buff.parsedBuffInfo = this.parseBuffs(buffsCSV);
+                    this.scene.add('TestScene', new TestScene_1.TestScene(), true);
+                    this.scene.add('UIScene', UIScene_4.UIScene.getSingleton(), true);
+                    this.scene.add('DynamicLoaderScene', DynamicLoaderScene_3.DynamicLoaderScene.getSingleton(), true);
+                }).catch((err) => {
+                    console.log("Something went wrong: ", err);
                 });
             });
             this.load.start();
@@ -4394,20 +4632,78 @@ define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine
                 } // This row is empty
                 if (row[1] === "true") {
                     localesPop[row[0]] = {
-                        "zh-cn": row[2] || "BAD_STR",
-                        "en-us": row[3] || "BAD_STR",
-                        "jp-ja": row[4] || "BAD_STR"
+                        "zh-cn": row[2] === "" ? "BAD_STR" : row[2],
+                        "en-us": row[3] === "" ? "BAD_STR" : row[3],
+                        "ja-jp": row[4] === "" ? "BAD_STR" : row[4]
                     };
                 }
                 else {
                     localesMain[row[0]] = {
-                        "zh-cn": row[2] || "BAD_STR",
-                        "en-us": row[3] || "BAD_STR",
-                        "jp-ja": row[4] || "BAD_STR"
+                        "zh-cn": row[2] === "" ? "BAD_STR" : row[2],
+                        "en-us": row[3] === "" ? "BAD_STR" : row[3],
+                        "ja-jp": row[4] === "" ? "BAD_STR" : row[4]
                     };
                 }
             }
             return { "main": localesMain, "popUpBuff": localesPop };
+        }
+        parseItems(result) {
+            let allItemInfo = {};
+            let currentRowIdx = 3; // Start from 4th row
+            for (; currentRowIdx < result.data.length; currentRowIdx++) {
+                let row = result.data[currentRowIdx];
+                if (row[0] === "") {
+                    continue;
+                } // This row is empty
+                // A: Unique ID
+                let uid = row[0];
+                let item = {
+                    'showName': 'itemname_' + uid,
+                    'color': row[4],
+                    'tint': row[5] === 'true',
+                    'level': Number.parseInt(row[6]),
+                    'rarity': Number.parseInt(row[7]),
+                    'stackable': row[8] === 'true',
+                    'eClass': row[9],
+                    'pClass': row[10],
+                    'sClass': row[11],
+                    'image': row[18],
+                    'iconIdx': Number.parseInt(row[19]),
+                    'toolTipText': 'itemtt_' + uid,
+                };
+                Localization_8.Localization.data.main[item.showName] = {
+                    "zh-cn": row[1] === "" ? "BAD_STR" : row[1],
+                    "en-us": row[2] === "" ? "BAD_STR" : row[2],
+                    "ja-jp": row[3] === "" ? "BAD_STR" : row[3],
+                };
+                Localization_8.Localization.data.main[item.toolTipText] = {
+                    "zh-cn": row[20] === "" ? "BAD_STR" : row[20],
+                    "en-us": row[21] === "" ? "BAD_STR" : row[21],
+                    "ja-jp": row[22] === "" ? "BAD_STR" : row[22],
+                };
+                // Has attackName
+                if (row[12] !== "") {
+                    item.atkName = 'aN_' + uid;
+                    // M, N, O
+                    Localization_8.Localization.data.main[item.atkName] = {
+                        "zh-cn": row[12] === "" ? "BAD_STR" : (row[12]),
+                        "en-us": row[13] === "" ? "BAD_STR" : (row[13]),
+                        "ja-jp": row[14] === "" ? "BAD_STR" : (row[14]),
+                    };
+                }
+                // Has specialAttackName
+                if (row[15] !== "") {
+                    item.spName = 'sN_' + uid;
+                    // P, Q, R
+                    Localization_8.Localization.data.main[item.spName] = {
+                        "zh-cn": row[15] === "" ? "BAD_STR" : (row[15]),
+                        "en-us": row[16] === "" ? "BAD_STR" : (row[16]),
+                        "ja-jp": row[17] === "" ? "BAD_STR" : (row[17]),
+                    };
+                }
+                allItemInfo[uid] = item;
+            }
+            return allItemInfo;
         }
         parseBuffs(result) {
             let allBuffInfo = {};
@@ -4420,14 +4716,14 @@ define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine
                 // A: Unique ID
                 let uid = row[0];
                 let buff = {};
-                buff.name = 'name_' + uid;
+                buff.name = 'buffname_' + uid;
                 // B, C, D: names
                 let name = {
-                    "zh-cn": row[1],
-                    "en-us": row[2],
-                    "ja-jp": row[3],
+                    "zh-cn": row[1] === "" ? "BAD_STR" : row[1],
+                    "en-us": row[2] === "" ? "BAD_STR" : row[2],
+                    "ja-jp": row[3] === "" ? "BAD_STR" : row[3],
                 };
-                Localization_7.Localization.data.main[buff.name] = name;
+                Localization_8.Localization.data.main[buff.name] = name;
                 // E: color
                 buff.color = Phaser.Display.Color.HexStringToColor(row[4]);
                 // F, G: countTime, time
@@ -4442,22 +4738,22 @@ define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine
                 // L, M, N: popUpName
                 buff.popupName = 'popUp_' + uid;
                 let pName = {
-                    "zh-cn": row[11],
-                    "en-us": row[12],
-                    "ja-jp": row[13],
+                    "zh-cn": row[11] === "" ? "BAD_STR" : row[11],
+                    "en-us": row[12] === "" ? "BAD_STR" : row[12],
+                    "ja-jp": row[13] === "" ? "BAD_STR" : row[13],
                 };
-                Localization_7.Localization.data.popUpBuff[buff.popupName] = pName;
+                Localization_8.Localization.data.popUpBuff[buff.popupName] = pName;
                 // O, P: UIImportant, UIPriority
                 buff.UIimportant = row[14] === "true";
                 buff.UIpriority = Number.parseFloat(row[15]);
                 // Q, R, S: ToolTip
                 buff.toolTip = 'tt_' + uid;
                 let ttText = {
-                    "zh-cn": row[16],
-                    "en-us": row[17],
-                    "ja-jp": row[18],
+                    "zh-cn": row[16] === "" ? "BAD_STR" : row[16],
+                    "en-us": row[17] === "" ? "BAD_STR" : row[17],
+                    "ja-jp": row[18] === "" ? "BAD_STR" : row[18],
                 };
-                Localization_7.Localization.data.main[buff.toolTip] = ttText;
+                Localization_8.Localization.data.main[buff.toolTip] = ttText;
                 allBuffInfo[uid] = buff;
             }
             console.log("Parsed buffSettings:");

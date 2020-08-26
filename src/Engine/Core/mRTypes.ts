@@ -280,6 +280,7 @@ export namespace mRTypes
         title: string;
         text: string;
         color?: string;
+        bodyStyle?: string;
     }
 
     export interface ItemData
@@ -292,8 +293,8 @@ export namespace mRTypes
         rarity: number;
 
         stackable: boolean;
-        tags: Set<string>;
 
+        eClass: string;
         pClass: string;
         sClass: string;
 
@@ -301,7 +302,9 @@ export namespace mRTypes
         iconIdx: number;
 
         toolTipText: string;
-        className: string;
+
+        atkName?: string;
+        spName?: string;
     }
 
     export interface ItemDataStorage
@@ -313,6 +316,6 @@ export namespace mRTypes
     {
         CHS = 'zh-cn',
         ENG = 'en-us',
-        JPN = 'jp-ja',
+        JPN = 'ja-jp',
     }
 }

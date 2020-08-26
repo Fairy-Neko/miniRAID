@@ -132,7 +132,7 @@ export class Buff extends MobListener
     {
         let tt = this.preToolTip();
         return {
-            "title": `<div><p><span>${tt.title || this.getTitle()}</span><span>(${this.timeRemain[0].toFixed(1)}s)</span></p></div>`,
+            "title": `<div><p><span>${tt.title || this.getTitle()}</span><span>(${this.timeRemain.length > 0 ? this.timeRemain[0].toFixed(1) : 0}s)</span></p></div>`,
 
             "text": `
             <div style = "max-width: 200px">

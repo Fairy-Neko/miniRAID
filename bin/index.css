@@ -18,7 +18,7 @@ div
 {
     position: absolute;
     pointer-events: none;
-    max-width: 260px;
+    max-width: 400px;
 
     z-index: 10000;
 }
@@ -36,15 +36,25 @@ div
     display: none;
 }
 
+#tooltip:lang(zh)
+{
+    font-family: 宋体;
+}
+
+#tooltip:lang(ja)
+{
+    font-family: "MS PGothic", "Osaka", Arial, sans-serif;
+}
+
 @media
 (-webkit-min-device-pixel-ratio: 1.5),
 (-moz-min-device-pixel-ratio: 1.5),
 (-o-min-device-pixel-ratio: 3/2),
 (min-device-pixel-ratio: 1.5)
 {
-    #tooltip
+    #tooltip:lang(zh)
     {
-        font-family: Verdana, open sans, Arial, helvetica neue, Helvetica, sans-serif, 微软雅黑, 宋体;
+        font-family: 微软雅黑, 宋体;
     }
 }
 
@@ -58,9 +68,11 @@ div
 #tooltip h1
 {
     color: gold;
-    font-size: 13px;
+    font-size: 12px;
     margin-bottom: 15px;
-    margin-top: 0;
+    margin-top: 3px;
+    margin-left: 3px;
+    margin-right: 3px;
     font-weight: normal;
 }
 

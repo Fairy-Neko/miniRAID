@@ -77,12 +77,14 @@ export class TestScene extends BattleScene
             this.girl.mobData.battleStats.crit = 5.0;
             this.girl.mobData.weaponRight = new CometWand();
             this.girl.mobData.currentWeapon = this.girl.mobData.weaponRight;
+            this.girl.mobData.currentWeapon.equipper = this.girl.mobData;
             this.girl.mobData.currentWeapon.activated = true;
 
             this.girl.mobData.weaponLeft = new CometWand();
             this.girl.mobData.weaponLeft.baseAttackSpeed = 0.05;
             this.girl.mobData.weaponLeft.manaCost = 0;
             this.girl.mobData.anotherWeapon = this.girl.mobData.weaponLeft;
+            this.girl.mobData.anotherWeapon.equipper = this.girl.mobData;
 
             this.girl.mobData.addListener(this.girl.mobData.weaponRight);
             this.girl.receiveBuff(this.girl, new HDOT(Buff.fromKey('test_GodHeal'), GameData.Elements.heal, 20, 38, 0.8));

@@ -30,10 +30,10 @@ export class ItemManager
     static setData(itemData: any, itemList: any)
     {
         this.itemList = itemList;
-        ItemManager.datastorage = JSON.parse(JSON.stringify(itemData)); // Deep copy
+        // ItemManager.datastorage = JSON.parse(JSON.stringify(itemData)); // Deep copy
+        ItemManager.datastorage = itemData;
         for (let key in ItemManager.datastorage)
         {
-            ((<any>(ItemManager.datastorage))[key]).tags = new Set(((<any>(ItemManager.datastorage))[key]).tags);
             ((<any>(ItemManager.datastorage))[key]).color = Phaser.Display.Color.HexStringToColor(((<any>(ItemManager.datastorage))[key]).color);
         }
     }
