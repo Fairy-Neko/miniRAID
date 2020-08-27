@@ -125,3 +125,19 @@ div
     margin-top: 15px;
     /* margin-bottom: 0; */
 }
+
+#tooltip p.weaponAtkDesc
+{
+    color:darkturquoise;
+    display:block;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 5px;
+}
+
+#tooltip p.weaponAtkDesc span
+{
+    display: block;
+    margin-top: 5px;
+    margin-right: 0em;
+}

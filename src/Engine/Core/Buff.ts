@@ -76,7 +76,7 @@ export class Buff extends MobListener
         this.source = settings.source || undefined;
         if (this.source === undefined)
         {
-            console.warn(`Buff "${_(this.name)}" did not have a source. Did you forgot it ?`);
+            console.warn(`Buff "${_(this.name)}" does not have a source.`);
         }
 
         this.toolTip = settings.toolTip || "LOL.";

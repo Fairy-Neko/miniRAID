@@ -2,10 +2,10 @@
 ,name_zh-cn,name_en-us,name_ja-jp,color,countTime,time,stackable,maxStack,imageKey,iconId,popupName_zh-cn,popupName_en-us,popupName_ja-jp,UIImportant,Uipriority,toolTip_zh-cn,toolTip_en-us,toolTip_ja-jp
 唯一UID,显示名称,,,颜色,是否计时,持续时间,可否叠加,最大叠加,图标文件,图标序号,提示文本,,,是否重要,显示优先级,toolTip文字,,
 ,"不要动列的顺序！本表仅对应mRTypes.Settings.Buff, 具体数值应具体设置",,,,,,,,,,,,,,,,,
-test_GodHeal,神之治愈,God Heal,神々の癒し,#66f95c,true,75.0,false,1,,,治愈,God Heal,,true,0,受到神明的祝福。,Blessed.,神々からの祝福を受けています。
-test_Burn,点燃,Burn,燃える,#ffa342,true,5.0,true,6,,,点燃,Burnt,,false,0,痛苦地燃烧着。,Burnt.,痛そうに燃えている。
-test_Light,透射,Enlightened,刺し光,#fffbd1,true,5.0,false,1,,,透射,Lighttened,,false,1,被光刺穿。,Lighttened.,光に刺し通す。
-test_HOT,再生,Regenerate,再生,#b1ed1a,true,5.0,true,3,,,再生,Regen,,false,0,充满活力。,Regenerating.,元気一杯！
+test_GodHeal,神之治愈,God Heal,神々の癒し,#66f95c,true,75.0,false,1,,,治愈,God Heal,祝福,true,0,受到神明的祝福。,Blessed.,神々からの祝福を受けています。
+test_Burn,点燃,Burn,燃える,#ffa342,true,5.0,true,6,,,点燃,Burnt,炎上,false,0,痛苦地燃烧着。,Burnt.,痛そうに燃えている。
+test_Light,透射,Enlightened,刺し光,#fffbd1,true,5.0,false,1,,,透射,Lighttened,刺し光,false,1,被光刺穿。,Lighttened.,光に刺し通す。
+test_HOT,再生,Regenerate,再生,#b1ed1a,true,5.0,true,3,,,再生,Regen,再生,false,0,充满活力。,Regenerating.,元気一杯！
 ,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,

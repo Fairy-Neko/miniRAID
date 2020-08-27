@@ -32,23 +32,22 @@
 </head>
 
 <body>
+
+    <div>
+        Select a language; The page will refresh after selection!
+        <select id="Language" onchange="setLanguage()">
+            <option value="zh-cn">中文（简体）</option>
+            <option value="en-us" selected>English</option>
+            <option value="ja-jp">日本語（雑）</option>
+        </select>
+    </div>
+
     <div id="GameFrame" oncontextmenu="return false;">
     </div>
     <!-- Tool tip -->
     <div id="tooltip" class="followmouse">
         <h1 id="title">Test Sword 测试</h1>
         <p id="body">测试 Test message</p>
-    </div>
-
-    <div>
-        <p>
-            Select a language below. The page will refresh after selection!
-        </p>
-        <select id="Language" onchange="setLanguage()">
-            <option value="zh-cn">中文（简体）</option>
-            <option value="en-us" selected>English</option>
-            <option value="ja-jp">日本語</option>
-        </select>
     </div>
 
     <!-- pointermove events -->

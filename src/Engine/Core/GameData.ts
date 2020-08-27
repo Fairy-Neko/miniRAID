@@ -108,6 +108,7 @@ export namespace GameData
     export let popUpSmallFont: boolean = true;
     export let popUpBuffLanguage: mRTypes.Languages = mRTypes.Languages.ENG;
     export let mainLanguage: mRTypes.Languages = mRTypes.Languages.ENG;
+    export let showManaNumber: boolean = true;
 
     export const healTaunt: number = 2;
 }

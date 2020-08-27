@@ -1,5 +1,7 @@
 /** @packageDocumentation @module UI */
 
+import { mRTypes } from "../Core/mRTypes";
+
 export enum TextAlignment
 {
     Left = 0,
@@ -15,7 +17,11 @@ export class ProgressBar extends Phaser.GameObjects.Container
     bg: Phaser.GameObjects.Rectangle;
     fill: Phaser.GameObjects.Rectangle;
     text: Phaser.GameObjects.BitmapText;
+    textBG: Phaser.GameObjects.Rectangle;
+    prevText: string;
     fillMaxLength: number;
+    useTween: boolean;
+    align: TextAlignment;
 
     maxV: number;
     curV: number;
@@ -26,14 +32,14 @@ export class ProgressBar extends Phaser.GameObjects.Container
         width: number = 100, height: number = 10,
         border: number = 1, hasBG: boolean = true,
         outlineColor: number = 0xffffff, bgColor: number = 0x20604f, fillColor: number = 0x1b813e,
-        showText: boolean = true, fontKey: string = 'smallPx_HUD', align: TextAlignment = TextAlignment.Left, textX: number = 0, textY: number = 0, textColor: number = 0xffffff, getText: undefined | (() => string) = undefined)
+        showText: boolean = true, fontKey: string = 'smallPx_HUD', align: TextAlignment = TextAlignment.Left, textX: number = 0, textY: number = 0, textColor: number = 0xffffff, getText: undefined | (() => string) = undefined, tween: boolean = true, textBG: number = 0x00000000)
     {
         super(scene, x, y);
 
         this.fetchFunc = fetchValue;
         this.getText = getText;
 
-
+        this.align = align;
         this.fill = new Phaser.GameObjects.Rectangle(this.scene, border, border, width - border * 2, height - border * 2, fillColor);
         this.fill.setOrigin(0);
         this.fill.setPosition(border, border);
@@ -52,6 +58,13 @@ export class ProgressBar extends Phaser.GameObjects.Container
             this.add(this.bg);
         }
         this.add(this.fill);
+
+        if (textBG !== 0x00000000)
+        {
+            this.textBG = new Phaser.GameObjects.Rectangle(this.scene, textX - 1 + align, textY - 1, 0, 0, textBG >> 8, (textBG & 0x000000FF) / 255);
+            this.textBG.setOrigin(align * 0.5, 0);
+            this.add(this.textBG);
+        }
         if (showText)
         {
             this.text = new Phaser.GameObjects.BitmapText(this.scene, textX, textY, fontKey, '0/0');
@@ -64,6 +77,9 @@ export class ProgressBar extends Phaser.GameObjects.Container
 
         this.maxV = 100;
         this.curV = 100;
+        this.prevText = "";
+
+        this.useTween = tween;
     }
 
     update(time: number, dt: number)
@@ -71,7 +87,10 @@ export class ProgressBar extends Phaser.GameObjects.Container
         if (this.fetchFunc)
         {
             let v = this.fetchFunc();
-            this.setValue(v[0], v[1]);
+            if (v)
+            {
+                this.setValue(v[0], v[1]);
+            }
         }
     }
 
@@ -83,13 +102,20 @@ export class ProgressBar extends Phaser.GameObjects.Container
         }
         // this.fill.width = this.fillMaxLength * (value / max);
 
-        this.scene.tweens.add({
-            targets: this.fill,
-            width: this.fillMaxLength * Math.max(0.0, Math.min(1.0, value / max)),
-            yoyo: false,
-            repeat: 0,
-            duration: 100,
-        })
+        if (this.useTween)
+        {
+            this.scene.tweens.add({
+                targets: this.fill,
+                width: this.fillMaxLength * Math.max(0.0, Math.min(1.0, value / max)),
+                yoyo: false,
+                repeat: 0,
+                duration: 100,
+            });
+        }
+        else
+        {
+            this.fill.width = this.fillMaxLength * Math.max(0.0, Math.min(1.0, value / max));
+        }
 
         if (this.text)
         {
@@ -99,7 +125,17 @@ export class ProgressBar extends Phaser.GameObjects.Container
             }
             else
             {
-                this.text.text = value.toFixed(0) + "/" + max.toFixed(0);
+                this.text.text = value.toFixed(0);// + "/" + max.toFixed(0);
+            }
+
+            if (typeof this.textBG !== 'undefined' && this.text.text !== this.prevText)
+            {
+                this.prevText = this.text.text;
+                let bounds = this.text.getTextBounds();
+                this.textBG.width = bounds.global.width + 4;
+                this.textBG.height = bounds.global.height + 4;
+                this.textBG.x = bounds.global.x - 2;
+                this.textBG.y = bounds.global.y - 2;
             }
         }
 

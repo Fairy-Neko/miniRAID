@@ -28,6 +28,7 @@ export class GamePreloadScene extends Phaser.Scene
         let sbox = <HTMLSelectElement>(document.getElementById("Language"));
         let slang = Cookies.get('language') || sbox.options[sbox.selectedIndex].value;
         GameData.mainLanguage = <any>slang;
+        GameData.popUpBuffLanguage = <any>slang;
         sbox.selectedIndex = slang === 'zh-cn' ? 0 : (slang === 'en-us' ? 1 : 2);
 
         this.load.bitmapFont('smallPx', './assets/fonts/smallPx_C_0.png', './assets/fonts/smallPx_C.fnt');
@@ -128,6 +129,7 @@ export class GamePreloadScene extends Phaser.Scene
             let item: mRTypes.ItemData =
             {
                 'showName': 'itemname_' + uid, // B, C, D
+                'rawName': uid,
                 'color': row[4], // E
                 'tint': row[5] === 'true', // F
                 'level': Number.parseInt(row[6]), // G

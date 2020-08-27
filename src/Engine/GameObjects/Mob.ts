@@ -14,6 +14,7 @@ import { PopUpManager } from '../UI/PopUpManager';
 import { DynamicLoaderScene } from '../DynamicLoader/DynamicLoaderScene';
 import { ObjectPopulator } from '../Core/ObjectPopulator';
 import { GameData } from '../Core/GameData';
+import { UIScene } from '../UI/UIScene';
 
 export class Mob extends dPhysSprite
 {
@@ -270,29 +271,21 @@ export class Mob extends dPhysSprite
             var popUpPos = this.getTopCenter();
             PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData.ElementColors[result.type]);
 
-            // // popUp texts on unit frames
-            // // fade from the edge of currentHealth to the left
-            // if(this.data.isPlayer)
-            // {
-            //     for(var i = 0; i < game.units.getPlayerListWithDead().length; i++)
-            //     {
-            //         if(this === game.units.getPlayerListWithDead()[i])
-            //         {
-            //             popUpPos = game.UI.unitFrameSlots.slots[i].pos;
-            //             game.UI.popupMgr.addText({
-            //                 text: "-" + damageInfo.damage[dmgType].toString(),
-            //                 time: 0.75,
-            //                 color: game.data.damageColor[dmgType],
-            //                 posX: popUpPos.x + 126,// * (this.data.currentHealth / this.data.maxHealth), // Maybe this is better ? (or cannot see if sudden death)
-            //                 posY: popUpPos.y - 10,
-            //                 velX: -256,
-            //                 velY: 0.0,
-            //                 accX: 384,
-            //                 accY: 0.0,
-            //             });
-            //         }
-            //     }
-            // }
+            // popUp texts on unit frames
+            // fade from left to the the edge of currentHealth
+            if (this.mobData.isPlayer)
+            {
+                let playerList = UnitManager.getCurrent().getPlayerListWithDead(UnitManager.IDENTITY, UnitManager.NOOP);
+                for (var i = 0; i < playerList.length; i++)
+                {
+                    if (this === playerList[i])
+                    {
+                        let popX = UIScene.getSingleton().unitFrames[i].x + 78;
+                        let popY = UIScene.getSingleton().unitFrames[i].y + 5;
+                        PopUpManager.getSingleton().addText("-" + result.value.toString() + (result.isCrit ? "!" : ""), popX, popY, GameData.ElementColors[result.type], 0.8, -40, 0, 40, 0);
+                    }
+                }
+            }
         }
 
         // However, it should also check if self dead here
@@ -344,7 +337,7 @@ export class Mob extends dPhysSprite
         let result = this.mobData.receiveHeal(healInfo);
 
         // Show popUp text with overhealing hint
-        if (_healInfo.popUp == true && (result.value + result.overdeal) > 0)
+        if (_healInfo.popUp == true && (result.value) > 0)
         {
             // var popUpPos = this.getRenderPos(0.5, 0.0);
             // if(healInfo.heal.over > 0)
@@ -369,37 +362,31 @@ export class Mob extends dPhysSprite
             // }
 
             var popUpPos = this.getTopCenter();
-            if (result.overdeal > 0)
-            {
-                PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : "") + " <" + result.overdeal.toString() + ">", popUpPos.x, popUpPos.y, GameData.ElementColors['heal'], 1.0, 64, -256);
-            }
-            else
-            {
-                PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData.ElementColors['heal'], 1.0, 64, -256);
-            }
-
-            // // popUp texts on unit frames
-            // // fade from left to the the edge of currentHealth
-            // if(this.data.isPlayer && healInfo.heal.real > 0){
-            //     for(var i = 0; i < game.units.getPlayerListWithDead().length; i++)
-            //     {
-            //         if(this === game.units.getPlayerListWithDead()[i])
-            //         {
-            //             popUpPos = game.UI.unitFrameSlots.slots[i].pos;
-            //             game.UI.popupMgr.addText({
-            //                 text: "+" + healInfo.heal.real.toString(),
-            //                 time: 0.75,
-            //                 color: game.data.damageColor.heal,
-            //                 posX: popUpPos.x + 30,
-            //                 posY: popUpPos.y + 10,
-            //                 velX: 256,
-            //                 velY: 0.0,
-            //                 accX: -384,
-            //                 accY: 0.0,
-            //             });
-            //         }
-            //     }
+            // if (result.overdeal > 0)
+            // {
+            //     PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : "") + " <" + result.overdeal.toString() + ">", popUpPos.x, popUpPos.y, GameData.ElementColors['heal'], 1.0, 64, -256);
             // }
+            // else
+            // {
+            //     PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData.ElementColors['heal'], 1.0, 64, -256);
+            // }
+            PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData.ElementColors['heal'], 1.0, 64, -256);
+
+            // popUp texts on unit frames
+            // fade from left to the the edge of currentHealth
+            if (this.mobData.isPlayer)
+            {
+                let playerList = UnitManager.getCurrent().getPlayerListWithDead(UnitManager.IDENTITY, UnitManager.NOOP);
+                for (var i = 0; i < playerList.length; i++)
+                {
+                    if (this === playerList[i])
+                    {
+                        let popX = UIScene.getSingleton().unitFrames[i].x + 40;
+                        let popY = UIScene.getSingleton().unitFrames[i].y + 15;
+                        PopUpManager.getSingleton().addText("+" + result.value.toString() + (result.isCrit ? "!" : ""), popX, popY, GameData.ElementColors['heal'], 0.8, 40, 0, -40, 0);
+                    }
+                }
+            }
         }
 
         return result;
@@ -409,8 +396,6 @@ export class Mob extends dPhysSprite
     {
         this.mobData.die(damage);
 
-        // this.body.collisionType = me.collision.types.NO_OBJECT;
-
         if (this.mobData.isPlayer === true)
         {
             // Don't remove it, keep it dead
@@ -418,11 +403,6 @@ export class Mob extends dPhysSprite
         }
         else
         {
-            // throw new Error("Remove the mob here");
-            console.log(this.mobData.name + " has DEAD!")
-            // me.game.world.removeChild(this.HPBar);
-            // game.units.removeEnemy(this);
-            // me.game.world.removeChild(this);
             if (this.agent)
             {
                 this.agent.parentMob = undefined;

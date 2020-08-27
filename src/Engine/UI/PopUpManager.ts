@@ -6,6 +6,7 @@
 import { GameData } from "../Core/GameData";
 import { UIScene } from "./UIScene";
 import { mRTypes } from "../Core/mRTypes";
+import { _ } from "./Localization";
 
 // import * as Phaser from 'phaser'
 
@@ -28,7 +29,7 @@ export class PopupText extends Phaser.GameObjects.BitmapText
     {
         if (isBuff)
         {
-            let font = GameData.popUpBuffLanguage == mRTypes.Languages.ENG ? (GameData.popUpSmallFont ? 'smallPx' : 'mediumPx') : 'simsun_o';
+            let font = _('buffFont');
             super(scene, x, y, font, text);
         }
         else
@@ -36,7 +37,7 @@ export class PopupText extends Phaser.GameObjects.BitmapText
             super(scene, x, y, GameData.popUpSmallFont ? 'smallPx' : 'mediumPx', text);
         }
 
-        this.time = time * 1.5;
+        this.time = time;
         this.velX = velX;
         this.velY = velY;
         this.accX = accX;

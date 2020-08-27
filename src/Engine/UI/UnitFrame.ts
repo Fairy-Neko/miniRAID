@@ -14,6 +14,8 @@ import { ScrollMaskedContainer, ScrollDirc } from "./ScrollMaskedContainer";
 import { MobData } from "../Core/MobData";
 import { Buff } from "../Core/Buff";
 import { UIScene } from "./UIScene";
+import { Helper, ColorToStr } from "../Core/Helper";
+import { GameData } from "../Core/GameData";
 
 export class WeaponFrame extends Phaser.GameObjects.Container
 {
@@ -170,12 +172,15 @@ export class BuffFrame extends Phaser.GameObjects.Container
 
         this.more = new dSprite(this.scene, 200, 1, 'img_more_buff');
         this.more.alpha = 0.0;
-        this.more.setOrigin(0, 0)
+        this.more.setOrigin(0, 0);
         this.add(this.more);
+
+        this.more.on('pointerover', () => { UIScene.getSingleton().showToolTip(this.getToolTipAllBuffs()); });
+        this.more.on('pointerout', () => { UIScene.getSingleton().hideToolTip(); });
 
         let buffList = this.obtainList();
         let bLen = buffList.length;
-        buffList = buffList.slice(0, 6);
+        buffList = buffList.slice(0, 7);
 
         for (let buff of buffList)
         {
@@ -185,7 +190,7 @@ export class BuffFrame extends Phaser.GameObjects.Container
             this.add(bI);
         }
 
-        if (bLen > 6) { this.hasMore(len); }
+        if (bLen > 7) { this.hasMore(len); }
         else { this.noMore(); }
         // this.updateContentLength();
     }
@@ -236,6 +241,7 @@ export class BuffFrame extends Phaser.GameObjects.Container
             alpha: 1,
             duration: 100,
         });
+        this.more.setInteractive();
     }
 
     noMore()
@@ -245,6 +251,7 @@ export class BuffFrame extends Phaser.GameObjects.Container
             alpha: 0,
             duration: 100,
         });
+        this.more.disableInteractive();
     }
 
     update(time: number, dt: number)
@@ -253,7 +260,7 @@ export class BuffFrame extends Phaser.GameObjects.Container
         {
             let newList = this.obtainList();
             let bLen = newList.length;
-            newList = newList.slice(0, 6);
+            newList = newList.slice(0, 7);
 
             let newIcons = [];
             let iOld = 0;
@@ -341,13 +348,29 @@ export class BuffFrame extends Phaser.GameObjects.Container
                 len += icon.len + 2;
             }
 
-            if (bLen > 6) { this.hasMore(len); }
+            if (bLen > 7) { this.hasMore(len); }
             else { this.noMore(); }
 
             // this.updateContentLength();
         }
 
         this.each((obj: Phaser.GameObjects.GameObject) => { obj.update(); });
+    }
+
+    getToolTipAllBuffs(): mRTypes.HTMLToolTip
+    {
+        let list = this.obtainList();
+        let tt = "";
+        for (let buff of list)
+        {
+            tt += Helper.toolTip.colored(buff.getTitle(), ColorToStr(buff.color)) + "<br>";
+        }
+
+        return {
+            "title": this.target.name,
+            "text": tt,
+            "color": "#ffffff"
+        }
     }
 }
 
@@ -378,8 +401,8 @@ export class UnitFrame extends Phaser.GameObjects.Container
         this.add(avatar);
 
         // Weapon, TODO: switch weapons on click
-        this.wpCurrent = new WeaponFrame(this.scene, 75, 7, this.targetMob.mobData.currentWeapon);
-        this.wpAlter = new WeaponFrame(this.scene, 105, 7, this.targetMob.mobData.anotherWeapon);
+        this.wpCurrent = new WeaponFrame(this.scene, 85, 7, this.targetMob.mobData.currentWeapon);
+        this.wpAlter = new WeaponFrame(this.scene, 115, 7, this.targetMob.mobData.anotherWeapon);
 
         this.wpCurrent.wpIcon.setInteractive();
         this.wpCurrent.wpIcon.on('pointerdown', () => { this.switchWeapon(); });
@@ -394,13 +417,13 @@ export class UnitFrame extends Phaser.GameObjects.Container
         this.add(new ProgressBar(this.scene, 0, 10, () =>
         {
             return [target.mobData.currentHealth, target.mobData.maxHealth];
-        }, 70, 16, 1, true, 0x222222, 0x20604F, 0x1B813E, true, 'smallPx_HUD', TextAlignment.Left, 5, 6, 0xffffff));
+        }, 80, 22, 1, true, 0x444444, 0x222222, 0x42a85d, true, 'smallPx_HUD', TextAlignment.Left, 5, 3, 0xffffff));
 
         // Mana
-        this.add(new ProgressBar(this.scene, 0, 25, () =>
+        this.add(new ProgressBar(this.scene, 0, 27, () =>
         {
             return [target.mobData.currentMana, target.mobData.maxMana];
-        }, 70, 11, 1, true, 0x222222, 0x20604F, 0x33A6B8, true, 'smallPx_HUD', TextAlignment.Left, 5, 2, 0xffffff));
+        }, 80, 5, 1, true, 0x444444, 0x222222, 0x33A6B8, GameData.showManaNumber, 'smallPx_HUD', TextAlignment.Left, 5, -1, 0xffffff, undefined, true, 0x00000055));
 
         // // Buffs
         let bF = new BuffFrame(this.scene, -28, 37, x - 28, y + 37, 160, 30, this.targetMob.mobData);
@@ -408,10 +431,19 @@ export class UnitFrame extends Phaser.GameObjects.Container
         this.add(bF);
 
         // Current Spell
-        this.castingBar = new ProgressBar(this.scene, 10, 35, () =>
+        this.castingBar = new ProgressBar(this.scene, 30, 24, () =>
         {
-            return [0.3, 1.8];
-        }, 60, 4, 1, false, 0x222222, 0x20604F, 0xffe8af, true, _('UIFont'), TextAlignment.Right, 58, 7, 0xffffff, () => _("Wind Blade"));
+            if (this.targetMob.mobData.inCasting) { return [(this.targetMob.mobData.castTime - this.targetMob.mobData.castRemain), this.targetMob.mobData.castTime]; }
+            else if (this.targetMob.mobData.inChanneling) { return [this.targetMob.mobData.channelRemain, this.targetMob.mobData.channelTime]; }
+            return undefined; // leave it unchanged
+        }, 50, 4, 1, false, 0x444444, 0x20604F, 0xffe8af, true, _('UIFont_o'), TextAlignment.Left, 54, -8, 0xffffff, () =>
+        {
+            if (this.targetMob.mobData.currentSpell)
+            {
+                return _(this.targetMob.mobData.currentSpell.name);
+            }
+            return undefined; // leave it unchanged
+        }, false, 0x000000aa);
         this.add(this.castingBar);
         this.castingBar.depth = 40;
     }
@@ -430,13 +462,13 @@ export class UnitFrame extends Phaser.GameObjects.Container
 
         this.scene.add.tween({
             targets: this.wpCurrent,
-            x: { from: 105, to: 75 },
+            x: { from: 115, to: 85 },
             duration: 200,
         });
 
         this.scene.add.tween({
             targets: this.wpAlter,
-            x: { from: 75, to: 105 },
+            x: { from: 85, to: 115 },
             duration: 200,
         });
     }
@@ -445,15 +477,29 @@ export class UnitFrame extends Phaser.GameObjects.Container
     {
         if (this.targetMob.mobData.inCasting)
         {
-
+            this.scene.tweens.add({
+                targets: this.castingBar,
+                alpha: 1,
+                duration: 100,
+            });
+            this.castingBar.fill.fillColor = 0xff91d8;
         }
         else if (this.targetMob.mobData.inChanneling)
         {
-
+            this.scene.tweens.add({
+                targets: this.castingBar,
+                alpha: 1,
+                duration: 100,
+            });
+            this.castingBar.fill.fillColor = 0xdcff96;
         }
         else
         {
-            this.castingBar.setVisible(false);
+            this.scene.tweens.add({
+                targets: this.castingBar,
+                alpha: 0,
+                duration: 100,
+            });
         }
         this.each((obj: Phaser.GameObjects.GameObject) => { obj.update(); });
     }

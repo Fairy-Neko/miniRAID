@@ -284,7 +284,7 @@ export class MobData extends EventSystem.EventElement
         // buff list, only for rendering UI
         // buffs are actually plain mob listeners
         // maybe they have something different (x)
-        // this.buffList = new Set();
+        this.buffList = [];
 
         // spell list, only for spells with cooldowns.
         this.spells = {} as mRTypes.SpellDictionary;
@@ -621,7 +621,7 @@ export class MobData extends EventSystem.EventElement
 
             attackPower: {
                 physical: 0,
-                elemental: 100,
+                elemental: 0,
                 pure: 0, // It should always be 0
 
                 slash: 0,

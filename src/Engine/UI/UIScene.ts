@@ -8,7 +8,7 @@ import { UnitFrame, BuffFrame } from "./UnitFrame";
 import { UnitManager } from "../Core/UnitManager";
 import { Mob } from "../GameObjects/Mob";
 import { Localization, _ } from "./Localization";
-import { MonitorFrame } from "./MonitorFrame";
+import { MonitorFrame, MonitorRow } from "./MonitorFrame";
 import { BattleMonitor } from "../Core/BattleMonitor";
 import { mRTypes } from "../Core/mRTypes";
 import { GameData } from "../Core/GameData";
@@ -19,6 +19,7 @@ export class UIScene extends Phaser.Scene
     static instance: UIScene;
     loaded: boolean = false;
     orgMainFont: string;
+    orgMainFont_o: string;
     orgPopUpFont: string;
     unitFrames: UnitFrame[] = [];
     playerCache: Mob[];
@@ -52,13 +53,25 @@ export class UIScene extends Phaser.Scene
         if (GameData.mainLanguage !== mRTypes.Languages.ENG || GameData.popUpBuffLanguage !== mRTypes.Languages.ENG)
         {
             this.orgMainFont = Localization.data.main.UIFont[GameData.mainLanguage];
+            this.orgMainFont_o = Localization.data.main.UIFont_o[GameData.mainLanguage];
             this.orgPopUpFont = Localization.data.popUpBuff.buffFont[GameData.popUpBuffLanguage];
             Localization.data.main.UIFont[GameData.mainLanguage] = 'smallPx';
+            Localization.data.main.UIFont_o[GameData.mainLanguage] = 'smallPx';
             Localization.data.popUpBuff.buffFont[GameData.popUpBuffLanguage] = 'smallPx';
 
             let txt = this.add.bitmapText(10, 10, 'smallPx', "HUD / UI: Loading Unicode Fonts ... ");
-            this.load.bitmapFont('simsun', './assets/fonts/simsun_0.png', './assets/fonts/simsun.fnt');
-            this.load.bitmapFont('simsun_o', './assets/fonts/simsun_outlined_0.png', './assets/fonts/simsun_outlined.fnt');
+
+            if (GameData.mainLanguage === mRTypes.Languages.CHS || GameData.popUpBuffLanguage === mRTypes.Languages.CHS)
+            {
+                this.load.bitmapFont('simsun', './assets/fonts/simsun_0.png', './assets/fonts/simsun.fnt');
+                this.load.bitmapFont('simsun_o', './assets/fonts/simsun_outlined_0.png', './assets/fonts/simsun_outlined.fnt');
+            }
+            if (GameData.mainLanguage === mRTypes.Languages.JPN || GameData.popUpBuffLanguage === mRTypes.Languages.JPN)
+            {
+                this.load.bitmapFont('mspgothic', './assets/fonts/mspgothic_0.png', './assets/fonts/mspgothic.fnt');
+                this.load.bitmapFont('mspgothic_o', './assets/fonts/mspgothic_o_0.png', './assets/fonts/mspgothic_o.fnt');
+            }
+
             this.load.on('complete', () => { this.loadComplete(); });
             this.load.on('progress', (value: number) => { txt.text = `[${(value * 100).toFixed(1)}%] HUD / UI: Loading Unicode Fonts ... `; });
             this.load.start();
@@ -73,6 +86,7 @@ export class UIScene extends Phaser.Scene
     loadComplete()
     {
         Localization.data.main.UIFont[GameData.mainLanguage] = this.orgMainFont;
+        Localization.data.main.UIFont_o[GameData.mainLanguage] = this.orgMainFont_o;
         Localization.data.popUpBuff.buffFont[GameData.popUpBuffLanguage] = this.orgPopUpFont;
         this.setupScene();
     }
@@ -87,8 +101,6 @@ export class UIScene extends Phaser.Scene
             }
         }
 
-        this.add.existing(PopUpManager.register(this));
-        PopUpManager.getSingleton().hasLoaded();
         this.initUnitFrames();
         // this.add.rectangle(750 + 61, 520 + 8, 122, 16, 0x948779);
         let bt = this.add.bitmapText(755, 530, _("UIFont"), _("Damage Done (DPS)"));
@@ -98,8 +110,12 @@ export class UIScene extends Phaser.Scene
         bt = this.add.bitmapText(885, 530, _("UIFont"), _("Healing Done (HPS)"));
         bt.setOrigin(0, 1);
 
-        this.add.existing(new MonitorFrame(this, 750, 534, () => { return BattleMonitor.getSingleton().getDamageList(); }, 122, 114));
-        this.add.existing(new MonitorFrame(this, 880, 534, () => { return BattleMonitor.getSingleton().getHealList(); }, 122, 114));
+        this.add.existing(new MonitorFrame(this, 750, 534, () => { return BattleMonitor.getSingleton().getDamageList(); }, 122, 114, MonitorRow.getDamageToolTip));
+        this.add.existing(new MonitorFrame(this, 880, 534, () => { return BattleMonitor.getSingleton().getHealList(); }, 122, 114, MonitorRow.getHealToolTip));
+
+        this.add.existing(PopUpManager.register(this));
+        PopUpManager.getSingleton().hasLoaded();
+        PopUpManager.getSingleton().depth = 100000;
     }
 
     clearUnitFrame()

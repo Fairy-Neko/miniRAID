@@ -118,13 +118,18 @@ export namespace Helper
             return "</div>";
         }
 
-        export function row(text: string, style?: string): string
+        export function row(text: string, style?: string, cls?: string): string
         {
+            if (typeof cls === 'undefined')
+            {
+                cls = '_row'
+            }
+
             if (style)
             {
-                return "<p style = '" + style + "'>" + text + "</p>";
+                return "<p class = '" + cls + "' style = '" + style + "'>" + text + "</p>";
             }
-            return "<p>" + text + "</p>";
+            return "<p class = '" + cls + "'>" + text + "</p>";
         }
 
         export function column(text: string, style?: string): string

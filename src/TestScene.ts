@@ -17,6 +17,7 @@ import { GameData } from "./Engine/Core/GameData";
 import { HDOT } from "./Buffs/HDOT";
 import { _, Localization } from "./Engine/UI/Localization";
 import { Buff } from "./Engine/Core/Buff";
+import { FloraHeal } from "./SpellData/FloraHeal";
 
 export class TestScene extends BattleScene
 {
@@ -69,7 +70,7 @@ export class TestScene extends BattleScene
                 'idleAnim': 'move',
                 'moveAnim': 'move',
                 'deadAnim': 'move',
-                'backendData': new MobData({ name: _('testGirl') + i, 'isPlayer': true, 'attackSpeed': 40 - 5 * i, 'mag': 13 - 1 * i, 'manaRegen': 4 + 1 * i }),
+                'backendData': new MobData({ name: _('testGirl') + i, 'isPlayer': true, 'attackSpeed': 40 - 5 * i, 'mag': 13 - 1 * i, 'manaRegen': 4 + 1 * i, }),
                 'agent': PlayerAgents.Simple,
             });
             this.girl.mobData.battleStats.attackPower.ice = 10;
@@ -82,12 +83,15 @@ export class TestScene extends BattleScene
 
             this.girl.mobData.weaponLeft = new CometWand();
             this.girl.mobData.weaponLeft.baseAttackSpeed = 0.05;
-            this.girl.mobData.weaponLeft.manaCost = 0;
+            this.girl.mobData.weaponLeft.manaCost = 1;
             this.girl.mobData.anotherWeapon = this.girl.mobData.weaponLeft;
             this.girl.mobData.anotherWeapon.equipper = this.girl.mobData;
 
             this.girl.mobData.addListener(this.girl.mobData.weaponRight);
-            this.girl.receiveBuff(this.girl, new HDOT(Buff.fromKey('test_GodHeal'), GameData.Elements.heal, 20, 38, 0.8));
+            // this.girl.receiveBuff(this.girl, new HDOT(Buff.fromKey('test_GodHeal'), GameData.Elements.heal, 20, 38, 0.8));
+
+            this.girl.mobData.spells['floraHeal'] = new FloraHeal({ 'name': 'FloraHeal', 'coolDown': 5.0 + i * 1.0, 'manaCost': 20 });
+
             this.addMob(this.girl);
         }
 

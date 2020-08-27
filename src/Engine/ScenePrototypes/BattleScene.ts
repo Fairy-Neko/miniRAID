@@ -109,12 +109,10 @@ export class BattleScene extends Phaser.Scene
         this.loadingScreen.setDepth(100);
 
         this.map = this.make.tilemap({ key: this.mapToLoad });
-        console.log(this.map);
         for (let tileset of this.map.tilesets)
         {
             let path: string = this.tilesetImgPrefix + tileset.name + ".png";
             this.load.image(tileset.name, path);
-            console.log(path);
         }
 
         this.pBar = new ProgressBar(this, 400, 310, () => [this.currProgress, 1.0], 224, 20, 5, false, 0x444444, 0x000000, 0xade0ee, false);
@@ -166,7 +164,6 @@ export class BattleScene extends Phaser.Scene
                 }
             }
         }
-        console.log(this.map);
         this.mapReady = true;
         this.battleMonitor = BattleMonitor.getSingleton();
     }

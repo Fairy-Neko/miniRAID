@@ -15,6 +15,18 @@ export class Localization
         Localization.data = data;
     }
 
+    static setOneData(key: string, data: any, isPopUp: boolean = false)
+    {
+        if (isPopUp)
+        {
+            Localization.data.popUpBuff[key] = data;
+        }
+        else
+        {
+            Localization.data.main[key] = data;
+        }
+    }
+
     static getStr(s: string, overrideLanguage?: mRTypes.Languages): any
     {
         if (Localization.data)

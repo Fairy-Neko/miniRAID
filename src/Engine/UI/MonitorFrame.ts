@@ -25,7 +25,7 @@ export class MonitorRow extends Phaser.GameObjects.Container
     consTotal: boolean = true;
     consSecond: boolean = false;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, refWidth: number = 100, bgColor: number = 0xff0000, height: number = 18, textGap: number = 1)
+    constructor(scene: Phaser.Scene, x: number, y: number, refWidth: number = 100, bgColor: number = 0xff0000, height: number = 18, textGap: number = 1, getToolTip: (self: MonitorRow) => mRTypes.HTMLToolTip = MonitorRow.getDamageToolTip)
     {
         super(scene, x, y);
 
@@ -33,7 +33,7 @@ export class MonitorRow extends Phaser.GameObjects.Container
 
         this.bg = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, 2 + this.refWidth, height, bgColor, 0.2);
         this.bg.setOrigin(0);
-        this.bg.on('pointerover', () => { this.bg.fillAlpha = 0.6; UIScene.getSingleton().showToolTip(this.getToolTip()); });
+        this.bg.on('pointerover', () => { this.bg.fillAlpha = 0.6; UIScene.getSingleton().showToolTip(this.getToolTip(this)); });
         this.bg.on('pointerout', () => { this.bg.fillAlpha = 0.2; UIScene.getSingleton().hideToolTip(); });
         this.bg.on('pointerdown', () => { if (this.rowData) { console.log(this.rowData.player); } });
         this.bg.on('wheel', (evt: Phaser.Input.Pointer) => { (<ScrollMaskedContainer>this.parentContainer).onWheel(evt); });
@@ -56,13 +56,17 @@ export class MonitorRow extends Phaser.GameObjects.Container
         this.add(this.playerName);
         this.add(this.valueText);
 
+        this.getToolTip = getToolTip;
+
         this.setRow(undefined, 0, 0);
     }
 
-    getToolTip(): mRTypes.HTMLToolTip
+    getToolTip(self: MonitorRow): mRTypes.HTMLToolTip { return { title: 'NO', text: 'NO' }; }
+
+    static getDamageToolTip(self: MonitorRow): mRTypes.HTMLToolTip
     {
         let text = "<div>";
-        let playerData = BattleMonitor.getSingleton().damageDict[this.rowData.player.name];
+        let playerData = BattleMonitor.getSingleton().damageDict[self.rowData.player.name];
         if (playerData)
         {
             let bySpell = playerData.spellDict;
@@ -81,7 +85,7 @@ export class MonitorRow extends Phaser.GameObjects.Container
                 let spell = spV.spell;
                 text +=
                     `<p>
-                    <span>${_(spell)}</span><span style="min-width: 100px; text-align: right">${this.formatNumber(bySpell[spell].total, this.consTotal)}, ${(bySpell[spell].total / this.rowData.number * 100).toFixed(2)}%</span>
+                    <span>${_(spell)}</span><span style="min-width: 100px; text-align: right">${self.formatNumber(bySpell[spell].total, self.consTotal)}, ${(bySpell[spell].total / self.rowData.number * 100).toFixed(2)}%</span>
                 </p>`;
             }
         }
@@ -89,21 +93,67 @@ export class MonitorRow extends Phaser.GameObjects.Container
         text +=
             `<p style = "margin-top: 10px; color: #ffc477">
                 <span>${_("totalDmg") + _("col_normalDmg")}</span>
-                <span style="min-width: 100px; text-align: right">${this.formatNumber(this.rowData.slices[0], this.consTotal)}, ${(this.rowData.slices[0] / this.rowData.number * 100).toFixed(2)}%</span>
+                <span style="min-width: 100px; text-align: right">${self.formatNumber(self.rowData.slices[0], self.consTotal)}, ${(self.rowData.slices[0] / self.rowData.number * 100).toFixed(2)}%</span>
             </p>
             <p style = "color: #ff7777">
                 <span>${_("totalDmg") + _("col_critDmg")}</span>
-                <span style="min-width: 100px; text-align: right">${this.formatNumber(this.rowData.slices[1], this.consTotal)}, ${(this.rowData.slices[1] / this.rowData.number * 100).toFixed(2)}%</span>
+                <span style="min-width: 100px; text-align: right">${self.formatNumber(self.rowData.slices[1], self.consTotal)}, ${(self.rowData.slices[1] / self.rowData.number * 100).toFixed(2)}%</span>
             </p>
             <p style = "color: coral">
                 <span>${_("totalDmg")}</span>
-                <span style="min-width: 100px; text-align: right">${this.formatNumber(this.rowData.number, false)}</span>
+                <span style="min-width: 100px; text-align: right">${self.formatNumber(self.rowData.number, false)}</span>
             </p>`
 
         text += "</div>";
 
         return {
-            title: this.rowData.player.name,
+            title: self.rowData.player.name + _(':') + _('damage'),
+            text: text,
+            color: "#ffffff",
+        }
+    }
+
+    static getHealToolTip(self: MonitorRow): mRTypes.HTMLToolTip
+    {
+        let text = "<div>";
+        let playerData = BattleMonitor.getSingleton().healDict[self.rowData.player.name];
+        if (playerData)
+        {
+            let bySpell = playerData.spellDict;
+            let allSpell = [];
+            for (let spell in bySpell)
+            {
+                allSpell.push({ spell: spell, val: bySpell[spell].real });
+            }
+            allSpell.sort((a, b) =>
+            {
+                return b.val - a.val;
+            });
+
+            for (let spV of allSpell)
+            {
+                let spell = spV.spell;
+                text +=
+                    `<p>
+                    <span>${_(spell)}</span><span style="min-width: 100px; text-align: right">${self.formatNumber(bySpell[spell].real, self.consTotal)}, ${(bySpell[spell].real / self.rowData.number * 100).toFixed(2)}%</span>
+                </p>`;
+            }
+        }
+
+        text +=
+            `<p style = "margin-top: 10px; color: #55ff55">
+                <span>${_("totalHeal")}</span>
+                <span style="min-width: 100px; text-align: right">${self.formatNumber(self.rowData.slices[0], false)}</span>
+            </p>
+            <p style = "color: #ff5555">
+                <span>${_("totalOverHeal")}</span>
+                <span style="min-width: 100px; text-align: right">${self.formatNumber(self.rowData.slices[1], false)}, ${(self.rowData.slices[1] / self.rowData.number * 100).toFixed(2)}%</span>
+            </p>`
+
+        text += "</div>";
+
+        return {
+            title: self.rowData.player.name + _(':') + _('healing'),
             text: text,
             color: "#ffffff",
         }
@@ -155,17 +205,17 @@ export class MonitorFrame extends ScrollMaskedContainer
     rows: MonitorRow[];
     fetchFunc: () => BattleData.MonitorOutput;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, fetchFunc: () => BattleData.MonitorOutput, width: number = 125, height: number = 120)
+    constructor(scene: Phaser.Scene, x: number, y: number, fetchFunc: () => BattleData.MonitorOutput, width: number = 125, height: number = 120, getDetailTooltip: (self: MonitorRow) => mRTypes.HTMLToolTip)
     {
         super(scene, x, y, width, height);
 
         this.rows = [];
-        let gap = _('UIFont') === 'simsun' ? 18 : 14;
+        let gap = _('UIFont') === 'smallPx' ? 14 : 18;
         let tGap = gap === 18 ? 3 : 0;
 
         for (let i = 0; i < GameData.playerMax; i++)
         {
-            let mr = new MonitorRow(this.scene, 0, i * gap, width - 2, i % 2 == 0 ? 0x92d7e7 : 0x92d7e7, gap, tGap);
+            let mr = new MonitorRow(this.scene, 0, i * gap, width - 2, i % 2 == 0 ? 0x92d7e7 : 0x92d7e7, gap, tGap, getDetailTooltip);
             this.rows.push(mr);
             this.add(mr);
         }

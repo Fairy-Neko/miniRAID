@@ -236,7 +236,7 @@ export namespace mRTypes
     export interface DamageHeal_FrontEnd
     {
         source?: MobEntity;
-        target: MobEntity;
+        target?: MobEntity;
         value: number;
         type: GameData.Elements;
         isCrit?: boolean;
@@ -286,6 +286,7 @@ export namespace mRTypes
     export interface ItemData
     {
         showName: string;
+        rawName: string;
         color: Phaser.Display.Color;
         tint: boolean;
 

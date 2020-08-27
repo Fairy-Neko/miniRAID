@@ -66,6 +66,11 @@ export class Equipable extends MobListener implements Item
         this.assignTags();
     }
 
+    get rawName(): string
+    {
+        return this.itemData.rawName;
+    }
+
     syncStats(mob: MobData) { }
 
     _beAdded(mob: MobData, source: MobData)
@@ -310,14 +315,14 @@ export class Weapon extends Equipable
         return defaultValue;
     }
 
-    getBaseAttackDesc(mobData: MobData): { title: string, body: string }
+    getBaseAttackDesc(mobData: MobData): string | { [index: string]: string }
     {
-        return { title: _(this._atkName), body: "无描述。" }
+        return "";
     }
 
-    getSpecialAttackDesc(mobData: MobData): { title: string, body: string }
+    getSpecialAttackDesc(mobData: MobData): string | { [index: string]: string }
     {
-        return { title: _(this._spName), body: "这个武器没有特殊攻击。" }
+        return "";
     }
 
     getToolTip(): mRTypes.HTMLToolTip
@@ -420,10 +425,10 @@ export class Weapon extends Equipable
                 this.equipper ?
                     (
                         th.colored("+ " + this.weaponGaugeIncreasement(this.equipper.parentMob), 'aqua') +
-                        ` (${this.energyType})`
+                        ` (${_(this.weaponGaugeTooltip)})`
                     ) :
                     (
-                        this.energyType
+                        _(this.weaponGaugeTooltip)
                     )
             )
         );
@@ -471,7 +476,7 @@ export class Weapon extends Equipable
             th.column(
                 _('normalAttack') + " " +
                 th.colored(
-                    baseDesc.title,
+                    _(this._atkName),
                     thisColor
                 )
             ) +
@@ -485,8 +490,9 @@ export class Weapon extends Equipable
             )
         )
         ttBody += th.row(
-            baseDesc.body,
-            'color:darkturquoise; display:block;'
+            (baseDesc && baseDesc.hasOwnProperty(GameData.mainLanguage)) ? (<any>baseDesc)[GameData.mainLanguage] : baseDesc,
+            '',
+            'weaponAtkDesc'
         );
 
         ttBody += th.switchSection();
@@ -497,7 +503,7 @@ export class Weapon extends Equipable
             th.column(
                 _('specialAttack') + " " +
                 th.colored(
-                    spDesc.title,
+                    _(this._spName),
                     thisColor
                 )
             ) +
@@ -507,8 +513,9 @@ export class Weapon extends Equipable
         )
 
         ttBody += th.row(
-            spDesc.body,
-            'color:darkturquoise; display:block;'
+            (spDesc && spDesc.hasOwnProperty(GameData.mainLanguage)) ? (<any>spDesc)[GameData.mainLanguage] : spDesc,
+            '',
+            'weaponAtkDesc'
         );
 
         ttBody += th.switchSection();
