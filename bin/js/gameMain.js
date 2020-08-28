@@ -2575,6 +2575,9 @@ define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "En
             this.loaded = true;
             PopUpManager_2.PopUpManager.getSingleton().hasLoaded();
             this.setupScene();
+            // Used for checking window size changes
+            this.mainCanvas = document.getElementById('GameFrame');
+            this.prevLeft = this.mainCanvas.offsetLeft;
         }
         loadComplete() {
             Localization_3.Localization.data.main.UIFont[GameData_8.GameData.mainLanguage] = this.orgMainFont;
@@ -2635,6 +2638,11 @@ define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "En
             }
         }
         update(time, dt) {
+            // Check if offsets are changed
+            if (this.mainCanvas.offsetLeft !== this.prevLeft) {
+                this.prevLeft = this.mainCanvas.offsetLeft;
+                this.scale.updateBounds();
+            }
             this.children.each((item) => { item.update(time / 1000.0, dt / 1000.0); });
         }
         showToolTip(tip) {

@@ -24,6 +24,9 @@ export class UIScene extends Phaser.Scene
     unitFrames: UnitFrame[] = [];
     playerCache: Mob[];
 
+    mainCanvas: HTMLElement;
+    prevLeft: number;
+
     toolTip: { toolTip: HTMLElement, title: HTMLElement, body: HTMLElement };
 
     static getSingleton(): UIScene
@@ -81,6 +84,10 @@ export class UIScene extends Phaser.Scene
         PopUpManager.getSingleton().hasLoaded();
 
         this.setupScene();
+
+        // Used for checking window size changes
+        this.mainCanvas = document.getElementById('GameFrame');
+        this.prevLeft = this.mainCanvas.offsetLeft;
     }
 
     loadComplete()
@@ -163,6 +170,13 @@ export class UIScene extends Phaser.Scene
 
     update(time: number, dt: number)
     {
+        // Check if offsets are changed
+        if (this.mainCanvas.offsetLeft !== this.prevLeft)
+        {
+            this.prevLeft = this.mainCanvas.offsetLeft;
+            this.scale.updateBounds();
+        }
+
         this.children.each((item: Phaser.GameObjects.GameObject) => { item.update(time / 1000.0, dt / 1000.0); });
     }
 
