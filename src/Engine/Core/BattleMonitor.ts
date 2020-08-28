@@ -59,7 +59,7 @@ export class BattleMonitor
     update(dt: number)
     {
         // If there are any enemy on the field
-        if (UnitManager.getCurrent().enemy.size > 0)
+        if (UnitManager.getCurrent().enemy.size > 0 && UnitManager.getCurrent().getPlayerList(UnitManager.IDENTITY, UnitManager.NOOP, false).length > 0)
         {
             this.time += dt;
         }

@@ -53,7 +53,7 @@ export namespace mRTypes
             image?: string;
 
             race?: string;
-            class?: string;
+            job?: string;
             level?: number;
 
             availableBP?: number;
@@ -80,8 +80,8 @@ export namespace mRTypes
             baseSpeed?: number;
             baseAttackSpeed?: number;
 
-            weaponLeft?: Weapon;
-            weaponRight?: Weapon;
+            weaponSubHand?: Weapon;
+            weaponMainHand?: Weapon;
             armor?: Armor;
             accessory?: Accessory;
 
@@ -93,10 +93,6 @@ export namespace mRTypes
 
         export interface Mob
         {
-            moveAnim: string;
-            idleAnim: string;
-            deadAnim: string;
-
             backendData: MobData.MobData;
 
             agent: AgentConstructor;
@@ -138,15 +134,9 @@ export namespace mRTypes
     export type FailCallback<T> = (arg: T) => boolean;
     export type weaponGaugeFunc<T> = (arg: T) => number;
 
-    export interface MobConstructor
-    {
-        new(settings: Settings.Mob): MobEntity;
-    }
-
-    export interface AgentConstructor
-    {
-        new(arg: MobEntity): MobAgent;
-    }
+    export type MobConstructor = (typeof MobEntity);
+    export type AgentConstructor = (typeof MobAgent);
+    export type TiledObjConstructor = (scene: Phaser.Scene, obj: Phaser.Types.Tilemaps.TiledObject, properties: any) => any;
 
     export interface BaseStats
     {

@@ -185,9 +185,9 @@ export class Spell extends dPhysSprite
 
     updateSpell(dt: number) { if (this._onUpdate) { this._onUpdate(this, dt); } }
 
-    onHit(obj: Phaser.GameObjects.GameObject) { if (this._onHit) { this._onHit(this, obj); } }
-    onMobHit(mob: Mob) { if (this._onMobHit) { this._onMobHit(this, mob); } }
-    onWorldHit(obj: Phaser.GameObjects.GameObject) { if (this._onWorldHit) { this._onWorldHit(this, obj); } }
+    onHit(obj: Phaser.GameObjects.GameObject) { if (this.body && this._onHit) { this._onHit(this, obj); } }
+    onMobHit(mob: Mob) { if (this.body && this._onMobHit) { this._onMobHit(this, mob); } }
+    onWorldHit(obj: Phaser.GameObjects.GameObject) { if (this.body && this._onWorldHit) { this._onWorldHit(this, obj); } }
 
     onDestroy(obj: Phaser.GameObjects.GameObject = this) { if (this._onDestroy) { this._onDestroy(this, obj); } }
 }

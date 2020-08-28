@@ -41,7 +41,9 @@ export enum EquipmentTag
 
 export class Equipable extends MobListener implements Item
 {
-    equipper: MobData;
+    get equipper() { return this.user; }
+    set equipper(r: MobData) { this.user = r; }
+
     name: string;
     eqType: EquipmentType;
 
@@ -186,7 +188,7 @@ export class Weapon extends Equipable
         this.isReadyWrapper(() =>
         {
             target = target.filter((v: Mob) => this.isInRange(source, v));
-            if (target.length <= 0) { return; }
+            if (target.length <= 0) { return flag; }
             this.doRegularAttack(source, target);
             if (triggerCD)
             {

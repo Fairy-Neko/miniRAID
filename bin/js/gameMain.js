@@ -1,3 +1,4 @@
+"use strict";
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -1000,20 +1001,17 @@ define("Engine/UI/ProgressBar", ["require", "exports"], function (require, expor
     exports.ProgressBar = ProgressBar;
 });
 /** @packageDocumentation @moduleeDocumentation @module Agent */
-define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "Engine/GameObjects/Mob", "Engine/Core/GameData", "Engine/Core/UnitManager", "Engine/UI/PopUpManager"], function (require, exports, MobAgent_1, Mob_1, GameData_1, UnitManager_1, PopUpManager_1) {
+define("Engine/Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "Engine/GameObjects/Mob", "Engine/Core/GameData", "Engine/Core/UnitManager", "Engine/UI/PopUpManager"], function (require, exports, MobAgent_1, Mob_1, GameData_1, UnitManager_1, PopUpManager_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    class PlayerAgentBase extends MobAgent_1.MobAgent {
-        constructor(parentMob) {
-            super(parentMob);
-        }
+    class PlayerAgentBase extends MobAgent_1.MoveableAgent {
         setTargetPos(player, position, dt) { }
         setTargetMob(player, target, dt) { }
     }
     exports.PlayerAgentBase = PlayerAgentBase;
     class Simple extends PlayerAgentBase {
-        constructor(parentMob) {
-            super(parentMob);
+        constructor() {
+            super();
             this.OOMwarned = false;
             // Will the player move automatically (to nearest mob) if it is free ?
             this.autoMove = GameData_1.GameData.useAutomove;
@@ -1023,8 +1021,7 @@ define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "
             // idleFrame is seperated for targeting Mob (which may move = need more smooth)
             // and targeting a static position (don't move and need high precision)
             // WTF? I cannot understood what have I wrote ...
-            this.idleFrameMob = 10;
-            this.idleFramePos = 0;
+            this.idleFrames = 0;
             this.idleCount = 0;
             this.speedFriction = 0.9;
             this.unitMgr = UnitManager_1.UnitManager.getCurrent();
@@ -1050,8 +1047,6 @@ define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "
                         let velocity = this.targetPos.clone().subtract(this.footPos).normalize().scale(player.mobData.getMovingSpeed());
                         player.setVelocity(velocity.x, velocity.y);
                         this.isMoving = true;
-                        // Reset the anim counter
-                        this.idleCount = this.idleFramePos;
                     }
                     else {
                         this.targetPos = undefined;
@@ -1065,8 +1060,6 @@ define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "
                         let velocity = targetPos.subtract(this.footPos).normalize().scale(player.mobData.getMovingSpeed());
                         player.setVelocity(velocity.x, velocity.y);
                         this.isMoving = true;
-                        // Reset the anim counter
-                        this.idleCount = this.idleFrameMob;
                     }
                     // and then we don't move anymore.
                     else {
@@ -1080,31 +1073,7 @@ define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "
                     this.targetMob = undefined;
                     this.isMoving = false;
                 }
-                if (this.isMoving === true) {
-                    // Fix our face direction when moving
-                    if (player.body.velocity.x > 0) {
-                        player.flipX = true;
-                    }
-                    else {
-                        player.flipX = false;
-                    }
-                    if (!(player.anims.currentAnim && player.anims.currentAnim.key == player.moveAnim)) {
-                        player.play(player.moveAnim);
-                    }
-                }
-                else {
-                    // Count the frames
-                    if (this.idleCount > 0) {
-                        this.idleCount--;
-                        // Also smooth the speed
-                        player.setVelocity(player.body.velocity.x * this.speedFriction, player.body.velocity.y * this.speedFriction);
-                    }
-                    else {
-                        player.setVelocity(0, 0);
-                        if (!(player.anims.currentAnim && player.anims.currentAnim.key == player.idleAnim)) {
-                            player.play(player.idleAnim);
-                        }
-                    }
+                if (this.isMoving === false) {
                     if (this.autoMove === true) {
                         if (player.mobData.currentWeapon) {
                             let targetList = player.mobData.currentWeapon.grabTargets(player);
@@ -1124,10 +1093,10 @@ define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "
                         // {
                         // if(player.mobData.currentWeapon.isInRange(player, targets))
                         // {
-                        if (player.mobData.currentMana > player.mobData.currentWeapon.manaCost) {
+                        if (player.mobData.hasMana(player.mobData.currentWeapon.manaCost)) {
                             let result = player.mobData.currentWeapon.attack(player, targets);
                             if (result) {
-                                player.mobData.currentMana -= player.mobData.currentWeapon.manaCost;
+                                player.mobData.useMana(player.mobData.currentWeapon.manaCost);
                             }
                         }
                         // }
@@ -1139,7 +1108,7 @@ define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "
                     if (player.mobData.spells.hasOwnProperty(spell)) {
                         if (this.isMoving == false) {
                             if (player.mobData.spells[spell].available) {
-                                player.mobData.cast(player, null, player.mobData.spells[spell]);
+                                player.mobData.cast(player, this.targetMob, player.mobData.spells[spell]);
                             }
                         }
                     }
@@ -1149,9 +1118,8 @@ define("Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAgent", "
             else {
                 this.isMoving = false;
                 player.setVelocity(0, 0);
-                player.flipX = false;
-                player.play(player.deadAnim);
             }
+            super.updateMob(player, dt);
         }
         setTargetPos(player, position) {
             // console.log(position);
@@ -1352,7 +1320,9 @@ define("Engine/Core/UnitManager", ["require", "exports", "Engine/GameObjects/Mob
                     result.push(unit);
                 }
             }
-            result.sort(sortMethod);
+            if (sortMethod !== UnitManager.IDENTITY) {
+                result.sort(sortMethod);
+            }
             return result;
         }
         // Get a list of units, e.g. attack target list etc.
@@ -1649,13 +1619,13 @@ define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/
         updateSpell(dt) { if (this._onUpdate) {
             this._onUpdate(this, dt);
         } }
-        onHit(obj) { if (this._onHit) {
+        onHit(obj) { if (this.body && this._onHit) {
             this._onHit(this, obj);
         } }
-        onMobHit(mob) { if (this._onMobHit) {
+        onMobHit(mob) { if (this.body && this._onMobHit) {
             this._onMobHit(this, mob);
         } }
-        onWorldHit(obj) { if (this._onWorldHit) {
+        onWorldHit(obj) { if (this.body && this._onWorldHit) {
             this._onWorldHit(this, obj);
         } }
         onDestroy(obj = this) { if (this._onDestroy) {
@@ -1749,7 +1719,7 @@ define("Engine/Core/Helper", ["require", "exports", "Engine/Core/UnitManager", "
     function getRandomInt(min, max) {
         min = Math.ceil(min);
         max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min)) + min;
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
     exports.getRandomInt = getRandomInt;
     function getRandomFloat(min, max) {
@@ -1862,9 +1832,9 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
         setWeapon(target) {
             this.targetWeapon = target;
             this.wpIcon.setTexture('img_weapon_icon_test');
-            this.wpIcon.setTint((this.targetWeapon && this.targetWeapon.activated) ? 0xffffff : 0x888888);
         }
         update(time, dt) {
+            this.wpIcon.setTint((this.targetWeapon && this.targetWeapon.activated) ? 0xffffff : 0x888888);
             this.each((obj) => { obj.update(); });
         }
     }
@@ -1890,7 +1860,7 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
                 this.add(this.timeRemain);
             }
             if (buff.stackable) {
-                this.stacks = new Phaser.GameObjects.BitmapText(this.scene, this.len - 1, this.len - 1, 'smallPx_HUD', '1');
+                this.stacks = new Phaser.GameObjects.BitmapText(this.scene, this.len - 1, buff.UIimportant ? this.len + 1 : this.len - 1, buff.UIimportant ? 'mediumPx' : 'smallPx_HUD', '1');
                 this.stacks.setOrigin(1);
                 this.stacks.setTint(0xffffff);
                 this.stacks.depth = 10;
@@ -1904,7 +1874,12 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
         }
         update() {
             if (this.buff.countTime) {
-                this.timeRemain.width = ((this.buff.timeMax - this.buff.timeRemain[0]) / this.buff.timeMax) * (this.len);
+                if (this.buff.timeRemain.length > 0) {
+                    this.timeRemain.width = ((this.buff.timeMax - this.buff.timeRemain[0]) / this.buff.timeMax) * (this.len);
+                }
+                else {
+                    this.timeRemain.width = this.len;
+                }
                 this.timeRemain.x = this.len;
                 this.timeRemain.setOrigin(1, 0);
             }
@@ -1922,7 +1897,7 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
             this.target = target;
             this.icons = [];
             let len = 0;
-            this.more = new dSprite_1.dSprite(this.scene, 200, 1, 'img_more_buff');
+            this.more = new dSprite_1.dSprite(this.scene, 0, 1, 'img_more_buff');
             this.more.alpha = 0.0;
             this.more.setOrigin(0, 0);
             this.add(this.more);
@@ -1984,7 +1959,8 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
                 targets: this.more,
                 x: len,
                 alpha: 1,
-                duration: 100,
+                duration: 250,
+                ease: 'Power1'
             });
             this.more.setInteractive();
         }
@@ -1992,7 +1968,8 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
             this.scene.tweens.add({
                 targets: this.more,
                 alpha: 0,
-                duration: 100,
+                duration: 250,
+                ease: 'Power1'
             });
             this.more.disableInteractive();
         }
@@ -2025,14 +2002,14 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
                             // remove iOld ~ iiOld from the container
                             for (let ix = iOld; ix < iiOld; ix++) {
                                 this.icons[ix].isOver = true;
-                                this.remove(this.icons[ix], true);
+                                this.removeBuffIcon(this.icons[ix]);
                             }
                             iOld = iiOld;
                         }
                         else {
                             // iNew is a new buff
                             // Add iNew to the container
-                            let bI = new BuffIcon(this.scene, 160, 0, newList[iNew]);
+                            let bI = new BuffIcon(this.scene, 0, 0, newList[iNew]);
                             bI.alpha = 0.0;
                             newIcons.push(bI);
                             this.add(bI);
@@ -2043,7 +2020,7 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
                         // Delete everything after iOld
                         for (let ix = iOld; ix < this.icons.length; ix++) {
                             this.icons[ix].isOver = true;
-                            this.remove(this.icons[ix], true);
+                            this.removeBuffIcon(this.icons[ix]);
                         }
                         iOld = this.icons.length;
                     }
@@ -2054,12 +2031,13 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
                 this.icons = this.icons.sort((a, b) => this.compare(a.buff, b.buff));
                 let len = 0;
                 for (let icon of this.icons) {
-                    if (false) {
+                    if (true) {
                         this.scene.tweens.add({
                             targets: icon,
                             x: len,
                             alpha: 1.0,
-                            duration: 0,
+                            duration: 250,
+                            ease: 'Power1'
                         });
                     }
                     else {
@@ -2077,6 +2055,17 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
                 // this.updateContentLength();
             }
             this.each((obj) => { obj.update(); });
+        }
+        removeBuffIcon(bufficon) {
+            this.scene.tweens.add({
+                targets: bufficon,
+                // x: -24,
+                alpha: 0.0,
+                duration: 100,
+                onComplete: () => {
+                    this.remove(bufficon, true);
+                }
+            });
         }
         getToolTipAllBuffs() {
             let list = this.obtainList();
@@ -2118,7 +2107,7 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
             // Health
             this.add(new ProgressBar_1.ProgressBar(this.scene, 0, 10, () => {
                 return [target.mobData.currentHealth, target.mobData.maxHealth];
-            }, 80, 22, 1, true, 0x444444, 0x222222, 0x42a85d, true, 'smallPx_HUD', ProgressBar_1.TextAlignment.Left, 5, 3, 0xffffff));
+            }, 80, 22, 1, true, 0x444444, 0x000000, 0x42a85d, true, 'smallPx_HUD', ProgressBar_1.TextAlignment.Left, 5, 3, 0xffffff));
             // Mana
             this.add(new ProgressBar_1.ProgressBar(this.scene, 0, 27, () => {
                 return [target.mobData.currentMana, target.mobData.maxMana];
@@ -2211,7 +2200,7 @@ define("Engine/Core/BattleMonitor", ["require", "exports", "Engine/Core/GameData
         }
         update(dt) {
             // If there are any enemy on the field
-            if (UnitManager_3.UnitManager.getCurrent().enemy.size > 0) {
+            if (UnitManager_3.UnitManager.getCurrent().enemy.size > 0 && UnitManager_3.UnitManager.getCurrent().getPlayerList(UnitManager_3.UnitManager.IDENTITY, UnitManager_3.UnitManager.NOOP, false).length > 0) {
                 this.time += dt;
             }
         }
@@ -2599,6 +2588,9 @@ define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "En
                     child.destroy();
                 }
             }
+            // Background
+            this.add.rectangle(512, 586, 1024, 148, 0x222222);
+            this.add.rectangle(512, 510, 1024, 4, 0xd3cfc2);
             this.initUnitFrames();
             // this.add.rectangle(750 + 61, 520 + 8, 122, 16, 0x948779);
             let bt = this.add.bitmapText(755, 530, Localization_3._("UIFont"), Localization_3._("Damage Done (DPS)"));
@@ -2868,6 +2860,13 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     EventSystem = __importStar(EventSystem);
+    var EquipSlots;
+    (function (EquipSlots) {
+        EquipSlots["MainHand"] = "weaponMainHand";
+        EquipSlots["SubHand"] = "weaponSubHand";
+        EquipSlots["Body"] = "armor";
+        EquipSlots["Accessories"] = "accessory";
+    })(EquipSlots = exports.EquipSlots || (exports.EquipSlots = {}));
     /*
     Idle (canCastSpell):
         globalCDRemain <= 0
@@ -2915,7 +2914,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             this.image = settings.image || "unknown";
             // Stats
             this.race = settings.race || "unknown";
-            this.class = settings.class || "unknown";
+            this.job = settings.job || "unknown";
             this.level = settings.level || 1;
             this.availableBP = settings.availableBP || 0;
             this.availableSP = settings.availableSP || 0;
@@ -3008,24 +3007,12 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
                 extraRange: 0,
             };
             // Equipment related
-            this.weaponLeft = settings.weaponLeft; // || new game.weapon(settings);
-            this.weaponRight = settings.weaponRight; // || new game.weapon(settings);
-            this.armor = settings.armor; // || new game.Armor(settings);
-            this.accessory = settings.accessory; // || new game.Accessory(settings);
-            if (this.weaponLeft) {
-                this.weaponLeft.equipper = this;
-            }
-            if (this.weaponRight) {
-                this.weaponRight.equipper = this;
-            }
-            if (this.armor) {
-                this.armor.equipper = this;
-            }
-            if (this.accessory) {
-                this.accessory.equipper = this;
-            }
-            this.currentWeapon = this.weaponLeft;
-            this.anotherWeapon = this.weaponRight;
+            this.equip(settings.weaponSubHand, EquipSlots.SubHand);
+            this.equip(settings.weaponMainHand, EquipSlots.MainHand);
+            this.equip(settings.armor, EquipSlots.Body);
+            this.equip(settings.accessory, EquipSlots.Accessories);
+            this.currentWeapon = this.weaponSubHand;
+            this.anotherWeapon = this.weaponMainHand;
             // Should we switch the weapon now ?
             this.shouldSwitchWeapon = false;
             // Is this mob a player?
@@ -3035,7 +3022,8 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             this.beingAttack = 0;
             this.healPriority = false;
             // A Specific identify name only for this mob
-            this.ID = DataBackend_1.DataBackend.getSingleton().getID();
+            // Use EventElement.UID instead.
+            // this.ID = DataBackend.getSingleton().getID();
             // ref for MobListeners (buffs, agent, weapons, armor, ...)
             /** test */
             this.listeners = new QuerySet_1.QuerySet();
@@ -3097,8 +3085,11 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
                     this.currentWeapon = this.anotherWeapon;
                     this.anotherWeapon = tmp;
                 }
+                // We already switched them !
                 this.removeListener(this.anotherWeapon);
                 this.addListener(this.currentWeapon);
+                this.anotherWeapon.activated = false;
+                this.currentWeapon.activated = true;
                 // I switched my weapon !!!
                 this.updateListeners(this, 'switchWeapon', this, this.currentWeapon);
             }
@@ -3248,6 +3239,25 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             }
             spell.cast(mob, target);
         }
+        equip(equipment, slot) {
+            if (equipment) {
+                // TODO: Check if equippable !
+                this[slot] = equipment;
+                equipment.equipper = this;
+                if (equipment instanceof EquipmentCore_1.Weapon) {
+                    if (typeof this.currentWeapon === 'undefined') {
+                        this.currentWeapon = equipment;
+                        equipment.activated = true;
+                        this.addListener(this.currentWeapon);
+                    }
+                    else if (typeof this.anotherWeapon === 'undefined') {
+                        this.anotherWeapon = equipment;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
         /**
          * Event 'statChange' - emitted while a listener (buff, weapon, etc.) needs to change the stat of parent mob.
          * @param listener The listener that triggered a stat change
@@ -3256,6 +3266,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
         onStatChange(listener) {
             this.calcStats(this.parentMob); // Listeners were notified inside this method.
         }
+        // FIXME: Just wrote with some random calculations for testing. Please balance the calculation step !!
         calcStats(mob) {
             // TODO: Stats calculation:
             // 1. Calculate (get) base stats from self
@@ -3267,8 +3278,8 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             // 3. Reset battle stats
             this.battleStats = {
                 resist: {
-                    physical: 0,
-                    elemental: 0,
+                    physical: this.baseStats.vit,
+                    elemental: this.baseStats.mag,
                     pure: 0,
                     slash: 0,
                     knock: 0,
@@ -3284,8 +3295,8 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
                     heal: 0,
                 },
                 attackPower: {
-                    physical: 0,
-                    elemental: 0,
+                    physical: this.baseStats.str,
+                    elemental: this.baseStats.int,
                     pure: 0,
                     slash: 0,
                     knock: 0,
@@ -3305,10 +3316,10 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
                 // Those are basic about overall hit accuracy & avoid probabilities, critical hits.
                 // Advanced actions (avoid specific spell) should be calculated inside onReceiveDamage() etc.
                 // Same for shields, healing absorbs (Heal Pause ====...===...==...=>! SS: [ABSORB]!!! ...*&@^#), etc.
-                hitAcc: 100,
+                hitAcc: 85 + this.baseStats.tec * 5,
                 avoid: 0,
                 // Percentage
-                crit: 10,
+                crit: this.baseStats.tec,
                 antiCrit: 0,
                 // Parry for shield should calculate inside the shield itself when onReceiveDamage().
                 attackRange: 0,
@@ -3316,11 +3327,11 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             };
             this.tauntMul = 1.0;
             // Go back to base speed
-            this.modifiers.speed = 1.0;
-            this.modifiers.movingSpeed = 1.0;
-            this.modifiers.attackSpeed = 1.0;
-            this.modifiers.spellSpeed = 1.0;
-            this.modifiers.resourceCost = 1.0;
+            this.modifiers.speed = 1.0 + this.baseStats.dex * 0.05;
+            this.modifiers.movingSpeed = 1.0 + this.baseStats.dex * 0.05;
+            this.modifiers.attackSpeed = 1.0 + this.baseStats.dex * 0.05;
+            this.modifiers.spellSpeed = 1.0 + this.baseStats.dex * 0.05;
+            this.modifiers.resourceCost = 1.0 * Math.pow(0.95, this.baseStats.int);
             // Calculate health from stats
             this.healthRatio = this.currentHealth / this.maxHealth;
             this.maxHealth =
@@ -3330,6 +3341,12 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
                     + this.baseStats.tec * 4
                     + this.baseStats.int * 4
                     + this.baseStats.mag * 4;
+            // And mana
+            let manaRatio = this.currentMana / this.maxMana;
+            this.maxMana = this.baseStats.mag * 10 + this.baseStats.int * 4;
+            this.maxMana = Math.ceil(this.maxMana);
+            this.currentMana = Math.max(0, Math.ceil(manaRatio * this.maxMana));
+            this.manaRegen = this.baseStats.mag * 0.4;
             // TODO - 4. Calculate battle (advanced) stats from base stats (e.g. atkPower = INT * 0.7 * floor( MAG * 1.4 ) ... )
             // 5. Add equipment by listener.calcStats()
             // Actually, those steps were combined in a single call,
@@ -3466,14 +3483,14 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             return false;
         }
         useMana(mana) {
-            if (this.currentMana >= mana) {
-                this.currentMana -= mana;
+            if (this.currentMana >= (mana * this.modifiers.resourceCost)) {
+                this.currentMana -= (mana * this.modifiers.resourceCost);
                 return true;
             }
             return false;
         }
         hasMana(mana) {
-            if (this.currentMana >= mana) {
+            if (this.currentMana >= (mana * this.modifiers.resourceCost)) {
                 return true;
             }
             return false;
@@ -3518,6 +3535,8 @@ define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListe
             this.name = this.itemData.showName;
             this.assignTags();
         }
+        get equipper() { return this.user; }
+        set equipper(r) { this.user = r; }
         get rawName() {
             return this.itemData.rawName;
         }
@@ -3582,7 +3601,7 @@ define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListe
             this.isReadyWrapper(() => {
                 target = target.filter((v) => this.isInRange(source, v));
                 if (target.length <= 0) {
-                    return;
+                    return flag;
                 }
                 this.doRegularAttack(source, target);
                 if (triggerCD) {
@@ -3817,7 +3836,6 @@ define("Engine/Core/MobListener", ["require", "exports", "Engine/Core/DataBacken
             super(DataBackend_2.DataBackend.getSingleton().eventSystem);
             this.enabled = true;
             this.isOver = false;
-            this.focusList = new Set();
             this.priority = 0;
             this.enabled = true;
             this.cooldownMax = 0.0;
@@ -3840,12 +3858,6 @@ define("Engine/Core/MobListener", ["require", "exports", "Engine/Core/DataBacken
         }
         // Will only be triggered by parent mob.
         update(self, dt) {
-            for (let mob of this.focusList) {
-                // if(!Mob.checkExist(mob))
-                // {
-                // this.focusList.delete(mob);
-                // }
-            }
             if (this.isReady == false) {
                 this.cooldown += dt;
             }
@@ -3870,6 +3882,10 @@ define("Engine/Core/MobListener", ["require", "exports", "Engine/Core/DataBacken
         // When this listener was added to the mob by source
         // Buffs will also be triggered when new stack comes.
         _beAdded(mob, source) {
+            if (this.parentMob) {
+                console.warn(`The following MobListener has been added to multiple Mobs! original parent: ${this.parentMob.name}, new parent: ${mob.name}`);
+                console.log(this);
+            }
             this.parentMob = mob;
             this.onAdded(mob, source);
         }
@@ -3877,6 +3893,7 @@ define("Engine/Core/MobListener", ["require", "exports", "Engine/Core/DataBacken
         // When this listener was removed from the mob by source. By default this will remove the listener from the eventsystem.
         _beRemoved(mob, source) {
             this.discard();
+            this.parentMob = undefined;
             this.onRemoved(mob, source);
         }
         onRemoved(mob, source) { }
@@ -3938,16 +3955,192 @@ define("Engine/Core/MobListener", ["require", "exports", "Engine/Core/DataBacken
  * @module Agent
  * @preferred
  */
-define("Engine/Agents/MobAgent", ["require", "exports", "Engine/Core/MobListener"], function (require, exports, MobListener_4) {
+define("Engine/Agents/MobAgent", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/MobListener", "Engine/UI/PopUpManager", "Engine/Core/GameData"], function (require, exports, Mob_4, MobListener_4, PopUpManager_4, GameData_13) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class MobAgent extends MobListener_4.MobListener {
-        constructor(parentMob) {
+        constructor() {
             super();
+            this.type = MobListener_4.MobListenerType.Agent;
         }
         updateMob(mob, dt) { }
     }
     exports.MobAgent = MobAgent;
+    class MoveableAgent extends MobAgent {
+        constructor() {
+            super(...arguments);
+            this.isMoving = false;
+            this.idleFrames = 10;
+            this.idleCount = 0;
+            this.speedFriction = 0.9;
+        }
+        updateMob(mob, dt) {
+            if (this.isMoving === true) {
+                // Reset the anim counter
+                this.idleCount = this.idleFrames;
+            }
+            else {
+                if (this.idleCount > 0) {
+                    this.idleCount--;
+                    // Smooth the speed
+                    mob.body.velocity.scale(this.speedFriction);
+                }
+                else {
+                    mob.setVelocity(0, 0);
+                }
+            }
+        }
+    }
+    exports.MoveableAgent = MoveableAgent;
+    class TauntBasedAgent extends MoveableAgent {
+        constructor() {
+            super();
+            this.isMoving = false;
+            this.idleFrames = 10;
+            this.idleCount = 0;
+            this.speedFriction = 0.9;
+            this.focusList = new Set();
+            this.tauntList = {};
+        }
+        onAdded(mob) {
+            this.listen(mob, 'death', this.onDeath);
+            this.listen(mob, 'receiveDamageFinal', this.onReceiveDamageFinal);
+        }
+        updateMob(mob, dt) {
+            // borrowed from playerAgent
+            this.footPos = mob.footPos();
+            this.updateTaunt(mob);
+            // We have already checked if targetMob alive in updateTaunt()
+            // as that function checks every one in this.focusList.
+            if (this.targetMob) {
+                // we need move to goin the range of our current weapon
+                if (mob.mobData.currentWeapon && mob.mobData.currentWeapon.isInRange(mob, this.targetMob) == false) {
+                    let vel = this.targetMob.footPos().clone().subtract(this.footPos).normalize().scale(mob.mobData.getMovingSpeed());
+                    mob.setVelocity(vel.x, vel.y);
+                    this.isMoving = true;
+                }
+                // and then we don't move anymore.
+                else {
+                    this.isMoving = false;
+                }
+            }
+            else {
+                // We lose the target.
+                this.targetMob = undefined;
+                this.isMoving = false;
+            }
+            // Attack !
+            if (mob.doAttack(dt) === true) {
+                if (mob.mobData.currentWeapon && typeof this.targetMob !== "undefined") {
+                    if (mob.mobData.currentWeapon.isInRange(mob, this.targetMob)) {
+                        mob.mobData.currentWeapon.attack(mob, [this.targetMob]);
+                    }
+                }
+            }
+            super.updateMob(mob, dt);
+        }
+        updateTaunt(mob) {
+            // Find current target with highest taunt
+            var maxValue = 0;
+            var nextTarget = undefined;
+            // Use iteration instead of sort to save a O(logN) time.
+            // Don't know if this will slower than obj -> array -> sort() cuz javascript vs native...
+            // But we need update the list though
+            for (var tmpTargetMobData of this.focusList) {
+                // Taunt reduces over time
+                this.tauntList[tmpTargetMobData.UID].taunt *= 0.999; // TODO: time-consistent
+                // Remove the mob if it is dead or it has no taunt
+                if (!Mob_4.Mob.checkAlive(tmpTargetMobData.parentMob) || this.tauntList[tmpTargetMobData.UID].taunt <= 1 /*a small enough value*/) {
+                    this.removeTarget(tmpTargetMobData);
+                }
+                else {
+                    if (this.tauntList[tmpTargetMobData.UID].taunt > maxValue) {
+                        maxValue = this.tauntList[tmpTargetMobData.UID].taunt;
+                        nextTarget = tmpTargetMobData.parentMob;
+                    }
+                }
+            }
+            if (nextTarget && nextTarget != this.targetMob) {
+                if (this.targetMob) {
+                    this.targetMob.mobData.beingAttack -= 1;
+                }
+                this.targetMob = nextTarget;
+                nextTarget.mobData.beingAttack += 1;
+                // TODO: popUp a "!" and a red line for taunt focus
+                var pPos = mob.getTopCenter();
+                PopUpManager_4.PopUpManager.getSingleton().addText("!", pPos.x, pPos.y, Phaser.Display.Color.HexStringToColor('#ff0000'), 1.0, 0);
+            }
+            else if (typeof nextTarget === "undefined") {
+                // TODO: popUp a "?" as the mob losted its target
+                if (typeof this.targetMob !== "undefined") {
+                    var pPos = mob.getTopCenter();
+                    PopUpManager_4.PopUpManager.getSingleton().addText("?", pPos.x, pPos.y, Phaser.Display.Color.HexStringToColor('#ffff00'), 1.0, 0);
+                }
+                this.targetMob = undefined;
+            }
+        }
+        addTarget(target, initialTaunt = 0) {
+            this.focusList.add(target);
+            this.tauntList[target.UID] = { taunt: initialTaunt };
+            this.listen(target, 'receiveHealFinal', this.onReceiveHealFinal);
+        }
+        removeTarget(target) {
+            this.focusList.delete(target);
+            this.unlistenAll(target);
+            delete this.tauntList[target.UID];
+        }
+        // Some skills that will change taunt value directly 
+        // (e.g. Taunt(skill), Wind rush(some skill that will reduce some taunt from target), etc.)
+        changeTaunt(source, taunt) {
+            if (!this.focusList.has(source.mobData)) {
+                this.addTarget(source.mobData);
+            }
+            this.tauntList[source.mobData.UID].taunt += taunt;
+        }
+        // Test if we can modify the result here !
+        // Yes we CAN ! (uncomment this and mob using this agent will deal no damage)
+        // onDealDamage({ target, damage, isCrit, spell } = {}) 
+        // {
+        //     for(var dmg in damage)
+        //     {
+        //         damage[dmg] = 0;
+        //     } 
+        //     return true; 
+        // },
+        onReceiveDamageFinal(info) {
+            // Just in case
+            if (info.type !== GameData_13.GameData.Elements.heal) {
+                // Add the damage source in to our focus list,
+                if (!this.focusList.has(info.source)) {
+                    this.addTarget(info.source);
+                }
+                // and create the taunt of that target based on damage
+                this.tauntList[info.source.UID].taunt += info.value * info.source.tauntMul;
+            }
+            // We do not change the values
+            return false;
+        }
+        onReceiveHealFinal(info) {
+            // Just in case
+            if (info.type === GameData_13.GameData.Elements.heal) {
+                // Add the heal source in to our focus list,
+                if (!this.focusList.has(info.source)) {
+                    this.addTarget(info.source);
+                }
+                // and create the taunt of that target based on total heal
+                this.tauntList[info.source.UID].taunt += (info.value + info.overdeal) * info.source.tauntMul * GameData_13.GameData.healTaunt;
+            }
+            // We do not change the values
+            return false;
+        }
+        onDeath(damageInfo) {
+            if (this.targetMob) {
+                this.targetMob.mobData.beingAttack -= 1;
+            }
+            return false;
+        }
+    }
+    exports.TauntBasedAgent = TauntBasedAgent;
 });
 /** @packageDocumentation @module Core */
 define("Engine/Core/ObjectPopulator", ["require", "exports"], function (require, exports) {
@@ -3974,18 +4167,19 @@ define("Engine/Core/ObjectPopulator", ["require", "exports"], function (require,
     exports.ObjectPopulator = ObjectPopulator;
 });
 /** @packageDocumentation @module GameEntity */
-define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/Core/MobData", "Engine/Core/UnitManager", "Engine/Core/EquipmentCore", "Engine/UI/PopUpManager", "Engine/Core/ObjectPopulator", "Engine/Core/GameData", "Engine/UI/UIScene"], function (require, exports, dPhysSprite_2, MobData_1, UnitManager_5, EquipmentCore_2, PopUpManager_4, ObjectPopulator_1, GameData_13, UIScene_3) {
+define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/Core/MobData", "Engine/Core/UnitManager", "Engine/Core/EquipmentCore", "Engine/UI/PopUpManager", "Engine/Core/ObjectPopulator", "Engine/Core/GameData", "Engine/UI/UIScene"], function (require, exports, dPhysSprite_2, MobData_1, UnitManager_5, EquipmentCore_2, PopUpManager_5, ObjectPopulator_1, GameData_14, UIScene_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Mob extends dPhysSprite_2.dPhysSprite {
         constructor(scene, x, y, sprite, settings, subsprite, frame) {
-            super(scene, x, y, sprite, subsprite, frame);
+            super(scene, x, y, sprite || 'sheet_default_mob', subsprite, frame);
+            this.imageFacingRight = false;
             this.setOrigin(0.5, 0.8);
             this.mobData = settings.backendData;
             this.mobData.parentMob = this;
-            this.moveAnim = settings.moveAnim;
-            this.idleAnim = settings.idleAnim;
-            this.deadAnim = settings.deadAnim;
+            this.moveAnim = sprite + '_move';
+            this.idleAnim = sprite + '_idle';
+            this.deadAnim = sprite + '_dead';
             if (this.idleAnim) {
                 this.play(this.idleAnim);
             }
@@ -4000,24 +4194,30 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
             }
             this.setGravity(0, 0);
             if (settings.agent) {
-                this.agent = new settings.agent(this);
+                this.agent = new settings.agent();
                 this.mobData.addListener(this.agent);
             }
             this.attackCounter = 0;
             // HPBar
         }
-        static fromTiled(scene, obj, prop) {
-            let settings_backend = (prop);
-            settings_backend.name = settings_backend.name || obj.name || 'Unnamed_mob';
-            let charsheet_key = 'sheet_' + prop['image'] || 'sheet_default_mob';
-            let settings = {
-                'moveAnim': charsheet_key + '_move',
-                'idleAnim': charsheet_key + '_idle',
-                'deadAnim': charsheet_key + '_dead',
-                'backendData': new MobData_1.MobData(settings_backend),
-                'agent': ObjectPopulator_1.ObjectPopulator.agentList[prop['agentType'] || prop['agent'] || 'default'],
+        // Somehow deprecated
+        static fromTiled(mobCtor) {
+            return function (scene, obj, prop) {
+                let settings_backend = (prop);
+                settings_backend.name = settings_backend.name || obj.name || 'Unnamed_mob';
+                // Get agent type
+                let p_agent = prop['agentType'] || prop['agent'];
+                let agentCtor = undefined;
+                if (ObjectPopulator_1.ObjectPopulator.agentList) {
+                    agentCtor = ObjectPopulator_1.ObjectPopulator.agentList[p_agent];
+                }
+                let charsheet_key = 'sheet_' + prop['image'] || undefined;
+                let settings = {
+                    'backendData': new MobData_1.MobData(settings_backend),
+                    'agent': agentCtor,
+                };
+                return new mobCtor(scene, obj.x, obj.y, charsheet_key, settings);
             };
-            return new Mob(scene, obj.x, obj.y, charsheet_key, settings);
         }
         update(dt) {
             // this.sprite.x += dt / 1000.0 * 10;
@@ -4031,6 +4231,32 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
             // Physics update?
             if (this.agent) {
                 this.agent.updateMob(this, dt);
+            }
+            // Set animation
+            if (this.anims) {
+                if (this.mobData.alive === true) {
+                    if (this.body && this.body.velocity.length() > 0.1) {
+                        // Fix our face direction when moving
+                        if (this.body.velocity.x < 0) {
+                            this.flipX = this.imageFacingRight ? true : false;
+                        }
+                        else {
+                            this.flipX = this.imageFacingRight ? false : true;
+                        }
+                        if (!(this.anims.currentAnim && this.anims.currentAnim.key == this.moveAnim)) {
+                            this.play(this.moveAnim);
+                        }
+                    }
+                    else {
+                        if (!(this.anims.currentAnim && this.anims.currentAnim.key == this.idleAnim)) {
+                            this.play(this.idleAnim);
+                        }
+                    }
+                }
+                else {
+                    this.flipX = this.imageFacingRight ? false : true;
+                    this.play(this.deadAnim);
+                }
             }
         }
         doAttack(dt) {
@@ -4134,14 +4360,14 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
             if (result.isAvoid) {
                 if (_damageInfo.popUp == true) {
                     var popUpPos = this.getTopCenter();
-                    PopUpManager_4.PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, GameData_13.GameData.ElementColors['miss']);
+                    PopUpManager_5.PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, GameData_14.GameData.ElementColors['miss']);
                 }
                 return result;
             }
             // Mob itself only do rendering popUp texts
             if (_damageInfo.popUp == true && result.value > 0) {
                 var popUpPos = this.getTopCenter();
-                PopUpManager_4.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_13.GameData.ElementColors[result.type]);
+                PopUpManager_5.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_14.GameData.ElementColors[result.type]);
                 // popUp texts on unit frames
                 // fade from left to the the edge of currentHealth
                 if (this.mobData.isPlayer) {
@@ -4150,7 +4376,7 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
                         if (this === playerList[i]) {
                             let popX = UIScene_3.UIScene.getSingleton().unitFrames[i].x + 78;
                             let popY = UIScene_3.UIScene.getSingleton().unitFrames[i].y + 5;
-                            PopUpManager_4.PopUpManager.getSingleton().addText("-" + result.value.toString() + (result.isCrit ? "!" : ""), popX, popY, GameData_13.GameData.ElementColors[result.type], 0.8, -40, 0, 40, 0);
+                            PopUpManager_5.PopUpManager.getSingleton().addText("-" + result.value.toString() + (result.isCrit ? "!" : ""), popX, popY, GameData_14.GameData.ElementColors[result.type], 0.8, -40, 0, 40, 0);
                         }
                     }
                 }
@@ -4184,7 +4410,7 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
                 'isCrit': _healInfo.isCrit,
                 'isAvoid': _healInfo.isAvoid,
                 'isBlock': _healInfo.isBlock,
-                'type': GameData_13.GameData.Elements.heal,
+                'type': GameData_14.GameData.Elements.heal,
                 'overdeal': 0
             };
             if (Mob.checkAlive(this) == false) {
@@ -4225,7 +4451,7 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
                 // {
                 //     PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData.ElementColors['heal'], 1.0, 64, -256);
                 // }
-                PopUpManager_4.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_13.GameData.ElementColors['heal'], 1.0, 64, -256);
+                PopUpManager_5.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_14.GameData.ElementColors['heal'], 1.0, 64, -256);
                 // popUp texts on unit frames
                 // fade from left to the the edge of currentHealth
                 if (this.mobData.isPlayer) {
@@ -4234,7 +4460,7 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
                         if (this === playerList[i]) {
                             let popX = UIScene_3.UIScene.getSingleton().unitFrames[i].x + 40;
                             let popY = UIScene_3.UIScene.getSingleton().unitFrames[i].y + 15;
-                            PopUpManager_4.PopUpManager.getSingleton().addText("+" + result.value.toString() + (result.isCrit ? "!" : ""), popX, popY, GameData_13.GameData.ElementColors['heal'], 0.8, 40, 0, -40, 0);
+                            PopUpManager_5.PopUpManager.getSingleton().addText("+" + result.value.toString() + (result.isCrit ? "!" : ""), popX, popY, GameData_14.GameData.ElementColors['heal'], 0.8, 40, 0, -40, 0);
                         }
                     }
                 }
@@ -4269,7 +4495,7 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
     exports.Mob = Mob;
 });
 /** @packageDocumentation @module BattleScene */
-define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/UnitManager", "Engine/Core/ObjectPopulator", "Engine/Core/BattleMonitor", "Engine/UI/UIScene", "Engine/UI/ProgressBar"], function (require, exports, Mob_4, UnitManager_6, ObjectPopulator_2, BattleMonitor_4, UIScene_4, ProgressBar_2) {
+define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/UnitManager", "Engine/Core/ObjectPopulator", "Engine/Core/BattleMonitor", "Engine/UI/UIScene", "Engine/UI/ProgressBar"], function (require, exports, Mob_5, UnitManager_6, ObjectPopulator_2, BattleMonitor_4, UIScene_4, ProgressBar_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class BattleScene extends Phaser.Scene {
@@ -4361,7 +4587,7 @@ define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/Game
             for (let objLayer of this.map.objects) {
                 for (let obj of objLayer.objects) {
                     let objPopulated = ObjectPopulator_2.ObjectPopulator.newObject(this, obj.type == "" ? obj.name : obj.type, obj);
-                    if (objPopulated instanceof Mob_4.Mob) {
+                    if (objPopulated instanceof Mob_5.Mob) {
                         this.addMob(objPopulated);
                     }
                     else if (objPopulated) {
@@ -4401,7 +4627,7 @@ define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/Game
     exports.BattleScene = BattleScene;
 });
 /** @packageDocumentation @module GameObjects */
-define("Engine/GameObjects/Projectile", ["require", "exports", "Engine/GameObjects/Spell", "Engine/GameObjects/Mob"], function (require, exports, Spell_2, Mob_5) {
+define("Engine/GameObjects/Projectile", ["require", "exports", "Engine/GameObjects/Spell", "Engine/GameObjects/Mob"], function (require, exports, Spell_2, Mob_6) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Projectile extends Spell_2.Spell {
@@ -4420,7 +4646,7 @@ define("Engine/GameObjects/Projectile", ["require", "exports", "Engine/GameObjec
         }
         updateSpell(dt) {
             // Homing
-            if (this.target instanceof Mob_5.Mob && (this.chasingRange < 0 || this.target.footPos().clone().subtract(this.getPosition()).length() < this.chasingRange)) {
+            if (this.target instanceof Mob_6.Mob && (this.chasingRange < 0 || this.target.footPos().clone().subtract(this.getPosition()).length() < this.chasingRange)) {
                 let newDirc = this.target.footPos().clone().subtract(this.getPosition()).normalize();
                 this.moveDirc = this.moveDirc.clone().scale(1 - dt * this.chasingPower).add(newDirc.clone().scale(dt * this.chasingPower));
             }
@@ -4431,14 +4657,14 @@ define("Engine/GameObjects/Projectile", ["require", "exports", "Engine/GameObjec
     exports.Projectile = Projectile;
 });
 /** @packageDocumentation @module Buffs */
-define("Buffs/HDOT", ["require", "exports", "Engine/Core/Buff", "Engine/Core/GameData", "Engine/Core/Helper", "Engine/GameObjects/Spell", "Engine/UI/Localization"], function (require, exports, Buff_2, GameData_14, Helper_4, Spell_3, Localization_7) {
+define("Buffs/HDOT", ["require", "exports", "Engine/Core/Buff", "Engine/Core/GameData", "Engine/Core/Helper", "Engine/GameObjects/Spell", "Engine/UI/Localization"], function (require, exports, Buff_2, GameData_15, Helper_4, Spell_3, Localization_7) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class HDOT extends Buff_2.Buff {
         constructor(settings, type, vMin = 1, vMax = 3, vGap = 0.57) {
             settings.name = settings.name || 'XOT';
             settings.popupName = settings.popupName || settings.name || 'XOT!';
-            settings.color = settings.color || GameData_14.GameData.ElementColors[type] || Phaser.Display.Color.HexStringToColor('#0066ff');
+            settings.color = settings.color || GameData_15.GameData.ElementColors[type] || Phaser.Display.Color.HexStringToColor('#0066ff');
             //settings.iconId
             super(settings);
             //this.toolTip
@@ -4475,10 +4701,20 @@ define("Buffs/HDOT", ["require", "exports", "Engine/Core/Buff", "Engine/Core/Gam
     }
     exports.HDOT = HDOT;
 });
+/** @packageDocumentation @moduleeDocumentation @module Buffs */
+define("Buffs/index", ["require", "exports", "Buffs/HDOT"], function (require, exports, HDOT_1) {
+    "use strict";
+    function __export(m) {
+        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    __export(HDOT_1);
+});
 /** @packageDocumentation @module Weapons */
-define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/GameObjects/Projectile", "Engine/Core/Helper", "Engine/Core/GameData", "Buffs/HDOT", "Engine/Core/Buff", "Engine/UI/Localization"], function (require, exports, EquipmentCore_3, UnitManager_7, Spell_4, Projectile_1, Helper_5, GameData_15, HDOT_1, Buff_3, Localization_8) {
+define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/GameObjects/Projectile", "Engine/Core/Helper", "Engine/Core/GameData", "Buffs/index", "Engine/Core/Buff", "Engine/UI/Localization"], function (require, exports, EquipmentCore_3, UnitManager_7, Spell_4, Projectile_1, Helper_5, GameData_16, Buffs, Buff_3, Localization_8) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    Buffs = __importStar(Buffs);
     class CometWand extends EquipmentCore_3.Weapon {
         constructor(itemID = 'cometWand') {
             super(itemID);
@@ -4486,9 +4722,9 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
             this.baseAttackMin = 6;
             this.baseAttackMax = 18;
             this.baseAttackSpeed = 1.5;
-            this.targetCount = 4;
-            this.activeRange = 2000;
-            this.manaCost = 10;
+            this.targetCount = 2;
+            this.activeRange = 200;
+            this.manaCost = 3;
             this.weaponGaugeMax = 25;
             this.weaponGaugeIncreasement = function (mob) { return mob.mobData.baseStats.mag; };
             // ToolTips
@@ -4502,13 +4738,13 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
                 return {
                     "zh-cn": `
                 <span>放出至多 ${this.targetCount} 颗彗星弹进行攻击。</span>
-                <span>每颗造成 ${this.getDamage(mob, this.baseAttackMin, GameData_15.GameData.Elements.ice).value.toFixed(0)} - ${this.getDamage(mob, this.baseAttackMax, GameData_15.GameData.Elements.ice).value.toFixed(0)} 点冰属性伤害。</span>`,
+                <span>每颗造成 ${this.getDamage(mob, this.baseAttackMin, GameData_16.GameData.Elements.ice).value.toFixed(0)} - ${this.getDamage(mob, this.baseAttackMax, GameData_16.GameData.Elements.ice).value.toFixed(0)} 点冰属性伤害。</span>`,
                     "en-us": `
                 <span>Releases maximum ${this.targetCount} comet orbs to target(s).</span>
-                <span>Every orb deals ${this.getDamage(mob, this.baseAttackMin, GameData_15.GameData.Elements.ice).value.toFixed(0)} - ${this.getDamage(mob, this.baseAttackMax, GameData_15.GameData.Elements.ice).value.toFixed(0)} ice damage.</span>`,
+                <span>Every orb deals ${this.getDamage(mob, this.baseAttackMin, GameData_16.GameData.Elements.ice).value.toFixed(0)} - ${this.getDamage(mob, this.baseAttackMax, GameData_16.GameData.Elements.ice).value.toFixed(0)} ice damage.</span>`,
                     "ja-jp": `
                 <span>最大 ${this.targetCount} 枚の彗星弾を撃つ。</span>
-                <span>弾ことに、あったものに ${this.getDamage(mob, this.baseAttackMin, GameData_15.GameData.Elements.ice).value.toFixed(0)} - ${this.getDamage(mob, this.baseAttackMax, GameData_15.GameData.Elements.ice).value.toFixed(0)} 点の氷属性ダメージを与える。</span>`,
+                <span>弾ことに、あったものに ${this.getDamage(mob, this.baseAttackMin, GameData_16.GameData.Elements.ice).value.toFixed(0)} - ${this.getDamage(mob, this.baseAttackMax, GameData_16.GameData.Elements.ice).value.toFixed(0)} 点の氷属性ダメージを与える。</span>`,
                 };
             };
             this.getSpecialAttackDesc = (mob) => {
@@ -4516,21 +4752,21 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
                     "zh-cn": `
                 <span>放出至多 ${this.targetCount} 颗火焰弹进行攻击。</span>
                 <span>
-                    每颗火焰弹会${Helper_5.Helper.toolTip.colored('点燃', GameData_15.GameData.ElementColorsStr['fire'])}目标 100px 范围内的所有敌人，令它们每 0.5s 受到 ${this.getDamage(mob, 20, GameData_15.GameData.Elements.fire).value.toFixed(0)} - ${this.getDamage(mob, 30, GameData_15.GameData.Elements.fire).value.toFixed(0)} 点火属性伤害，持续15秒。${Helper_5.Helper.toolTip.colored('点燃', GameData_15.GameData.ElementColorsStr['fire'])}最多叠加10次。
-                </span>
-                <span style = "color: #90d7ec;">同时还会影响自身周围 200px 单位内的队友，使其<strong style='color:${GameData_15.GameData.ElementColorsStr['nature']}'>再生</strong>或<strong style='color:${GameData_15.GameData.ElementColorsStr['light']}'>被光刺穿</strong>。</span>`,
+                    每颗火焰弹会${Helper_5.Helper.toolTip.colored('点燃', GameData_16.GameData.ElementColorsStr['fire'])}目标 50px 范围内的所有敌人，令它们每 1.2秒受到 ${this.getDamage(mob, 3, GameData_16.GameData.Elements.fire).value.toFixed(0)} - ${this.getDamage(mob, 4, GameData_16.GameData.Elements.fire).value.toFixed(0)} 点火属性伤害，持续6.0秒。${Helper_5.Helper.toolTip.colored('点燃', GameData_16.GameData.ElementColorsStr['fire'])}最多叠加10次。
+                </span>`,
+                    // <span style = "color: #90d7ec;">同时还会影响自身周围 200px 单位内的队友，使其<strong style='color:${GameData.ElementColorsStr['nature']}'>再生</strong>或<strong style='color:${GameData.ElementColorsStr['light']}'>被光刺穿</strong>。</span>`,
                     "en-us": `
                 <span>Releases maximum ${this.targetCount} flame orbs to target(s).</span>
                 <span>
-                    Each orb will ${Helper_5.Helper.toolTip.colored('burn', GameData_15.GameData.ElementColorsStr['fire'])} every enemy within 100px from the target, dealing ${this.getDamage(mob, 20, GameData_15.GameData.Elements.fire).value.toFixed(0)} - ${this.getDamage(mob, 30, GameData_15.GameData.Elements.fire).value.toFixed(0)} fire damage every 0.5s for 15sec. ${Helper_5.Helper.toolTip.colored('Burn', GameData_15.GameData.ElementColorsStr['fire'])} can be stacked up to 10 times.
-                </span>
-                <span style = "color: #90d7ec;">Meanwhile, affect team members within 200px from you, let them <strong style='color:${GameData_15.GameData.ElementColorsStr['nature']}'>Regenerate</strong> or <strong style='color:${GameData_15.GameData.ElementColorsStr['light']}'>Enlighttened</strong>.</span>`,
+                    Each orb will ${Helper_5.Helper.toolTip.colored('burn', GameData_16.GameData.ElementColorsStr['fire'])} every enemy within 50px from the target, dealing ${this.getDamage(mob, 3, GameData_16.GameData.Elements.fire).value.toFixed(0)} - ${this.getDamage(mob, 4, GameData_16.GameData.Elements.fire).value.toFixed(0)} fire damage every 1.2s for 6 seconds. ${Helper_5.Helper.toolTip.colored('Burn', GameData_16.GameData.ElementColorsStr['fire'])} can be stacked up to 10 times.
+                </span>`,
+                    // <span style = "color: #90d7ec;">Meanwhile, affect team members within 200px from you, let them <strong style='color:${GameData.ElementColorsStr['nature']}'>Regenerate</strong> or <strong style='color:${GameData.ElementColorsStr['light']}'>Enlighttened</strong>.</span>`,
                     "ja-jp": `
                 <span>最大 ${this.targetCount} 枚の星炎弾を撃つ。</span>
                 <span>
-                    弾ことに、あったものの周り 100px 以内の全ての敵を${Helper_5.Helper.toolTip.colored('炎上', GameData_15.GameData.ElementColorsStr['fire'])}の効果を与える。燃えた敵は 15秒 内、0.5秒 ことに ${this.getDamage(mob, 20, GameData_15.GameData.Elements.fire).value.toFixed(0)} - ${this.getDamage(mob, 30, GameData_15.GameData.Elements.fire).value.toFixed(0)} 点の炎属性ダメージを受ける。${Helper_5.Helper.toolTip.colored('炎上', GameData_15.GameData.ElementColorsStr['fire'])}は最大10回に積みます。
-                </span>
-                <span style = "color: #90d7ec;">その上、自身の周り 200px 以内のメンバーに<strong style='color:${GameData_15.GameData.ElementColorsStr['nature']}'>再生</strong>または<strong style='color:${GameData_15.GameData.ElementColorsStr['light']}'>刺し光</strong>を与える。</span>`,
+                    弾ことに、あったものの周り 50px 以内の全ての敵を${Helper_5.Helper.toolTip.colored('炎上', GameData_16.GameData.ElementColorsStr['fire'])}の効果を与える。燃えた敵は 6秒 内、1.2秒 ことに ${this.getDamage(mob, 3, GameData_16.GameData.Elements.fire).value.toFixed(0)} - ${this.getDamage(mob, 4, GameData_16.GameData.Elements.fire).value.toFixed(0)} 点の炎属性ダメージを受ける。${Helper_5.Helper.toolTip.colored('炎上', GameData_16.GameData.ElementColorsStr['fire'])}は最大10回に積みます。
+                </span>`
+                    // <span style = "color: #90d7ec;">その上、自身の周り 200px 以内のメンバーに<strong style='color:${GameData.ElementColorsStr['nature']}'>再生</strong>または<strong style='color:${GameData.ElementColorsStr['light']}'>刺し光</strong>を与える。</span>`,
                 };
             };
         }
@@ -4548,7 +4784,7 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
                     'source': source,
                     'target': targetMob,
                     'speed': 450,
-                    'onMobHit': (self, mob) => { self.dieAfter(self.HealDmg, [mob, Helper_5.getRandomInt(6, 18), GameData_15.GameData.Elements.ice], mob); },
+                    'onMobHit': (self, mob) => { self.dieAfter(self.HealDmg, [mob, Helper_5.getRandomInt(6, 18), GameData_16.GameData.Elements.ice], mob); },
                     'color': Phaser.Display.Color.HexStringToColor("#77ffff"),
                     'chasingRange': 400,
                     'chasingPower': 1.0,
@@ -4564,8 +4800,8 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
                     'onMobHit': (self, mob) => {
                         self.dieAfter(() => Helper_5.AoE((m) => {
                             // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
-                            m.receiveBuff(source, new HDOT_1.HDOT(Buff_3.Buff.fromKey('test_Burn', { source: source.mobData, time: 15.0, maxStack: 10, name: self.name }), GameData_15.GameData.Elements.fire, 20, 30, 0.5));
-                        }, self.getPosition(), 100, self.targeting), [], mob);
+                            m.receiveBuff(source, new Buffs.HDOT(Buff_3.Buff.fromKey('test_Burn', { source: source.mobData, time: 6.0, maxStack: 10, name: self.name }), GameData_16.GameData.Elements.fire, 3, 4, 1.2));
+                        }, self.getPosition(), 50, self.targeting), [], mob);
                     },
                     'color': Phaser.Display.Color.HexStringToColor("#ff3333"),
                     'chasingRange': 400,
@@ -4573,13 +4809,13 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
                 });
             Helper_5.AoE((m) => {
                 // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
-                if (Helper_5.getRandomInt(0, 3) < 0) {
-                    m.receiveBuff(source, new HDOT_1.HDOT(Buff_3.Buff.fromKey('test_HOT', { source: source.mobData, time: 12.0, maxStack: 10 }), GameData_15.GameData.Elements.heal, 5, 8, 1.0));
+                if (Helper_5.getRandomInt(0, 3) < 1) {
+                    m.receiveBuff(source, new Buffs.HDOT(Buff_3.Buff.fromKey('test_HOT', { source: source.mobData, time: 10.0, maxStack: 3 }), GameData_16.GameData.Elements.heal, 0, 1, 2.0));
                 }
                 else {
-                    m.receiveBuff(source, new HDOT_1.HDOT(Buff_3.Buff.fromKey('test_Light', { source: source.mobData, time: 5.0 }), GameData_15.GameData.Elements.light, 2, 3, 1.0));
+                    // m.receiveBuff(source, new Buffs.HDOT(Buff.fromKey('test_Light', { source: source.mobData, time: 5.0 }), GameData.Elements.light, 2, 3, 1.0));
                 }
-            }, source.footPos(), 200, Spell_4.Targeting.Player);
+            }, source.footPos(), 200, source.mobData.isPlayer ? Spell_4.Targeting.Player : Spell_4.Targeting.Enemy);
         }
         grabTargets(mob) {
             return UnitManager_7.UnitManager.getCurrent().getNearest(mob.footPos(), !mob.mobData.isPlayer, this.targetCount);
@@ -4587,16 +4823,28 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
     }
     exports.CometWand = CometWand;
 });
-/** @packageDocumentation @module Agent */
+/** @packageDocumentation @module Weapons */
+define("Weapons/index", ["require", "exports", "Weapons/Staff"], function (require, exports, Staff_1) {
+    "use strict";
+    function __export(m) {
+        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    __export(Staff_1);
+});
+/** @packageDocumentation @module Agents */
 define("Agents/SimpleAgents", ["require", "exports", "Engine/Agents/MobAgent"], function (require, exports, MobAgent_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    class KeepMoving extends MobAgent_2.MobAgent {
-        constructor(parentMob, range = 150, dirc = new Phaser.Math.Vector2(0, 1)) {
-            super(parentMob);
-            this.center = parentMob.getPosition();
+    class KeepMoving extends MobAgent_2.MoveableAgent {
+        constructor(range = 150, dirc = new Phaser.Math.Vector2(0, 1)) {
+            super();
+            this.center = new Phaser.Math.Vector2(0, 0);
             this.range = range;
             this.dirc = dirc.normalize();
+        }
+        onAdded(mob) {
+            this.center = mob.parentMob.getPosition();
         }
         updateMob(mob, dt) {
             if (mob.getPosition().add(this.dirc.clone().scale(20.0)).distance(this.center) > this.range) {
@@ -4607,77 +4855,131 @@ define("Agents/SimpleAgents", ["require", "exports", "Engine/Agents/MobAgent"], 
     }
     exports.KeepMoving = KeepMoving;
 });
+/** @packageDocumentation @moduleeDocumentation @module Agents */
+define("Agents/index", ["require", "exports", "Agents/SimpleAgents"], function (require, exports, SimpleAgents_1) {
+    "use strict";
+    function __export(m) {
+        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    __export(SimpleAgents_1);
+});
 /** @packageDocumentation @module Lists */
-define("Lists/ItemList", ["require", "exports", "Weapons/Staff"], function (require, exports, Staff_1) {
+define("Lists/ItemList", ["require", "exports", "Weapons/index"], function (require, exports, Weapons) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    Weapons = __importStar(Weapons);
     exports.ItemList = {
-        "cometWand": Staff_1.CometWand,
+        "cometWand": Weapons.CometWand,
     };
 });
-/** @packageDocumentation @module Lists */
-define("Lists/ObjectList", ["require", "exports", "Engine/GameObjects/Mob"], function (require, exports, Mob_6) {
+/** @packageDocumentation @module Mobs.Enemies */
+define("Mobs/Enemies/TestMob", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Agents/MobAgent", "Weapons/index", "Engine/Core/MobData"], function (require, exports, Mob_7, MobAgent_3, Weapons, MobData_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.ObjectList = {
-        'mob': Mob_6.Mob.fromTiled,
-    };
-});
-/** @packageDocumentation @module Lists */
-define("Lists/AgentList", ["require", "exports", "Agents/SimpleAgents"], function (require, exports, SimpleAgents_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.AgentList = {
-        'default': undefined,
-        'keepMoving': SimpleAgents_1.KeepMoving,
-    };
-});
-/** @packageDocumentation @moduleeDocumentation @module SpellData */
-define("SpellData/FloraHeal", ["require", "exports", "Engine/Core/SpellData", "Engine/Core/UnitManager", "Engine/Core/GameData", "Engine/GameObjects/Spell", "Engine/Core/Helper"], function (require, exports, SpellData_1, UnitManager_8, GameData_16, Spell_5, Helper_6) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    class FloraHeal extends SpellData_1.SpellData {
-        constructor(settings) {
-            super(settings);
-            this.isCast = true;
-            this.isChannel = true;
-            this.channelTime = 2.0;
-            this.castTime = 1.5;
-            this.totalTime = 0;
-            this.hitCount = 0;
-        }
-        onCast(mob, target) {
-            this.totalTime = 0;
-            this.hitCount = -1;
-        }
-        onChanneling(mob, target, dt) {
-            this.totalTime += dt;
-            if (Math.ceil(this.totalTime / 0.3) > this.hitCount) {
-                this.hitCount++;
-                UnitManager_8.UnitManager.getCurrent().getUnitList(UnitManager_8.UnitManager.sortByHealthPercentage, UnitManager_8.UnitManager.NOOP, mob.mobData.isPlayer).forEach(target => {
-                    target.receiveHeal({
-                        'source': mob,
-                        'value': Helper_6.getRandomInt(2, 5),
-                        'type': GameData_16.GameData.Elements.heal,
-                        'spell': {
-                            'name': this.name,
-                            'flags': new Set([
-                                Spell_5.SpellFlags.areaEffect,
-                                Spell_5.SpellFlags.isHeal,
-                            ])
-                        }
-                    });
-                });
-            }
+    Weapons = __importStar(Weapons);
+    class TestMob extends Mob_7.Mob {
+        constructor(scene, x, y, sprite, settings) {
+            settings.agent = settings.agent || MobAgent_3.TauntBasedAgent;
+            super(scene, x, y, sprite || 'sheet_gripe_run_right', settings);
+            this.imageFacingRight = true;
+            let myWeapon = new Weapons.CometWand();
+            myWeapon.manaCost = 0;
+            myWeapon.activeRange = 150;
+            myWeapon.targetCount = 2;
+            this.mobData.equip(myWeapon, MobData_2.EquipSlots.MainHand);
         }
     }
-    exports.FloraHeal = FloraHeal;
+    exports.TestMob = TestMob;
 });
-/** @packageDocumentation @module BattleScene */
-define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/Staff", "Agents/PlayerAgents", "Agents/SimpleAgents", "Engine/Core/Helper", "Engine/Core/ObjectPopulator", "Lists/ObjectList", "Lists/AgentList", "Engine/Core/GameData", "Engine/UI/Localization", "SpellData/FloraHeal"], function (require, exports, BattleScene_1, Mob_7, MobData_2, Staff_2, PlayerAgents, SimpleAgents_2, Helper_7, ObjectPopulator_3, ObjectList_1, AgentList_1, GameData_17, Localization_9, FloraHeal_1) {
+/** @packageDocumentation @module Mobs.Enemies */
+define("Mobs/Enemies/index", ["require", "exports", "Mobs/Enemies/TestMob"], function (require, exports, TestMob_1) {
+    "use strict";
+    function __export(m) {
+        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    __export(TestMob_1);
+});
+/** @packageDocumentation @module Mobs */
+define("Mobs/index", ["require", "exports", "Mobs/Enemies/index"], function (require, exports, Enemies) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    // export * as Allies from './Allies'
+    exports.Enemies = Enemies;
+});
+/** @packageDocumentation @module Lists */
+define("Lists/ObjectList", ["require", "exports", "Engine/GameObjects/Mob", "Mobs/index"], function (require, exports, Mob_8, Mobs) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    Mobs = __importStar(Mobs);
+    exports.ObjectList = {
+        'Mob': Mob_8.Mob.fromTiled(Mob_8.Mob),
+        'TestMob': Mob_8.Mob.fromTiled(Mobs.Enemies.TestMob),
+    };
+});
+/** @packageDocumentation @module Lists */
+define("Lists/AgentList", ["require", "exports", "Agents/index"], function (require, exports, Agents) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    Agents = __importStar(Agents);
+    exports.AgentList = {
+        'default': undefined,
+        'keepMoving': Agents.KeepMoving,
+    };
+});
+/** @packageDocumentation @moduleeDocumentation @module SpellDatas */
+define("SpellData/FloraHeal", ["require", "exports", "Engine/Core/SpellData", "Engine/Core/UnitManager", "Engine/Core/GameData", "Engine/GameObjects/Spell", "Engine/Core/Helper"], function (require, exports, SpellData_1, UnitManager_8, GameData_17, Spell_5, Helper_6) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var SpellDatas;
+    (function (SpellDatas) {
+        class FloraHeal extends SpellData_1.SpellData {
+            constructor(settings) {
+                super(settings);
+                this.isCast = true;
+                this.isChannel = true;
+                this.channelTime = 2.4;
+                this.castTime = 1.4;
+                this.manaCost = 8;
+                this.totalTime = 0;
+                this.hitCount = 0;
+            }
+            onCast(mob, target) {
+                this.totalTime = 0;
+                this.hitCount = -1;
+            }
+            onChanneling(mob, target, dt) {
+                this.totalTime += dt;
+                if (Math.ceil(this.totalTime / 0.8) > this.hitCount) {
+                    this.hitCount++;
+                    UnitManager_8.UnitManager.getCurrent().getUnitList(UnitManager_8.UnitManager.sortByHealthPercentage, UnitManager_8.UnitManager.NOOP, mob.mobData.isPlayer).slice(0, 3).forEach(target => {
+                        target.receiveHeal({
+                            'source': mob,
+                            'value': Helper_6.getRandomInt(4, 6),
+                            'type': GameData_17.GameData.Elements.heal,
+                            'spell': {
+                                'name': this.name,
+                                'flags': new Set([
+                                    Spell_5.SpellFlags.areaEffect,
+                                    Spell_5.SpellFlags.isHeal,
+                                ])
+                            }
+                        });
+                    });
+                }
+            }
+        }
+        SpellDatas.FloraHeal = FloraHeal;
+    })(SpellDatas = exports.SpellDatas || (exports.SpellDatas = {}));
+});
+/** @packageDocumentation @module BattleScene */
+define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/index", "Engine/Agents/PlayerAgents", "Agents/index", "Engine/Core/Helper", "Engine/Core/ObjectPopulator", "Lists/ObjectList", "Lists/AgentList", "Engine/Core/GameData", "Engine/UI/Localization", "SpellData/FloraHeal"], function (require, exports, BattleScene_1, Mob_9, MobData_3, Weapons, PlayerAgents, Agents, Helper_7, ObjectPopulator_3, ObjectList_1, AgentList_1, GameData_18, Localization_9, FloraHeal_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    Weapons = __importStar(Weapons);
     PlayerAgents = __importStar(PlayerAgents);
+    Agents = __importStar(Agents);
     class TestScene extends BattleScene_1.BattleScene {
         constructor() {
             super(false); // debug?
@@ -4704,53 +5006,45 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
             this.anims.create({ key: 'move', frames: this.anims.generateFrameNumbers('elf', { start: 0, end: 3, first: 0 }), frameRate: 8, repeat: -1 });
             for (let i = 0; i < 8; i++) {
                 // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
-                this.girl = new Mob_7.Mob(this, 930, 220 + i * 30, 'sheet_forestelf_myst', {
-                    'idleAnim': 'move',
-                    'moveAnim': 'move',
-                    'deadAnim': 'move',
-                    'backendData': new MobData_2.MobData({ name: Localization_9._('testGirl') + i, 'isPlayer': true, 'attackSpeed': 40 - 5 * i, 'mag': 13 - 1 * i, 'manaRegen': 4 + 1 * i, }),
+                this.girl = new Mob_9.Mob(this, 930, 220 + i * 30, 'sheet_forestelf_myst', {
+                    'backendData': new MobData_3.MobData({
+                        'name': Localization_9._('testGirl') + i,
+                        'isPlayer': true,
+                        'vit': 10 + Helper_7.getRandomInt(-3, 3),
+                        'mag': 8 + Helper_7.getRandomInt(-3, 3),
+                        'str': 2 + Helper_7.getRandomInt(-1, 1),
+                        'int': 3 + Helper_7.getRandomInt(-2, 2),
+                        'dex': 5 + Helper_7.getRandomInt(-3, 3),
+                        'tec': 7 + Helper_7.getRandomInt(-3, 3),
+                    }),
                     'agent': PlayerAgents.Simple,
                 });
                 this.girl.mobData.battleStats.attackPower.ice = 10;
                 this.girl.mobData.battleStats.attackPower.fire = 40;
                 this.girl.mobData.battleStats.crit = 5.0;
-                this.girl.mobData.weaponRight = new Staff_2.CometWand();
-                this.girl.mobData.currentWeapon = this.girl.mobData.weaponRight;
-                this.girl.mobData.currentWeapon.equipper = this.girl.mobData;
-                this.girl.mobData.currentWeapon.activated = true;
-                this.girl.mobData.weaponLeft = new Staff_2.CometWand();
-                this.girl.mobData.weaponLeft.baseAttackSpeed = 0.05;
-                this.girl.mobData.weaponLeft.manaCost = 1;
-                this.girl.mobData.anotherWeapon = this.girl.mobData.weaponLeft;
-                this.girl.mobData.anotherWeapon.equipper = this.girl.mobData;
-                this.girl.mobData.addListener(this.girl.mobData.weaponRight);
+                this.girl.mobData.equip(new Weapons.CometWand(), MobData_3.EquipSlots.MainHand);
+                this.girl.mobData.equip(new Weapons.CometWand(), MobData_3.EquipSlots.SubHand);
+                this.girl.mobData.weaponSubHand.baseAttackSpeed = 0.05;
+                this.girl.mobData.weaponSubHand.manaCost = 1;
+                // this.girl.mobData.addListener(this.girl.mobData.weaponMainHand);
                 // this.girl.receiveBuff(this.girl, new HDOT(Buff.fromKey('test_GodHeal'), GameData.Elements.heal, 20, 38, 0.8));
-                this.girl.mobData.spells['floraHeal'] = new FloraHeal_1.FloraHeal({ 'name': 'FloraHeal', 'coolDown': 5.0 + i * 1.0, 'manaCost': 20 });
+                this.girl.mobData.spells['floraHeal'] = new FloraHeal_1.SpellDatas.FloraHeal({ 'name': 'FloraHeal', 'coolDown': 5.0 + i * 1.0, 'manaCost': 20 });
                 this.addMob(this.girl);
             }
-            let woodlog = new Mob_7.Mob(this, 300, 200, 'sheet_forestelf_myst', {
-                'idleAnim': 'move',
-                'moveAnim': 'move',
-                'deadAnim': 'move',
-                'backendData': new MobData_2.MobData({ name: 'woodLog', 'isPlayer': false, 'health': 1000, }),
-                'agent': SimpleAgents_2.KeepMoving,
+            let woodlog = new Mob_9.Mob(this, 300, 200, 'sheet_forestelf_myst', {
+                'backendData': new MobData_3.MobData({ name: 'woodLog', 'isPlayer': false, 'health': 1000, }),
+                'agent': Agents.KeepMoving,
             });
             this.addMob(woodlog);
-            woodlog = new Mob_7.Mob(this, 350, 200, 'sheet_forestelf_myst', {
-                'idleAnim': 'move',
-                'moveAnim': 'move',
-                'deadAnim': 'move',
-                'backendData': new MobData_2.MobData({ name: 'woodLog', 'isPlayer': false, 'health': 1000, }),
-                'agent': SimpleAgents_2.KeepMoving,
+            woodlog = new Mob_9.Mob(this, 350, 200, 'sheet_forestelf_myst', {
+                'backendData': new MobData_3.MobData({ name: 'woodLog', 'isPlayer': false, 'health': 1000, }),
+                'agent': Agents.KeepMoving,
             });
             this.addMob(woodlog);
             this.h = woodlog;
-            woodlog = new Mob_7.Mob(this, 300, 250, 'sheet_forestelf_myst', {
-                'idleAnim': 'move',
-                'moveAnim': 'move',
-                'deadAnim': 'move',
-                'backendData': new MobData_2.MobData({ name: 'woodLog', 'isPlayer': false, 'health': 1000, }),
-                'agent': SimpleAgents_2.KeepMoving,
+            woodlog = new Mob_9.Mob(this, 300, 250, 'sheet_forestelf_myst', {
+                'backendData': new MobData_3.MobData({ name: 'woodLog', 'isPlayer': false, 'health': 1000, }),
+                'agent': Agents.KeepMoving,
             });
             this.addMob(woodlog);
         }
@@ -4758,7 +5052,7 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
             // console.log("Mana: " + this.girl.mobData.currentMana.toString() + " / " + this.girl.mobData.maxMana.toString());
             if (this.hc < 0) {
                 this.hc = this.hcM;
-                Helper_7.HealDmg({ 'source': this.h, 'target': this.h, type: GameData_17.GameData.Elements.heal, value: 5 });
+                Helper_7.HealDmg({ 'source': this.h, 'target': this.h, type: GameData_18.GameData.Elements.heal, value: 5 });
             }
             this.hc -= dt * 0.001;
         }
@@ -4766,7 +5060,7 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
     exports.TestScene = TestScene;
 });
 /** @packageDocumentation @module ScenePrototypes */
-define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine/UI/Localization", "Engine/DynamicLoader/DynamicLoaderScene", "Engine/UI/UIScene", "TestScene", "Engine/Core/InventoryCore", "Lists/ItemList", "Engine/UI/ProgressBar", "papaparse", "Engine/Core/Buff", "js-cookie", "Engine/Core/GameData"], function (require, exports, Localization_10, DynamicLoaderScene_3, UIScene_5, TestScene_1, InventoryCore_3, ItemList_1, ProgressBar_3, papaparse_1, Buff_4, js_cookie_1, GameData_18) {
+define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine/UI/Localization", "Engine/DynamicLoader/DynamicLoaderScene", "Engine/UI/UIScene", "TestScene", "Engine/Core/InventoryCore", "Lists/ItemList", "Engine/UI/ProgressBar", "papaparse", "Engine/Core/Buff", "js-cookie", "Engine/Core/GameData"], function (require, exports, Localization_10, DynamicLoaderScene_3, UIScene_5, TestScene_1, InventoryCore_3, ItemList_1, ProgressBar_3, papaparse_1, Buff_4, js_cookie_1, GameData_19) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     js_cookie_1 = __importDefault(js_cookie_1);
@@ -4783,8 +5077,8 @@ define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine
             // Set Language
             let sbox = (document.getElementById("Language"));
             let slang = js_cookie_1.default.get('language') || sbox.options[sbox.selectedIndex].value;
-            GameData_18.GameData.mainLanguage = slang;
-            GameData_18.GameData.popUpBuffLanguage = slang;
+            GameData_19.GameData.mainLanguage = slang;
+            GameData_19.GameData.popUpBuffLanguage = slang;
             sbox.selectedIndex = slang === 'zh-cn' ? 0 : (slang === 'en-us' ? 1 : 2);
             this.load.bitmapFont('smallPx', './assets/fonts/smallPx_C_0.png', './assets/fonts/smallPx_C.fnt');
             this.load.bitmapFont('smallPx_HUD', './assets/fonts/smallPx_HUD_0.png', './assets/fonts/smallPx_HUD.fnt');
@@ -4996,5 +5290,15 @@ define("SimpleGame", ["require", "exports", "Engine/ScenePrototypes/GamePreloadS
     }
     exports.InitPhaser = InitPhaser;
     InitPhaser.initGame();
+});
+/** @packageDocumentation @module Mobs.Allies */
+/** @packageDocumentation @moduleeDocumentation @module SpellDatas */
+define("SpellData/index", ["require", "exports", "SpellData/FloraHeal"], function (require, exports, FloraHeal_2) {
+    "use strict";
+    function __export(m) {
+        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    __export(FloraHeal_2);
 });
 //# sourceMappingURL=gameMain.js.map

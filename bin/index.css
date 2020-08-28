@@ -9,6 +9,17 @@
 div
 {
     display: block;
+    width: fit-content;
+}
+
+div#GameFrame
+{
+    margin: 1em auto;
+}
+
+body
+{
+    margin: auto;
 }
 
 /*

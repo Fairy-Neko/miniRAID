@@ -1,8 +1,8 @@
 /** @packageDocumentation @module Lists */
 
-import { CometWand } from '../Weapons/Staff'
+import * as Weapons from '../Weapons'
 
 export const ItemList: any =
 {
-    "cometWand": CometWand,
+    "cometWand": Weapons.CometWand,
 }

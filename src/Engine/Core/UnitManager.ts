@@ -2,8 +2,8 @@
 
 import { Mob } from "../GameObjects/Mob";
 import { mRTypes } from "./mRTypes";
-import { GameData } from "./GameData"
-import { Simple } from "../../Agents/PlayerAgents";
+import { GameData } from "./GameData";
+import { Simple } from "../Agents/PlayerAgents";
 
 export class UnitManager
 {
@@ -308,7 +308,10 @@ export class UnitManager
             }
         }
 
-        result.sort(sortMethod);
+        if (sortMethod !== UnitManager.IDENTITY)
+        {
+            result.sort(sortMethod);
+        }
         return result;
     }
 

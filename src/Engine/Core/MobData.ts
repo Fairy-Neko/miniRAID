@@ -4,13 +4,21 @@ import { mRTypes } from "./mRTypes";
 import * as EventSystem from "../Events/EventSystem";
 import { SpellData } from "./SpellData";
 import { Mob } from "../GameObjects/Mob";
-import { Weapon, Armor, Accessory, EquipmentType, EquipmentTag } from "./EquipmentCore";
+import { Weapon, Armor, Accessory, EquipmentType, EquipmentTag, Equipable } from "./EquipmentCore";
 import { QuerySet } from "../Structs/QuerySet";
 import { MobListener, MobListenerType } from "./MobListener";
 import { DataBackend } from "./DataBackend";
 import { Buff } from "./Buff";
 import { GameData } from "./GameData";
 import { BattleMonitor } from "./BattleMonitor";
+
+export enum EquipSlots
+{
+    MainHand = 'weaponMainHand',
+    SubHand = 'weaponSubHand',
+    Body = 'armor',
+    Accessories = 'accessory',
+}
 
 /*
 Idle (canCastSpell):
@@ -56,7 +64,7 @@ export class MobData extends EventSystem.EventElement
     image: string;
 
     race: string;
-    class: string;
+    job: string;
     level: number;
 
     availableBP: number;
@@ -94,8 +102,8 @@ export class MobData extends EventSystem.EventElement
 
     battleStats: mRTypes.BattleStats;
 
-    weaponLeft: Weapon;
-    weaponRight: Weapon;
+    weaponSubHand: Weapon;
+    weaponMainHand: Weapon;
     armor: Armor;
     accessory: Accessory;
 
@@ -109,7 +117,7 @@ export class MobData extends EventSystem.EventElement
     beingAttack: number;
     healPriority: boolean;
 
-    ID: number;
+    // ID: number;
 
     listeners: QuerySet<MobListener>;
     buffList: Buff[];
@@ -132,7 +140,7 @@ export class MobData extends EventSystem.EventElement
 
         // Stats
         this.race = settings.race || "unknown";
-        this.class = settings.class || "unknown";
+        this.job = settings.job || "unknown";
         this.level = settings.level || 1;
 
         this.availableBP = settings.availableBP || 0;
@@ -248,18 +256,13 @@ export class MobData extends EventSystem.EventElement
         };
 
         // Equipment related
-        this.weaponLeft = settings.weaponLeft;// || new game.weapon(settings);
-        this.weaponRight = settings.weaponRight;// || new game.weapon(settings);
-        this.armor = settings.armor;// || new game.Armor(settings);
-        this.accessory = settings.accessory;// || new game.Accessory(settings);
+        this.equip(settings.weaponSubHand, EquipSlots.SubHand);
+        this.equip(settings.weaponMainHand, EquipSlots.MainHand);
+        this.equip(settings.armor, EquipSlots.Body);
+        this.equip(settings.accessory, EquipSlots.Accessories);
 
-        if (this.weaponLeft) { this.weaponLeft.equipper = this; }
-        if (this.weaponRight) { this.weaponRight.equipper = this; }
-        if (this.armor) { this.armor.equipper = this; }
-        if (this.accessory) { this.accessory.equipper = this; }
-
-        this.currentWeapon = this.weaponLeft;
-        this.anotherWeapon = this.weaponRight;
+        this.currentWeapon = this.weaponSubHand;
+        this.anotherWeapon = this.weaponMainHand;
 
         // Should we switch the weapon now ?
         this.shouldSwitchWeapon = false;
@@ -273,7 +276,8 @@ export class MobData extends EventSystem.EventElement
         this.healPriority = false;
 
         // A Specific identify name only for this mob
-        this.ID = DataBackend.getSingleton().getID();
+        // Use EventElement.UID instead.
+        // this.ID = DataBackend.getSingleton().getID();
 
         // ref for MobListeners (buffs, agent, weapons, armor, ...)
         /** test */
@@ -364,8 +368,11 @@ export class MobData extends EventSystem.EventElement
                 this.anotherWeapon = tmp;
             }
 
+            // We already switched them !
             this.removeListener(this.anotherWeapon);
             this.addListener(this.currentWeapon);
+            this.anotherWeapon.activated = false;
+            this.currentWeapon.activated = true;
 
             // I switched my weapon !!!
             this.updateListeners(this, 'switchWeapon', this, this.currentWeapon);
@@ -575,6 +582,33 @@ export class MobData extends EventSystem.EventElement
         spell.cast(mob, target);
     }
 
+    equip(equipment: Equipable, slot: EquipSlots): boolean
+    {
+        if (equipment)
+        {
+            // TODO: Check if equippable !
+            (<any>this)[slot] = equipment;
+            equipment.equipper = this;
+
+            if (equipment instanceof Weapon)
+            {
+                if (typeof this.currentWeapon === 'undefined')
+                {
+                    this.currentWeapon = equipment;
+                    equipment.activated = true;
+                    this.addListener(this.currentWeapon);
+                }
+                else if (typeof this.anotherWeapon === 'undefined')
+                {
+                    this.anotherWeapon = equipment;
+                }
+            }
+
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Event 'statChange' - emitted while a listener (buff, weapon, etc.) needs to change the stat of parent mob.
      * @param listener The listener that triggered a stat change
@@ -585,6 +619,7 @@ export class MobData extends EventSystem.EventElement
         this.calcStats(this.parentMob); // Listeners were notified inside this method.
     }
 
+    // FIXME: Just wrote with some random calculations for testing. Please balance the calculation step !!
     calcStats(mob: Mob)
     {
         // TODO: Stats calculation:
@@ -600,8 +635,8 @@ export class MobData extends EventSystem.EventElement
         // 3. Reset battle stats
         this.battleStats = {
             resist: {
-                physical: 0,
-                elemental: 0,
+                physical: this.baseStats.vit,
+                elemental: this.baseStats.mag,
                 pure: 0, // It should always be 0
 
                 slash: 0,
@@ -620,8 +655,8 @@ export class MobData extends EventSystem.EventElement
             },
 
             attackPower: {
-                physical: 0,
-                elemental: 0,
+                physical: this.baseStats.str,
+                elemental: this.baseStats.int,
                 pure: 0, // It should always be 0
 
                 slash: 0,
@@ -644,11 +679,11 @@ export class MobData extends EventSystem.EventElement
             // Those are basic about overall hit accuracy & avoid probabilities, critical hits.
             // Advanced actions (avoid specific spell) should be calculated inside onReceiveDamage() etc.
             // Same for shields, healing absorbs (Heal Pause ====...===...==...=>! SS: [ABSORB]!!! ...*&@^#), etc.
-            hitAcc: 100,
+            hitAcc: 85 + this.baseStats.tec * 5,
             avoid: 0,
 
             // Percentage
-            crit: 10, // Should crit have types? e.g. physical elemental etc.
+            crit: this.baseStats.tec, // Should crit have types? e.g. physical elemental etc.
             antiCrit: 0,
 
             // Parry for shield should calculate inside the shield itself when onReceiveDamage().
@@ -660,11 +695,11 @@ export class MobData extends EventSystem.EventElement
         this.tauntMul = 1.0;
 
         // Go back to base speed
-        this.modifiers.speed = 1.0;
-        this.modifiers.movingSpeed = 1.0;
-        this.modifiers.attackSpeed = 1.0;
-        this.modifiers.spellSpeed = 1.0;
-        this.modifiers.resourceCost = 1.0;
+        this.modifiers.speed = 1.0 + this.baseStats.dex * 0.05;
+        this.modifiers.movingSpeed = 1.0 + this.baseStats.dex * 0.05;
+        this.modifiers.attackSpeed = 1.0 + this.baseStats.dex * 0.05;
+        this.modifiers.spellSpeed = 1.0 + this.baseStats.dex * 0.05;
+        this.modifiers.resourceCost = 1.0 * Math.pow(0.95, this.baseStats.int);
 
         // Calculate health from stats
         this.healthRatio = this.currentHealth / this.maxHealth;
@@ -675,6 +710,13 @@ export class MobData extends EventSystem.EventElement
             + this.baseStats.tec * 4
             + this.baseStats.int * 4
             + this.baseStats.mag * 4;
+
+        // And mana
+        let manaRatio = this.currentMana / this.maxMana;
+        this.maxMana = this.baseStats.mag * 10 + this.baseStats.int * 4;
+        this.maxMana = Math.ceil(this.maxMana);
+        this.currentMana = Math.max(0, Math.ceil(manaRatio * this.maxMana));
+        this.manaRegen = this.baseStats.mag * 0.4;
 
         // TODO - 4. Calculate battle (advanced) stats from base stats (e.g. atkPower = INT * 0.7 * floor( MAG * 1.4 ) ... )
         // 5. Add equipment by listener.calcStats()
@@ -878,9 +920,9 @@ export class MobData extends EventSystem.EventElement
 
     useMana(mana: number): boolean
     {
-        if (this.currentMana >= mana)
+        if (this.currentMana >= (mana * this.modifiers.resourceCost))
         {
-            this.currentMana -= mana;
+            this.currentMana -= (mana * this.modifiers.resourceCost);
             return true;
         }
         return false;
@@ -888,7 +930,7 @@ export class MobData extends EventSystem.EventElement
 
     hasMana(mana: number): boolean
     {
-        if (this.currentMana >= mana)
+        if (this.currentMana >= (mana * this.modifiers.resourceCost))
         {
             return true;
         }

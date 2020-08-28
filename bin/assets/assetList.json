@@ -10,7 +10,7 @@
         "animations": {
             "idle": [
                 0,
-                3,
+                0,
                 0
             ],
             "move": [
@@ -35,8 +35,8 @@
         },
         "animations": {
             "idle": [
-                0,
-                7,
+                3,
+                4,
                 0
             ],
             "move": [

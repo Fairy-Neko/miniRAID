@@ -75,11 +75,11 @@ export class WeaponFrame extends Phaser.GameObjects.Container
     {
         this.targetWeapon = target;
         this.wpIcon.setTexture('img_weapon_icon_test');
-        this.wpIcon.setTint((this.targetWeapon && this.targetWeapon.activated) ? 0xffffff : 0x888888);
     }
 
     update(time: number, dt: number)
     {
+        this.wpIcon.setTint((this.targetWeapon && this.targetWeapon.activated) ? 0xffffff : 0x888888);
         this.each((obj: Phaser.GameObjects.GameObject) => { obj.update(); });
     }
 }
@@ -123,7 +123,7 @@ export class BuffIcon extends Phaser.GameObjects.Container
 
         if (buff.stackable)
         {
-            this.stacks = new Phaser.GameObjects.BitmapText(this.scene, this.len - 1, this.len - 1, 'smallPx_HUD', '1');
+            this.stacks = new Phaser.GameObjects.BitmapText(this.scene, this.len - 1, buff.UIimportant ? this.len + 1 : this.len - 1, buff.UIimportant ? 'mediumPx' : 'smallPx_HUD', '1');
             this.stacks.setOrigin(1);
             this.stacks.setTint(0xffffff);
             this.stacks.depth = 10;
@@ -142,7 +142,14 @@ export class BuffIcon extends Phaser.GameObjects.Container
     {
         if (this.buff.countTime)
         {
-            this.timeRemain.width = ((this.buff.timeMax - this.buff.timeRemain[0]) / this.buff.timeMax) * (this.len);
+            if (this.buff.timeRemain.length > 0)
+            {
+                this.timeRemain.width = ((this.buff.timeMax - this.buff.timeRemain[0]) / this.buff.timeMax) * (this.len);
+            }
+            else
+            {
+                this.timeRemain.width = this.len;
+            }
             this.timeRemain.x = this.len;
             this.timeRemain.setOrigin(1, 0);
         }
@@ -170,7 +177,7 @@ export class BuffFrame extends Phaser.GameObjects.Container
         this.icons = [];
         let len = 0;
 
-        this.more = new dSprite(this.scene, 200, 1, 'img_more_buff');
+        this.more = new dSprite(this.scene, 0, 1, 'img_more_buff');
         this.more.alpha = 0.0;
         this.more.setOrigin(0, 0);
         this.add(this.more);
@@ -239,7 +246,8 @@ export class BuffFrame extends Phaser.GameObjects.Container
             targets: this.more,
             x: len,
             alpha: 1,
-            duration: 100,
+            duration: 250,
+            ease: 'Power1'
         });
         this.more.setInteractive();
     }
@@ -249,7 +257,8 @@ export class BuffFrame extends Phaser.GameObjects.Container
         this.scene.tweens.add({
             targets: this.more,
             alpha: 0,
-            duration: 100,
+            duration: 250,
+            ease: 'Power1'
         });
         this.more.disableInteractive();
     }
@@ -295,7 +304,7 @@ export class BuffFrame extends Phaser.GameObjects.Container
                         for (let ix = iOld; ix < iiOld; ix++)
                         {
                             this.icons[ix].isOver = true;
-                            this.remove(this.icons[ix], true);
+                            this.removeBuffIcon(this.icons[ix]);
                         }
                         iOld = iiOld;
                     }
@@ -303,7 +312,7 @@ export class BuffFrame extends Phaser.GameObjects.Container
                     {
                         // iNew is a new buff
                         // Add iNew to the container
-                        let bI = new BuffIcon(this.scene, 160, 0, newList[iNew]);
+                        let bI = new BuffIcon(this.scene, 0, 0, newList[iNew]);
                         bI.alpha = 0.0;
                         newIcons.push(bI);
                         this.add(bI);
@@ -316,7 +325,7 @@ export class BuffFrame extends Phaser.GameObjects.Container
                     for (let ix = iOld; ix < this.icons.length; ix++)
                     {
                         this.icons[ix].isOver = true;
-                        this.remove(this.icons[ix], true);
+                        this.removeBuffIcon(this.icons[ix]);
                     }
                     iOld = this.icons.length;
                 }
@@ -330,13 +339,14 @@ export class BuffFrame extends Phaser.GameObjects.Container
             let len = 0;
             for (let icon of this.icons)
             {
-                if (false)
+                if (true)
                 {
                     this.scene.tweens.add({
                         targets: icon,
                         x: len,
                         alpha: 1.0,
-                        duration: 0,
+                        duration: 250,
+                        ease: 'Power1'
                     });
                 }
                 else
@@ -355,6 +365,20 @@ export class BuffFrame extends Phaser.GameObjects.Container
         }
 
         this.each((obj: Phaser.GameObjects.GameObject) => { obj.update(); });
+    }
+
+    removeBuffIcon(bufficon: BuffIcon)
+    {
+        this.scene.tweens.add({
+            targets: bufficon,
+            // x: -24,
+            alpha: 0.0,
+            duration: 100,
+            onComplete: () =>
+            {
+                this.remove(bufficon, true);
+            }
+        })
     }
 
     getToolTipAllBuffs(): mRTypes.HTMLToolTip
@@ -417,7 +441,7 @@ export class UnitFrame extends Phaser.GameObjects.Container
         this.add(new ProgressBar(this.scene, 0, 10, () =>
         {
             return [target.mobData.currentHealth, target.mobData.maxHealth];
-        }, 80, 22, 1, true, 0x444444, 0x222222, 0x42a85d, true, 'smallPx_HUD', TextAlignment.Left, 5, 3, 0xffffff));
+        }, 80, 22, 1, true, 0x444444, 0x000000, 0x42a85d, true, 'smallPx_HUD', TextAlignment.Left, 5, 3, 0xffffff));
 
         // Mana
         this.add(new ProgressBar(this.scene, 0, 27, () =>

@@ -24,7 +24,6 @@ export enum MobListenerType
 // onXXX event functions are optional - just register them and use if necessary. By default events will not be connected with the onXXX methods.
 export class MobListener extends EventSystem.EventElement
 {
-    focusList: Set<MobData>;
     priority: number;
     enabled: boolean = true;
     isOver: boolean = false;
@@ -37,7 +36,6 @@ export class MobListener extends EventSystem.EventElement
     constructor()
     {
         super(DataBackend.getSingleton().eventSystem);
-        this.focusList = new Set();
         this.priority = 0;
         this.enabled = true;
 
@@ -73,14 +71,6 @@ export class MobListener extends EventSystem.EventElement
     // Will only be triggered by parent mob.
     update(self: MobData, dt: number)
     {
-        for (let mob of this.focusList)
-        {
-            // if(!Mob.checkExist(mob))
-            // {
-            // this.focusList.delete(mob);
-            // }
-        }
-
         if (this.isReady == false)
         {
             this.cooldown += dt;
@@ -113,8 +103,13 @@ export class MobListener extends EventSystem.EventElement
     // Buffs will also be triggered when new stack comes.
     _beAdded(mob: MobData, source: MobData) 
     {
+        if (this.parentMob)
+        {
+            console.warn(`The following MobListener has been added to multiple Mobs! original parent: ${this.parentMob.name}, new parent: ${mob.name}`);
+            console.log(this);
+        }
         this.parentMob = mob;
-        this.onAdded(mob, source)
+        this.onAdded(mob, source);
     }
 
     onAdded(mob: MobData, source: MobData) { }
@@ -123,6 +118,7 @@ export class MobListener extends EventSystem.EventElement
     _beRemoved(mob: MobData, source: MobData) 
     {
         this.discard();
+        this.parentMob = undefined;
         this.onRemoved(mob, source);
     }
 

@@ -376,9 +376,9 @@
                  "name":"testMob",
                  "properties":[
                         {
-                         "name":"agentType",
-                         "type":"string",
-                         "value":"None"
+                         "name":"dex",
+                         "type":"float",
+                         "value":8
                         }, 
                         {
                          "name":"framewidth",
@@ -386,22 +386,22 @@
                          "value":32
                         }, 
                         {
-                         "name":"health",
-                         "type":"float",
-                         "value":10000000
-                        }, 
-                        {
                          "name":"image",
                          "type":"string",
                          "value":"gripe_run_right"
                         }, 
                         {
+                         "name":"mag",
+                         "type":"float",
+                         "value":8
+                        }, 
+                        {
                          "name":"vit",
                          "type":"float",
-                         "value":10
+                         "value":500
                         }],
                  "rotation":90,
-                 "type":"mob",
+                 "type":"TestMob",
                  "visible":true,
                  "width":32,
                  "x":386.986,
@@ -413,9 +413,9 @@
                  "name":"testMob",
                  "properties":[
                         {
-                         "name":"agentType",
-                         "type":"string",
-                         "value":"None"
+                         "name":"dex",
+                         "type":"float",
+                         "value":8
                         }, 
                         {
                          "name":"framewidth",
@@ -423,26 +423,26 @@
                          "value":32
                         }, 
                         {
-                         "name":"health",
-                         "type":"float",
-                         "value":10000000
-                        }, 
-                        {
                          "name":"image",
                          "type":"string",
                          "value":"gripe_run_right"
                         }, 
                         {
+                         "name":"mag",
+                         "type":"float",
+                         "value":8
+                        }, 
+                        {
                          "name":"vit",
                          "type":"float",
-                         "value":10
+                         "value":500
                         }],
                  "rotation":90,
-                 "type":"mob",
+                 "type":"TestMob",
                  "visible":true,
                  "width":32,
-                 "x":293.281880382775,
-                 "y":175.08095215311
+                 "x":293.282,
+                 "y":175.081
                 }, 
                 {
                  "height":32,
@@ -450,9 +450,9 @@
                  "name":"testMob",
                  "properties":[
                         {
-                         "name":"agentType",
-                         "type":"string",
-                         "value":"None"
+                         "name":"dex",
+                         "type":"float",
+                         "value":8
                         }, 
                         {
                          "name":"framewidth",
@@ -460,26 +460,26 @@
                          "value":32
                         }, 
                         {
-                         "name":"health",
-                         "type":"float",
-                         "value":10000000
-                        }, 
-                        {
                          "name":"image",
                          "type":"string",
                          "value":"gripe_run_right"
                         }, 
                         {
+                         "name":"mag",
+                         "type":"float",
+                         "value":8
+                        }, 
+                        {
                          "name":"vit",
                          "type":"float",
-                         "value":10
+                         "value":500
                         }],
                  "rotation":90,
-                 "type":"mob",
+                 "type":"TestMob",
                  "visible":true,
                  "width":32,
-                 "x":341.052880382775,
-                 "y":163.444516746411
+                 "x":341.053,
+                 "y":163.445
                 }, 
                 {
                  "height":32,
@@ -487,9 +487,9 @@
                  "name":"testMob",
                  "properties":[
                         {
-                         "name":"agentType",
-                         "type":"string",
-                         "value":"None"
+                         "name":"dex",
+                         "type":"float",
+                         "value":8
                         }, 
                         {
                          "name":"framewidth",
@@ -497,26 +497,26 @@
                          "value":32
                         }, 
                         {
-                         "name":"health",
-                         "type":"float",
-                         "value":10000000
-                        }, 
-                        {
                          "name":"image",
                          "type":"string",
                          "value":"gripe_run_right"
                         }, 
                         {
+                         "name":"mag",
+                         "type":"float",
+                         "value":8
+                        }, 
+                        {
                          "name":"vit",
                          "type":"float",
-                         "value":10
+                         "value":500
                         }],
                  "rotation":90,
-                 "type":"mob",
+                 "type":"TestMob",
                  "visible":true,
                  "width":32,
-                 "x":246.736880382775,
-                 "y":196.517148325359
+                 "x":246.737,
+                 "y":196.517
                 }, 
                 {
                  "height":32,
@@ -524,9 +524,9 @@
                  "name":"testMob",
                  "properties":[
                         {
-                         "name":"agentType",
-                         "type":"string",
-                         "value":"None"
+                         "name":"dex",
+                         "type":"float",
+                         "value":8
                         }, 
                         {
                          "name":"framewidth",
@@ -534,26 +534,26 @@
                          "value":32
                         }, 
                         {
-                         "name":"health",
-                         "type":"float",
-                         "value":10000000
-                        }, 
-                        {
                          "name":"image",
                          "type":"string",
                          "value":"gripe_run_right"
                         }, 
                         {
+                         "name":"mag",
+                         "type":"float",
+                         "value":8
+                        }, 
+                        {
                          "name":"vit",
                          "type":"float",
-                         "value":10
+                         "value":500
                         }],
                  "rotation":90,
-                 "type":"mob",
+                 "type":"TestMob",
                  "visible":true,
                  "width":32,
-                 "x":203.8665215311,
-                 "y":225.914306220096
+                 "x":203.867,
+                 "y":225.914
                 }, 
                 {
                  "height":32,
@@ -561,9 +561,9 @@
                  "name":"testMob",
                  "properties":[
                         {
-                         "name":"agentType",
-                         "type":"string",
-                         "value":"None"
+                         "name":"dex",
+                         "type":"float",
+                         "value":8
                         }, 
                         {
                          "name":"framewidth",
@@ -571,26 +571,26 @@
                          "value":32
                         }, 
                         {
-                         "name":"health",
-                         "type":"float",
-                         "value":10000000
-                        }, 
-                        {
                          "name":"image",
                          "type":"string",
                          "value":"gripe_run_right"
                         }, 
                         {
+                         "name":"mag",
+                         "type":"float",
+                         "value":8
+                        }, 
+                        {
                          "name":"vit",
                          "type":"float",
-                         "value":10
+                         "value":500
                         }],
                  "rotation":90,
-                 "type":"mob",
+                 "type":"TestMob",
                  "visible":true,
                  "width":32,
-                 "x":156.70776076555,
-                 "y":257.76114354067
+                 "x":156.708,
+                 "y":257.761
                 }, 
                 {
                  "height":32,
@@ -598,9 +598,9 @@
                  "name":"testMob",
                  "properties":[
                         {
-                         "name":"agentType",
-                         "type":"string",
-                         "value":"None"
+                         "name":"dex",
+                         "type":"float",
+                         "value":8
                         }, 
                         {
                          "name":"framewidth",
@@ -608,26 +608,26 @@
                          "value":32
                         }, 
                         {
-                         "name":"health",
-                         "type":"float",
-                         "value":10000000
-                        }, 
-                        {
                          "name":"image",
                          "type":"string",
                          "value":"gripe_run_right"
                         }, 
                         {
+                         "name":"mag",
+                         "type":"float",
+                         "value":8
+                        }, 
+                        {
                          "name":"vit",
                          "type":"float",
-                         "value":10
+                         "value":500
                         }],
                  "rotation":90,
-                 "type":"mob",
+                 "type":"TestMob",
                  "visible":true,
                  "width":32,
-                 "x":110.775358851675,
-                 "y":277.970818181818
+                 "x":110.775,
+                 "y":277.971
                 }, 
                 {
                  "height":32,
@@ -635,9 +635,9 @@
                  "name":"testMob",
                  "properties":[
                         {
-                         "name":"agentType",
-                         "type":"string",
-                         "value":"None"
+                         "name":"dex",
+                         "type":"float",
+                         "value":8
                         }, 
                         {
                          "name":"framewidth",
@@ -645,26 +645,26 @@
                          "value":32
                         }, 
                         {
-                         "name":"health",
-                         "type":"float",
-                         "value":10000000
-                        }, 
-                        {
                          "name":"image",
                          "type":"string",
                          "value":"gripe_run_right"
                         }, 
                         {
+                         "name":"mag",
+                         "type":"float",
+                         "value":8
+                        }, 
+                        {
                          "name":"vit",
                          "type":"float",
-                         "value":10
+                         "value":500
                         }],
                  "rotation":90,
-                 "type":"mob",
+                 "type":"TestMob",
                  "visible":true,
                  "width":32,
-                 "x":69.1291794258373,
-                 "y":307.368693779904
+                 "x":69.1292,
+                 "y":307.369
                 }],
          "opacity":1,
          "type":"objectgroup",

@@ -1,20 +1,15 @@
 /** @packageDocumentation @moduleeDocumentation @module Agent */
 
-import { MobAgent } from "../Engine/Agents/MobAgent";
-import { Mob } from "../Engine/GameObjects/Mob";
-import { GameData } from "../Engine/Core/GameData";
-import { UnitManager } from "../Engine/Core/UnitManager";
-import { PopUpManager } from "../Engine/UI/PopUpManager";
+import { MobAgent, MoveableAgent } from "./MobAgent";
+import { Mob } from "../GameObjects/Mob";
+import { GameData } from "../Core/GameData";
+import { UnitManager } from "../Core/UnitManager";
+import { PopUpManager } from "../UI/PopUpManager";
 
-export class PlayerAgentBase extends MobAgent
+export class PlayerAgentBase extends MoveableAgent
 {
     targetPos: Phaser.Math.Vector2;
     targetMob: Mob;
-
-    constructor(parentMob: Mob)
-    {
-        super(parentMob);
-    }
 
     setTargetPos(player: Mob, position: Phaser.Math.Vector2, dt: number) { }
     setTargetMob(player: Mob, target: Mob, dt: number) { }
@@ -24,20 +19,15 @@ export class Simple extends PlayerAgentBase
 {
     autoMove: boolean;
 
-    idleFrameMob: number;
-    idleFramePos: number;
-    idleCount: number;
-    speedFriction: number;
-
     footPos: Phaser.Math.Vector2;
     isMoving: boolean;
     unitMgr: UnitManager;
 
     OOMwarned: boolean = false;
 
-    constructor(parentMob: Mob)
+    constructor()
     {
-        super(parentMob);
+        super();
 
         // Will the player move automatically (to nearest mob) if it is free ?
         this.autoMove = GameData.useAutomove;
@@ -48,8 +38,7 @@ export class Simple extends PlayerAgentBase
         // idleFrame is seperated for targeting Mob (which may move = need more smooth)
         // and targeting a static position (don't move and need high precision)
         // WTF? I cannot understood what have I wrote ...
-        this.idleFrameMob = 10;
-        this.idleFramePos = 0;
+        this.idleFrames = 0;
         this.idleCount = 0;
         this.speedFriction = 0.9;
 
@@ -88,9 +77,6 @@ export class Simple extends PlayerAgentBase
                     player.setVelocity(velocity.x, velocity.y);
 
                     this.isMoving = true;
-
-                    // Reset the anim counter
-                    this.idleCount = this.idleFramePos;
                 }
                 else
                 {
@@ -109,64 +95,24 @@ export class Simple extends PlayerAgentBase
                     player.setVelocity(velocity.x, velocity.y);
 
                     this.isMoving = true;
-
-                    // Reset the anim counter
-                    this.idleCount = this.idleFrameMob;
                 }
                 // and then we don't move anymore.
                 else
                 {
                     this.targetMob = undefined;
-
                     this.isMoving = false;
                 }
             }
             else
             {
                 // We lose the target.
-
                 this.targetPos = undefined;
                 this.targetMob = undefined;
                 this.isMoving = false;
             }
 
-            if (this.isMoving === true)
+            if (this.isMoving === false)
             {
-                // Fix our face direction when moving
-                if (player.body.velocity.x > 0)
-                {
-                    player.flipX = true;
-                }
-                else
-                {
-                    player.flipX = false;
-                }
-
-                if (!(player.anims.currentAnim && player.anims.currentAnim.key == player.moveAnim))
-                {
-                    player.play(player.moveAnim);
-                }
-            }
-            else
-            {
-                // Count the frames
-                if (this.idleCount > 0)
-                {
-                    this.idleCount--;
-
-                    // Also smooth the speed
-                    player.setVelocity(player.body.velocity.x * this.speedFriction, player.body.velocity.y * this.speedFriction);
-                }
-                else
-                {
-                    player.setVelocity(0, 0);
-
-                    if (!(player.anims.currentAnim && player.anims.currentAnim.key == player.idleAnim))
-                    {
-                        player.play(player.idleAnim);
-                    }
-                }
-
                 if (this.autoMove === true)
                 {
                     if (player.mobData.currentWeapon)
@@ -192,12 +138,12 @@ export class Simple extends PlayerAgentBase
                     // {
                     // if(player.mobData.currentWeapon.isInRange(player, targets))
                     // {
-                    if (player.mobData.currentMana > player.mobData.currentWeapon.manaCost)
+                    if (player.mobData.hasMana(player.mobData.currentWeapon.manaCost))
                     {
                         let result = player.mobData.currentWeapon.attack(player, targets);
                         if (result)
                         {
-                            player.mobData.currentMana -= player.mobData.currentWeapon.manaCost;
+                            player.mobData.useMana(player.mobData.currentWeapon.manaCost);
                         }
                     }
                     // }
@@ -214,7 +160,7 @@ export class Simple extends PlayerAgentBase
                     {
                         if (player.mobData.spells[spell].available)
                         {
-                            player.mobData.cast(player, null, player.mobData.spells[spell])
+                            player.mobData.cast(player, this.targetMob, player.mobData.spells[spell])
                         }
                     }
                 }
@@ -224,11 +170,10 @@ export class Simple extends PlayerAgentBase
         else
         {
             this.isMoving = false;
-            player.setVelocity(0, 0)
-            player.flipX = false;
-
-            player.play(player.deadAnim);
+            player.setVelocity(0, 0);
         }
+
+        super.updateMob(player, dt);
     }
 
     setTargetPos(player: Mob, position: Phaser.Math.Vector2)

@@ -1,22 +1,28 @@
-/** @packageDocumentation @module Agent */
+/** @packageDocumentation @module Agents */
 
-import { MobAgent } from "../Engine/Agents/MobAgent";
+import { MobAgent, MoveableAgent } from "../Engine/Agents/MobAgent";
 import { Mob } from "../Engine/GameObjects/Mob";
 import { GameData } from "../Engine/Core/GameData";
 import { UnitManager } from "../Engine/Core/UnitManager";
+import { MobData } from "../Engine/Core/MobData";
 
-export class KeepMoving extends MobAgent
+export class KeepMoving extends MoveableAgent
 {
     center: Phaser.Math.Vector2;
     range: number;
     dirc: Phaser.Math.Vector2;
 
-    constructor(parentMob: Mob, range: number = 150, dirc: Phaser.Math.Vector2 = new Phaser.Math.Vector2(0, 1))
+    constructor(range: number = 150, dirc: Phaser.Math.Vector2 = new Phaser.Math.Vector2(0, 1))
     {
-        super(parentMob);
-        this.center = parentMob.getPosition();
+        super();
+        this.center = new Phaser.Math.Vector2(0, 0);
         this.range = range;
         this.dirc = dirc.normalize();
+    }
+
+    onAdded(mob: MobData)
+    {
+        this.center = mob.parentMob.getPosition();
     }
 
     updateMob(mob: Mob, dt: number)

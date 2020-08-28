@@ -27,6 +27,8 @@ export class Mob extends dPhysSprite
     agent: MobAgent;
     attackCounter: number;
 
+    imageFacingRight: boolean = false;
+
     constructor(
         scene: Phaser.Scene,
         x: number, y: number,
@@ -35,16 +37,16 @@ export class Mob extends dPhysSprite
         subsprite?: string,
         frame?: string | number)
     {
-        super(scene, x, y, sprite, subsprite, frame);
+        super(scene, x, y, sprite || 'sheet_default_mob', subsprite, frame);
 
         this.setOrigin(0.5, 0.8);
 
         this.mobData = settings.backendData;
         this.mobData.parentMob = this;
 
-        this.moveAnim = settings.moveAnim;
-        this.idleAnim = settings.idleAnim;
-        this.deadAnim = settings.deadAnim;
+        this.moveAnim = sprite + '_move';
+        this.idleAnim = sprite + '_idle';
+        this.deadAnim = sprite + '_dead';
 
         if (this.idleAnim)
         {
@@ -67,7 +69,7 @@ export class Mob extends dPhysSprite
 
         if (settings.agent)
         {
-            this.agent = new settings.agent(this);
+            this.agent = new settings.agent();
             this.mobData.addListener(this.agent);
         }
 
@@ -76,21 +78,27 @@ export class Mob extends dPhysSprite
         // HPBar
     }
 
-    static fromTiled(scene: Phaser.Scene, obj: Phaser.Types.Tilemaps.TiledObject, prop: any): Mob
+    // Somehow deprecated
+    static fromTiled(mobCtor: (typeof Mob)): mRTypes.TiledObjConstructor
     {
-        let settings_backend = <mRTypes.Settings.MobData>(prop);
-        settings_backend.name = settings_backend.name || obj.name || 'Unnamed_mob';
+        return function (scene: Phaser.Scene, obj: Phaser.Types.Tilemaps.TiledObject, prop: any)
+        {
+            let settings_backend = <mRTypes.Settings.MobData>(prop);
+            settings_backend.name = settings_backend.name || obj.name || 'Unnamed_mob';
 
-        let charsheet_key = 'sheet_' + prop['image'] || 'sheet_default_mob';
-        let settings: mRTypes.Settings.Mob = {
-            'moveAnim': charsheet_key + '_move',
-            'idleAnim': charsheet_key + '_idle',
-            'deadAnim': charsheet_key + '_dead',
-            'backendData': new MobData(settings_backend),
-            'agent': ObjectPopulator.agentList[prop['agentType'] || prop['agent'] || 'default'],
-        };
+            // Get agent type
+            let p_agent = prop['agentType'] || prop['agent'];
+            let agentCtor: mRTypes.AgentConstructor = undefined;
+            if (ObjectPopulator.agentList) { agentCtor = ObjectPopulator.agentList[p_agent]; }
 
-        return new Mob(scene, obj.x, obj.y, charsheet_key, <mRTypes.Settings.Mob>settings);
+            let charsheet_key = 'sheet_' + prop['image'] || undefined;
+            let settings: mRTypes.Settings.Mob = {
+                'backendData': new MobData(settings_backend),
+                'agent': agentCtor,
+            };
+
+            return new mobCtor(scene, obj.x, obj.y, charsheet_key, <mRTypes.Settings.Mob>settings);
+        }
     }
 
     update(dt: number)
@@ -112,6 +120,43 @@ export class Mob extends dPhysSprite
         if (this.agent)
         {
             this.agent.updateMob(this, dt);
+        }
+
+        // Set animation
+        if (this.anims)
+        {
+            if (this.mobData.alive === true)
+            {
+                if (this.body && this.body.velocity.length() > 0.1)
+                {
+                    // Fix our face direction when moving
+                    if (this.body.velocity.x < 0)
+                    {
+                        this.flipX = this.imageFacingRight ? true : false;
+                    }
+                    else
+                    {
+                        this.flipX = this.imageFacingRight ? false : true;
+                    }
+
+                    if (!(this.anims.currentAnim && this.anims.currentAnim.key == this.moveAnim))
+                    {
+                        this.play(this.moveAnim);
+                    }
+                }
+                else
+                {
+                    if (!(this.anims.currentAnim && this.anims.currentAnim.key == this.idleAnim))
+                    {
+                        this.play(this.idleAnim);
+                    }
+                }
+            }
+            else
+            {
+                this.flipX = this.imageFacingRight ? false : true;
+                this.play(this.deadAnim);
+            }
         }
     }
 

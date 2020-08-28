@@ -1,9 +1,11 @@
 /** @packageDocumentation @module Lists */
 
-import { objectConstructor } from "../Engine/Core/ObjectPopulator";
 import { Mob } from "../Engine/GameObjects/Mob";
+import * as Mobs from "../Mobs"
+import { mRTypes } from "../Engine/Core/mRTypes";
 
-export const ObjectList: { [index: string]: objectConstructor } =
+export const ObjectList: { [index: string]: mRTypes.TiledObjConstructor } =
 {
-    'mob': Mob.fromTiled,
+    'Mob': Mob.fromTiled(Mob),
+    'TestMob': Mob.fromTiled(Mobs.Enemies.TestMob),
 }

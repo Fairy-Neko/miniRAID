@@ -101,6 +101,10 @@ export class UIScene extends Phaser.Scene
             }
         }
 
+        // Background
+        this.add.rectangle(512, 586, 1024, 148, 0x222222);
+        this.add.rectangle(512, 510, 1024, 4, 0xd3cfc2);
+
         this.initUnitFrames();
         // this.add.rectangle(750 + 61, 520 + 8, 122, 16, 0x948779);
         let bt = this.add.bitmapText(755, 530, _("UIFont"), _("Damage Done (DPS)"));
