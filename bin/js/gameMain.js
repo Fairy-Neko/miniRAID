@@ -1,4 +1,3 @@
-"use strict";
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -28,6 +27,9 @@ define("Engine/Events/EventSystem", ["require", "exports", "typescript-collectio
         }
         emitArray(evt, resCallback, args) {
             return this.parentSystem.emit(this, resCallback, evt, args);
+        }
+        emitArrayReverted(evt, resCallback, args) {
+            return this.parentSystem.emitReverted(this, resCallback, evt, args);
         }
         listen(src, evt, callback) {
             var result = this.parentSystem.listen(src, this, callback, evt);
@@ -114,17 +116,50 @@ define("Engine/Events/EventSystem", ["require", "exports", "typescript-collectio
                 var srcDict = this.dict.getValue(src);
                 if (srcDict.containsKey(evt)) {
                     var evtList = srcDict.getValue(evt);
-                    // Pack argument array
-                    var lst = [src];
-                    lst.push.apply(lst, args);
+                    /* Do NOT WANT TO USE THE OFFICIAL METHOD ANYMORE
                     // Call the event callback function for each destination
-                    evtList.forEach((dst, callback) => {
+                    evtList.forEach((dst, callback) =>
+                    {
                         let result = callback.apply(dst, args);
+                        if (resCallback)
+                        {
+                            resCallback(result);
+                        }
+    
+                        totalCnt += 1;
+                    });
+                    */
+                    var evtList = srcDict.getValue(evt);
+                    let curr = (evtList)['head'].next;
+                    while (curr.next) {
+                        let result = curr.value.apply(curr.key, args);
                         if (resCallback) {
                             resCallback(result);
                         }
                         totalCnt += 1;
-                    });
+                        curr = curr.next;
+                    }
+                }
+            }
+            return totalCnt;
+        }
+        emitReverted(src, resCallback, evt, args) {
+            var totalCnt = 0;
+            if (this.dict.containsKey(src)) {
+                var srcDict = this.dict.getValue(src);
+                if (srcDict.containsKey(evt)) {
+                    var evtList = srcDict.getValue(evt);
+                    // Why is LinkedDictionary<K,V>.tail it private ahhhhhhHHHHHHHHHHHHHHHHHHH give me the tail omGGGGGGGGGGGGG
+                    let curr = (evtList)['tail'].prev;
+                    // Only head node does not have prev, and head node is always empty ([NULL (head)] <-> actual data <-> [NULL (tail)])
+                    while (curr.prev) {
+                        let result = curr.value.apply(curr.key, args);
+                        if (resCallback) {
+                            resCallback(result);
+                        }
+                        totalCnt += 1;
+                        curr = curr.prev;
+                    }
                 }
             }
             return totalCnt;
@@ -1089,18 +1124,7 @@ define("Engine/Agents/PlayerAgents", ["require", "exports", "Engine/Agents/MobAg
                     // console.log("canAttack");
                     let targets = player.mobData.currentWeapon.grabTargets(player); // This will ensure that targets are within the range
                     if (targets.length > 0) {
-                        // for(var target of targets.values())
-                        // {
-                        // if(player.mobData.currentWeapon.isInRange(player, targets))
-                        // {
-                        if (player.mobData.hasMana(player.mobData.currentWeapon.manaCost)) {
-                            let result = player.mobData.currentWeapon.attack(player, targets);
-                            if (result) {
-                                player.mobData.useMana(player.mobData.currentWeapon.manaCost);
-                            }
-                        }
-                        // }
-                        // }
+                        player.attack(targets);
                     }
                 }
                 // Use any spells available
@@ -1750,6 +1774,21 @@ define("Engine/Core/Helper", ["require", "exports", "Engine/Core/UnitManager", "
         return Phaser.Display.Color.RGBToString(color.red, color.green, color.blue);
     }
     exports.ColorToStr = ColorToStr;
+    function getMobDataSafe(mobData, entry, defaultValue, additionalSettings) {
+        if (mobData) {
+            let len = entry.length;
+            let currentObj = mobData;
+            for (var i = 0; i < len; i++) {
+                currentObj = currentObj[entry[i]];
+                if (!currentObj) {
+                    return defaultValue;
+                }
+            }
+            return currentObj;
+        }
+        return defaultValue;
+    }
+    exports.getMobDataSafe = getMobDataSafe;
     var Helper;
     (function (Helper) {
         let toolTip;
@@ -3375,7 +3414,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             // as the calculation step of each class will happen in their player classes,
             // which should be the first called listener in updateListeners().
             this.updateListeners(this, 'statCalculation', this);
-            this.updateListeners(this, 'statCalculationFinish', this);
+            this.updateListenersRev(this, 'statCalculationFinish', this);
             // 5. Finish
             this.maxHealth = Math.ceil(this.maxHealth);
             this.currentHealth = Math.max(0, Math.ceil(this.healthRatio * this.maxHealth));
@@ -3424,9 +3463,9 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             damageInfo.overdeal = damageInfo.value - realDmg;
             damageInfo.value = realDmg;
             // Let everyone know what is happening
-            this.updateListeners(damageInfo.target, 'receiveDamageFinal', damageInfo);
+            this.updateListenersRev(damageInfo.target, 'receiveDamageFinal', damageInfo);
             if (damageInfo.source) {
-                damageInfo.source.updateListeners(damageInfo.source, 'dealDamageFinal', damageInfo);
+                damageInfo.source.updateListenersRev(damageInfo.source, 'dealDamageFinal', damageInfo);
             }
             // Decrese HP
             this.currentHealth -= realDmg;
@@ -3435,7 +3474,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             // Check if I am dead
             if (this.currentHealth <= 0) {
                 // Let everyone know what is happening
-                this.updateListeners(damageInfo.target, 'death', damageInfo);
+                this.updateListenersRev(damageInfo.target, 'death', damageInfo);
                 if (damageInfo.source) {
                     damageInfo.source.updateListeners(damageInfo.source, 'kill', damageInfo);
                 }
@@ -3479,9 +3518,9 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             healInfo.overdeal = healInfo.value - realHeal;
             healInfo.value = realHeal;
             // Let buffs and agents know what is happening
-            this.updateListeners(healInfo.target, 'receiveHealFinal', healInfo);
+            this.updateListenersRev(healInfo.target, 'receiveHealFinal', healInfo);
             if (healInfo.source) {
-                healInfo.source.updateListeners(healInfo.source, 'dealHealFinal', healInfo);
+                healInfo.source.updateListenersRev(healInfo.source, 'dealHealFinal', healInfo);
             }
             // Increase the HP.
             this.currentHealth += healInfo.value;
@@ -3494,6 +3533,14 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
         updateListeners(mobData, event, ...args) {
             var flag = false;
             this.emitArray(event, (res) => { if (typeof res == "boolean") {
+                flag = flag || res;
+            } }, args);
+            return flag;
+        }
+        // Same as updateListeners, but all listeners are triggered in reverse order to let them properly revert the values if they have temporally modified them.
+        updateListenersRev(mobData, event, ...args) {
+            var flag = false;
+            this.emitArrayReverted(event, (res) => { if (typeof res == 'boolean') {
                 flag = flag || res;
             } }, args);
             return flag;
@@ -3525,7 +3572,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
     exports.MobData = MobData;
 });
 /** @packageDocumentation @module Core */
-define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListener", "Engine/Core/InventoryCore", "Engine/Core/Helper", "Engine/Core/GameData", "Engine/UI/Localization"], function (require, exports, MobListener_3, InventoryCore_2, Helper_3, GameData_12, Localization_6) {
+define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/MobListener", "Engine/Core/InventoryCore", "Engine/Core/Helper", "Engine/Core/GameData", "Engine/UI/Localization"], function (require, exports, Mob_4, MobListener_3, InventoryCore_2, Helper_3, GameData_12, Localization_6) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var EquipmentType;
@@ -3604,7 +3651,25 @@ define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListe
             return Localization_6._(this.name) + Localization_6._(':') + Localization_6._(this._spName);
         }
         isInRange(mob, target) {
-            return (mob.footPos().distance(target.footPos()) < (this.activeRange + mob.mobData.battleStats.attackRange));
+            if (target instanceof Mob_4.Mob) {
+                return (mob.footPos().distance(target.footPos()) < (this.activeRange + mob.mobData.battleStats.attackRange));
+            }
+            else {
+                return (mob.footPos().distance(target) < (this.activeRange + mob.mobData.battleStats.attackRange));
+            }
+        }
+        isInOrMoveInRange(mob, target) {
+            if (target instanceof Mob_4.Mob) {
+                return (mob.footPos().distance(target.footPos()) < (this.activeRange + mob.mobData.battleStats.attackRange));
+            }
+            else {
+                // Modify target position so that it is inside our range
+                let range = this.activeRange + mob.mobData.battleStats.attackRange;
+                if (mob.footPos().distance(target) > range) {
+                    target.normalize().scale(range);
+                }
+                return true;
+            }
         }
         grabTargets(mob) {
             return [];
@@ -3618,27 +3683,49 @@ define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListe
             this.wpType = WeaponType[this.itemData.pClass];
             this.wpsubType = WeaponType[this.itemData.sClass];
         }
-        attack(source, target, triggerCD = true) {
-            let flag = false;
+        attack(source, target, triggerCD = true, tempSettings = {}) {
+            let checkResult = this.checkAttack(source, target);
+            if (checkResult.canAttack) {
+                if (checkResult.isSpecial) {
+                    this.specialAttack(source, checkResult.target, true, true);
+                }
+                else {
+                    this.regularAttack(source, checkResult.target, true, true);
+                }
+            }
+            return checkResult;
+        }
+        checkAttack(source, target) {
+            let flag = { 'canAttack': false, 'isSpecial': false, 'target': target };
             this.isReadyWrapper(() => {
-                target = target.filter((v) => this.isInRange(source, v));
+                flag.target = target.filter((v) => this.isInOrMoveInRange(source, v));
                 if (target.length <= 0) {
-                    return flag;
+                    flag.canAttack = false;
                 }
-                this.doRegularAttack(source, target);
-                if (triggerCD) {
-                    this.triggerCD();
+                else {
+                    flag.canAttack = true;
                 }
-                if (this.weaponGaugeMax > 0) {
-                    this.weaponGauge += this.weaponGaugeIncreasement(source);
-                    if (this.weaponGauge > this.weaponGaugeMax) {
-                        this.weaponGauge -= this.weaponGaugeMax;
-                        this.doSpecialAttack(source, target);
-                    }
+                if (this.weaponGaugeMax > 0 && this.weaponGauge > this.weaponGaugeMax) {
+                    flag.isSpecial = true;
                 }
-                flag = true;
             })();
             return flag;
+        }
+        regularAttack(source, target, triggerCD = true, increaseGauge = true) {
+            this.doRegularAttack(source, target);
+            if (triggerCD) {
+                this.triggerCD();
+            }
+            if (this.weaponGaugeMax > 0 && increaseGauge) {
+                this.weaponGauge += this.weaponGaugeIncreasement(source);
+            }
+        }
+        specialAttack(source, target, triggerCD = true, useGauge = true) {
+            if (useGauge) {
+                this.weaponGauge -= this.weaponGaugeMax;
+                this.weaponGauge = Math.max(0, this.weaponGauge);
+            }
+            this.doSpecialAttack(source, target);
         }
         syncStats(mob) {
             this.cooldownMax = mob.getAttackSpeed();
@@ -3694,20 +3781,6 @@ define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/Core/MobListe
                 modified = true;
             }
             return { modified: modified, value: mobData.modifiers.resourceCost * cost };
-        }
-        getMobDataSafe(mobData, entry, defaultValue) {
-            if (mobData) {
-                let len = entry.length;
-                let currentObj = mobData;
-                for (var i = 0; i < len; i++) {
-                    currentObj = currentObj[entry[i]];
-                    if (!currentObj) {
-                        return defaultValue;
-                    }
-                }
-                return currentObj;
-            }
-            return defaultValue;
         }
         getBaseAttackDesc(mobData) {
             return "";
@@ -3920,15 +3993,20 @@ define("Engine/Core/MobListener", ["require", "exports", "Engine/Core/DataBacken
         }
         onRemoved(mob, source) { }
         // Be triggered when the mob is attacking.
-        // This is triggered before the mob's attack.
-        onAttack(mob) { }
-        // Be triggered when the mob has finished an attack.
-        onAfterAttack(mob) { }
+        // This is triggered before the mob's attack or special attack.
+        onAttack(src, weapon, targets) { }
+        // Be triggered when the mob has finished an attack or special attack.
+        onAttackFinish(src, weapon, targets) { }
+        // Be triggered when the mob is making a regular attack.
+        // This is triggered before the mob's attack or special attack.
+        onRegularAttack(src, weapon, targets) { }
+        // Be triggered when the mob has finished a regular attack.
+        onRegularAttackFinish(src, weapon, targets) { }
         // Be triggered when the mob is making a special attack.
         // This is triggered before the attack.
-        onSpecialAttack(mob) { }
+        onSpecialAttack(src, weapon, targets) { }
         // Be triggered when the mob has finished a special attack.
-        onAfterSpecialAttack(mob) { }
+        onSpecialAttackFinish(src, weapon, targets) { }
         // Be triggered when the mob is going to be rendered.
         // e.g. change sprite color here etc.
         onCreate(mob, scene) { }
@@ -3977,7 +4055,7 @@ define("Engine/Core/MobListener", ["require", "exports", "Engine/Core/DataBacken
  * @module Agent
  * @preferred
  */
-define("Engine/Agents/MobAgent", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/MobListener", "Engine/UI/PopUpManager", "Engine/Core/GameData"], function (require, exports, Mob_4, MobListener_4, PopUpManager_4, GameData_13) {
+define("Engine/Agents/MobAgent", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/MobListener", "Engine/UI/PopUpManager", "Engine/Core/GameData"], function (require, exports, Mob_5, MobListener_4, PopUpManager_4, GameData_13) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class MobAgent extends MobListener_4.MobListener {
@@ -4072,7 +4150,7 @@ define("Engine/Agents/MobAgent", ["require", "exports", "Engine/GameObjects/Mob"
                 // Taunt reduces over time
                 this.tauntList[tmpTargetMobData.UID].taunt *= 0.999; // TODO: time-consistent
                 // Remove the mob if it is dead or it has no taunt
-                if (!Mob_4.Mob.checkAlive(tmpTargetMobData.parentMob) || this.tauntList[tmpTargetMobData.UID].taunt <= 1 /*a small enough value*/) {
+                if (!Mob_5.Mob.checkAlive(tmpTargetMobData.parentMob) || this.tauntList[tmpTargetMobData.UID].taunt <= 1 /*a small enough value*/) {
                     this.removeTarget(tmpTargetMobData);
                 }
                 else {
@@ -4504,6 +4582,28 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
                 this.destroy();
             }
         }
+        attack(targets) {
+            this.mobData.updateListeners(this.mobData, 'attack', this.mobData, targets);
+            // let result = this.mobData.currentWeapon.attack(this, targets);
+            let result = this.mobData.currentWeapon.checkAttack(this, targets);
+            if (result.canAttack) {
+                let newTargets = result.target;
+                this.mobData.updateListeners(this.mobData, 'attack', this.mobData, this.mobData.currentWeapon, newTargets);
+                if (result.isSpecial) {
+                    this.mobData.updateListeners(this.mobData, 'specialAttack', this.mobData, this.mobData.currentWeapon, newTargets);
+                    this.mobData.currentWeapon.specialAttack(this, newTargets, true, true);
+                    this.mobData.updateListenersRev(this.mobData, 'specialAttackFinish', this.mobData, this.mobData.currentWeapon, newTargets);
+                }
+                else {
+                    this.mobData.updateListeners(this.mobData, 'regularAttack', this.mobData, this.mobData.currentWeapon, newTargets);
+                    this.mobData.currentWeapon.regularAttack(this, newTargets, true, true);
+                    this.mobData.useMana(this.mobData.currentWeapon.manaCost); // only regular attack costs mana
+                    this.mobData.updateListenersRev(this.mobData, 'regularAttackFinish', this.mobData, this.mobData.currentWeapon, newTargets);
+                }
+                this.mobData.updateListenersRev(this.mobData, 'attackFinish', this.mobData, this.mobData.currentWeapon, newTargets);
+            }
+            return result.canAttack;
+        }
         footPos() {
             return new Phaser.Math.Vector2(this.x, this.y);
         }
@@ -4517,7 +4617,7 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
     exports.Mob = Mob;
 });
 /** @packageDocumentation @module BattleScene */
-define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/UnitManager", "Engine/Core/ObjectPopulator", "Engine/Core/BattleMonitor", "Engine/UI/UIScene", "Engine/UI/ProgressBar"], function (require, exports, Mob_5, UnitManager_6, ObjectPopulator_2, BattleMonitor_4, UIScene_4, ProgressBar_2) {
+define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/UnitManager", "Engine/Core/ObjectPopulator", "Engine/Core/BattleMonitor", "Engine/UI/UIScene", "Engine/UI/ProgressBar"], function (require, exports, Mob_6, UnitManager_6, ObjectPopulator_2, BattleMonitor_4, UIScene_4, ProgressBar_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class BattleScene extends Phaser.Scene {
@@ -4609,7 +4709,7 @@ define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/Game
             for (let objLayer of this.map.objects) {
                 for (let obj of objLayer.objects) {
                     let objPopulated = ObjectPopulator_2.ObjectPopulator.newObject(this, obj.type == "" ? obj.name : obj.type, obj);
-                    if (objPopulated instanceof Mob_5.Mob) {
+                    if (objPopulated instanceof Mob_6.Mob) {
                         this.addMob(objPopulated);
                     }
                     else if (objPopulated) {
@@ -4649,7 +4749,7 @@ define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/Game
     exports.BattleScene = BattleScene;
 });
 /** @packageDocumentation @module GameObjects */
-define("Engine/GameObjects/Projectile", ["require", "exports", "Engine/GameObjects/Spell", "Engine/GameObjects/Mob"], function (require, exports, Spell_2, Mob_6) {
+define("Engine/GameObjects/Projectile", ["require", "exports", "Engine/GameObjects/Spell", "Engine/GameObjects/Mob"], function (require, exports, Spell_2, Mob_7) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Projectile extends Spell_2.Spell {
@@ -4668,13 +4768,13 @@ define("Engine/GameObjects/Projectile", ["require", "exports", "Engine/GameObjec
         }
         updateSpell(dt) {
             // Homing
-            if (this.target instanceof Mob_6.Mob && (this.chasingRange < 0 || this.target.footPos().clone().subtract(this.getPosition()).length() < this.chasingRange)) {
+            if (this.target instanceof Mob_7.Mob && (this.chasingRange < 0 || this.target.footPos().clone().subtract(this.getPosition()).length() < this.chasingRange)) {
                 let newDirc = this.target.footPos().clone().subtract(this.getPosition()).normalize();
                 this.moveDirc = this.moveDirc.clone().scale(1 - dt * this.chasingPower).add(newDirc.clone().scale(dt * this.chasingPower));
             }
             this.setVelocity(this.moveDirc.x * this.speed, this.moveDirc.y * this.speed);
-            super.updateSpell(dt);
             this.rotation = (this.body.velocity.angle() + (Math.PI / 2));
+            super.updateSpell(dt);
         }
     }
     exports.Projectile = Projectile;
@@ -4854,6 +4954,41 @@ define("Weapons/index", ["require", "exports", "Weapons/Staff"], function (requi
     Object.defineProperty(exports, "__esModule", { value: true });
     __export(Staff_1);
 });
+/** @packageDocumentation @module Mobs.Allies.WindElf */
+define("Mobs/Allies/WindElf/Hunter", ["require", "exports", "Engine/GameObjects/Mob"], function (require, exports, Mob_8) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class Hunter extends Mob_8.Mob {
+    }
+    exports.Hunter = Hunter;
+});
+/** @packageDocumentation @module Mobs.Allies.WindElf */
+define("Mobs/Allies/WindElf/WindElf", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/MobListener"], function (require, exports, Mob_9, MobListener_5) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class WindElf extends Mob_9.Mob {
+    }
+    exports.WindElf = WindElf;
+    class WindElfChar extends MobListener_5.MobListener {
+    }
+    exports.WindElfChar = WindElfChar;
+});
+/** @packageDocumentation @module Mobs.Allies.WindElf */
+define("Mobs/Allies/WindElf/index", ["require", "exports", "Mobs/Allies/WindElf/Hunter", "Mobs/Allies/WindElf/WindElf"], function (require, exports, Hunter_1, WindElf_1) {
+    "use strict";
+    function __export(m) {
+        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    __export(Hunter_1);
+    __export(WindElf_1);
+});
+/** @packageDocumentation @module Mobs.Allies */
+define("Mobs/Allies/index", ["require", "exports", "Mobs/Allies/WindElf/index"], function (require, exports, WindElf) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.WindElf = WindElf;
+});
 /** @packageDocumentation @module Agents */
 define("Agents/SimpleAgents", ["require", "exports", "Engine/Agents/MobAgent"], function (require, exports, MobAgent_2) {
     "use strict";
@@ -4886,21 +5021,12 @@ define("Agents/index", ["require", "exports", "Agents/SimpleAgents"], function (
     Object.defineProperty(exports, "__esModule", { value: true });
     __export(SimpleAgents_1);
 });
-/** @packageDocumentation @module Lists */
-define("Lists/ItemList", ["require", "exports", "Weapons/index"], function (require, exports, Weapons) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    Weapons = __importStar(Weapons);
-    exports.ItemList = {
-        "cometWand": Weapons.CometWand,
-    };
-});
 /** @packageDocumentation @module Mobs.Enemies */
-define("Mobs/Enemies/TestMob", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Agents/MobAgent", "Weapons/index", "Engine/Core/MobData"], function (require, exports, Mob_7, MobAgent_3, Weapons, MobData_2) {
+define("Mobs/Enemies/TestMob", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Agents/MobAgent", "Weapons/index", "Engine/Core/MobData"], function (require, exports, Mob_10, MobAgent_3, Weapons, MobData_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     Weapons = __importStar(Weapons);
-    class TestMob extends Mob_7.Mob {
+    class TestMob extends Mob_10.Mob {
         constructor(scene, x, y, sprite, settings) {
             settings.agent = settings.agent || MobAgent_3.TauntBasedAgent;
             super(scene, x, y, sprite || 'sheet_FutsuMu', settings);
@@ -4923,20 +5049,29 @@ define("Mobs/Enemies/index", ["require", "exports", "Mobs/Enemies/TestMob"], fun
     __export(TestMob_1);
 });
 /** @packageDocumentation @module Mobs */
-define("Mobs/index", ["require", "exports", "Mobs/Enemies/index"], function (require, exports, Enemies) {
+define("Mobs/index", ["require", "exports", "Mobs/Allies/index", "Mobs/Enemies/index"], function (require, exports, Allies, Enemies) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    // export * as Allies from './Allies'
+    exports.Allies = Allies;
     exports.Enemies = Enemies;
 });
 /** @packageDocumentation @module Lists */
-define("Lists/ObjectList", ["require", "exports", "Engine/GameObjects/Mob", "Mobs/index"], function (require, exports, Mob_8, Mobs) {
+define("Lists/ItemList", ["require", "exports", "Weapons/index"], function (require, exports, Weapons) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    Weapons = __importStar(Weapons);
+    exports.ItemList = {
+        "cometWand": Weapons.CometWand,
+    };
+});
+/** @packageDocumentation @module Lists */
+define("Lists/ObjectList", ["require", "exports", "Engine/GameObjects/Mob", "Mobs/index"], function (require, exports, Mob_11, Mobs) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     Mobs = __importStar(Mobs);
     exports.ObjectList = {
-        'Mob': Mob_8.Mob.fromTiled(Mob_8.Mob),
-        'TestMob': Mob_8.Mob.fromTiled(Mobs.Enemies.TestMob),
+        'Mob': Mob_11.Mob.fromTiled(Mob_11.Mob),
+        'TestMob': Mob_11.Mob.fromTiled(Mobs.Enemies.TestMob),
     };
 });
 /** @packageDocumentation @module Lists */
@@ -4995,11 +5130,12 @@ define("SpellData/FloraHeal", ["require", "exports", "Engine/Core/SpellData", "E
     })(SpellDatas = exports.SpellDatas || (exports.SpellDatas = {}));
 });
 /** @packageDocumentation @module BattleScene */
-define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/index", "Engine/Agents/PlayerAgents", "Agents/index", "Engine/Core/Helper", "Engine/Core/ObjectPopulator", "Lists/ObjectList", "Lists/AgentList", "Engine/Core/GameData", "Engine/UI/Localization", "SpellData/FloraHeal"], function (require, exports, BattleScene_1, Mob_9, MobData_3, Weapons, PlayerAgents, Agents, Helper_7, ObjectPopulator_3, ObjectList_1, AgentList_1, GameData_18, Localization_9, FloraHeal_1) {
+define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/index", "Engine/Agents/PlayerAgents", "Mobs/index", "Agents/index", "Engine/Core/Helper", "Engine/Core/ObjectPopulator", "Lists/ObjectList", "Lists/AgentList", "Engine/Core/GameData", "Engine/UI/Localization", "SpellData/FloraHeal"], function (require, exports, BattleScene_1, Mob_12, MobData_3, Weapons, PlayerAgents, Mobs, Agents, Helper_7, ObjectPopulator_3, ObjectList_1, AgentList_1, GameData_18, Localization_9, FloraHeal_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     Weapons = __importStar(Weapons);
     PlayerAgents = __importStar(PlayerAgents);
+    Mobs = __importStar(Mobs);
     Agents = __importStar(Agents);
     class TestScene extends BattleScene_1.BattleScene {
         constructor() {
@@ -5025,9 +5161,9 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
             // this.tiles = this.map.addTilesetImage('Grass_Overworld', 'Grass_Overworld');
             // this.terrainLayer = this.map.createStaticLayer('Terrain', this.tiles, 0, 0);
             this.anims.create({ key: 'move', frames: this.anims.generateFrameNumbers('elf', { start: 0, end: 3, first: 0 }), frameRate: 8, repeat: -1 });
-            for (let i = 0; i < 8; i++) {
+            for (let i = 0; i < 6; i++) {
                 // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
-                this.girl = new Mob_9.Mob(this, 930, 220 + i * 30, 'sheet_forestelf_myst', {
+                this.girl = new Mob_12.Mob(this, 930, 220 + i * 30, 'sheet_forestelf_myst', {
                     'backendData': new MobData_3.MobData({
                         'name': Localization_9._('testGirl') + i,
                         'isPlayer': true,
@@ -5052,18 +5188,45 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
                 this.girl.mobData.spells['floraHeal'] = new FloraHeal_1.SpellDatas.FloraHeal({ 'name': 'FloraHeal', 'coolDown': 5.0 + i * 1.0, 'manaCost': 20 });
                 this.addMob(this.girl);
             }
-            let woodlog = new Mob_9.Mob(this, 300, 200, 'sheet_forestelf_myst', {
+            for (let i = 0; i < 2; i++) {
+                // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
+                this.girl = new Mobs.Allies.WindElf.Hunter(this, 930, 220 + i * 30, 'sheet_forestelf_myst', {
+                    'backendData': new MobData_3.MobData({
+                        'name': Localization_9._('testGirl') + i,
+                        'isPlayer': true,
+                        'vit': 10 + Helper_7.getRandomInt(-3, 3),
+                        'mag': 8 + Helper_7.getRandomInt(-3, 3),
+                        'str': 2 + Helper_7.getRandomInt(-1, 1),
+                        'int': 3 + Helper_7.getRandomInt(-2, 2),
+                        'dex': 5 + Helper_7.getRandomInt(-3, 3),
+                        'tec': 7 + Helper_7.getRandomInt(-3, 3),
+                    }),
+                    'agent': PlayerAgents.Simple,
+                });
+                this.girl.mobData.battleStats.attackPower.ice = 10;
+                this.girl.mobData.battleStats.attackPower.fire = 40;
+                this.girl.mobData.battleStats.crit = 5.0;
+                this.girl.mobData.equip(new Weapons.CometWand(), MobData_3.EquipSlots.MainHand);
+                this.girl.mobData.equip(new Weapons.CometWand(), MobData_3.EquipSlots.SubHand);
+                this.girl.mobData.weaponSubHand.baseAttackSpeed = 0.05;
+                this.girl.mobData.weaponSubHand.manaCost = 1;
+                // this.girl.mobData.addListener(this.girl.mobData.weaponMainHand);
+                // this.girl.receiveBuff(this.girl, new Buffs.HDOT(Buff.fromKey('test_GodHeal'), GameData.Elements.heal, 20, 38, 0.8));
+                this.girl.mobData.spells['floraHeal'] = new FloraHeal_1.SpellDatas.FloraHeal({ 'name': 'FloraHeal', 'coolDown': 5.0 + i * 1.0, 'manaCost': 20 });
+                this.addMob(this.girl);
+            }
+            let woodlog = new Mob_12.Mob(this, 300, 200, 'sheet_forestelf_myst', {
                 'backendData': new MobData_3.MobData({ name: 'woodLog', 'isPlayer': false, 'health': 1000, }),
                 'agent': Agents.KeepMoving,
             });
             this.addMob(woodlog);
-            woodlog = new Mob_9.Mob(this, 350, 200, 'sheet_forestelf_myst', {
+            woodlog = new Mob_12.Mob(this, 350, 200, 'sheet_forestelf_myst', {
                 'backendData': new MobData_3.MobData({ name: 'woodLog', 'isPlayer': false, 'health': 1000, }),
                 'agent': Agents.KeepMoving,
             });
             this.addMob(woodlog);
             this.h = woodlog;
-            woodlog = new Mob_9.Mob(this, 300, 250, 'sheet_forestelf_myst', {
+            woodlog = new Mob_12.Mob(this, 300, 250, 'sheet_forestelf_myst', {
                 'backendData': new MobData_3.MobData({ name: 'woodLog', 'isPlayer': false, 'health': 1000, }),
                 'agent': Agents.KeepMoving,
             });
@@ -5350,7 +5513,6 @@ define("SimpleGame", ["require", "exports", "Engine/ScenePrototypes/GamePreloadS
     exports.InitPhaser = InitPhaser;
     InitPhaser.initGame();
 });
-/** @packageDocumentation @module Mobs.Allies */
 /** @packageDocumentation @moduleeDocumentation @module SpellDatas */
 define("SpellData/index", ["require", "exports", "SpellData/FloraHeal"], function (require, exports, FloraHeal_2) {
     "use strict";

@@ -134,20 +134,7 @@ export class Simple extends PlayerAgentBase
                 let targets = player.mobData.currentWeapon.grabTargets(player); // This will ensure that targets are within the range
                 if (targets.length > 0)
                 {
-                    // for(var target of targets.values())
-                    // {
-                    // if(player.mobData.currentWeapon.isInRange(player, targets))
-                    // {
-                    if (player.mobData.hasMana(player.mobData.currentWeapon.manaCost))
-                    {
-                        let result = player.mobData.currentWeapon.attack(player, targets);
-                        if (result)
-                        {
-                            player.mobData.useMana(player.mobData.currentWeapon.manaCost);
-                        }
-                    }
-                    // }
-                    // }
+                    player.attack(targets);
                 }
             }
 
@@ -160,7 +147,7 @@ export class Simple extends PlayerAgentBase
                     {
                         if (player.mobData.spells[spell].available)
                         {
-                            player.mobData.cast(player, this.targetMob, player.mobData.spells[spell])
+                            player.mobData.cast(player, this.targetMob, player.mobData.spells[spell]);
                         }
                     }
                 }

@@ -47,9 +47,8 @@ export class Projectile extends Spell
         }
 
         this.setVelocity(this.moveDirc.x * this.speed, this.moveDirc.y * this.speed);
+        this.rotation = (this.body.velocity.angle() + (Math.PI / 2));
 
         super.updateSpell(dt);
-
-        this.rotation = (this.body.velocity.angle() + (Math.PI / 2));
     }
 }

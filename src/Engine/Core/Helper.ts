@@ -5,6 +5,7 @@ import { mRTypes } from "./mRTypes";
 import { UnitManager } from "./UnitManager";
 import { Targeting } from "../GameObjects/Spell";
 import { GameData } from "./GameData";
+import { MobData } from "./MobData";
 
 export function HealDmg(info: mRTypes.DamageHeal_FrontEnd): mRTypes.DamageHeal
 {
@@ -97,6 +98,25 @@ export function reverseTarget(target: Targeting): Targeting
 export function ColorToStr(color: Phaser.Display.Color): string
 {
     return Phaser.Display.Color.RGBToString(color.red, color.green, color.blue);
+}
+
+export function getMobDataSafe(mobData: MobData, entry: string[], defaultValue: number, additionalSettings: any): any
+{
+    if (mobData)
+    {
+        let len = entry.length;
+        let currentObj: any = mobData;
+        for (var i = 0; i < len; i++)
+        {
+            currentObj = currentObj[entry[i]];
+            if (!currentObj)
+            {
+                return defaultValue;
+            }
+        }
+        return currentObj;
+    }
+    return defaultValue;
 }
 
 export namespace Helper

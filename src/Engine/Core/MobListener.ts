@@ -2,7 +2,7 @@
 
 import { mRTypes } from "./mRTypes";
 import { MobData } from "./MobData";
-import { Weapon } from "./EquipmentCore";
+import { Weapon, WeaponTarget } from "./EquipmentCore";
 import { Mob } from "../GameObjects/Mob";
 import { DataBackend } from "./DataBackend";
 import * as EventSystem from "../Events/EventSystem";
@@ -125,18 +125,25 @@ export class MobListener extends EventSystem.EventElement
     onRemoved(mob: MobData, source: MobData) { }
 
     // Be triggered when the mob is attacking.
-    // This is triggered before the mob's attack.
-    onAttack(mob: MobData) { }
+    // This is triggered before the mob's attack or special attack.
+    onAttack(src: MobData, weapon: Weapon, targets: WeaponTarget[]) { }
 
-    // Be triggered when the mob has finished an attack.
-    onAfterAttack(mob: MobData) { }
+    // Be triggered when the mob has finished an attack or special attack.
+    onAttackFinish(src: MobData, weapon: Weapon, targets: WeaponTarget[]) { }
+
+    // Be triggered when the mob is making a regular attack.
+    // This is triggered before the mob's attack or special attack.
+    onRegularAttack(src: MobData, weapon: Weapon, targets: WeaponTarget[]) { }
+
+    // Be triggered when the mob has finished a regular attack.
+    onRegularAttackFinish(src: MobData, weapon: Weapon, targets: WeaponTarget[]) { }
 
     // Be triggered when the mob is making a special attack.
     // This is triggered before the attack.
-    onSpecialAttack(mob: MobData) { }
+    onSpecialAttack(src: MobData, weapon: Weapon, targets: WeaponTarget[]) { }
 
     // Be triggered when the mob has finished a special attack.
-    onAfterSpecialAttack(mob: MobData) { }
+    onSpecialAttackFinish(src: MobData, weapon: Weapon, targets: WeaponTarget[]) { }
 
     // Be triggered when the mob is going to be rendered.
     // e.g. change sprite color here etc.

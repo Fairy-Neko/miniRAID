@@ -113,6 +113,9 @@ export class Armor extends Equipable
 
 }
 
+export type WeaponCheckResult = { canAttack: boolean, isSpecial: boolean, target: WeaponTarget[] };
+export type WeaponTarget = Mob | Phaser.Math.Vector2;
+
 export class Weapon extends Equipable
 {
     wpType: WeaponType;
@@ -159,9 +162,31 @@ export class Weapon extends Equipable
         this._spName = this.itemData.spName;
     }
 
-    isInRange(mob: Mob, target: Mob): boolean
+    isInRange(mob: Mob, target: WeaponTarget): boolean
     {
-        return (mob.footPos().distance(target.footPos()) < (this.activeRange + mob.mobData.battleStats.attackRange));
+        if (target instanceof Mob)
+        {
+            return (mob.footPos().distance(target.footPos()) < (this.activeRange + mob.mobData.battleStats.attackRange));
+        }
+        else
+        {
+            return (mob.footPos().distance(target) < (this.activeRange + mob.mobData.battleStats.attackRange));
+        }
+    }
+
+    isInOrMoveInRange(mob: Mob, target: WeaponTarget): boolean
+    {
+        if (target instanceof Mob)
+        {
+            return (mob.footPos().distance(target.footPos()) < (this.activeRange + mob.mobData.battleStats.attackRange));
+        }
+        else
+        {
+            // Modify target position so that it is inside our range
+            let range = this.activeRange + mob.mobData.battleStats.attackRange;
+            if (mob.footPos().distance(target) > range) { target.normalize().scale(range); }
+            return true;
+        }
     }
 
     grabTargets(mob: Mob): Array<Mob> 
@@ -182,32 +207,64 @@ export class Weapon extends Equipable
         this.wpsubType = (<any>WeaponType)[this.itemData.sClass];
     }
 
-    attack(source: Mob, target: Array<Mob>, triggerCD: boolean = true): boolean
+    attack(source: Mob, target: WeaponTarget[], triggerCD: boolean = true, tempSettings: any = {}): WeaponCheckResult
     {
-        let flag: boolean = false;
+        let checkResult = this.checkAttack(source, target);
+        if (checkResult.canAttack)
+        {
+            if (checkResult.isSpecial)
+            {
+                this.specialAttack(source, checkResult.target, true, true);
+            }
+            else
+            {
+                this.regularAttack(source, checkResult.target, true, true);
+            }
+        }
+
+        return checkResult;
+    }
+
+    checkAttack(source: Mob, target: WeaponTarget[]): WeaponCheckResult
+    {
+        let flag: WeaponCheckResult = { 'canAttack': false, 'isSpecial': false, 'target': target };
         this.isReadyWrapper(() =>
         {
-            target = target.filter((v: Mob) => this.isInRange(source, v));
-            if (target.length <= 0) { return flag; }
-            this.doRegularAttack(source, target);
-            if (triggerCD)
-            {
-                this.triggerCD();
-            }
+            flag.target = target.filter((v: Mob | Phaser.Math.Vector2) => this.isInOrMoveInRange(source, v));
+            if (target.length <= 0) { flag.canAttack = false; }
+            else { flag.canAttack = true; }
 
-            if (this.weaponGaugeMax > 0)
+            if (this.weaponGaugeMax > 0 && this.weaponGauge > this.weaponGaugeMax)
             {
-                this.weaponGauge += this.weaponGaugeIncreasement(source);
-                if (this.weaponGauge > this.weaponGaugeMax)
-                {
-                    this.weaponGauge -= this.weaponGaugeMax;
-                    this.doSpecialAttack(source, target);
-                }
+                flag.isSpecial = true;
             }
-            flag = true;
         })();
 
         return flag;
+    }
+
+    regularAttack(source: Mob, target: WeaponTarget[], triggerCD: boolean = true, increaseGauge: boolean = true)
+    {
+        this.doRegularAttack(source, target);
+        if (triggerCD)
+        {
+            this.triggerCD();
+        }
+
+        if (this.weaponGaugeMax > 0 && increaseGauge)
+        {
+            this.weaponGauge += this.weaponGaugeIncreasement(source);
+        }
+    }
+
+    specialAttack(source: Mob, target: WeaponTarget[], triggerCD: boolean = true, useGauge: boolean = true)
+    {
+        if (useGauge)
+        {
+            this.weaponGauge -= this.weaponGaugeMax;
+            this.weaponGauge = Math.max(0, this.weaponGauge);
+        }
+        this.doSpecialAttack(source, target);
     }
 
     syncStats(mob: MobData)
@@ -221,12 +278,12 @@ export class Weapon extends Equipable
     //     // console.log("be added to " + mob.name);
     // }
 
-    doRegularAttack(source: Mob, target: Array<Mob>)
+    doRegularAttack(source: Mob, target: WeaponTarget[])
     {
         throw new Error("Method not implemented.");
     }
 
-    doSpecialAttack(source: Mob, target: Array<Mob>) { }
+    doSpecialAttack(source: Mob, target: WeaponTarget[]) { }
 
     getDamage(mobData: MobData, dmg: number, dmgType: GameData.Elements): { modified: boolean, value: number }
     {
@@ -296,25 +353,6 @@ export class Weapon extends Equipable
         }
 
         return { modified: modified, value: mobData.modifiers.resourceCost * cost };
-    }
-
-    getMobDataSafe(mobData: MobData, entry: string[], defaultValue: number): any
-    {
-        if (mobData)
-        {
-            let len = entry.length;
-            let currentObj: any = mobData;
-            for (var i = 0; i < len; i++)
-            {
-                currentObj = currentObj[entry[i]];
-                if (!currentObj)
-                {
-                    return defaultValue;
-                }
-            }
-            return currentObj;
-        }
-        return defaultValue;
     }
 
     getBaseAttackDesc(mobData: MobData): string | { [index: string]: string }

@@ -724,7 +724,7 @@ export class MobData extends EventSystem.EventElement
         // as the calculation step of each class will happen in their player classes,
         // which should be the first called listener in updateListeners().
         this.updateListeners(this, 'statCalculation', this);
-        this.updateListeners(this, 'statCalculationFinish', this);
+        this.updateListenersRev(this, 'statCalculationFinish', this);
 
         // 5. Finish
         this.maxHealth = Math.ceil(this.maxHealth);
@@ -797,10 +797,10 @@ export class MobData extends EventSystem.EventElement
         damageInfo.value = realDmg;
 
         // Let everyone know what is happening
-        this.updateListeners(damageInfo.target, 'receiveDamageFinal', damageInfo);
+        this.updateListenersRev(damageInfo.target, 'receiveDamageFinal', damageInfo);
         if (damageInfo.source)
         {
-            damageInfo.source.updateListeners(damageInfo.source, 'dealDamageFinal', damageInfo);
+            damageInfo.source.updateListenersRev(damageInfo.source, 'dealDamageFinal', damageInfo);
         }
 
         // Decrese HP
@@ -813,7 +813,7 @@ export class MobData extends EventSystem.EventElement
         if (this.currentHealth <= 0)
         {
             // Let everyone know what is happening
-            this.updateListeners(damageInfo.target, 'death', damageInfo);
+            this.updateListenersRev(damageInfo.target, 'death', damageInfo);
             if (damageInfo.source)
             {
                 damageInfo.source.updateListeners(damageInfo.source, 'kill', damageInfo);
@@ -882,10 +882,10 @@ export class MobData extends EventSystem.EventElement
         healInfo.value = realHeal;
 
         // Let buffs and agents know what is happening
-        this.updateListeners(healInfo.target, 'receiveHealFinal', healInfo);
+        this.updateListenersRev(healInfo.target, 'receiveHealFinal', healInfo);
         if (healInfo.source)
         {
-            healInfo.source.updateListeners(healInfo.source, 'dealHealFinal', healInfo);
+            healInfo.source.updateListenersRev(healInfo.source, 'dealHealFinal', healInfo);
         }
 
         // Increase the HP.
@@ -902,9 +902,15 @@ export class MobData extends EventSystem.EventElement
     updateListeners(mobData: MobData, event: string, ...args: any[])
     {
         var flag = false;
-
         this.emitArray(event, (res) => { if (typeof res == "boolean") { flag = flag || res; } }, args);
+        return flag;
+    }
 
+    // Same as updateListeners, but all listeners are triggered in reverse order to let them properly revert the values if they have temporally modified them.
+    updateListenersRev(mobData: MobData, event: string, ...args: any[])
+    {
+        var flag = false;
+        this.emitArrayReverted(event, (res) => { if (typeof res == 'boolean') { flag = flag || res; } }, args);
         return flag;
     }
 

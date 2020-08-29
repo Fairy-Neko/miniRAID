@@ -13,6 +13,7 @@ export interface IEventEmitter
     parentSystem: EventSystem;
     emit(evt: String, resCallback: (res: any) => void, ...args: any[]): number;
     emitArray(evt: String, resCallback: (res: any) => void, args: any[]): number;
+    emitArrayReverted(evt: String, resCallback: (res: any) => void, args: any[]): number;
     discardEmitter(): void;
 }
 
@@ -44,6 +45,11 @@ export class EventElement implements IEventEmitter, IEventReceiver
     public emitArray(evt: String, resCallback: (res: any) => void, args: any[]): number
     {
         return this.parentSystem.emit(this, resCallback, evt, args);
+    }
+
+    public emitArrayReverted(evt: String, resCallback: (res: any) => void, args: any[]): number
+    {
+        return this.parentSystem.emitReverted(this, resCallback, evt, args);
     }
 
     public listen(src: IEventEmitter, evt: String, callback: EventCallback): boolean
@@ -176,10 +182,7 @@ export class EventSystem
             {
                 var evtList = srcDict.getValue(evt);
 
-                // Pack argument array
-                var lst: any[] = [src];
-                lst.push.apply(lst, args);
-
+                /* Do NOT WANT TO USE THE OFFICIAL METHOD ANYMORE
                 // Call the event callback function for each destination
                 evtList.forEach((dst, callback) => 
                 {
@@ -191,6 +194,52 @@ export class EventSystem
 
                     totalCnt += 1;
                 });
+                */
+
+                var evtList = srcDict.getValue(evt);
+
+                let curr = <any>(evtList)['head'].next;
+
+                while (curr.next)
+                {
+                    let result = curr.value.apply(curr.key, args);
+                    if (resCallback)
+                    {
+                        resCallback(result);
+                    }
+                    totalCnt += 1;
+                    curr = curr.next;
+                }
+            }
+        }
+
+        return totalCnt;
+    }
+
+    emitReverted(src: IEventEmitter, resCallback: (res: any) => void, evt: String, args: any[]): number
+    {
+        var totalCnt: number = 0;
+        if (this.dict.containsKey(src))
+        {
+            var srcDict = this.dict.getValue(src);
+            if (srcDict.containsKey(evt))
+            {
+                var evtList = srcDict.getValue(evt);
+
+                // Why is LinkedDictionary<K,V>.tail it private ahhhhhhHHHHHHHHHHHHHHHHHHH give me the tail omGGGGGGGGGGGGG
+                let curr = <any>(evtList)['tail'].prev;
+
+                // Only head node does not have prev, and head node is always empty ([NULL (head)] <-> actual data <-> [NULL (tail)])
+                while (curr.prev)
+                {
+                    let result = curr.value.apply(curr.key, args);
+                    if (resCallback)
+                    {
+                        resCallback(result);
+                    }
+                    totalCnt += 1;
+                    curr = curr.prev;
+                }
             }
         }
 

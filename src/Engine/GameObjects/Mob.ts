@@ -458,6 +458,35 @@ export class Mob extends dPhysSprite
         }
     }
 
+    attack(targets: (Mob | Phaser.Math.Vector2)[]): boolean
+    {
+        this.mobData.updateListeners(this.mobData, 'attack', this.mobData, targets);
+        // let result = this.mobData.currentWeapon.attack(this, targets);
+        let result = this.mobData.currentWeapon.checkAttack(this, targets);
+        if (result.canAttack)
+        {
+            let newTargets = result.target;
+
+            this.mobData.updateListeners(this.mobData, 'attack', this.mobData, this.mobData.currentWeapon, newTargets)
+            if (result.isSpecial)
+            {
+                this.mobData.updateListeners(this.mobData, 'specialAttack', this.mobData, this.mobData.currentWeapon, newTargets)
+                this.mobData.currentWeapon.specialAttack(this, newTargets, true, true);
+                this.mobData.updateListenersRev(this.mobData, 'specialAttackFinish', this.mobData, this.mobData.currentWeapon, newTargets)
+            }
+            else
+            {
+                this.mobData.updateListeners(this.mobData, 'regularAttack', this.mobData, this.mobData.currentWeapon, newTargets)
+                this.mobData.currentWeapon.regularAttack(this, newTargets, true, true);
+                this.mobData.useMana(this.mobData.currentWeapon.manaCost); // only regular attack costs mana
+                this.mobData.updateListenersRev(this.mobData, 'regularAttackFinish', this.mobData, this.mobData.currentWeapon, newTargets)
+            }
+
+            this.mobData.updateListenersRev(this.mobData, 'attackFinish', this.mobData, this.mobData.currentWeapon, newTargets)
+        }
+        return result.canAttack;
+    }
+
     footPos(): Phaser.Math.Vector2
     {
         return new Phaser.Math.Vector2(this.x, this.y);
