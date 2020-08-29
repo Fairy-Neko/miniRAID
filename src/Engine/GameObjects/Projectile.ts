@@ -16,9 +16,9 @@ export class Projectile extends Spell
         x: number, y: number,
         sprite: string,
         settings: mRTypes.Settings.Projectile,
+        frame?: string | number,
         useCollider: boolean = true,
-        subsprite?: string,
-        frame?: string | number)
+        subsprite?: string)
     {
         super(x, y, sprite, settings, useCollider, 7.0, subsprite, frame);
 
@@ -49,5 +49,7 @@ export class Projectile extends Spell
         this.setVelocity(this.moveDirc.x * this.speed, this.moveDirc.y * this.speed);
 
         super.updateSpell(dt);
+
+        this.rotation = (this.body.velocity.angle() + (Math.PI / 2));
     }
 }

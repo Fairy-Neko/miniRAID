@@ -21,6 +21,7 @@ export class WeaponFrame extends Phaser.GameObjects.Container
 {
     targetWeapon: Weapon;
     wpIcon: dSprite;
+    bg: Phaser.GameObjects.Rectangle;
     hitBox: Phaser.Geom.Rectangle;
 
     constructor(scene: Phaser.Scene, x: number, y: number, target: Weapon)
@@ -28,9 +29,14 @@ export class WeaponFrame extends Phaser.GameObjects.Container
         super(scene, x, y);
         this.targetWeapon = target;
 
-        this.wpIcon = new dSprite(this.scene, 0, 4, 'img_weapon_icon_test');
+        this.bg = new Phaser.GameObjects.Rectangle(this.scene, 0, 4, 24, 24, 0x4f4b46);
+        this.bg.setOrigin(0);
+        this.add(this.bg);
+
+        this.wpIcon = new dSprite(this.scene, 0, 4, target.itemData.image, undefined, target.itemData.iconIdx);
         this.wpIcon.setOrigin(0);
         this.wpIcon.setTint((this.targetWeapon && this.targetWeapon.activated) ? 0xffffff : 0x888888);
+        this.bg.fillColor = (this.targetWeapon && this.targetWeapon.activated) ? 0x4f4b46 : 0x35302a;
         this.add(this.wpIcon);
 
         this.add(new ProgressBar(this.scene, 0, 0,
@@ -74,12 +80,13 @@ export class WeaponFrame extends Phaser.GameObjects.Container
     setWeapon(target: Weapon)
     {
         this.targetWeapon = target;
-        this.wpIcon.setTexture('img_weapon_icon_test');
+        this.wpIcon.setTexture(target.itemData.image, target.itemData.iconIdx);
     }
 
     update(time: number, dt: number)
     {
         this.wpIcon.setTint((this.targetWeapon && this.targetWeapon.activated) ? 0xffffff : 0x888888);
+        this.bg.fillColor = (this.targetWeapon && this.targetWeapon.activated) ? 0x4f4b46 : 0x35302a;
         this.each((obj: Phaser.GameObjects.GameObject) => { obj.update(); });
     }
 }
@@ -101,7 +108,7 @@ export class BuffIcon extends Phaser.GameObjects.Container
 
         this.len = buff.UIimportant ? 26 : 18;
 
-        let rect = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, buff.UIimportant ? 26 : 18, buff.UIimportant ? 26 : 18, buff.color.clone().darken(20).color);
+        let rect = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, buff.UIimportant ? 26 : 18, buff.UIimportant ? 26 : 18, buff.color.clone().darken(50).color);
         rect.setOrigin(0, 0);
         this.add(rect);
 
@@ -110,13 +117,17 @@ export class BuffIcon extends Phaser.GameObjects.Container
             console.warn("?!");
         }
 
-        let dspr = new dSprite(scene, 1, 1, buff.UIimportant ? 'img_imp_buff_icon_test' : 'img_buff_icon_test', subsTexture, frame);
+        let dspr = new dSprite(scene, 1, 1, buff.imageKey, subsTexture, buff.iconId);
         dspr.setOrigin(0);
+        if (buff.tintIcon)
+        {
+            dspr.setTint(buff.color.color);
+        }
         this.add(dspr);
 
         if (buff.countTime)
         {
-            this.timeRemain = new Phaser.GameObjects.Rectangle(this.scene, this.len, 0, this.len, this.len, 0x000000, 0.5);
+            this.timeRemain = new Phaser.GameObjects.Rectangle(this.scene, this.len, 0, this.len, this.len, 0x000000, 0.45);
             this.timeRemain.setOrigin(1, 0);
             this.add(this.timeRemain);
         }
@@ -444,7 +455,7 @@ export class UnitFrame extends Phaser.GameObjects.Container
         }, 80, 22, 1, true, 0x444444, 0x000000, 0x42a85d, true, 'smallPx_HUD', TextAlignment.Left, 5, 3, 0xffffff));
 
         // Mana
-        this.add(new ProgressBar(this.scene, 0, 27, () =>
+        this.add(new ProgressBar(this.scene, 0, 30, () =>
         {
             return [target.mobData.currentMana, target.mobData.maxMana];
         }, 80, 5, 1, true, 0x444444, 0x222222, 0x33A6B8, GameData.showManaNumber, 'smallPx_HUD', TextAlignment.Left, 5, -1, 0xffffff, undefined, true, 0x00000055));
@@ -455,7 +466,7 @@ export class UnitFrame extends Phaser.GameObjects.Container
         this.add(bF);
 
         // Current Spell
-        this.castingBar = new ProgressBar(this.scene, 30, 24, () =>
+        this.castingBar = new ProgressBar(this.scene, 30, 27, () =>
         {
             if (this.targetMob.mobData.inCasting) { return [(this.targetMob.mobData.castTime - this.targetMob.mobData.castRemain), this.targetMob.mobData.castTime]; }
             else if (this.targetMob.mobData.inChanneling) { return [this.targetMob.mobData.channelRemain, this.targetMob.mobData.channelTime]; }

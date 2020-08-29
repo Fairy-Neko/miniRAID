@@ -149,7 +149,7 @@
    <properties>
     <property name="dex" type="float" value="8"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="image" value="gripe_run_right"/>
+    <property name="image" value="FutsuMu"/>
     <property name="mag" type="float" value="8"/>
     <property name="vit" type="float" value="500"/>
    </properties>
@@ -158,7 +158,7 @@
    <properties>
     <property name="dex" type="float" value="8"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="image" value="gripe_run_right"/>
+    <property name="image" value="FutsuMu"/>
     <property name="mag" type="float" value="8"/>
     <property name="vit" type="float" value="500"/>
    </properties>
@@ -167,7 +167,7 @@
    <properties>
     <property name="dex" type="float" value="8"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="image" value="gripe_run_right"/>
+    <property name="image" value="FutsuMu"/>
     <property name="mag" type="float" value="8"/>
     <property name="vit" type="float" value="500"/>
    </properties>
@@ -176,7 +176,7 @@
    <properties>
     <property name="dex" type="float" value="8"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="image" value="gripe_run_right"/>
+    <property name="image" value="FutsuMu"/>
     <property name="mag" type="float" value="8"/>
     <property name="vit" type="float" value="500"/>
    </properties>
@@ -185,7 +185,7 @@
    <properties>
     <property name="dex" type="float" value="8"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="image" value="gripe_run_right"/>
+    <property name="image" value="FutsuMu"/>
     <property name="mag" type="float" value="8"/>
     <property name="vit" type="float" value="500"/>
    </properties>
@@ -194,7 +194,7 @@
    <properties>
     <property name="dex" type="float" value="8"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="image" value="gripe_run_right"/>
+    <property name="image" value="FutsuMu"/>
     <property name="mag" type="float" value="8"/>
     <property name="vit" type="float" value="500"/>
    </properties>
@@ -203,7 +203,7 @@
    <properties>
     <property name="dex" type="float" value="8"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="image" value="gripe_run_right"/>
+    <property name="image" value="FutsuMu"/>
     <property name="mag" type="float" value="8"/>
     <property name="vit" type="float" value="500"/>
    </properties>
@@ -212,7 +212,7 @@
    <properties>
     <property name="dex" type="float" value="8"/>
     <property name="framewidth" type="int" value="32"/>
-    <property name="image" value="gripe_run_right"/>
+    <property name="image" value="FutsuMu"/>
     <property name="mag" type="float" value="8"/>
     <property name="vit" type="float" value="500"/>
    </properties>

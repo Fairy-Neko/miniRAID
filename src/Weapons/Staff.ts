@@ -25,7 +25,7 @@ export class CometWand extends Weapon
         this.baseAttackSpeed = 1.5;
 
         this.targetCount = 2;
-        this.activeRange = 200;
+        this.activeRange = 2000;
 
         this.manaCost = 3;
 
@@ -99,26 +99,26 @@ export class CometWand extends Weapon
     doRegularAttack(source: Mob, target: Array<Mob>)
     {
         for (let targetMob of target)
-            new Projectile(source.x, source.y, 'img_iced_fx', {
+            new Projectile(source.x, source.y, 'sheet_test_projectiles', {
                 'info': { 'name': this.atkName, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },
                 'source': source,
                 'target': targetMob,
-                'speed': 450,
+                'speed': 150,
                 'onMobHit': (self: Spell, mob: Mob) => { self.dieAfter(self.HealDmg, [mob, getRandomInt(6, 18), GameData.Elements.ice], mob); },
-                'color': Phaser.Display.Color.HexStringToColor("#77ffff"),
+                // 'color': Phaser.Display.Color.HexStringToColor("#77ffff"),
                 'chasingRange': 400,
                 'chasingPower': 1.0,
-            });
+            }, 1);
     }
 
     doSpecialAttack(source: Mob, target: Array<Mob>)
     {
         for (let targetMob of target)
-            new Projectile(source.x, source.y, 'img_iced_fx', {
+            new Projectile(source.x, source.y, 'sheet_test_projectiles', {
                 'info': { 'name': this.spName, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },
                 'source': source,
                 'target': targetMob,
-                'speed': 600,
+                'speed': 150,
                 'onMobHit': (self: Spell, mob: Mob) =>
                 {
                     self.dieAfter(
@@ -128,10 +128,9 @@ export class CometWand extends Weapon
                             m.receiveBuff(source, new Buffs.HDOT(Buff.fromKey('test_Burn', { source: source.mobData, time: 6.0, maxStack: 10, name: self.name }), GameData.Elements.fire, 3, 4, 1.2));
                         }, self.getPosition(), 50, self.targeting), [], mob);
                 },
-                'color': Phaser.Display.Color.HexStringToColor("#ff3333"),
                 'chasingRange': 400,
                 'chasingPower': 5.0,
-            });
+            }, 2);
 
         AoE((m: Mob) =>
         {

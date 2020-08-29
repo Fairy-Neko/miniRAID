@@ -28,7 +28,7 @@ export class dSprite extends Phaser.GameObjects.Sprite implements DynamicLoadObj
         {
             textureToLoad = texture;
             frameToLoad = frame;
-            texture = subsTexture;
+            texture = subsTexture || 'DOBJ_LOADING_PLACEHOLDER';
             frame = 0;
         }
         if (!texture)

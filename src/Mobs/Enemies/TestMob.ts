@@ -12,9 +12,7 @@ export class TestMob extends Mob
     constructor(scene: Phaser.Scene, x: number, y: number, sprite: string, settings: mRTypes.Settings.Mob)
     {
         settings.agent = settings.agent || TauntBasedAgent;
-        super(scene, x, y, sprite || 'sheet_gripe_run_right', settings);
-
-        this.imageFacingRight = true;
+        super(scene, x, y, sprite || 'sheet_FutsuMu', settings);
 
         let myWeapon = new Weapons.CometWand();
         myWeapon.manaCost = 0;

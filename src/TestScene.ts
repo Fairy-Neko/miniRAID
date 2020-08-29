@@ -90,7 +90,7 @@ export class TestScene extends BattleScene
             this.girl.mobData.weaponSubHand.manaCost = 1;
 
             // this.girl.mobData.addListener(this.girl.mobData.weaponMainHand);
-            // this.girl.receiveBuff(this.girl, new HDOT(Buff.fromKey('test_GodHeal'), GameData.Elements.heal, 20, 38, 0.8));
+            // this.girl.receiveBuff(this.girl, new Buffs.HDOT(Buff.fromKey('test_GodHeal'), GameData.Elements.heal, 20, 38, 0.8));
 
             this.girl.mobData.spells['floraHeal'] = new SpellDatas.FloraHeal({ 'name': 'FloraHeal', 'coolDown': 5.0 + i * 1.0, 'manaCost': 20 });
 

@@ -94,5 +94,8 @@ export class ScrollMaskedContainer extends Phaser.GameObjects.Container
                 this.x = this.rect.x - this.contentPosition;
             }
         }
+
+        evt.event.preventDefault();
+        return false;
     }
 }

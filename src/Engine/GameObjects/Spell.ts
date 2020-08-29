@@ -106,7 +106,10 @@ export class Spell extends dPhysSprite
         }
 
         // Apply tint color
-        this.setTint(Phaser.Display.Color.GetColor(settings.color.red, settings.color.green, settings.color.blue));
+        if (settings.color)
+        {
+            this.setTint(Phaser.Display.Color.GetColor(settings.color.red, settings.color.green, settings.color.blue));
+        }
 
         // Register events
         this._onHit = settings.onHit;

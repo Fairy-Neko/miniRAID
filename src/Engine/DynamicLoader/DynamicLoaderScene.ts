@@ -38,12 +38,6 @@ export class DynamicLoaderScene extends DraggableScene
         this.sizeY = 640;
     }
 
-    preload()
-    {
-        this.load.json('assetList', './assets/assetList.json');
-        this.load.bitmapFont('smallPx', './assets/fonts/smallPx_C_0.png', './assets/fonts/smallPx_C.fnt');
-    }
-
     create()
     {
         super.create();
@@ -53,7 +47,7 @@ export class DynamicLoaderScene extends DraggableScene
         // this.label.setFontFamily('宋体, SimSun, Consolas');
         // this.label.setFontSize(12);
 
-        this.assetList = this.cache.json.get('assetList');
+        // this.assetList = this.cache.json.get('assetList');
 
         this.pools.set("image", {
             "load": this.scene.scene.load.image,

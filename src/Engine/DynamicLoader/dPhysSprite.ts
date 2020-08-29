@@ -39,7 +39,7 @@ export class dPhysSprite extends Phaser.Physics.Arcade.Sprite implements Dynamic
         {
             textureToLoad = texture;
             frameToLoad = frame;
-            texture = subsTexture;
+            texture = subsTexture || 'DOBJ_LOADING_PLACEHOLDER';
             frame = 0;
         }
         if (!texture)
@@ -87,6 +87,7 @@ export class dPhysSprite extends Phaser.Physics.Arcade.Sprite implements Dynamic
                 this.play(this.currentAnim.key, true, this.currentAnim.startFrame);
             }
 
+            this.setBodyShape();
             this.setVisible(true);
         }
     }
@@ -108,5 +109,10 @@ export class dPhysSprite extends Phaser.Physics.Arcade.Sprite implements Dynamic
     getPosition(): Phaser.Math.Vector2
     {
         return new Phaser.Math.Vector2(this.x, this.y);
+    }
+
+    setBodyShape()
+    {
+        this.body.setSize(this.displayWidth * 0.8, this.displayHeight * 0.8, true);
     }
 }

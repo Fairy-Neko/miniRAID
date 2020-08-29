@@ -38,6 +38,9 @@ export class GamePreloadScene extends Phaser.Scene
         this.load.text('locals', './assets/dataSheets/Locals.csv');
         this.load.text('itemData', 'assets/dataSheets/Items.csv');
         this.load.text('buffData', 'assets/dataSheets/Buffs.csv');
+        this.load.text('assets', 'assets/dataSheets/Assets.csv');
+
+        this.load.image('DOBJ_LOADING_PLACEHOLDER', 'assets/img/loading.png');
 
         this.add.existing(new ProgressBar(this, 400, 310, () => [this.currProgress, 1.0], 224, 20, 5, false, 0x444444, 0x000000, 0xfddac5, false));
         this.load.on('progress', (value: number) => { this.currProgress = value; });
@@ -49,6 +52,7 @@ export class GamePreloadScene extends Phaser.Scene
                     this.cache.text.get('locals'),
                     this.cache.text.get('buffData'),
                     this.cache.text.get('itemData'),
+                    this.cache.text.get('assets'),
                 ].map(
                     (val) => new Promise(
                         (resolve, reject) => parse(val, {
@@ -62,6 +66,7 @@ export class GamePreloadScene extends Phaser.Scene
                 let localesCSV = <string>(results[0]);
                 let buffsCSV = <string>(results[1]);
                 let itemsCSV = <string>(results[2]);
+                let assetsCSV = <string>(results[3]);
 
                 Localization.setData(this.parseLocales(localesCSV));
                 ItemManager.setData(this.parseItems(itemsCSV), ItemList);
@@ -70,10 +75,12 @@ export class GamePreloadScene extends Phaser.Scene
                 // ItemManager.setData(this.cache.json.get('itemData'), ItemList);
 
                 Buff.parsedBuffInfo = this.parseBuffs(buffsCSV);
+                let assetList = this.parseAssets(assetsCSV);
 
                 this.scene.add('TestScene', new TestScene(), true);
                 this.scene.add('UIScene', UIScene.getSingleton(), true);
                 this.scene.add('DynamicLoaderScene', DynamicLoaderScene.getSingleton(), true);
+                DynamicLoaderScene.getSingleton().assetList = assetList;
             }).catch((err) =>
             {
                 console.log("Something went wrong: ", err);
@@ -220,28 +227,29 @@ export class GamePreloadScene extends Phaser.Scene
             buff.maxStack = Number.parseInt(row[8]);
 
             // J, K: imageKey, iconId
-            // row[9]
+            buff.imageKey = row[9];
             buff.iconId = Number.parseInt(row[10]);
+            buff.tintIcon = row[11] === "true";
 
             // L, M, N: popUpName
             buff.popupName = 'popUp_' + uid;
             let pName = {
-                "zh-cn": row[11] === "" ? "BAD_STR" : row[11],
-                "en-us": row[12] === "" ? "BAD_STR" : row[12],
-                "ja-jp": row[13] === "" ? "BAD_STR" : row[13],
+                "zh-cn": row[12] === "" ? "BAD_STR" : row[12],
+                "en-us": row[13] === "" ? "BAD_STR" : row[13],
+                "ja-jp": row[14] === "" ? "BAD_STR" : row[14],
             }
             Localization.data.popUpBuff[buff.popupName] = pName;
 
             // O, P: UIImportant, UIPriority
-            buff.UIimportant = row[14] === "true";
-            buff.UIpriority = Number.parseFloat(row[15]);
+            buff.UIimportant = row[15] === "true";
+            buff.UIpriority = Number.parseFloat(row[16]);
 
             // Q, R, S: ToolTip
             buff.toolTip = 'tt_' + uid;
             let ttText = {
-                "zh-cn": row[16] === "" ? "BAD_STR" : row[16],
-                "en-us": row[17] === "" ? "BAD_STR" : row[17],
-                "ja-jp": row[18] === "" ? "BAD_STR" : row[18],
+                "zh-cn": row[17] === "" ? "BAD_STR" : row[17],
+                "en-us": row[18] === "" ? "BAD_STR" : row[18],
+                "ja-jp": row[19] === "" ? "BAD_STR" : row[19],
             }
             Localization.data.main[buff.toolTip] = ttText;
 
@@ -251,6 +259,46 @@ export class GamePreloadScene extends Phaser.Scene
         console.log("Parsed buffSettings:");
         console.dir(allBuffInfo);
         return allBuffInfo;
+    }
+
+    parseAssets(result: any): { [index: string]: any }
+    {
+        let allAssetInfo: { [index: string]: any } = {};
+
+        let currentRowIdx = 3; // Start from 4th row
+        for (; currentRowIdx < result.data.length; currentRowIdx++)
+        {
+            let row = result.data[currentRowIdx];
+            if (row[0] === "") { continue; } // This row is empty
+
+            let uid = row[0];
+            let asset: any = {};
+            asset.type = row[1];
+            asset.url = row[2];
+
+            switch (asset.type)
+            {
+                case 'spritesheet':
+                    asset.frameConfig = {
+                        "frameWidth": Number.parseInt(row[3]),
+                        "frameHeight": Number.parseInt(row[4]),
+                        "startFrame": Number.parseInt(row[5]),
+                        "endFrame": Number.parseInt(row[6]),
+                    };
+                    if (row[7] !== "")
+                    {
+                        asset.animations = JSON.parse(row[7]);
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+
+            allAssetInfo[uid] = asset;
+        }
+
+        return allAssetInfo;
     }
 
     update(time: number, dt: number)

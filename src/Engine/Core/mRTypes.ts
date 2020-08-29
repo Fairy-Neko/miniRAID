@@ -26,7 +26,9 @@ export namespace mRTypes
             stackable?: boolean;
             maxStack?: integer;
 
+            imageKey?: string;
             iconId?: integer;
+            tintIcon?: boolean;
             color?: Phaser.Display.Color;
             popupName?: string;
             popupColor?: Phaser.Display.Color;

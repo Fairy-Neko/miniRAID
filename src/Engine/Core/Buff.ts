@@ -22,7 +22,9 @@ export class Buff extends MobListener
     maxStack: integer;
     // multiply: boolean; // Used to decide if the buff can be applied multiple times by a same source.
 
+    imageKey: string;
     iconId: integer;
+    tintIcon: boolean;
     color: Phaser.Display.Color; // ?
     popupName: { [index: string]: string } | string;
     popupColor: Phaser.Display.Color;
@@ -61,7 +63,9 @@ export class Buff extends MobListener
         this.maxStack = settings.maxStack || 3;
 
         //cellIndex of this buff in the buffIcons image, might be shown under boss lifebar / player lifebar
+        this.imageKey = settings.imageKey;
         this.iconId = settings.iconId || 0;
+        this.tintIcon = settings.tintIcon || false;
 
         //the color used for UI rendering
         this.color = settings.color || Phaser.Display.Color.HexStringToColor('#56CDEF');
