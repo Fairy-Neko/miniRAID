@@ -7,7 +7,7 @@ test_Burn,点燃,Burn,燃える,#ffa342,true,5.0,true,6,sheet_test_imp_buffs,0,f
 test_Light,透射,Enlightened,刺し光,#fffbd1,true,5.0,false,1,sheet_test_buffs,0,false,透射,Lighttened,刺し光,false,1,被光刺穿。,Lighttened.,光に刺し通す。
 test_HOT,再生,Regenerate,再生,#b1ed1a,true,5.0,true,3,sheet_test_buffs,0,false,再生,Regen,再生,false,0,充满活力。,Regenerating.,元気一杯！
 ,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,
+windElf_windPower,疾风充能,Wind Power,,#ccf7ba,false,,true,5,sheet_test_buffs,1,false,疾风,WindPower,,false,0,充满风的能量。,,
 ,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,

@@ -416,6 +416,7 @@ export class UnitFrame extends Phaser.GameObjects.Container
     castingBar: ProgressBar;
     targetMob: Mob;
     buffFrame: BuffFrame;
+    avatar: Phaser.GameObjects.Image;
 
     constructor(scene: Phaser.Scene, x: number, y: number, target: Mob)
     {
@@ -431,9 +432,9 @@ export class UnitFrame extends Phaser.GameObjects.Container
         this.add(txt);
 
         // Avatar
-        let avatar = new Phaser.GameObjects.Image(this.scene, 0, 3, 'elf', 0);
-        avatar.setOrigin(1, 0);
-        this.add(avatar);
+        this.avatar = new dSprite(this.scene, 0, 3, target.textureToLoad);
+        this.avatar.setOrigin(1, 0);
+        this.add(this.avatar);
 
         // Weapon, TODO: switch weapons on click
         this.wpCurrent = new WeaponFrame(this.scene, 85, 7, this.targetMob.mobData.currentWeapon);

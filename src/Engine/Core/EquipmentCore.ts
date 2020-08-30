@@ -264,7 +264,13 @@ export class Weapon extends Equipable
             this.weaponGauge -= this.weaponGaugeMax;
             this.weaponGauge = Math.max(0, this.weaponGauge);
         }
+
         this.doSpecialAttack(source, target);
+
+        if (triggerCD)
+        {
+            this.triggerCD();
+        }
     }
 
     syncStats(mob: MobData)

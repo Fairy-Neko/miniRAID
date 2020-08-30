@@ -52,15 +52,20 @@ export class Buff extends MobListener
         this.timeMax = settings.time || 1.0;
 
         //time in seconds, will automatically reduce by time
-        this.timeRemain = [settings.time];// || this.timeMax;
+        // this.timeRemain = [settings.time];// || this.timeMax;
+        this.timeRemain = []; // Will be added later
 
         //Is the buff over? (should be removed from buff list)
         this.isOver = false;
 
         //stacks of the buff (if any)
-        this.stacks = settings.stacks || 1;
+        this.stacks = 0; // Will be added later
         this.stackable = settings.stackable || false;
         this.maxStack = settings.maxStack || 3;
+        if (!this.stackable)
+        {
+            this.maxStack = 1;
+        }
 
         //cellIndex of this buff in the buffIcons image, might be shown under boss lifebar / player lifebar
         this.imageKey = settings.imageKey;
@@ -86,6 +91,11 @@ export class Buff extends MobListener
         this.toolTip = settings.toolTip || "LOL.";
         this.UIimportant = (settings.UIimportant === undefined) ? false : settings.UIimportant;
         this.UIpriority = (settings.UIpriority === undefined) ? 0 : settings.UIpriority;
+
+        for (let i = 0; i < (settings.stacks || 1); i++)
+        {
+            this.addStack(settings.time);
+        }
     }
 
     popUp(mob: Mob)

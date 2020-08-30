@@ -520,6 +520,9 @@ define("Engine/DynamicLoader/dPhysSprite", ["require", "exports", "Engine/Dynami
             // Since we cannot put "super" to the very beginning ...
             this.resources = [];
             this.currentAnim = { 'key': '', 'startFrame': 0 };
+            // Set properties to be visible to others
+            this.textureToLoad = texture;
+            this.frameToLoad = frame;
             if (textureToLoad) {
                 this.resources.push({ 'key': textureToLoad, 'metadata': {}, 'callback': this.onLoadComplete.bind(this) });
                 this.textureToLoad = textureToLoad;
@@ -935,7 +938,7 @@ define("Engine/Core/GameData", ["require", "exports", "Engine/Core/mRTypes"], fu
         GameData.playerSparseInc = 2;
         GameData.useAutomove = true;
         GameData.moveThreshold = 150;
-        GameData.popUpSmallFont = true;
+        GameData.popUpSmallFont = false;
         GameData.popUpBuffLanguage = mRTypes_1.mRTypes.Languages.ENG;
         GameData.mainLanguage = mRTypes_1.mRTypes.Languages.ENG;
         GameData.showManaNumber = true;
@@ -2159,9 +2162,9 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
             txt.setOrigin(0, 1);
             this.add(txt);
             // Avatar
-            let avatar = new Phaser.GameObjects.Image(this.scene, 0, 3, 'elf', 0);
-            avatar.setOrigin(1, 0);
-            this.add(avatar);
+            this.avatar = new dSprite_1.dSprite(this.scene, 0, 3, target.textureToLoad);
+            this.avatar.setOrigin(1, 0);
+            this.add(this.avatar);
             // Weapon, TODO: switch weapons on click
             this.wpCurrent = new WeaponFrame(this.scene, 85, 7, this.targetMob.mobData.currentWeapon);
             this.wpAlter = new WeaponFrame(this.scene, 115, 7, this.targetMob.mobData.anotherWeapon);
@@ -2843,13 +2846,17 @@ define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener", "En
             //time in seconds, indicates the durtion of buff
             this.timeMax = settings.time || 1.0;
             //time in seconds, will automatically reduce by time
-            this.timeRemain = [settings.time]; // || this.timeMax;
+            // this.timeRemain = [settings.time];// || this.timeMax;
+            this.timeRemain = []; // Will be added later
             //Is the buff over? (should be removed from buff list)
             this.isOver = false;
             //stacks of the buff (if any)
-            this.stacks = settings.stacks || 1;
+            this.stacks = 0; // Will be added later
             this.stackable = settings.stackable || false;
             this.maxStack = settings.maxStack || 3;
+            if (!this.stackable) {
+                this.maxStack = 1;
+            }
             //cellIndex of this buff in the buffIcons image, might be shown under boss lifebar / player lifebar
             this.imageKey = settings.imageKey;
             this.iconId = settings.iconId || 0;
@@ -2868,6 +2875,9 @@ define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener", "En
             this.toolTip = settings.toolTip || "LOL.";
             this.UIimportant = (settings.UIimportant === undefined) ? false : settings.UIimportant;
             this.UIpriority = (settings.UIpriority === undefined) ? 0 : settings.UIpriority;
+            for (let i = 0; i < (settings.stacks || 1); i++) {
+                this.addStack(settings.time);
+            }
         }
         popUp(mob) {
             let popUpPos = mob.getTopCenter();
@@ -2986,6 +2996,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
         constructor(settings) {
             super(DataBackend_1.DataBackend.getSingleton().eventSystem);
             this.inControl = false;
+            this.recalcStatsRequired = true;
             this.name = settings.name || "noname";
             // this.position = {x: this.body.left, y: this.body.top};
             this.image = settings.image || "unknown";
@@ -3163,23 +3174,21 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
                 this.parentMob = mob;
             }
             // Switch weapon ?
+            let switchedWeapon = false;
             if (this.shouldSwitchWeapon === true) {
                 this.shouldSwitchWeapon = false;
                 if (this.canSwitchWeapon()) {
+                    switchedWeapon = true;
                     var tmp = this.currentWeapon;
                     this.currentWeapon = this.anotherWeapon;
                     this.anotherWeapon = tmp;
+                    // We already switched them !
+                    this.removeListener(this.anotherWeapon);
+                    this.addListener(this.currentWeapon);
+                    this.anotherWeapon.activated = false;
+                    this.currentWeapon.activated = true;
                 }
-                // We already switched them !
-                this.removeListener(this.anotherWeapon);
-                this.addListener(this.currentWeapon);
-                this.anotherWeapon.activated = false;
-                this.currentWeapon.activated = true;
-                // I switched my weapon !!!
-                this.updateListeners('switchWeapon', this, this.currentWeapon);
             }
-            // Update all listeners
-            this.updateListeners('update', this, dt);
             for (let listener of this.listeners.getAll()) {
                 if (listener.isOver == true) {
                     //this buff is over. delete it from the list.
@@ -3190,6 +3199,16 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
                     listener.update(this, dt);
                 }
             }
+            // Check if my stats needs to be updated
+            if (this.recalcStatsRequired) {
+                this.calcStats(this.parentMob);
+            }
+            if (switchedWeapon) {
+                // I switched my weapon !!!
+                this.updateListeners('switchWeapon', this, this.currentWeapon);
+            }
+            // Update all listeners
+            this.updateListeners('update', this, dt);
             // Mana Regen
             this.currentMana += dt * this.manaRegen;
             // if (typeof this.currentWeapon !== "undefined")
@@ -3276,6 +3295,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
                 this.listen(listener, 'statChange', (arg) => this.onStatChange(arg));
                 // listener.emit('add', undefined, this, source);
                 listener._beAdded(this, source);
+                this.recalcStatsRequired = true;
             }
         }
         removeListener(listener, source) {
@@ -3291,6 +3311,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
                 // listener.emit('remove', undefined, this, source);
                 listener._beRemoved(this, source);
                 this.unlistenAll(listener);
+                this.recalcStatsRequired = true;
             }
         }
         cast(mob, target, spell) {
@@ -3428,10 +3449,10 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
                     + this.baseStats.mag * 4;
             // And mana
             let manaRatio = this.currentMana / this.maxMana;
-            this.maxMana = this.baseStats.mag * 10 + this.baseStats.int * 4;
+            this.maxMana = 100 + this.baseStats.mag * 10 + this.baseStats.int * 4;
             this.maxMana = Math.ceil(this.maxMana);
             this.currentMana = Math.max(0, Math.ceil(manaRatio * this.maxMana));
-            this.manaRegen = this.baseStats.mag * 0.4;
+            this.manaRegen = this.baseStats.mag * 0.4 + 10;
             // TODO - 4. Calculate battle (advanced) stats from base stats (e.g. atkPower = INT * 0.7 * floor( MAG * 1.4 ) ... )
             // 5. Add equipment by listener.calcStats()
             // Actually, those steps were combined in a single call,
@@ -3442,6 +3463,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             // 5. Finish
             this.maxHealth = Math.ceil(this.maxHealth);
             this.currentHealth = Math.max(0, Math.ceil(this.healthRatio * this.maxHealth));
+            this.recalcStatsRequired = false;
         }
         receiveDamageHeal(damageInfo) {
             let isHeal = (damageInfo.type === GameData_10.GameData.Elements.heal);
@@ -3759,6 +3781,9 @@ define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/GameObjects/M
                 this.weaponGauge = Math.max(0, this.weaponGauge);
             }
             this.doSpecialAttack(source, target);
+            if (triggerCD) {
+                this.triggerCD();
+            }
         }
         syncStats(mob) {
             this.cooldownMax = mob.getAttackSpeed();
@@ -4833,8 +4858,8 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
             this.baseAttackMin = 6;
             this.baseAttackMax = 18;
             this.baseAttackSpeed = 1.5;
-            this.targetCount = 2;
-            this.activeRange = 2000;
+            this.targetCount = 1;
+            this.activeRange = 350;
             this.manaCost = 3;
             this.weaponGaugeMax = 25;
             this.weaponGaugeIncreasement = function (mob) { return mob.mobData.baseStats.mag; };
@@ -4894,7 +4919,7 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
                     'info': { 'name': this.atkName, 'flags': new Set([Spell_4.SpellFlags.isDamage, Spell_4.SpellFlags.hasTarget]) },
                     'source': source,
                     'target': targetMob,
-                    'speed': 150,
+                    'speed': 250,
                     'mainType': [GameData_15.GameData.Elements.ice, GameData_15.GameData.Elements.fire],
                     'onMobHit': (self, mob) => { self.dieAfter(self.HealDmg, [mob, Helper_4.getRandomInt(6, 18), GameData_15.GameData.Elements.ice], mob); },
                     // 'color': Phaser.Display.Color.HexStringToColor("#77ffff"),
@@ -4908,7 +4933,7 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
                     'info': { 'name': this.spName, 'flags': new Set([Spell_4.SpellFlags.isDamage, Spell_4.SpellFlags.hasTarget]) },
                     'source': source,
                     'target': targetMob,
-                    'speed': 150,
+                    'speed': 400,
                     'onMobHit': (self, mob) => {
                         self.dieAfter(() => Helper_4.AoE((m) => {
                             // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
@@ -4944,33 +4969,104 @@ define("Weapons/index", ["require", "exports", "Weapons/Staff"], function (requi
     __export(Staff_1);
 });
 /** @packageDocumentation @module Mobs.Allies.WindElf */
-define("Mobs/Allies/WindElf/Hunter", ["require", "exports", "Engine/GameObjects/Mob"], function (require, exports, Mob_8) {
+define("Mobs/Allies/WindElf/WindElf", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/MobListener"], function (require, exports, Mob_8, MobListener_5) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    class Hunter extends Mob_8.Mob {
-    }
-    exports.Hunter = Hunter;
-});
-/** @packageDocumentation @module Mobs.Allies.WindElf */
-define("Mobs/Allies/WindElf/WindElf", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/MobListener"], function (require, exports, Mob_9, MobListener_5) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    class WindElf extends Mob_9.Mob {
+    class WindElf extends Mob_8.Mob {
     }
     exports.WindElf = WindElf;
     class WindElfChar extends MobListener_5.MobListener {
+        constructor() {
+            super(...arguments);
+            this.windPower = 0;
+            this.windPowerMax = 5;
+        }
     }
     exports.WindElfChar = WindElfChar;
 });
 /** @packageDocumentation @module Mobs.Allies.WindElf */
-define("Mobs/Allies/WindElf/index", ["require", "exports", "Mobs/Allies/WindElf/Hunter", "Mobs/Allies/WindElf/WindElf"], function (require, exports, Hunter_1, WindElf_1) {
+define("Mobs/Allies/WindElf/Hunter", ["require", "exports", "Engine/GameObjects/Mob", "Mobs/Allies/WindElf/WindElf", "Engine/Core/Buff"], function (require, exports, Mob_9, WindElf_1, Buff_4) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class Hunter extends Mob_9.Mob {
+        constructor(scene, x, y, sprite, settings, subsprite, frame) {
+            sprite = 'sheet_mHarcher';
+            super(scene, x, y, sprite, settings, subsprite, frame);
+            this.mobData.addListener(new HunterChar(), this.mobData);
+        }
+        update(dt) {
+            super.update(dt);
+        }
+    }
+    exports.Hunter = Hunter;
+    class HunterChar extends WindElf_1.WindElfChar {
+        onAdded(mob, source) {
+            this.listen(mob, 'specialAttackFinish', this.onSpecialAttackFinish);
+            this.listen(mob, 'regularAttack', this.onRegularAttack);
+            this.listen(mob, 'regularAttackFinish', this.onRegularAttackFinish);
+            this.listen(mob, 'dealDamage', this.onDealDamage);
+            this.cache_ap = { phy: mob.battleStats.attackPower.physical, ele: mob.battleStats.attackPower.elemental };
+        }
+        onSpecialAttackFinish(src, weapon, targets) {
+            this.windPower += 1;
+            this.windPower = Math.min(this.windPower, this.windPowerMax);
+            src.parentMob.receiveBuff(src.parentMob, new WindHasteBuff(Buff_4.Buff.fromKey('windElf_windPower', { source: src })), true);
+        }
+        onRegularAttack(src, weapon, targets) {
+            let additionals = [];
+            let myPos = src.parentMob.footPos().clone();
+            let spread = Math.PI / 180; // 1 degree
+            for (let target of targets) {
+                for (let i = 0; i < this.windPower; i++) {
+                    let atkVec = (target instanceof Mob_9.Mob ? target.footPos() : target).clone().subtract(myPos);
+                    let rad = atkVec.angle() + (Math.floor(i / 2) + 1) * (i % 2 == 0 ? -spread : spread);
+                    additionals.push(myPos.clone().add(Phaser.Math.Vector2.RIGHT.clone().rotate(rad)));
+                }
+            }
+            this.cache_ap = { phy: src.battleStats.attackPower.physical, ele: src.battleStats.attackPower.elemental };
+            src.battleStats.attackPower.physical -= this.windPower * 6;
+            src.battleStats.attackPower.elemental -= this.windPower * 6;
+            targets.push(...additionals);
+        }
+        onRegularAttackFinish(src, weapon, targets) {
+            src.battleStats.attackPower.physical = this.cache_ap.phy;
+            src.battleStats.attackPower.elemental = this.cache_ap.ele;
+        }
+        onDealDamage(damageInfo) {
+            damageInfo.crit += 5;
+            return true;
+        }
+    }
+    exports.HunterChar = HunterChar;
+    class WindHasteBuff extends Buff_4.Buff {
+        constructor(settings) {
+            super(settings);
+        }
+        onAdded(mob, source) {
+            this.listen(mob, 'statCalculation', this.onStatCalculation);
+        }
+        addStack(time) {
+            if (super.addStack(time)) {
+                this.emitArray('statChange', () => undefined, [this]);
+                return true;
+            }
+            return false;
+        }
+        onStatCalculation(mob) {
+            mob.modifiers.attackSpeed += this.stacks * 0.08;
+        }
+    }
+    exports.WindHasteBuff = WindHasteBuff;
+});
+/** @packageDocumentation @module Mobs.Allies.WindElf */
+define("Mobs/Allies/WindElf/index", ["require", "exports", "Mobs/Allies/WindElf/Hunter", "Mobs/Allies/WindElf/WindElf"], function (require, exports, Hunter_1, WindElf_2) {
     "use strict";
     function __export(m) {
         for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
     }
     Object.defineProperty(exports, "__esModule", { value: true });
     __export(Hunter_1);
-    __export(WindElf_1);
+    __export(WindElf_2);
 });
 /** @packageDocumentation @module Mobs.Allies */
 define("Mobs/Allies/index", ["require", "exports", "Mobs/Allies/WindElf/index"], function (require, exports, WindElf) {
@@ -5118,7 +5214,7 @@ define("SpellData/FloraHeal", ["require", "exports", "Engine/Core/SpellData", "E
     })(SpellDatas = exports.SpellDatas || (exports.SpellDatas = {}));
 });
 /** @packageDocumentation @module BattleScene */
-define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/index", "Engine/Agents/PlayerAgents", "Mobs/index", "Agents/index", "Engine/Core/Helper", "Engine/Core/ObjectPopulator", "Lists/ObjectList", "Lists/AgentList", "Engine/UI/Localization", "SpellData/FloraHeal"], function (require, exports, BattleScene_1, Mob_12, MobData_3, Weapons, PlayerAgents, Mobs, Agents, Helper_6, ObjectPopulator_3, ObjectList_1, AgentList_1, Localization_9, FloraHeal_1) {
+define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/index", "Engine/Agents/PlayerAgents", "Mobs/index", "Agents/index", "Engine/Core/Helper", "Engine/Core/ObjectPopulator", "Lists/ObjectList", "Lists/AgentList", "Engine/UI/Localization"], function (require, exports, BattleScene_1, Mob_12, MobData_3, Weapons, PlayerAgents, Mobs, Agents, Helper_6, ObjectPopulator_3, ObjectList_1, AgentList_1, Localization_9) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     Weapons = __importStar(Weapons);
@@ -5155,12 +5251,12 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
                     'backendData': new MobData_3.MobData({
                         'name': Localization_9._('testGirl') + i,
                         'isPlayer': true,
-                        'vit': 10 + Helper_6.getRandomInt(-3, 3),
-                        'mag': 8 + Helper_6.getRandomInt(-3, 3),
-                        'str': 2 + Helper_6.getRandomInt(-1, 1),
-                        'int': 3 + Helper_6.getRandomInt(-2, 2),
-                        'dex': 5 + Helper_6.getRandomInt(-3, 3),
-                        'tec': 7 + Helper_6.getRandomInt(-3, 3),
+                        'vit': 12 + Helper_6.getRandomInt(-3, 3),
+                        'mag': 5,
+                        'str': 2,
+                        'int': 3,
+                        'dex': 8,
+                        'tec': 7,
                     }),
                     'agent': PlayerAgents.Simple,
                 });
@@ -5169,25 +5265,26 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
                 this.girl.mobData.battleStats.crit = 5.0;
                 this.girl.mobData.equip(new Weapons.CometWand(), MobData_3.EquipSlots.MainHand);
                 this.girl.mobData.equip(new Weapons.CometWand(), MobData_3.EquipSlots.SubHand);
+                this.girl.mobData.currentWeapon.activeRange = 2000;
                 this.girl.mobData.weaponSubHand.baseAttackSpeed = 0.05;
                 this.girl.mobData.weaponSubHand.manaCost = 1;
                 // this.girl.mobData.addListener(this.girl.mobData.weaponMainHand);
                 // this.girl.receiveBuff(this.girl, new Buffs.HDOT(Buff.fromKey('test_GodHeal'), GameData.Elements.heal, 20, 38, 0.8));
-                this.girl.mobData.spells['floraHeal'] = new FloraHeal_1.SpellDatas.FloraHeal({ 'name': 'FloraHeal', 'coolDown': 5.0 + i * 1.0, 'manaCost': 20 });
+                // this.girl.mobData.spells['floraHeal'] = new SpellDatas.FloraHeal({ 'name': 'FloraHeal', 'coolDown': 5.0 + i * 1.0, 'manaCost': 20 });
                 this.addMob(this.girl);
             }
             for (let i = 0; i < 2; i++) {
                 // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
-                this.girl = new Mobs.Allies.WindElf.Hunter(this, 930, 220 + i * 30, 'sheet_forestelf_myst', {
+                this.girl = new Mobs.Allies.WindElf.Hunter(this, 930, 220 + 180 + i * 30, 'sheet_forestelf_myst', {
                     'backendData': new MobData_3.MobData({
-                        'name': Localization_9._('testGirl') + i,
+                        'name': Localization_9._('Hunter') + i,
                         'isPlayer': true,
                         'vit': 10 + Helper_6.getRandomInt(-3, 3),
-                        'mag': 8 + Helper_6.getRandomInt(-3, 3),
-                        'str': 2 + Helper_6.getRandomInt(-1, 1),
-                        'int': 3 + Helper_6.getRandomInt(-2, 2),
-                        'dex': 5 + Helper_6.getRandomInt(-3, 3),
-                        'tec': 7 + Helper_6.getRandomInt(-3, 3),
+                        'mag': 5,
+                        'str': 2,
+                        'int': 3,
+                        'dex': 8,
+                        'tec': 7,
                     }),
                     'agent': PlayerAgents.Simple,
                 });
@@ -5196,11 +5293,12 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
                 this.girl.mobData.battleStats.crit = 5.0;
                 this.girl.mobData.equip(new Weapons.CometWand(), MobData_3.EquipSlots.MainHand);
                 this.girl.mobData.equip(new Weapons.CometWand(), MobData_3.EquipSlots.SubHand);
+                this.girl.mobData.currentWeapon.activeRange = 2000;
                 this.girl.mobData.weaponSubHand.baseAttackSpeed = 0.05;
                 this.girl.mobData.weaponSubHand.manaCost = 1;
                 // this.girl.mobData.addListener(this.girl.mobData.weaponMainHand);
                 // this.girl.receiveBuff(this.girl, new Buffs.HDOT(Buff.fromKey('test_GodHeal'), GameData.Elements.heal, 20, 38, 0.8));
-                this.girl.mobData.spells['floraHeal'] = new FloraHeal_1.SpellDatas.FloraHeal({ 'name': 'FloraHeal', 'coolDown': 5.0 + i * 1.0, 'manaCost': 20 });
+                // this.girl.mobData.spells['floraHeal'] = new SpellDatas.FloraHeal({ 'name': 'FloraHeal', 'coolDown': 5.0 + i * 1.0, 'manaCost': 20 });
                 this.addMob(this.girl);
             }
             let woodlog = new Mob_12.Mob(this, 300, 200, 'sheet_forestelf_myst', {
@@ -5226,7 +5324,7 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
     exports.TestScene = TestScene;
 });
 /** @packageDocumentation @module ScenePrototypes */
-define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine/UI/Localization", "Engine/DynamicLoader/DynamicLoaderScene", "Engine/UI/UIScene", "TestScene", "Engine/Core/InventoryCore", "Lists/ItemList", "Engine/UI/ProgressBar", "papaparse", "Engine/Core/Buff", "js-cookie", "Engine/Core/GameData"], function (require, exports, Localization_10, DynamicLoaderScene_3, UIScene_5, TestScene_1, InventoryCore_3, ItemList_1, ProgressBar_3, papaparse_1, Buff_4, js_cookie_1, GameData_17) {
+define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine/UI/Localization", "Engine/DynamicLoader/DynamicLoaderScene", "Engine/UI/UIScene", "TestScene", "Engine/Core/InventoryCore", "Lists/ItemList", "Engine/UI/ProgressBar", "papaparse", "Engine/Core/Buff", "js-cookie", "Engine/Core/GameData"], function (require, exports, Localization_10, DynamicLoaderScene_3, UIScene_5, TestScene_1, InventoryCore_3, ItemList_1, ProgressBar_3, papaparse_1, Buff_5, js_cookie_1, GameData_17) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     js_cookie_1 = __importDefault(js_cookie_1);
@@ -5275,7 +5373,7 @@ define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine
                     InventoryCore_3.ItemManager.setData(this.parseItems(itemsCSV), ItemList_1.ItemList);
                     // Create the ItemManager
                     // ItemManager.setData(this.cache.json.get('itemData'), ItemList);
-                    Buff_4.Buff.parsedBuffInfo = this.parseBuffs(buffsCSV);
+                    Buff_5.Buff.parsedBuffInfo = this.parseBuffs(buffsCSV);
                     let assetList = this.parseAssets(assetsCSV);
                     this.scene.add('TestScene', new TestScene_1.TestScene(), true);
                     this.scene.add('UIScene', UIScene_5.UIScene.getSingleton(), true);
@@ -5496,12 +5594,12 @@ define("SimpleGame", ["require", "exports", "Engine/ScenePrototypes/GamePreloadS
     InitPhaser.initGame();
 });
 /** @packageDocumentation @moduleeDocumentation @module SpellDatas */
-define("SpellData/index", ["require", "exports", "SpellData/FloraHeal"], function (require, exports, FloraHeal_2) {
+define("SpellData/index", ["require", "exports", "SpellData/FloraHeal"], function (require, exports, FloraHeal_1) {
     "use strict";
     function __export(m) {
         for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
     }
     Object.defineProperty(exports, "__esModule", { value: true });
-    __export(FloraHeal_2);
+    __export(FloraHeal_1);
 });
 //# sourceMappingURL=gameMain.js.map

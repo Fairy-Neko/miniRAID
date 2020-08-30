@@ -130,6 +130,8 @@ export class MobData extends EventSystem.EventElement
 
     inControl: boolean = false;
 
+    recalcStatsRequired: boolean = true;
+
     constructor(settings: mRTypes.Settings.MobData)
     {
         super(DataBackend.getSingleton().eventSystem);
@@ -373,29 +375,26 @@ export class MobData extends EventSystem.EventElement
         }
 
         // Switch weapon ?
+        let switchedWeapon = false;
         if (this.shouldSwitchWeapon === true)
         {
             this.shouldSwitchWeapon = false;
 
             if (this.canSwitchWeapon())
             {
+                switchedWeapon = true;
                 var tmp = this.currentWeapon;
                 this.currentWeapon = this.anotherWeapon;
                 this.anotherWeapon = tmp;
+
+                // We already switched them !
+                this.removeListener(this.anotherWeapon);
+                this.addListener(this.currentWeapon);
+                this.anotherWeapon.activated = false;
+                this.currentWeapon.activated = true;
             }
-
-            // We already switched them !
-            this.removeListener(this.anotherWeapon);
-            this.addListener(this.currentWeapon);
-            this.anotherWeapon.activated = false;
-            this.currentWeapon.activated = true;
-
-            // I switched my weapon !!!
-            this.updateListeners('switchWeapon', this, this.currentWeapon);
         }
 
-        // Update all listeners
-        this.updateListeners('update', this, dt);
         for (let listener of this.listeners.getAll())
         {
             if (listener.isOver == true)
@@ -409,6 +408,21 @@ export class MobData extends EventSystem.EventElement
                 listener.update(this, dt);
             }
         }
+
+        // Check if my stats needs to be updated
+        if (this.recalcStatsRequired)
+        {
+            this.calcStats(this.parentMob);
+        }
+
+        if (switchedWeapon)
+        {
+            // I switched my weapon !!!
+            this.updateListeners('switchWeapon', this, this.currentWeapon);
+        }
+
+        // Update all listeners
+        this.updateListeners('update', this, dt);
 
         // Mana Regen
         this.currentMana += dt * this.manaRegen;
@@ -530,6 +544,7 @@ export class MobData extends EventSystem.EventElement
             this.listen(listener, 'statChange', (arg: MobListener) => this.onStatChange(arg));
             // listener.emit('add', undefined, this, source);
             listener._beAdded(this, source);
+            this.recalcStatsRequired = true;
         }
     }
 
@@ -551,6 +566,7 @@ export class MobData extends EventSystem.EventElement
             // listener.emit('remove', undefined, this, source);
             listener._beRemoved(this, source);
             this.unlistenAll(listener);
+            this.recalcStatsRequired = true;
         }
     }
 
@@ -729,10 +745,10 @@ export class MobData extends EventSystem.EventElement
 
         // And mana
         let manaRatio = this.currentMana / this.maxMana;
-        this.maxMana = this.baseStats.mag * 10 + this.baseStats.int * 4;
+        this.maxMana = 100 + this.baseStats.mag * 10 + this.baseStats.int * 4;
         this.maxMana = Math.ceil(this.maxMana);
         this.currentMana = Math.max(0, Math.ceil(manaRatio * this.maxMana));
-        this.manaRegen = this.baseStats.mag * 0.4;
+        this.manaRegen = this.baseStats.mag * 0.4 + 10;
 
         // TODO - 4. Calculate battle (advanced) stats from base stats (e.g. atkPower = INT * 0.7 * floor( MAG * 1.4 ) ... )
         // 5. Add equipment by listener.calcStats()
@@ -745,6 +761,8 @@ export class MobData extends EventSystem.EventElement
         // 5. Finish
         this.maxHealth = Math.ceil(this.maxHealth);
         this.currentHealth = Math.max(0, Math.ceil(this.healthRatio * this.maxHealth));
+
+        this.recalcStatsRequired = false;
     }
 
     receiveDamageHeal(damageInfo: mRTypes.DamageHeal_Input): mRTypes.DamageHeal_Result

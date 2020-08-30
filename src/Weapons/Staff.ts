@@ -24,8 +24,8 @@ export class CometWand extends Weapon
         this.baseAttackMax = 18;
         this.baseAttackSpeed = 1.5;
 
-        this.targetCount = 2;
-        this.activeRange = 2000;
+        this.targetCount = 1;
+        this.activeRange = 350;
 
         this.manaCost = 3;
 
@@ -103,7 +103,7 @@ export class CometWand extends Weapon
                 'info': { 'name': this.atkName, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },
                 'source': source,
                 'target': targetMob,
-                'speed': 150,
+                'speed': 250,
                 'mainType': [GameData.Elements.ice, GameData.Elements.fire],
                 'onMobHit': (self: Spell, mob: Mob) => { self.dieAfter(self.HealDmg, [mob, getRandomInt(6, 18), GameData.Elements.ice], mob); },
                 // 'color': Phaser.Display.Color.HexStringToColor("#77ffff"),
@@ -119,7 +119,7 @@ export class CometWand extends Weapon
                 'info': { 'name': this.spName, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },
                 'source': source,
                 'target': targetMob,
-                'speed': 150,
+                'speed': 400,
                 'onMobHit': (self: Spell, mob: Mob) =>
                 {
                     self.dieAfter(

@@ -55,6 +55,10 @@ export class dPhysSprite extends Phaser.Physics.Arcade.Sprite implements Dynamic
         this.resources = [];
         this.currentAnim = { 'key': '', 'startFrame': 0 };
 
+        // Set properties to be visible to others
+        this.textureToLoad = texture;
+        this.frameToLoad = frame;
+
         if (textureToLoad)
         {
             this.resources.push({ 'key': textureToLoad, 'metadata': {}, 'callback': this.onLoadComplete.bind(this) });

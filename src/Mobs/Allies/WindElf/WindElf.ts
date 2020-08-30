@@ -10,5 +10,6 @@ export class WindElf extends Mob
 
 export class WindElfChar extends MobListener
 {
-    windHaste: number;
+    windPower: number = 0;
+    windPowerMax: number = 5;
 }

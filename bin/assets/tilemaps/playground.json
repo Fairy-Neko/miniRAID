@@ -393,7 +393,7 @@
                         {
                          "name":"int",
                          "type":"float",
-                         "value":10
+                         "value":0
                         }, 
                         {
                          "name":"mag",
@@ -435,7 +435,7 @@
                         {
                          "name":"int",
                          "type":"float",
-                         "value":10
+                         "value":0
                         }, 
                         {
                          "name":"mag",
@@ -477,7 +477,7 @@
                         {
                          "name":"int",
                          "type":"float",
-                         "value":10
+                         "value":0
                         }, 
                         {
                          "name":"mag",
@@ -519,7 +519,7 @@
                         {
                          "name":"int",
                          "type":"float",
-                         "value":10
+                         "value":0
                         }, 
                         {
                          "name":"mag",
@@ -561,7 +561,7 @@
                         {
                          "name":"int",
                          "type":"float",
-                         "value":10
+                         "value":0
                         }, 
                         {
                          "name":"mag",
@@ -603,7 +603,7 @@
                         {
                          "name":"int",
                          "type":"float",
-                         "value":10
+                         "value":0
                         }, 
                         {
                          "name":"mag",
@@ -645,7 +645,7 @@
                         {
                          "name":"int",
                          "type":"float",
-                         "value":10
+                         "value":0
                         }, 
                         {
                          "name":"mag",
@@ -687,7 +687,7 @@
                         {
                          "name":"int",
                          "type":"float",
-                         "value":10
+                         "value":0
                         }, 
                         {
                          "name":"mag",
