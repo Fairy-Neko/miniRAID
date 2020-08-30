@@ -294,9 +294,7 @@ export class Weapon extends Equipable
 
         let modified = false;
         let pwrCorrect = 1.0;
-        pwrCorrect *= Math.pow(
-            1.0353,
-            mobData.battleStats.attackPower[GameData.damageType[dmgType]] + mobData.battleStats.attackPower[dmgType]);
+        pwrCorrect *= mobData.getAtkPower(dmgType);
 
         if (pwrCorrect > 1.01 || pwrCorrect < 0.99)
         {

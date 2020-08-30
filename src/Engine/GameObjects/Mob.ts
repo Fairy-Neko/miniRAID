@@ -225,24 +225,21 @@ export class Mob extends dPhysSprite
         return true;
     }
 
-    fillDHF(_damageInfo: mRTypes.DamageHeal_FrontEnd): mRTypes.DamageHeal_FrontEnd
+    fillDHF(_damageInfo: mRTypes.DamageHeal_FrontEndInput): mRTypes.DamageHeal_FrontEndInput
     {
-        if (_damageInfo.isAvoid == undefined)
+        if (typeof _damageInfo.level === 'undefined')
         {
-            _damageInfo.isAvoid = false;
+            _damageInfo.level = 0;
         }
-
-        if (_damageInfo.isCrit == undefined)
+        if (typeof _damageInfo.crit === 'undefined')
         {
-            _damageInfo.isCrit = false;
+            _damageInfo.crit = 0;
         }
-
-        if (_damageInfo.isBlock == undefined)
+        if (typeof _damageInfo.hit === 'undefined')
         {
-            _damageInfo.isBlock = false;
+            _damageInfo.hit = 0;
         }
-
-        if (_damageInfo.popUp == undefined)
+        if (typeof _damageInfo.popUp === 'undefined')
         {
             _damageInfo.popUp = true;
         }
@@ -269,34 +266,39 @@ export class Mob extends dPhysSprite
      * spell:           the spell used at this attack
      * popUp (true):    Should this damage popup a text ?
      */
-    receiveDamage(_damageInfo: mRTypes.DamageHeal_FrontEnd): mRTypes.DamageHeal
+    receiveDamageHeal(_damageInfo: mRTypes.DamageHeal_FrontEndInput): mRTypes.DamageHeal_Result
     {
         // Fill optional slots with their default values.
         _damageInfo = this.fillDHF(_damageInfo);
 
-        let damageInfo: mRTypes.DamageHeal = {
+        let damageInfo: mRTypes.DamageHeal_Input = {
             'source': _damageInfo.source.mobData,
-            'target': this.mobData,
             'spell': _damageInfo.spell,
             'value': _damageInfo.value,
-            'isCrit': _damageInfo.isCrit,
-            'isAvoid': _damageInfo.isAvoid,
-            'isBlock': _damageInfo.isBlock,
             'type': _damageInfo.type,
-            // 'type'   : _damageInfo.type,
-            'overdeal': 0,
+            'level': _damageInfo.level,
+            'crit': _damageInfo.crit,
+            'hit': _damageInfo.hit
         };
 
         if (Mob.checkAlive(this) == false)
         {
-            damageInfo.isAvoid = true;
-            damageInfo.value = 0;
-            return damageInfo;
+            return {
+                'isAvoid': true,
+                'isBlock': true,
+                'isCrit': false,
+                'overdeal': 0,
+                'value': 0,
+                'type': _damageInfo.type,
+                'target': this.mobData,
+                'spell': _damageInfo.spell,
+                'source': _damageInfo.source.mobData
+            };
         }
 
         // The actual damage calculate and event trigger moved into backend
         // If mob dead finally, this.data.alive will become false
-        let result = this.mobData.receiveDamage(damageInfo);
+        let result = this.mobData.receiveDamageHeal(damageInfo);
 
         // It does not hit !
         if (result.isAvoid)
@@ -304,7 +306,14 @@ export class Mob extends dPhysSprite
             if (_damageInfo.popUp == true)
             {
                 var popUpPos = this.getTopCenter();
-                PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, GameData.ElementColors['miss']);
+                if (result.type === 'heal')
+                {
+                    PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, GameData.ElementColors['miss'], 1.0, 64);
+                }
+                else
+                {
+                    PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, GameData.ElementColors['miss']);
+                }
             }
 
             return result;
@@ -314,7 +323,14 @@ export class Mob extends dPhysSprite
         if (_damageInfo.popUp == true && result.value > 0)
         {
             var popUpPos = this.getTopCenter();
-            PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData.ElementColors[result.type]);
+            if (result.type === 'heal')
+            {
+                PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData.ElementColors[result.type], 1.0, 64);
+            }
+            else
+            {
+                PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData.ElementColors[result.type]);
+            }
 
             // popUp texts on unit frames
             // fade from left to the the edge of currentHealth
@@ -325,9 +341,18 @@ export class Mob extends dPhysSprite
                 {
                     if (this === playerList[i])
                     {
-                        let popX = UIScene.getSingleton().unitFrames[i].x + 78;
-                        let popY = UIScene.getSingleton().unitFrames[i].y + 5;
-                        PopUpManager.getSingleton().addText("-" + result.value.toString() + (result.isCrit ? "!" : ""), popX, popY, GameData.ElementColors[result.type], 0.8, -40, 0, 40, 0);
+                        if (result.type === 'heal')
+                        {
+                            let popX = UIScene.getSingleton().unitFrames[i].x + 40;
+                            let popY = UIScene.getSingleton().unitFrames[i].y + 15;
+                            PopUpManager.getSingleton().addText("+" + result.value.toString() + (result.isCrit ? "!" : ""), popX, popY, GameData.ElementColors['heal'], 0.8, 40, 0, -40, 0);
+                        }
+                        else
+                        {
+                            let popX = UIScene.getSingleton().unitFrames[i].x + 78;
+                            let popY = UIScene.getSingleton().unitFrames[i].y + 5;
+                            PopUpManager.getSingleton().addText("-" + result.value.toString() + (result.isCrit ? "!" : ""), popX, popY, GameData.ElementColors[result.type], 0.8, -40, 0, 40, 0);
+                        }
                     }
                 }
             }
@@ -344,100 +369,22 @@ export class Mob extends dPhysSprite
         return result;
     }
 
-    // Receive healing, same as recieve damage.
-
-    /**
-     * Params of healInfo (default value)
-     * source:          heal source
-     * heal (0):        actual heal, a number.
-     * isCrit (false):  is this heal crits ? It will be calculated automatically if it is false.
-     * spell:           the spell used at this attack
-     * popUp (true):    Should this heal popup a text ?
-     */
-    receiveHeal(_healInfo: mRTypes.DamageHeal_FrontEnd): mRTypes.DamageHeal
+    // Used for dealing instant damages by this mob. Will use the stats of the mob to calculate the damage.
+    dealDamageHeal(target: Mob, info: mRTypes.DamageHeal_FrontEndInput): mRTypes.DamageHeal_Result
     {
-        // Fill optional slots with their default values.
-        _healInfo = this.fillDHF(_healInfo);
-
-        // Same as above
-        let healInfo: mRTypes.DamageHeal = {
-            'source': _healInfo.source.mobData,
-            'target': this.mobData,
-            'spell': _healInfo.spell,
-            'value': _healInfo.value,
-            'isCrit': _healInfo.isCrit,
-            'isAvoid': _healInfo.isAvoid,
-            'isBlock': _healInfo.isBlock,
-            'type': GameData.Elements.heal,
-            'overdeal': 0
-        };
-
-        if (Mob.checkAlive(this) == false)
-        {
-            healInfo.isAvoid = true;
-            healInfo.value = 0;
-            return healInfo;
-        }
-
-        let result = this.mobData.receiveHeal(healInfo);
-
-        // Show popUp text with overhealing hint
-        if (_healInfo.popUp == true && (result.value) > 0)
-        {
-            // var popUpPos = this.getRenderPos(0.5, 0.0);
-            // if(healInfo.heal.over > 0)
-            // {
-            //     game.UI.popupMgr.addText({
-            //         text: healInfo.heal.real.toString() + (healInfo.isCrit ? " !" : "") + " <" + healInfo.heal.over.toString() + ">",
-            //         color: game.data.damageColor.heal,
-            //         velX: 64,
-            //         posX: popUpPos.x,
-            //         posY: popUpPos.y,
-            //     });
-            // }
-            // else
-            // {
-            //     game.UI.popupMgr.addText({
-            //         text: healInfo.heal.real.toString() + (healInfo.isCrit ? " !" : ""),
-            //         color: game.data.damageColor.heal,
-            //         velX: 64,
-            //         posX: popUpPos.x,
-            //         posY: popUpPos.y,
-            //     });
-            // }
-
-            var popUpPos = this.getTopCenter();
-            // if (result.overdeal > 0)
-            // {
-            //     PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : "") + " <" + result.overdeal.toString() + ">", popUpPos.x, popUpPos.y, GameData.ElementColors['heal'], 1.0, 64, -256);
-            // }
-            // else
-            // {
-            //     PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData.ElementColors['heal'], 1.0, 64, -256);
-            // }
-            PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData.ElementColors['heal'], 1.0, 64, -256);
-
-            // popUp texts on unit frames
-            // fade from left to the the edge of currentHealth
-            if (this.mobData.isPlayer)
-            {
-                let playerList = UnitManager.getCurrent().getPlayerListWithDead(UnitManager.IDENTITY, UnitManager.NOOP);
-                for (var i = 0; i < playerList.length; i++)
-                {
-                    if (this === playerList[i])
-                    {
-                        let popX = UIScene.getSingleton().unitFrames[i].x + 40;
-                        let popY = UIScene.getSingleton().unitFrames[i].y + 15;
-                        PopUpManager.getSingleton().addText("+" + result.value.toString() + (result.isCrit ? "!" : ""), popX, popY, GameData.ElementColors['heal'], 0.8, 40, 0, -40, 0);
-                    }
-                }
-            }
-        }
-
-        return result;
+        return target.receiveDamageHeal({
+            'source': this,
+            'value': info.value * this.mobData.getAtkPower(info.type),
+            'type': info.type,
+            'crit': this.mobData.battleStats.crit,
+            'hit': this.mobData.battleStats.hitAcc,
+            'level': this.mobData.level,
+            'spell': info.spell,
+            'popUp': info.popUp,
+        });
     }
 
-    die(source?: Mob, damage?: mRTypes.DamageHeal)
+    die(source?: Mob, damage?: mRTypes.DamageHeal_Result)
     {
         this.mobData.die(damage);
 
@@ -460,29 +407,29 @@ export class Mob extends dPhysSprite
 
     attack(targets: (Mob | Phaser.Math.Vector2)[]): boolean
     {
-        this.mobData.updateListeners(this.mobData, 'attack', this.mobData, targets);
+        this.mobData.updateListeners('attack', this.mobData, targets);
         // let result = this.mobData.currentWeapon.attack(this, targets);
         let result = this.mobData.currentWeapon.checkAttack(this, targets);
         if (result.canAttack)
         {
             let newTargets = result.target;
 
-            this.mobData.updateListeners(this.mobData, 'attack', this.mobData, this.mobData.currentWeapon, newTargets)
+            this.mobData.updateListeners('attack', this.mobData, this.mobData.currentWeapon, newTargets);
             if (result.isSpecial)
             {
-                this.mobData.updateListeners(this.mobData, 'specialAttack', this.mobData, this.mobData.currentWeapon, newTargets)
+                this.mobData.updateListeners('specialAttack', this.mobData, this.mobData.currentWeapon, newTargets);
                 this.mobData.currentWeapon.specialAttack(this, newTargets, true, true);
-                this.mobData.updateListenersRev(this.mobData, 'specialAttackFinish', this.mobData, this.mobData.currentWeapon, newTargets)
+                this.mobData.updateListenersRev('specialAttackFinish', this.mobData, this.mobData.currentWeapon, newTargets);
             }
             else
             {
-                this.mobData.updateListeners(this.mobData, 'regularAttack', this.mobData, this.mobData.currentWeapon, newTargets)
+                this.mobData.updateListeners('regularAttack', this.mobData, this.mobData.currentWeapon, newTargets);
                 this.mobData.currentWeapon.regularAttack(this, newTargets, true, true);
                 this.mobData.useMana(this.mobData.currentWeapon.manaCost); // only regular attack costs mana
-                this.mobData.updateListenersRev(this.mobData, 'regularAttackFinish', this.mobData, this.mobData.currentWeapon, newTargets)
+                this.mobData.updateListenersRev('regularAttackFinish', this.mobData, this.mobData.currentWeapon, newTargets);
             }
 
-            this.mobData.updateListenersRev(this.mobData, 'attackFinish', this.mobData, this.mobData.currentWeapon, newTargets)
+            this.mobData.updateListenersRev('attackFinish', this.mobData, this.mobData.currentWeapon, newTargets);
         }
         return result.canAttack;
     }

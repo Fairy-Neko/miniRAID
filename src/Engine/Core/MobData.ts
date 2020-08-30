@@ -321,6 +321,22 @@ export class MobData extends EventSystem.EventElement
         return parameter;
     }
 
+    getAtkPower(type: GameData.Elements): number
+    {
+        return Math.pow(
+            1.0353,
+            this.battleStats.attackPower[GameData.damageType[type]] +
+            this.battleStats.attackPower[type]);
+    }
+
+    getResist(type: GameData.Elements): number
+    {
+        return Math.pow(
+            0.9659,
+            this.battleStats.resist[GameData.damageType[type]] +
+            this.battleStats.resist[type]);
+    }
+
     getMovingSpeed(): number
     {
         return this.modifiers.speed * this.modifiers.movingSpeed * this.baseSpeed;
@@ -375,11 +391,11 @@ export class MobData extends EventSystem.EventElement
             this.currentWeapon.activated = true;
 
             // I switched my weapon !!!
-            this.updateListeners(this, 'switchWeapon', this, this.currentWeapon);
+            this.updateListeners('switchWeapon', this, this.currentWeapon);
         }
 
         // Update all listeners
-        this.updateListeners(this, 'update', this, dt);
+        this.updateListeners('update', this, dt);
         for (let listener of this.listeners.getAll())
         {
             if (listener.isOver == true)
@@ -630,7 +646,7 @@ export class MobData extends EventSystem.EventElement
         }
 
         // 2. Add equipment base stats to self by listener.calcBaseStats()
-        this.updateListeners(this, 'baseStatCalculation', this);
+        this.updateListeners('baseStatCalculation', this);
 
         // 3. Reset battle stats
         this.battleStats = {
@@ -723,183 +739,180 @@ export class MobData extends EventSystem.EventElement
         // Actually, those steps were combined in a single call,
         // as the calculation step of each class will happen in their player classes,
         // which should be the first called listener in updateListeners().
-        this.updateListeners(this, 'statCalculation', this);
-        this.updateListenersRev(this, 'statCalculationFinish', this);
+        this.updateListeners('statCalculation', this);
+        this.updateListenersRev('statCalculationFinish', this);
 
         // 5. Finish
         this.maxHealth = Math.ceil(this.maxHealth);
         this.currentHealth = Math.max(0, Math.ceil(this.healthRatio * this.maxHealth));
     }
 
-    receiveDamage(damageInfo: mRTypes.DamageHeal): mRTypes.DamageHeal
+    receiveDamageHeal(damageInfo: mRTypes.DamageHeal_Input): mRTypes.DamageHeal_Result
     {
-        // Calculate crit based on parameters
-        if (!damageInfo.isCrit)
+        let isHeal = (damageInfo.type === GameData.Elements.heal);
+
+        if (isHeal)
         {
-            damageInfo.isCrit = (100 * Math.random()) < (
-                damageInfo.source.getPercentage(damageInfo.source.battleStats.crit) -
-                damageInfo.target.getPercentage(damageInfo.target.battleStats.antiCrit));
-
-            damageInfo.isAvoid = (100 * Math.random()) > (
-                damageInfo.source.getPercentage(damageInfo.source.battleStats.hitAcc) -
-                damageInfo.target.getPercentage(damageInfo.target.battleStats.avoid));
-        }
-
-        this.updateListeners(damageInfo.target, 'receiveDamage', damageInfo);
-        if (damageInfo.source)
-        {
-            damageInfo.source.updateListeners(damageInfo.source, 'dealDamage', damageInfo);
-        }
-
-        // Check if it was avoided (we check it before final calculation, so when onReceiveDamageFinal(), damage are guaranteed not avoided)
-        if (damageInfo.isAvoid === true)
-        {
-            // Tell mob this attack was avoided
-            damageInfo.value = 0;
-            return damageInfo;
-        }
-        // N.B. if you want do something if target avoid, e.g. deal extra on avoid,
-        // you should let it change the damage at onDealDamage() when isAvoid == true. (e.g. set other to 0 and add extra damage)
-        // then set isAvoid to false. You can also pop some text when you add the extra damage.
-
-        // Do the calculation
-        // damage% = 1.0353 ^ power
-        // 20pts of power = 100% more damage
-        if (damageInfo.source)
-        {
-            damageInfo.value = Math.ceil(
-                damageInfo.value *
-                (Math.pow(
-                    1.0353,
-                    damageInfo.source.battleStats.attackPower[GameData.damageType[damageInfo.type]] +
-                    damageInfo.source.battleStats.attackPower[damageInfo.type])));
-        }
-
-        // damage% = 0.9659 ^ resist
-        // This is, every 1 point of resist reduces corresponding damage by 3.41%, 
-        // which will reach 50% damage reducement at 20 points.
-        // TODO: it should all correspond to current level (resist based on source level, atkPower based on target level, same as healing)
-        damageInfo.value = Math.ceil(
-            damageInfo.value *
-            (Math.pow(
-                0.9659,
-                this.battleStats.resist[GameData.damageType[damageInfo.type]] +
-                this.battleStats.resist[damageInfo.type])));
-
-        // Apply criticals
-        damageInfo.value = Math.ceil(
-            damageInfo.value *
-            (damageInfo.isCrit ? GameData.critMultiplier[damageInfo.type] : 1.0));
-
-        // Overdeals
-        let realDmg: number = Math.min(this.currentHealth, damageInfo.value);
-        damageInfo.overdeal = damageInfo.value - realDmg;
-        damageInfo.value = realDmg;
-
-        // Let everyone know what is happening
-        this.updateListenersRev(damageInfo.target, 'receiveDamageFinal', damageInfo);
-        if (damageInfo.source)
-        {
-            damageInfo.source.updateListenersRev(damageInfo.source, 'dealDamageFinal', damageInfo);
-        }
-
-        // Decrese HP
-        this.currentHealth -= realDmg;
-
-        // Register this to BattleMonitor
-        BattleMonitor.getSingleton().add(damageInfo);
-
-        // Check if I am dead
-        if (this.currentHealth <= 0)
-        {
-            // Let everyone know what is happening
-            this.updateListenersRev(damageInfo.target, 'death', damageInfo);
+            this.updateListeners('receiveHeal', damageInfo);
             if (damageInfo.source)
             {
-                damageInfo.source.updateListeners(damageInfo.source, 'kill', damageInfo);
+                damageInfo.source.updateListeners('dealHeal', damageInfo);
+            }
+        }
+        else
+        {
+            this.updateListeners('receiveDamage', damageInfo);
+            if (damageInfo.source)
+            {
+                damageInfo.source.updateListeners('dealDamage', damageInfo);
+            }
+        }
+
+        let result: mRTypes.DamageHeal_Result = {
+            source: damageInfo.source,
+            target: this,
+            value: damageInfo.value,
+            type: damageInfo.type,
+            overdeal: 0,
+            isCrit: false,
+            isAvoid: false,
+            isBlock: false,
+            spell: damageInfo.spell,
+        };
+
+        // Calculate crit based on parameters
+        // Basically you don't want to avoid the hit or crit of a healing ... do you ?
+        // TODO: levels?
+        result.isCrit = (100 * Math.random()) < (
+            damageInfo.crit - (isHeal ? 0 : this.getPercentage(this.battleStats.antiCrit))
+        );
+
+        result.isAvoid = (100 * Math.random()) > (
+            damageInfo.hit - (isHeal ? 0 : this.getPercentage(this.battleStats.avoid))
+        );
+
+        // This attack was avoided, tell everyone. They may edit the result so this attack is not avoided ...
+        if (result.isAvoid === true)
+        {
+            // Let everyone know what is happening
+            if (isHeal)
+            {
+                this.updateListenersRev('receiveHealFinal', result);
+                if (result.source)
+                {
+                    result.source.updateListenersRev('dealHealFinal', result);
+                }
+            }
+            else
+            {
+                this.updateListenersRev('receiveDamageFinal', result);
+                if (result.source)
+                {
+                    result.source.updateListenersRev('dealDamageFinal', result);
+                }
+            }
+        }
+
+        // Check if it was finally avoided
+        if (result.isAvoid === false)
+        {
+            // N.B. if you want do something if target avoid, e.g. deal extra on avoid,
+            // you should let it change the damage at onDealDamage() when isAvoid == true. (e.g. set other to 0 and add extra damage)
+            // then set isAvoid to false. You can also pop some text when you add the extra damage.
+
+            // damage% = 0.9659 ^ resist
+            // This is, every 1 point of resist reduces corresponding damage by 3.41%, 
+            // which will reach 50% damage reducement at 20 points.
+            // TODO: it should all correspond to current level (resist based on source level, atkPower based on target level, same as healing)
+            result.value = Math.ceil(result.value * this.getResist(result.type));
+
+            // Apply criticals
+            result.value = Math.ceil(
+                result.value *
+                (result.isCrit ? GameData.critMultiplier[result.type] : 1.0));
+
+            // Overdeals for announcement
+            if (isHeal)
+            {
+                let realHeal: number = Math.min(this.maxHealth - this.currentHealth, result.value);
+                result.overdeal = result.value - realHeal;
+                result.value = realHeal;
+            }
+            else
+            {
+                let realDmg: number = Math.min(this.currentHealth, result.value);
+                result.overdeal = result.value - realDmg;
+                result.value = realDmg;
             }
 
-            // If still I am dead
+            // Let everyone know what is happening
+            if (isHeal)
+            {
+                this.updateListenersRev('receiveHealFinal', result);
+                if (result.source)
+                {
+                    result.source.updateListenersRev('dealHealFinal', result);
+                }
+            }
+            else
+            {
+                this.updateListenersRev('receiveDamageFinal', result);
+                if (result.source)
+                {
+                    result.source.updateListenersRev('dealDamageFinal', result);
+                }
+            }
+
+            // Overdeals again to confirm everything is fine
+            if (isHeal)
+            {
+                let realHeal: number = Math.min(this.maxHealth - this.currentHealth, result.value);
+                result.overdeal += result.value - realHeal;
+                result.value = realHeal;
+            }
+            else
+            {
+                let realDmg: number = Math.min(this.currentHealth, result.value);
+                result.overdeal += result.value - realDmg;
+                result.value = realDmg;
+            }
+
+            // Decrese or Increase HP
+            this.currentHealth -= (isHeal ? (-result.value) : result.value);
+
+            // Register this to BattleMonitor
+            BattleMonitor.getSingleton().add(result);
+
+            // Check if I am dead
             if (this.currentHealth <= 0)
             {
-                // I die cuz I am killed
-                this.alive = false;
+                // Let everyone know what is happening
+                this.updateListenersRev('death', result);
+                if (result.source)
+                {
+                    result.source.updateListeners('kill', result);
+                }
+
+                // If still I am dead
+                if (this.currentHealth <= 0)
+                {
+                    // I die cuz I am killed
+                    this.alive = false;
+                }
             }
+        }
+        else
+        {
+            result.value = 0;
         }
 
         // It hits!
-        return damageInfo;
-    }
-
-    // TODO: merge receiveHeal and receiveDamage.
-    receiveHeal(healInfo: mRTypes.DamageHeal): mRTypes.DamageHeal
-    {
-        // Calculate crit based on parameters
-        if (!healInfo.isCrit)
-        {
-            healInfo.isCrit = (100 * Math.random()) < (
-                healInfo.source.getPercentage(healInfo.source.battleStats.crit) -
-                healInfo.target.getPercentage(healInfo.target.battleStats.antiCrit));
-        }
-
-        // Let everyone know what is happening
-        this.updateListeners(healInfo.target, 'receiveHeal', healInfo);
-        if (healInfo.source)
-        {
-            healInfo.source.updateListeners(healInfo.source, 'dealHeal', healInfo);
-        }
-
-        // Do the calculation
-        // _finalHeal: total amount of healing (real + over)
-        // healInfo.value = healInfo.heal.real;
-
-        if (healInfo.source)
-        {
-            healInfo.value = Math.ceil(
-                healInfo.value *
-                (Math.pow(
-                    1.0353,
-                    healInfo.source.battleStats.attackPower.heal)));
-        }
-
-        // damage% = 0.9659 ^ resist
-        // This is, every 1 point of resist reduces corresponding damage by 3.41%, 
-        // which will reach 50% damage reducement at 20 points.
-        healInfo.value = Math.ceil(
-            healInfo.value *
-            (Math.pow(
-                0.9659,
-                this.battleStats.resist.heal)));
-
-        healInfo.value = Math.ceil(
-            healInfo.value
-            * (healInfo.isCrit ? GameData.critMultiplier.heal : 1.0)
-        );
-
-        // calculate overHealing using current HP and max HP.
-        let realHeal = Math.min(healInfo.target.maxHealth - healInfo.target.currentHealth, healInfo.value);
-        healInfo.overdeal = healInfo.value - realHeal;
-        healInfo.value = realHeal;
-
-        // Let buffs and agents know what is happening
-        this.updateListenersRev(healInfo.target, 'receiveHealFinal', healInfo);
-        if (healInfo.source)
-        {
-            healInfo.source.updateListenersRev(healInfo.source, 'dealHealFinal', healInfo);
-        }
-
-        // Increase the HP.
-        this.currentHealth += healInfo.value;
-
-        // Register this to BattleMonitor
-        BattleMonitor.getSingleton().add(healInfo);
-
-        return healInfo;
+        return result;
     }
 
     // Function used to tell buffs and agents what was going on
     // when damage and heal happens. They can modify them.
-    updateListeners(mobData: MobData, event: string, ...args: any[])
+    updateListeners(event: string, ...args: any[])
     {
         var flag = false;
         this.emitArray(event, (res) => { if (typeof res == "boolean") { flag = flag || res; } }, args);
@@ -907,7 +920,7 @@ export class MobData extends EventSystem.EventElement
     }
 
     // Same as updateListeners, but all listeners are triggered in reverse order to let them properly revert the values if they have temporally modified them.
-    updateListenersRev(mobData: MobData, event: string, ...args: any[])
+    updateListenersRev(event: string, ...args: any[])
     {
         var flag = false;
         this.emitArrayReverted(event, (res) => { if (typeof res == 'boolean') { flag = flag || res; } }, args);
@@ -943,7 +956,7 @@ export class MobData extends EventSystem.EventElement
         return false;
     }
 
-    die(lastHit: mRTypes.DamageHeal)
+    die(lastHit: mRTypes.DamageHeal_Result)
     {
         this.beingAttack = 0;
         this.alive = false;

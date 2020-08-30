@@ -72,7 +72,7 @@ export class BattleMonitor
         this.healDict = {};
     }
 
-    add(dmg: mRTypes.DamageHeal)
+    add(dmg: mRTypes.DamageHeal_Result)
     {
         if (dmg.source)
         {

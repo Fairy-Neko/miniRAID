@@ -1529,7 +1529,7 @@ define("Engine/UI/ScrollMaskedContainer", ["require", "exports"], function (requ
     exports.ScrollMaskedContainer = ScrollMaskedContainer;
 });
 /** @packageDocumentation @module GameObjects */
-define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/GameObjects/Mob", "Engine/Core/Helper"], function (require, exports, dPhysSprite_1, Mob_3, Helper_1) {
+define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/GameObjects/Mob"], function (require, exports, dPhysSprite_1, Mob_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var SpellFlags;
@@ -1572,6 +1572,23 @@ define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/
                 this.targeting = this.target.mobData.isPlayer ? Targeting.Player : Targeting.Enemy;
             }
             this.targeting = this.flags.has(SpellFlags.targetingEverything) ? Targeting.Both : this.targeting;
+            // Capture data
+            if (this.source) {
+                this.mobCrit = this.source.mobData.battleStats.crit;
+                this.mobHit = this.source.mobData.battleStats.hitAcc;
+                this.mobAP = {};
+                if (settings.mainType instanceof Array) {
+                    for (let type of settings.mainType) {
+                        this.mobAP[type] = this.source.mobData.getAtkPower(type);
+                    }
+                    this.mainType = settings.mainType[0];
+                }
+                else if (settings.mainType) {
+                    this.mobAP[settings.mainType] = this.source.mobData.getAtkPower(settings.mainType);
+                    this.mainType = settings.mainType;
+                }
+            }
+            this.cachedMobData = settings.data;
             if (this.useCollider === false) {
                 this.disableBody();
             }
@@ -1634,14 +1651,22 @@ define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/
                 this.destroy();
             }
         }
-        HealDmg(target, dmg, type) {
-            return Helper_1.HealDmg({
+        HealDmg(target, dmg, type, applyCachedAP, crit, hit, level) {
+            let finalDmg = dmg;
+            if (this.mobAP && ((typeof applyCachedAP === 'undefined') || applyCachedAP)) {
+                if (type in this.mobAP) {
+                    finalDmg *= this.mobAP[type];
+                }
+            }
+            return target.receiveDamageHeal({
                 'source': this.source,
-                'target': target,
-                'value': dmg,
+                'value': finalDmg,
                 'type': type,
                 'popUp': true,
                 'spell': this.info,
+                'crit': crit || this.mobCrit || 0,
+                'hit': hit || this.mobHit || 0,
+                'level': level || this.mobLevel || 0,
             });
         }
         updateSpell(dt) { if (this._onUpdate) {
@@ -1696,18 +1721,9 @@ define("Engine/GameObjects/Spell", ["require", "exports", "Engine/DynamicLoader/
     exports.DummySpell = DummySpell;
 });
 /** @packageDocumentation @module Core */
-define("Engine/Core/Helper", ["require", "exports", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/Core/GameData"], function (require, exports, UnitManager_2, Spell_1, GameData_4) {
+define("Engine/Core/Helper", ["require", "exports", "Engine/Core/UnitManager", "Engine/GameObjects/Spell"], function (require, exports, UnitManager_2, Spell_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    function HealDmg(info) {
-        if (info.type === GameData_4.GameData.Elements.heal) {
-            return info.target.receiveHeal(info);
-        }
-        else {
-            return info.target.receiveDamage(info);
-        }
-    }
-    exports.HealDmg = HealDmg;
     /**
      * Helper function for easily performing Area of Effects (AoE). Currently only supports a circle area.
      *
@@ -1836,7 +1852,7 @@ define("Engine/Core/Helper", ["require", "exports", "Engine/Core/UnitManager", "
  * @packageDocumentation
  * @module UI
  */
-define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "Engine/DynamicLoader/dSprite", "Engine/UI/Localization", "Engine/UI/UIScene", "Engine/Core/Helper", "Engine/Core/GameData"], function (require, exports, ProgressBar_1, dSprite_1, Localization_1, UIScene_1, Helper_2, GameData_5) {
+define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "Engine/DynamicLoader/dSprite", "Engine/UI/Localization", "Engine/UI/UIScene", "Engine/Core/Helper", "Engine/Core/GameData"], function (require, exports, ProgressBar_1, dSprite_1, Localization_1, UIScene_1, Helper_1, GameData_4) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class WeaponFrame extends Phaser.GameObjects.Container {
@@ -2122,7 +2138,7 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
             let list = this.obtainList();
             let tt = "";
             for (let buff of list) {
-                tt += Helper_2.Helper.toolTip.colored(buff.getTitle(), Helper_2.ColorToStr(buff.color)) + "<br>";
+                tt += Helper_1.Helper.toolTip.colored(buff.getTitle(), Helper_1.ColorToStr(buff.color)) + "<br>";
             }
             return {
                 "title": this.target.name,
@@ -2162,7 +2178,7 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
             // Mana
             this.add(new ProgressBar_1.ProgressBar(this.scene, 0, 30, () => {
                 return [target.mobData.currentMana, target.mobData.maxMana];
-            }, 80, 5, 1, true, 0x444444, 0x222222, 0x33A6B8, GameData_5.GameData.showManaNumber, 'smallPx_HUD', ProgressBar_1.TextAlignment.Left, 5, -1, 0xffffff, undefined, true, 0x00000055));
+            }, 80, 5, 1, true, 0x444444, 0x222222, 0x33A6B8, GameData_4.GameData.showManaNumber, 'smallPx_HUD', ProgressBar_1.TextAlignment.Left, 5, -1, 0xffffff, undefined, true, 0x00000055));
             // // Buffs
             let bF = new BuffFrame(this.scene, -28, 37, x - 28, y + 37, 160, 30, this.targetMob.mobData);
             bF.depth = 0;
@@ -2234,7 +2250,7 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
     exports.UnitFrame = UnitFrame;
 });
 /** @packageDocumentation @module Core */
-define("Engine/Core/BattleMonitor", ["require", "exports", "Engine/Core/GameData", "Engine/Core/UnitManager"], function (require, exports, GameData_6, UnitManager_3) {
+define("Engine/Core/BattleMonitor", ["require", "exports", "Engine/Core/GameData", "Engine/Core/UnitManager"], function (require, exports, GameData_5, UnitManager_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class BattleMonitor {
@@ -2269,7 +2285,7 @@ define("Engine/Core/BattleMonitor", ["require", "exports", "Engine/Core/GameData
                     spell = dmg.spell.name;
                 }
                 if (source.isPlayer === true) {
-                    if (dmg.type !== GameData_6.GameData.Elements.heal) {
+                    if (dmg.type !== GameData_5.GameData.Elements.heal) {
                         // Create a dict if it does not exist
                         this.damageDict[source.name] = this.damageDict[source.name] ||
                             {
@@ -2394,7 +2410,7 @@ define("Engine/Core/BattleMonitor", ["require", "exports", "Engine/Core/GameData
  * @packageDocumentation
  * @module UI
  */
-define("Engine/UI/MonitorFrame", ["require", "exports", "Engine/Core/BattleMonitor", "Engine/UI/Localization", "Engine/Core/GameData", "Engine/UI/ScrollMaskedContainer", "Engine/UI/UIScene"], function (require, exports, BattleMonitor_1, Localization_2, GameData_7, ScrollMaskedContainer_1, UIScene_2) {
+define("Engine/UI/MonitorFrame", ["require", "exports", "Engine/Core/BattleMonitor", "Engine/UI/Localization", "Engine/Core/GameData", "Engine/UI/ScrollMaskedContainer", "Engine/UI/UIScene"], function (require, exports, BattleMonitor_1, Localization_2, GameData_6, ScrollMaskedContainer_1, UIScene_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class MonitorRow extends Phaser.GameObjects.Container {
@@ -2547,7 +2563,7 @@ define("Engine/UI/MonitorFrame", ["require", "exports", "Engine/Core/BattleMonit
             this.rows = [];
             let gap = Localization_2._('UIFont') === 'smallPx' ? 14 : 18;
             let tGap = gap === 18 ? 3 : 0;
-            for (let i = 0; i < GameData_7.GameData.playerMax; i++) {
+            for (let i = 0; i < GameData_6.GameData.playerMax; i++) {
                 let mr = new MonitorRow(this.scene, 0, i * gap, width - 2, i % 2 == 0 ? 0x92d7e7 : 0x92d7e7, gap, tGap, getDetailTooltip);
                 this.rows.push(mr);
                 this.add(mr);
@@ -2577,7 +2593,7 @@ define("Engine/UI/MonitorFrame", ["require", "exports", "Engine/Core/BattleMonit
  * @packageDocumentation
  * @module UI
  */
-define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "Engine/UI/UnitFrame", "Engine/Core/UnitManager", "Engine/UI/Localization", "Engine/UI/MonitorFrame", "Engine/Core/BattleMonitor", "Engine/Core/mRTypes", "Engine/Core/GameData"], function (require, exports, PopUpManager_2, UnitFrame_1, UnitManager_4, Localization_3, MonitorFrame_1, BattleMonitor_2, mRTypes_2, GameData_8) {
+define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "Engine/UI/UnitFrame", "Engine/Core/UnitManager", "Engine/UI/Localization", "Engine/UI/MonitorFrame", "Engine/Core/BattleMonitor", "Engine/Core/mRTypes", "Engine/Core/GameData"], function (require, exports, PopUpManager_2, UnitFrame_1, UnitManager_4, Localization_3, MonitorFrame_1, BattleMonitor_2, mRTypes_2, GameData_7) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class UIScene extends Phaser.Scene {
@@ -2603,19 +2619,19 @@ define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "En
                 title: tT.querySelector("#title"),
                 body: tT.querySelector("#body"),
             };
-            if (GameData_8.GameData.mainLanguage !== mRTypes_2.mRTypes.Languages.ENG || GameData_8.GameData.popUpBuffLanguage !== mRTypes_2.mRTypes.Languages.ENG) {
-                this.orgMainFont = Localization_3.Localization.data.main.UIFont[GameData_8.GameData.mainLanguage];
-                this.orgMainFont_o = Localization_3.Localization.data.main.UIFont_o[GameData_8.GameData.mainLanguage];
-                this.orgPopUpFont = Localization_3.Localization.data.popUpBuff.buffFont[GameData_8.GameData.popUpBuffLanguage];
-                Localization_3.Localization.data.main.UIFont[GameData_8.GameData.mainLanguage] = 'smallPx';
-                Localization_3.Localization.data.main.UIFont_o[GameData_8.GameData.mainLanguage] = 'smallPx';
-                Localization_3.Localization.data.popUpBuff.buffFont[GameData_8.GameData.popUpBuffLanguage] = 'smallPx';
+            if (GameData_7.GameData.mainLanguage !== mRTypes_2.mRTypes.Languages.ENG || GameData_7.GameData.popUpBuffLanguage !== mRTypes_2.mRTypes.Languages.ENG) {
+                this.orgMainFont = Localization_3.Localization.data.main.UIFont[GameData_7.GameData.mainLanguage];
+                this.orgMainFont_o = Localization_3.Localization.data.main.UIFont_o[GameData_7.GameData.mainLanguage];
+                this.orgPopUpFont = Localization_3.Localization.data.popUpBuff.buffFont[GameData_7.GameData.popUpBuffLanguage];
+                Localization_3.Localization.data.main.UIFont[GameData_7.GameData.mainLanguage] = 'smallPx';
+                Localization_3.Localization.data.main.UIFont_o[GameData_7.GameData.mainLanguage] = 'smallPx';
+                Localization_3.Localization.data.popUpBuff.buffFont[GameData_7.GameData.popUpBuffLanguage] = 'smallPx';
                 let txt = this.add.bitmapText(10, 10, 'smallPx', "HUD / UI: Loading Unicode Fonts ... ");
-                if (GameData_8.GameData.mainLanguage === mRTypes_2.mRTypes.Languages.CHS || GameData_8.GameData.popUpBuffLanguage === mRTypes_2.mRTypes.Languages.CHS) {
+                if (GameData_7.GameData.mainLanguage === mRTypes_2.mRTypes.Languages.CHS || GameData_7.GameData.popUpBuffLanguage === mRTypes_2.mRTypes.Languages.CHS) {
                     this.load.bitmapFont('simsun', './assets/fonts/simsun_0.png', './assets/fonts/simsun.fnt');
                     this.load.bitmapFont('simsun_o', './assets/fonts/simsun_outlined_0.png', './assets/fonts/simsun_outlined.fnt');
                 }
-                if (GameData_8.GameData.mainLanguage === mRTypes_2.mRTypes.Languages.JPN || GameData_8.GameData.popUpBuffLanguage === mRTypes_2.mRTypes.Languages.JPN) {
+                if (GameData_7.GameData.mainLanguage === mRTypes_2.mRTypes.Languages.JPN || GameData_7.GameData.popUpBuffLanguage === mRTypes_2.mRTypes.Languages.JPN) {
                     this.load.bitmapFont('mspgothic', './assets/fonts/mspgothic_0.png', './assets/fonts/mspgothic.fnt');
                     this.load.bitmapFont('mspgothic_o', './assets/fonts/mspgothic_o_0.png', './assets/fonts/mspgothic_o.fnt');
                 }
@@ -2631,9 +2647,9 @@ define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "En
             this.prevLeft = this.mainCanvas.offsetLeft;
         }
         loadComplete() {
-            Localization_3.Localization.data.main.UIFont[GameData_8.GameData.mainLanguage] = this.orgMainFont;
-            Localization_3.Localization.data.main.UIFont_o[GameData_8.GameData.mainLanguage] = this.orgMainFont_o;
-            Localization_3.Localization.data.popUpBuff.buffFont[GameData_8.GameData.popUpBuffLanguage] = this.orgPopUpFont;
+            Localization_3.Localization.data.main.UIFont[GameData_7.GameData.mainLanguage] = this.orgMainFont;
+            Localization_3.Localization.data.main.UIFont_o[GameData_7.GameData.mainLanguage] = this.orgMainFont_o;
+            Localization_3.Localization.data.popUpBuff.buffFont[GameData_7.GameData.popUpBuffLanguage] = this.orgPopUpFont;
             this.setupScene();
         }
         setupScene() {
@@ -2710,7 +2726,7 @@ define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "En
             }
             // set it visible
             this.toolTip.toolTip.style.display = "inherit";
-            this.toolTip.toolTip.lang = GameData_8.GameData.mainLanguage;
+            this.toolTip.toolTip.lang = GameData_7.GameData.mainLanguage;
         }
         hideToolTip() {
             // set it invisible
@@ -2723,7 +2739,7 @@ define("Engine/UI/UIScene", ["require", "exports", "Engine/UI/PopUpManager", "En
  * @packageDocumentation
  * @module UI
  */
-define("Engine/UI/PopUpManager", ["require", "exports", "Engine/Core/GameData", "Engine/UI/Localization"], function (require, exports, GameData_9, Localization_4) {
+define("Engine/UI/PopUpManager", ["require", "exports", "Engine/Core/GameData", "Engine/UI/Localization"], function (require, exports, GameData_8, Localization_4) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     // import * as Phaser from 'phaser'
@@ -2734,7 +2750,7 @@ define("Engine/UI/PopUpManager", ["require", "exports", "Engine/Core/GameData", 
                 super(scene, x, y, font, text);
             }
             else {
-                super(scene, x, y, GameData_9.GameData.popUpSmallFont ? 'smallPx' : 'mediumPx', text);
+                super(scene, x, y, GameData_8.GameData.popUpSmallFont ? 'smallPx' : 'mediumPx', text);
             }
             this.time = time;
             this.velX = velX;
@@ -2812,7 +2828,7 @@ define("Engine/UI/PopUpManager", ["require", "exports", "Engine/Core/GameData", 
     exports.PopUpManager = PopUpManager;
 });
 /** @packageDocumentation @module Core */
-define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener", "Engine/UI/PopUpManager", "Engine/Core/GameData", "Engine/UI/Localization"], function (require, exports, MobListener_1, PopUpManager_3, GameData_10, Localization_5) {
+define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener", "Engine/UI/PopUpManager", "Engine/Core/GameData", "Engine/UI/Localization"], function (require, exports, MobListener_1, PopUpManager_3, GameData_9, Localization_5) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Buff extends MobListener_1.MobListener {
@@ -2847,7 +2863,7 @@ define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener", "En
             //Where does this buff come from?
             this.source = settings.source || undefined;
             if (this.source === undefined) {
-                console.warn(`Buff "${Localization_5._(this.name)}" does not have a source.`);
+                console.error(`Buff "${Localization_5._(this.name)}" does not have a source.`);
             }
             this.toolTip = settings.toolTip || "LOL.";
             this.UIimportant = (settings.UIimportant === undefined) ? false : settings.UIimportant;
@@ -2855,7 +2871,7 @@ define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener", "En
         }
         popUp(mob) {
             let popUpPos = mob.getTopCenter();
-            PopUpManager_3.PopUpManager.getSingleton().addText_nonDigit((typeof this.popupName === 'string') ? Localization_5._(this.popupName) : this.popupName[GameData_10.GameData.popUpBuffLanguage], popUpPos.x, popUpPos.y, this.popupColor, 1.0, 0, -64, 0, 64);
+            PopUpManager_3.PopUpManager.getSingleton().addText_nonDigit((typeof this.popupName === 'string') ? Localization_5._(this.popupName) : this.popupName[GameData_9.GameData.popUpBuffLanguage], popUpPos.x, popUpPos.y, this.popupColor, 1.0, 0, -64, 0, 64);
         }
         update(self, dt) {
             super.update(self, dt);
@@ -2917,7 +2933,7 @@ define("Engine/Core/Buff", ["require", "exports", "Engine/Core/MobListener", "En
     exports.Buff = Buff;
 });
 /** @packageDocumentation @module Core */
-define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem", "Engine/Core/EquipmentCore", "Engine/Structs/QuerySet", "Engine/Core/MobListener", "Engine/Core/DataBackend", "Engine/Core/Buff", "Engine/Core/GameData", "Engine/Core/BattleMonitor"], function (require, exports, EventSystem, EquipmentCore_1, QuerySet_1, MobListener_2, DataBackend_1, Buff_1, GameData_11, BattleMonitor_3) {
+define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem", "Engine/Core/EquipmentCore", "Engine/Structs/QuerySet", "Engine/Core/MobListener", "Engine/Core/DataBackend", "Engine/Core/Buff", "Engine/Core/GameData", "Engine/Core/BattleMonitor"], function (require, exports, EventSystem, EquipmentCore_1, QuerySet_1, MobListener_2, DataBackend_1, Buff_1, GameData_10, BattleMonitor_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     EventSystem = __importStar(EventSystem);
@@ -3115,6 +3131,14 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             // TODO: convert parameter to percentage from level
             return parameter;
         }
+        getAtkPower(type) {
+            return Math.pow(1.0353, this.battleStats.attackPower[GameData_10.GameData.damageType[type]] +
+                this.battleStats.attackPower[type]);
+        }
+        getResist(type) {
+            return Math.pow(0.9659, this.battleStats.resist[GameData_10.GameData.damageType[type]] +
+                this.battleStats.resist[type]);
+        }
         getMovingSpeed() {
             return this.modifiers.speed * this.modifiers.movingSpeed * this.baseSpeed;
         }
@@ -3152,10 +3176,10 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
                 this.anotherWeapon.activated = false;
                 this.currentWeapon.activated = true;
                 // I switched my weapon !!!
-                this.updateListeners(this, 'switchWeapon', this, this.currentWeapon);
+                this.updateListeners('switchWeapon', this, this.currentWeapon);
             }
             // Update all listeners
-            this.updateListeners(this, 'update', this, dt);
+            this.updateListeners('update', this, dt);
             for (let listener of this.listeners.getAll()) {
                 if (listener.isOver == true) {
                     //this buff is over. delete it from the list.
@@ -3335,7 +3359,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
                 this.baseStats[stat] = this.baseStatsFundemental[stat];
             }
             // 2. Add equipment base stats to self by listener.calcBaseStats()
-            this.updateListeners(this, 'baseStatCalculation', this);
+            this.updateListeners('baseStatCalculation', this);
             // 3. Reset battle stats
             this.battleStats = {
                 resist: {
@@ -3413,124 +3437,133 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             // Actually, those steps were combined in a single call,
             // as the calculation step of each class will happen in their player classes,
             // which should be the first called listener in updateListeners().
-            this.updateListeners(this, 'statCalculation', this);
-            this.updateListenersRev(this, 'statCalculationFinish', this);
+            this.updateListeners('statCalculation', this);
+            this.updateListenersRev('statCalculationFinish', this);
             // 5. Finish
             this.maxHealth = Math.ceil(this.maxHealth);
             this.currentHealth = Math.max(0, Math.ceil(this.healthRatio * this.maxHealth));
         }
-        receiveDamage(damageInfo) {
-            // Calculate crit based on parameters
-            if (!damageInfo.isCrit) {
-                damageInfo.isCrit = (100 * Math.random()) < (damageInfo.source.getPercentage(damageInfo.source.battleStats.crit) -
-                    damageInfo.target.getPercentage(damageInfo.target.battleStats.antiCrit));
-                damageInfo.isAvoid = (100 * Math.random()) > (damageInfo.source.getPercentage(damageInfo.source.battleStats.hitAcc) -
-                    damageInfo.target.getPercentage(damageInfo.target.battleStats.avoid));
-            }
-            this.updateListeners(damageInfo.target, 'receiveDamage', damageInfo);
-            if (damageInfo.source) {
-                damageInfo.source.updateListeners(damageInfo.source, 'dealDamage', damageInfo);
-            }
-            // Check if it was avoided (we check it before final calculation, so when onReceiveDamageFinal(), damage are guaranteed not avoided)
-            if (damageInfo.isAvoid === true) {
-                // Tell mob this attack was avoided
-                damageInfo.value = 0;
-                return damageInfo;
-            }
-            // N.B. if you want do something if target avoid, e.g. deal extra on avoid,
-            // you should let it change the damage at onDealDamage() when isAvoid == true. (e.g. set other to 0 and add extra damage)
-            // then set isAvoid to false. You can also pop some text when you add the extra damage.
-            // Do the calculation
-            // damage% = 1.0353 ^ power
-            // 20pts of power = 100% more damage
-            if (damageInfo.source) {
-                damageInfo.value = Math.ceil(damageInfo.value *
-                    (Math.pow(1.0353, damageInfo.source.battleStats.attackPower[GameData_11.GameData.damageType[damageInfo.type]] +
-                        damageInfo.source.battleStats.attackPower[damageInfo.type])));
-            }
-            // damage% = 0.9659 ^ resist
-            // This is, every 1 point of resist reduces corresponding damage by 3.41%, 
-            // which will reach 50% damage reducement at 20 points.
-            // TODO: it should all correspond to current level (resist based on source level, atkPower based on target level, same as healing)
-            damageInfo.value = Math.ceil(damageInfo.value *
-                (Math.pow(0.9659, this.battleStats.resist[GameData_11.GameData.damageType[damageInfo.type]] +
-                    this.battleStats.resist[damageInfo.type])));
-            // Apply criticals
-            damageInfo.value = Math.ceil(damageInfo.value *
-                (damageInfo.isCrit ? GameData_11.GameData.critMultiplier[damageInfo.type] : 1.0));
-            // Overdeals
-            let realDmg = Math.min(this.currentHealth, damageInfo.value);
-            damageInfo.overdeal = damageInfo.value - realDmg;
-            damageInfo.value = realDmg;
-            // Let everyone know what is happening
-            this.updateListenersRev(damageInfo.target, 'receiveDamageFinal', damageInfo);
-            if (damageInfo.source) {
-                damageInfo.source.updateListenersRev(damageInfo.source, 'dealDamageFinal', damageInfo);
-            }
-            // Decrese HP
-            this.currentHealth -= realDmg;
-            // Register this to BattleMonitor
-            BattleMonitor_3.BattleMonitor.getSingleton().add(damageInfo);
-            // Check if I am dead
-            if (this.currentHealth <= 0) {
-                // Let everyone know what is happening
-                this.updateListenersRev(damageInfo.target, 'death', damageInfo);
+        receiveDamageHeal(damageInfo) {
+            let isHeal = (damageInfo.type === GameData_10.GameData.Elements.heal);
+            if (isHeal) {
+                this.updateListeners('receiveHeal', damageInfo);
                 if (damageInfo.source) {
-                    damageInfo.source.updateListeners(damageInfo.source, 'kill', damageInfo);
+                    damageInfo.source.updateListeners('dealHeal', damageInfo);
                 }
-                // If still I am dead
+            }
+            else {
+                this.updateListeners('receiveDamage', damageInfo);
+                if (damageInfo.source) {
+                    damageInfo.source.updateListeners('dealDamage', damageInfo);
+                }
+            }
+            let result = {
+                source: damageInfo.source,
+                target: this,
+                value: damageInfo.value,
+                type: damageInfo.type,
+                overdeal: 0,
+                isCrit: false,
+                isAvoid: false,
+                isBlock: false,
+                spell: damageInfo.spell,
+            };
+            // Calculate crit based on parameters
+            // Basically you don't want to avoid the hit or crit of a healing ... do you ?
+            // TODO: levels?
+            result.isCrit = (100 * Math.random()) < (damageInfo.crit - (isHeal ? 0 : this.getPercentage(this.battleStats.antiCrit)));
+            result.isAvoid = (100 * Math.random()) > (damageInfo.hit - (isHeal ? 0 : this.getPercentage(this.battleStats.avoid)));
+            // This attack was avoided, tell everyone. They may edit the result so this attack is not avoided ...
+            if (result.isAvoid === true) {
+                // Let everyone know what is happening
+                if (isHeal) {
+                    this.updateListenersRev('receiveHealFinal', result);
+                    if (result.source) {
+                        result.source.updateListenersRev('dealHealFinal', result);
+                    }
+                }
+                else {
+                    this.updateListenersRev('receiveDamageFinal', result);
+                    if (result.source) {
+                        result.source.updateListenersRev('dealDamageFinal', result);
+                    }
+                }
+            }
+            // Check if it was finally avoided
+            if (result.isAvoid === false) {
+                // N.B. if you want do something if target avoid, e.g. deal extra on avoid,
+                // you should let it change the damage at onDealDamage() when isAvoid == true. (e.g. set other to 0 and add extra damage)
+                // then set isAvoid to false. You can also pop some text when you add the extra damage.
+                // damage% = 0.9659 ^ resist
+                // This is, every 1 point of resist reduces corresponding damage by 3.41%, 
+                // which will reach 50% damage reducement at 20 points.
+                // TODO: it should all correspond to current level (resist based on source level, atkPower based on target level, same as healing)
+                result.value = Math.ceil(result.value * this.getResist(result.type));
+                // Apply criticals
+                result.value = Math.ceil(result.value *
+                    (result.isCrit ? GameData_10.GameData.critMultiplier[result.type] : 1.0));
+                // Overdeals for announcement
+                if (isHeal) {
+                    let realHeal = Math.min(this.maxHealth - this.currentHealth, result.value);
+                    result.overdeal = result.value - realHeal;
+                    result.value = realHeal;
+                }
+                else {
+                    let realDmg = Math.min(this.currentHealth, result.value);
+                    result.overdeal = result.value - realDmg;
+                    result.value = realDmg;
+                }
+                // Let everyone know what is happening
+                if (isHeal) {
+                    this.updateListenersRev('receiveHealFinal', result);
+                    if (result.source) {
+                        result.source.updateListenersRev('dealHealFinal', result);
+                    }
+                }
+                else {
+                    this.updateListenersRev('receiveDamageFinal', result);
+                    if (result.source) {
+                        result.source.updateListenersRev('dealDamageFinal', result);
+                    }
+                }
+                // Overdeals again to confirm everything is fine
+                if (isHeal) {
+                    let realHeal = Math.min(this.maxHealth - this.currentHealth, result.value);
+                    result.overdeal += result.value - realHeal;
+                    result.value = realHeal;
+                }
+                else {
+                    let realDmg = Math.min(this.currentHealth, result.value);
+                    result.overdeal += result.value - realDmg;
+                    result.value = realDmg;
+                }
+                // Decrese or Increase HP
+                this.currentHealth -= (isHeal ? (-result.value) : result.value);
+                // Register this to BattleMonitor
+                BattleMonitor_3.BattleMonitor.getSingleton().add(result);
+                // Check if I am dead
                 if (this.currentHealth <= 0) {
-                    // I die cuz I am killed
-                    this.alive = false;
+                    // Let everyone know what is happening
+                    this.updateListenersRev('death', result);
+                    if (result.source) {
+                        result.source.updateListeners('kill', result);
+                    }
+                    // If still I am dead
+                    if (this.currentHealth <= 0) {
+                        // I die cuz I am killed
+                        this.alive = false;
+                    }
                 }
+            }
+            else {
+                result.value = 0;
             }
             // It hits!
-            return damageInfo;
-        }
-        // TODO: merge receiveHeal and receiveDamage.
-        receiveHeal(healInfo) {
-            // Calculate crit based on parameters
-            if (!healInfo.isCrit) {
-                healInfo.isCrit = (100 * Math.random()) < (healInfo.source.getPercentage(healInfo.source.battleStats.crit) -
-                    healInfo.target.getPercentage(healInfo.target.battleStats.antiCrit));
-            }
-            // Let everyone know what is happening
-            this.updateListeners(healInfo.target, 'receiveHeal', healInfo);
-            if (healInfo.source) {
-                healInfo.source.updateListeners(healInfo.source, 'dealHeal', healInfo);
-            }
-            // Do the calculation
-            // _finalHeal: total amount of healing (real + over)
-            // healInfo.value = healInfo.heal.real;
-            if (healInfo.source) {
-                healInfo.value = Math.ceil(healInfo.value *
-                    (Math.pow(1.0353, healInfo.source.battleStats.attackPower.heal)));
-            }
-            // damage% = 0.9659 ^ resist
-            // This is, every 1 point of resist reduces corresponding damage by 3.41%, 
-            // which will reach 50% damage reducement at 20 points.
-            healInfo.value = Math.ceil(healInfo.value *
-                (Math.pow(0.9659, this.battleStats.resist.heal)));
-            healInfo.value = Math.ceil(healInfo.value
-                * (healInfo.isCrit ? GameData_11.GameData.critMultiplier.heal : 1.0));
-            // calculate overHealing using current HP and max HP.
-            let realHeal = Math.min(healInfo.target.maxHealth - healInfo.target.currentHealth, healInfo.value);
-            healInfo.overdeal = healInfo.value - realHeal;
-            healInfo.value = realHeal;
-            // Let buffs and agents know what is happening
-            this.updateListenersRev(healInfo.target, 'receiveHealFinal', healInfo);
-            if (healInfo.source) {
-                healInfo.source.updateListenersRev(healInfo.source, 'dealHealFinal', healInfo);
-            }
-            // Increase the HP.
-            this.currentHealth += healInfo.value;
-            // Register this to BattleMonitor
-            BattleMonitor_3.BattleMonitor.getSingleton().add(healInfo);
-            return healInfo;
+            return result;
         }
         // Function used to tell buffs and agents what was going on
         // when damage and heal happens. They can modify them.
-        updateListeners(mobData, event, ...args) {
+        updateListeners(event, ...args) {
             var flag = false;
             this.emitArray(event, (res) => { if (typeof res == "boolean") {
                 flag = flag || res;
@@ -3538,7 +3571,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             return flag;
         }
         // Same as updateListeners, but all listeners are triggered in reverse order to let them properly revert the values if they have temporally modified them.
-        updateListenersRev(mobData, event, ...args) {
+        updateListenersRev(event, ...args) {
             var flag = false;
             this.emitArrayReverted(event, (res) => { if (typeof res == 'boolean') {
                 flag = flag || res;
@@ -3572,7 +3605,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
     exports.MobData = MobData;
 });
 /** @packageDocumentation @module Core */
-define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/MobListener", "Engine/Core/InventoryCore", "Engine/Core/Helper", "Engine/Core/GameData", "Engine/UI/Localization"], function (require, exports, Mob_4, MobListener_3, InventoryCore_2, Helper_3, GameData_12, Localization_6) {
+define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/MobListener", "Engine/Core/InventoryCore", "Engine/Core/Helper", "Engine/Core/GameData", "Engine/UI/Localization"], function (require, exports, Mob_4, MobListener_3, InventoryCore_2, Helper_2, GameData_11, Localization_6) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var EquipmentType;
@@ -3745,7 +3778,7 @@ define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/GameObjects/M
             }
             let modified = false;
             let pwrCorrect = 1.0;
-            pwrCorrect *= Math.pow(1.0353, mobData.battleStats.attackPower[GameData_12.GameData.damageType[dmgType]] + mobData.battleStats.attackPower[dmgType]);
+            pwrCorrect *= mobData.getAtkPower(dmgType);
             if (pwrCorrect > 1.01 || pwrCorrect < 0.99) {
                 modified = true;
             }
@@ -3805,23 +3838,23 @@ define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/GameObjects/M
             //
             // ─── BASIC PROPERTIES ────────────────────────────────────────────
             //
-            let th = Helper_3.Helper.toolTip;
+            let th = Helper_2.Helper.toolTip;
             ttBody += th.beginSection();
             // Item Level - Rarity / Primary class - Sub class
-            ttBody += th.row(th.column(th.colored(Localization_6._(GameData_12.GameData.rarityName[this.itemData.rarity]), GameData_12.GameData.rarityColor[this.itemData.rarity], 'width: 4.5em;') +
+            ttBody += th.row(th.column(th.colored(Localization_6._(GameData_11.GameData.rarityName[this.itemData.rarity]), GameData_11.GameData.rarityColor[this.itemData.rarity], 'width: 4.5em;') +
                 Localization_6._('itemLevel') + " " + this.itemData.level, 'display:flex;') +
                 th.column(Localization_6._(this.itemData.pClass) +
                     (this.itemData.sClass !== "" ?
                         (" - " + Localization_6._(this.itemData.sClass)) :
                         (""))));
             // Attack power (type) & Attack time
-            let attackType = GameData_12.GameData.Elements[this.mainElement];
+            let attackType = GameData_11.GameData.Elements[this.mainElement];
             let dmgMin = this.getDamage(this.equipper, this.baseAttackMin, attackType);
             let dmgMax = this.getDamage(this.equipper, this.baseAttackMax, attackType);
             let atkTime = this.getAttackTime(this.equipper, this.baseAttackSpeed);
             ttBody += th.row(th.column("<strong style = 'width: 4.5em'>" + Localization_6._("atkDmg") + "</strong>" +
-                th.colored(`${dmgMin.value.toFixed(1)} - ${dmgMax.value.toFixed(1)} `, dmgMin.modified ? 'aqua' : GameData_12.GameData.ElementColorsStr[attackType]) + " " +
-                th.colored(Localization_6._(attackType), GameData_12.GameData.ElementColorsStr[attackType], 'margin-left: 0.45em;'), 'display: flex;') +
+                th.colored(`${dmgMin.value.toFixed(1)} - ${dmgMax.value.toFixed(1)} `, dmgMin.modified ? 'aqua' : GameData_11.GameData.ElementColorsStr[attackType]) + " " +
+                th.colored(Localization_6._(attackType), GameData_11.GameData.ElementColorsStr[attackType], 'margin-left: 0.45em;'), 'display: flex;') +
                 th.column(th.colored(atkTime.value.toFixed(1), atkTime.modified ? 'aqua' : 'white') + " " + Localization_6._("sec")));
             // DPS
             let dpsR = [dmgMin.value / atkTime.value, dmgMax.value / atkTime.value];
@@ -3862,19 +3895,19 @@ define("Engine/Core/EquipmentCore", ["require", "exports", "Engine/GameObjects/M
             // Base attack
             let baseDesc = this.getBaseAttackDesc(this.equipper);
             let rCost = this.getResourceCost(this.equipper, this.manaCost);
-            let thisColor = Helper_3.ColorToStr(this.itemData.color);
+            let thisColor = Helper_2.ColorToStr(this.itemData.color);
             ttBody += th.row(th.column(Localization_6._('normalAttack') + " " +
                 th.colored(Localization_6._(this._atkName), thisColor)) +
                 th.column(th.colored(rCost.value.toFixed(0), (rCost.modified) ? 'aqua' : 'white') +
                     ` ${Localization_6._('mana')} (` +
                     (rCost.value / atkTime.value).toFixed(1) + ` ${Localization_6._('per sec')})`));
-            ttBody += th.row((baseDesc && baseDesc.hasOwnProperty(GameData_12.GameData.mainLanguage)) ? baseDesc[GameData_12.GameData.mainLanguage] : baseDesc, '', 'weaponAtkDesc');
+            ttBody += th.row((baseDesc && baseDesc.hasOwnProperty(GameData_11.GameData.mainLanguage)) ? baseDesc[GameData_11.GameData.mainLanguage] : baseDesc, '', 'weaponAtkDesc');
             ttBody += th.switchSection();
             let spDesc = this.getSpecialAttackDesc(this.equipper);
             ttBody += th.row(th.column(Localization_6._('specialAttack') + " " +
                 th.colored(Localization_6._(this._spName), thisColor)) +
                 th.column(`${this.weaponGaugeMax.toFixed(0)} ${Localization_6._('energy')}`));
-            ttBody += th.row((spDesc && spDesc.hasOwnProperty(GameData_12.GameData.mainLanguage)) ? spDesc[GameData_12.GameData.mainLanguage] : spDesc, '', 'weaponAtkDesc');
+            ttBody += th.row((spDesc && spDesc.hasOwnProperty(GameData_11.GameData.mainLanguage)) ? spDesc[GameData_11.GameData.mainLanguage] : spDesc, '', 'weaponAtkDesc');
             ttBody += th.switchSection();
             ttBody += "<p style='color: gold;'>" +
                 Localization_6._(this.itemData.toolTipText) + "</p>";
@@ -4055,7 +4088,7 @@ define("Engine/Core/MobListener", ["require", "exports", "Engine/Core/DataBacken
  * @module Agent
  * @preferred
  */
-define("Engine/Agents/MobAgent", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/MobListener", "Engine/UI/PopUpManager", "Engine/Core/GameData"], function (require, exports, Mob_5, MobListener_4, PopUpManager_4, GameData_13) {
+define("Engine/Agents/MobAgent", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/MobListener", "Engine/UI/PopUpManager", "Engine/Core/GameData"], function (require, exports, Mob_5, MobListener_4, PopUpManager_4, GameData_12) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class MobAgent extends MobListener_4.MobListener {
@@ -4209,7 +4242,7 @@ define("Engine/Agents/MobAgent", ["require", "exports", "Engine/GameObjects/Mob"
         // },
         onReceiveDamageFinal(info) {
             // Just in case
-            if (info.type !== GameData_13.GameData.Elements.heal) {
+            if (info.type !== GameData_12.GameData.Elements.heal) {
                 // Add the damage source in to our focus list,
                 if (!this.focusList.has(info.source)) {
                     this.addTarget(info.source);
@@ -4222,13 +4255,13 @@ define("Engine/Agents/MobAgent", ["require", "exports", "Engine/GameObjects/Mob"
         }
         onReceiveHealFinal(info) {
             // Just in case
-            if (info.type === GameData_13.GameData.Elements.heal) {
+            if (info.type === GameData_12.GameData.Elements.heal) {
                 // Add the heal source in to our focus list,
                 if (!this.focusList.has(info.source)) {
                     this.addTarget(info.source);
                 }
                 // and create the taunt of that target based on total heal
-                this.tauntList[info.source.UID].taunt += (info.value + info.overdeal) * info.source.tauntMul * GameData_13.GameData.healTaunt;
+                this.tauntList[info.source.UID].taunt += (info.value + info.overdeal) * info.source.tauntMul * GameData_12.GameData.healTaunt;
             }
             // We do not change the values
             return false;
@@ -4267,7 +4300,7 @@ define("Engine/Core/ObjectPopulator", ["require", "exports"], function (require,
     exports.ObjectPopulator = ObjectPopulator;
 });
 /** @packageDocumentation @module GameEntity */
-define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/Core/MobData", "Engine/Core/UnitManager", "Engine/Core/EquipmentCore", "Engine/UI/PopUpManager", "Engine/Core/ObjectPopulator", "Engine/Core/GameData", "Engine/UI/UIScene"], function (require, exports, dPhysSprite_2, MobData_1, UnitManager_5, EquipmentCore_2, PopUpManager_5, ObjectPopulator_1, GameData_14, UIScene_3) {
+define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/Core/MobData", "Engine/Core/UnitManager", "Engine/Core/EquipmentCore", "Engine/UI/PopUpManager", "Engine/Core/ObjectPopulator", "Engine/Core/GameData", "Engine/UI/UIScene"], function (require, exports, dPhysSprite_2, MobData_1, UnitManager_5, EquipmentCore_2, PopUpManager_5, ObjectPopulator_1, GameData_13, UIScene_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Mob extends dPhysSprite_2.dPhysSprite {
@@ -4402,16 +4435,16 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
             return true;
         }
         fillDHF(_damageInfo) {
-            if (_damageInfo.isAvoid == undefined) {
-                _damageInfo.isAvoid = false;
+            if (typeof _damageInfo.level === 'undefined') {
+                _damageInfo.level = 0;
             }
-            if (_damageInfo.isCrit == undefined) {
-                _damageInfo.isCrit = false;
+            if (typeof _damageInfo.crit === 'undefined') {
+                _damageInfo.crit = 0;
             }
-            if (_damageInfo.isBlock == undefined) {
-                _damageInfo.isBlock = false;
+            if (typeof _damageInfo.hit === 'undefined') {
+                _damageInfo.hit = 0;
             }
-            if (_damageInfo.popUp == undefined) {
+            if (typeof _damageInfo.popUp === 'undefined') {
                 _damageInfo.popUp = true;
             }
             return _damageInfo;
@@ -4433,50 +4466,72 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
          * spell:           the spell used at this attack
          * popUp (true):    Should this damage popup a text ?
          */
-        receiveDamage(_damageInfo) {
+        receiveDamageHeal(_damageInfo) {
             // Fill optional slots with their default values.
             _damageInfo = this.fillDHF(_damageInfo);
             let damageInfo = {
                 'source': _damageInfo.source.mobData,
-                'target': this.mobData,
                 'spell': _damageInfo.spell,
                 'value': _damageInfo.value,
-                'isCrit': _damageInfo.isCrit,
-                'isAvoid': _damageInfo.isAvoid,
-                'isBlock': _damageInfo.isBlock,
                 'type': _damageInfo.type,
-                // 'type'   : _damageInfo.type,
-                'overdeal': 0,
+                'level': _damageInfo.level,
+                'crit': _damageInfo.crit,
+                'hit': _damageInfo.hit
             };
             if (Mob.checkAlive(this) == false) {
-                damageInfo.isAvoid = true;
-                damageInfo.value = 0;
-                return damageInfo;
+                return {
+                    'isAvoid': true,
+                    'isBlock': true,
+                    'isCrit': false,
+                    'overdeal': 0,
+                    'value': 0,
+                    'type': _damageInfo.type,
+                    'target': this.mobData,
+                    'spell': _damageInfo.spell,
+                    'source': _damageInfo.source.mobData
+                };
             }
             // The actual damage calculate and event trigger moved into backend
             // If mob dead finally, this.data.alive will become false
-            let result = this.mobData.receiveDamage(damageInfo);
+            let result = this.mobData.receiveDamageHeal(damageInfo);
             // It does not hit !
             if (result.isAvoid) {
                 if (_damageInfo.popUp == true) {
                     var popUpPos = this.getTopCenter();
-                    PopUpManager_5.PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, GameData_14.GameData.ElementColors['miss']);
+                    if (result.type === 'heal') {
+                        PopUpManager_5.PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, GameData_13.GameData.ElementColors['miss'], 1.0, 64);
+                    }
+                    else {
+                        PopUpManager_5.PopUpManager.getSingleton().addText('MISS', popUpPos.x, popUpPos.y, GameData_13.GameData.ElementColors['miss']);
+                    }
                 }
                 return result;
             }
             // Mob itself only do rendering popUp texts
             if (_damageInfo.popUp == true && result.value > 0) {
                 var popUpPos = this.getTopCenter();
-                PopUpManager_5.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_14.GameData.ElementColors[result.type]);
+                if (result.type === 'heal') {
+                    PopUpManager_5.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_13.GameData.ElementColors[result.type], 1.0, 64);
+                }
+                else {
+                    PopUpManager_5.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_13.GameData.ElementColors[result.type]);
+                }
                 // popUp texts on unit frames
                 // fade from left to the the edge of currentHealth
                 if (this.mobData.isPlayer) {
                     let playerList = UnitManager_5.UnitManager.getCurrent().getPlayerListWithDead(UnitManager_5.UnitManager.IDENTITY, UnitManager_5.UnitManager.NOOP);
                     for (var i = 0; i < playerList.length; i++) {
                         if (this === playerList[i]) {
-                            let popX = UIScene_3.UIScene.getSingleton().unitFrames[i].x + 78;
-                            let popY = UIScene_3.UIScene.getSingleton().unitFrames[i].y + 5;
-                            PopUpManager_5.PopUpManager.getSingleton().addText("-" + result.value.toString() + (result.isCrit ? "!" : ""), popX, popY, GameData_14.GameData.ElementColors[result.type], 0.8, -40, 0, 40, 0);
+                            if (result.type === 'heal') {
+                                let popX = UIScene_3.UIScene.getSingleton().unitFrames[i].x + 40;
+                                let popY = UIScene_3.UIScene.getSingleton().unitFrames[i].y + 15;
+                                PopUpManager_5.PopUpManager.getSingleton().addText("+" + result.value.toString() + (result.isCrit ? "!" : ""), popX, popY, GameData_13.GameData.ElementColors['heal'], 0.8, 40, 0, -40, 0);
+                            }
+                            else {
+                                let popX = UIScene_3.UIScene.getSingleton().unitFrames[i].x + 78;
+                                let popY = UIScene_3.UIScene.getSingleton().unitFrames[i].y + 5;
+                                PopUpManager_5.PopUpManager.getSingleton().addText("-" + result.value.toString() + (result.isCrit ? "!" : ""), popX, popY, GameData_13.GameData.ElementColors[result.type], 0.8, -40, 0, 40, 0);
+                            }
                         }
                     }
                 }
@@ -4489,83 +4544,18 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
             }
             return result;
         }
-        // Receive healing, same as recieve damage.
-        /**
-         * Params of healInfo (default value)
-         * source:          heal source
-         * heal (0):        actual heal, a number.
-         * isCrit (false):  is this heal crits ? It will be calculated automatically if it is false.
-         * spell:           the spell used at this attack
-         * popUp (true):    Should this heal popup a text ?
-         */
-        receiveHeal(_healInfo) {
-            // Fill optional slots with their default values.
-            _healInfo = this.fillDHF(_healInfo);
-            // Same as above
-            let healInfo = {
-                'source': _healInfo.source.mobData,
-                'target': this.mobData,
-                'spell': _healInfo.spell,
-                'value': _healInfo.value,
-                'isCrit': _healInfo.isCrit,
-                'isAvoid': _healInfo.isAvoid,
-                'isBlock': _healInfo.isBlock,
-                'type': GameData_14.GameData.Elements.heal,
-                'overdeal': 0
-            };
-            if (Mob.checkAlive(this) == false) {
-                healInfo.isAvoid = true;
-                healInfo.value = 0;
-                return healInfo;
-            }
-            let result = this.mobData.receiveHeal(healInfo);
-            // Show popUp text with overhealing hint
-            if (_healInfo.popUp == true && (result.value) > 0) {
-                // var popUpPos = this.getRenderPos(0.5, 0.0);
-                // if(healInfo.heal.over > 0)
-                // {
-                //     game.UI.popupMgr.addText({
-                //         text: healInfo.heal.real.toString() + (healInfo.isCrit ? " !" : "") + " <" + healInfo.heal.over.toString() + ">",
-                //         color: game.data.damageColor.heal,
-                //         velX: 64,
-                //         posX: popUpPos.x,
-                //         posY: popUpPos.y,
-                //     });
-                // }
-                // else
-                // {
-                //     game.UI.popupMgr.addText({
-                //         text: healInfo.heal.real.toString() + (healInfo.isCrit ? " !" : ""),
-                //         color: game.data.damageColor.heal,
-                //         velX: 64,
-                //         posX: popUpPos.x,
-                //         posY: popUpPos.y,
-                //     });
-                // }
-                var popUpPos = this.getTopCenter();
-                // if (result.overdeal > 0)
-                // {
-                //     PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : "") + " <" + result.overdeal.toString() + ">", popUpPos.x, popUpPos.y, GameData.ElementColors['heal'], 1.0, 64, -256);
-                // }
-                // else
-                // {
-                //     PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData.ElementColors['heal'], 1.0, 64, -256);
-                // }
-                PopUpManager_5.PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData_14.GameData.ElementColors['heal'], 1.0, 64, -256);
-                // popUp texts on unit frames
-                // fade from left to the the edge of currentHealth
-                if (this.mobData.isPlayer) {
-                    let playerList = UnitManager_5.UnitManager.getCurrent().getPlayerListWithDead(UnitManager_5.UnitManager.IDENTITY, UnitManager_5.UnitManager.NOOP);
-                    for (var i = 0; i < playerList.length; i++) {
-                        if (this === playerList[i]) {
-                            let popX = UIScene_3.UIScene.getSingleton().unitFrames[i].x + 40;
-                            let popY = UIScene_3.UIScene.getSingleton().unitFrames[i].y + 15;
-                            PopUpManager_5.PopUpManager.getSingleton().addText("+" + result.value.toString() + (result.isCrit ? "!" : ""), popX, popY, GameData_14.GameData.ElementColors['heal'], 0.8, 40, 0, -40, 0);
-                        }
-                    }
-                }
-            }
-            return result;
+        // Used for dealing instant damages by this mob. Will use the stats of the mob to calculate the damage.
+        dealDamageHeal(target, info) {
+            return target.receiveDamageHeal({
+                'source': this,
+                'value': info.value * this.mobData.getAtkPower(info.type),
+                'type': info.type,
+                'crit': this.mobData.battleStats.crit,
+                'hit': this.mobData.battleStats.hitAcc,
+                'level': this.mobData.level,
+                'spell': info.spell,
+                'popUp': info.popUp,
+            });
         }
         die(source, damage) {
             this.mobData.die(damage);
@@ -4583,24 +4573,24 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
             }
         }
         attack(targets) {
-            this.mobData.updateListeners(this.mobData, 'attack', this.mobData, targets);
+            this.mobData.updateListeners('attack', this.mobData, targets);
             // let result = this.mobData.currentWeapon.attack(this, targets);
             let result = this.mobData.currentWeapon.checkAttack(this, targets);
             if (result.canAttack) {
                 let newTargets = result.target;
-                this.mobData.updateListeners(this.mobData, 'attack', this.mobData, this.mobData.currentWeapon, newTargets);
+                this.mobData.updateListeners('attack', this.mobData, this.mobData.currentWeapon, newTargets);
                 if (result.isSpecial) {
-                    this.mobData.updateListeners(this.mobData, 'specialAttack', this.mobData, this.mobData.currentWeapon, newTargets);
+                    this.mobData.updateListeners('specialAttack', this.mobData, this.mobData.currentWeapon, newTargets);
                     this.mobData.currentWeapon.specialAttack(this, newTargets, true, true);
-                    this.mobData.updateListenersRev(this.mobData, 'specialAttackFinish', this.mobData, this.mobData.currentWeapon, newTargets);
+                    this.mobData.updateListenersRev('specialAttackFinish', this.mobData, this.mobData.currentWeapon, newTargets);
                 }
                 else {
-                    this.mobData.updateListeners(this.mobData, 'regularAttack', this.mobData, this.mobData.currentWeapon, newTargets);
+                    this.mobData.updateListeners('regularAttack', this.mobData, this.mobData.currentWeapon, newTargets);
                     this.mobData.currentWeapon.regularAttack(this, newTargets, true, true);
                     this.mobData.useMana(this.mobData.currentWeapon.manaCost); // only regular attack costs mana
-                    this.mobData.updateListenersRev(this.mobData, 'regularAttackFinish', this.mobData, this.mobData.currentWeapon, newTargets);
+                    this.mobData.updateListenersRev('regularAttackFinish', this.mobData, this.mobData.currentWeapon, newTargets);
                 }
-                this.mobData.updateListenersRev(this.mobData, 'attackFinish', this.mobData, this.mobData.currentWeapon, newTargets);
+                this.mobData.updateListenersRev('attackFinish', this.mobData, this.mobData.currentWeapon, newTargets);
             }
             return result.canAttack;
         }
@@ -4780,14 +4770,14 @@ define("Engine/GameObjects/Projectile", ["require", "exports", "Engine/GameObjec
     exports.Projectile = Projectile;
 });
 /** @packageDocumentation @module Buffs */
-define("Buffs/HDOT", ["require", "exports", "Engine/Core/Buff", "Engine/Core/GameData", "Engine/Core/Helper", "Engine/GameObjects/Spell", "Engine/UI/Localization"], function (require, exports, Buff_2, GameData_15, Helper_4, Spell_3, Localization_7) {
+define("Buffs/HDOT", ["require", "exports", "Engine/Core/Buff", "Engine/Core/GameData", "Engine/Core/Helper", "Engine/GameObjects/Spell", "Engine/UI/Localization"], function (require, exports, Buff_2, GameData_14, Helper_3, Spell_3, Localization_7) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class HDOT extends Buff_2.Buff {
         constructor(settings, type, vMin = 1, vMax = 3, vGap = 0.57) {
             settings.name = settings.name || 'XOT';
             settings.popupName = settings.popupName || settings.name || 'XOT!';
-            settings.color = settings.color || GameData_15.GameData.ElementColors[type] || Phaser.Display.Color.HexStringToColor('#0066ff');
+            settings.color = settings.color || GameData_14.GameData.ElementColors[type] || Phaser.Display.Color.HexStringToColor('#0066ff');
             //settings.iconId
             super(settings);
             //this.toolTip
@@ -4805,11 +4795,9 @@ define("Buffs/HDOT", ["require", "exports", "Engine/Core/Buff", "Engine/Core/Gam
         onUpdate(mob, dt) {
             this.timer += dt;
             for (; this.vCount < Math.floor(this.timer / this.vGap); this.vCount++) {
-                Helper_4.HealDmg({
-                    'source': this.source.parentMob,
-                    'target': mob.parentMob,
+                this.source.parentMob.dealDamageHeal(mob.parentMob, {
+                    'value': Helper_3.getRandomInt(this.vMin, this.vMax) * this.stacks,
                     'type': this.vType,
-                    'value': Helper_4.getRandomInt(this.vMin, this.vMax) * this.stacks,
                     'spell': { 'name': this.name, 'flags': new Set([Spell_3.SpellFlags.overTime]) },
                     'popUp': true,
                 });
@@ -4834,7 +4822,7 @@ define("Buffs/index", ["require", "exports", "Buffs/HDOT"], function (require, e
     __export(HDOT_1);
 });
 /** @packageDocumentation @module Weapons */
-define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/GameObjects/Projectile", "Engine/Core/Helper", "Engine/Core/GameData", "Buffs/index", "Engine/Core/Buff", "Engine/UI/Localization"], function (require, exports, EquipmentCore_3, UnitManager_7, Spell_4, Projectile_1, Helper_5, GameData_16, Buffs, Buff_3, Localization_8) {
+define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/GameObjects/Projectile", "Engine/Core/Helper", "Engine/Core/GameData", "Buffs/index", "Engine/Core/Buff", "Engine/UI/Localization"], function (require, exports, EquipmentCore_3, UnitManager_7, Spell_4, Projectile_1, Helper_4, GameData_15, Buffs, Buff_3, Localization_8) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     Buffs = __importStar(Buffs);
@@ -4861,13 +4849,13 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
                 return {
                     "zh-cn": `
                 <span>放出至多 ${this.targetCount} 颗彗星弹进行攻击。</span>
-                <span>每颗造成 ${this.getDamage(mob, this.baseAttackMin, GameData_16.GameData.Elements.ice).value.toFixed(0)} - ${this.getDamage(mob, this.baseAttackMax, GameData_16.GameData.Elements.ice).value.toFixed(0)} 点冰属性伤害。</span>`,
+                <span>每颗造成 ${this.getDamage(mob, this.baseAttackMin, GameData_15.GameData.Elements.ice).value.toFixed(0)} - ${this.getDamage(mob, this.baseAttackMax, GameData_15.GameData.Elements.ice).value.toFixed(0)} 点冰属性伤害。</span>`,
                     "en-us": `
                 <span>Releases maximum ${this.targetCount} comet orbs to target(s).</span>
-                <span>Every orb deals ${this.getDamage(mob, this.baseAttackMin, GameData_16.GameData.Elements.ice).value.toFixed(0)} - ${this.getDamage(mob, this.baseAttackMax, GameData_16.GameData.Elements.ice).value.toFixed(0)} ice damage.</span>`,
+                <span>Every orb deals ${this.getDamage(mob, this.baseAttackMin, GameData_15.GameData.Elements.ice).value.toFixed(0)} - ${this.getDamage(mob, this.baseAttackMax, GameData_15.GameData.Elements.ice).value.toFixed(0)} ice damage.</span>`,
                     "ja-jp": `
                 <span>最大 ${this.targetCount} 枚の彗星弾を撃つ。</span>
-                <span>弾ことに、あったものに ${this.getDamage(mob, this.baseAttackMin, GameData_16.GameData.Elements.ice).value.toFixed(0)} - ${this.getDamage(mob, this.baseAttackMax, GameData_16.GameData.Elements.ice).value.toFixed(0)} 点の氷属性ダメージを与える。</span>`,
+                <span>弾ことに、あったものに ${this.getDamage(mob, this.baseAttackMin, GameData_15.GameData.Elements.ice).value.toFixed(0)} - ${this.getDamage(mob, this.baseAttackMax, GameData_15.GameData.Elements.ice).value.toFixed(0)} 点の氷属性ダメージを与える。</span>`,
                 };
             };
             this.getSpecialAttackDesc = (mob) => {
@@ -4875,19 +4863,19 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
                     "zh-cn": `
                 <span>放出至多 ${this.targetCount} 颗火焰弹进行攻击。</span>
                 <span>
-                    每颗火焰弹会${Helper_5.Helper.toolTip.colored('点燃', GameData_16.GameData.ElementColorsStr['fire'])}目标 50px 范围内的所有敌人，令它们每 1.2秒受到 ${this.getDamage(mob, 3, GameData_16.GameData.Elements.fire).value.toFixed(0)} - ${this.getDamage(mob, 4, GameData_16.GameData.Elements.fire).value.toFixed(0)} 点火属性伤害，持续6.0秒。${Helper_5.Helper.toolTip.colored('点燃', GameData_16.GameData.ElementColorsStr['fire'])}最多叠加10次。
+                    每颗火焰弹会${Helper_4.Helper.toolTip.colored('点燃', GameData_15.GameData.ElementColorsStr['fire'])}目标 50px 范围内的所有敌人，令它们每 1.2秒受到 ${this.getDamage(mob, 3, GameData_15.GameData.Elements.fire).value.toFixed(0)} - ${this.getDamage(mob, 4, GameData_15.GameData.Elements.fire).value.toFixed(0)} 点火属性伤害，持续6.0秒。${Helper_4.Helper.toolTip.colored('点燃', GameData_15.GameData.ElementColorsStr['fire'])}最多叠加10次。
                 </span>`,
                     // <span style = "color: #90d7ec;">同时还会影响自身周围 200px 单位内的队友，使其<strong style='color:${GameData.ElementColorsStr['nature']}'>再生</strong>或<strong style='color:${GameData.ElementColorsStr['light']}'>被光刺穿</strong>。</span>`,
                     "en-us": `
                 <span>Releases maximum ${this.targetCount} flame orbs to target(s).</span>
                 <span>
-                    Each orb will ${Helper_5.Helper.toolTip.colored('burn', GameData_16.GameData.ElementColorsStr['fire'])} every enemy within 50px from the target, dealing ${this.getDamage(mob, 3, GameData_16.GameData.Elements.fire).value.toFixed(0)} - ${this.getDamage(mob, 4, GameData_16.GameData.Elements.fire).value.toFixed(0)} fire damage every 1.2s for 6 seconds. ${Helper_5.Helper.toolTip.colored('Burn', GameData_16.GameData.ElementColorsStr['fire'])} can be stacked up to 10 times.
+                    Each orb will ${Helper_4.Helper.toolTip.colored('burn', GameData_15.GameData.ElementColorsStr['fire'])} every enemy within 50px from the target, dealing ${this.getDamage(mob, 3, GameData_15.GameData.Elements.fire).value.toFixed(0)} - ${this.getDamage(mob, 4, GameData_15.GameData.Elements.fire).value.toFixed(0)} fire damage every 1.2s for 6 seconds. ${Helper_4.Helper.toolTip.colored('Burn', GameData_15.GameData.ElementColorsStr['fire'])} can be stacked up to 10 times.
                 </span>`,
                     // <span style = "color: #90d7ec;">Meanwhile, affect team members within 200px from you, let them <strong style='color:${GameData.ElementColorsStr['nature']}'>Regenerate</strong> or <strong style='color:${GameData.ElementColorsStr['light']}'>Enlighttened</strong>.</span>`,
                     "ja-jp": `
                 <span>最大 ${this.targetCount} 枚の星炎弾を撃つ。</span>
                 <span>
-                    弾ことに、あったものの周り 50px 以内の全ての敵を${Helper_5.Helper.toolTip.colored('炎上', GameData_16.GameData.ElementColorsStr['fire'])}の効果を与える。燃えた敵は 6秒 内、1.2秒 ことに ${this.getDamage(mob, 3, GameData_16.GameData.Elements.fire).value.toFixed(0)} - ${this.getDamage(mob, 4, GameData_16.GameData.Elements.fire).value.toFixed(0)} 点の炎属性ダメージを受ける。${Helper_5.Helper.toolTip.colored('炎上', GameData_16.GameData.ElementColorsStr['fire'])}は最大10回に積みます。
+                    弾ことに、あったものの周り 50px 以内の全ての敵を${Helper_4.Helper.toolTip.colored('炎上', GameData_15.GameData.ElementColorsStr['fire'])}の効果を与える。燃えた敵は 6秒 内、1.2秒 ことに ${this.getDamage(mob, 3, GameData_15.GameData.Elements.fire).value.toFixed(0)} - ${this.getDamage(mob, 4, GameData_15.GameData.Elements.fire).value.toFixed(0)} 点の炎属性ダメージを受ける。${Helper_4.Helper.toolTip.colored('炎上', GameData_15.GameData.ElementColorsStr['fire'])}は最大10回に積みます。
                 </span>`
                     // <span style = "color: #90d7ec;">その上、自身の周り 200px 以内のメンバーに<strong style='color:${GameData.ElementColorsStr['nature']}'>再生</strong>または<strong style='color:${GameData.ElementColorsStr['light']}'>刺し光</strong>を与える。</span>`,
                 };
@@ -4907,7 +4895,8 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
                     'source': source,
                     'target': targetMob,
                     'speed': 150,
-                    'onMobHit': (self, mob) => { self.dieAfter(self.HealDmg, [mob, Helper_5.getRandomInt(6, 18), GameData_16.GameData.Elements.ice], mob); },
+                    'mainType': [GameData_15.GameData.Elements.ice, GameData_15.GameData.Elements.fire],
+                    'onMobHit': (self, mob) => { self.dieAfter(self.HealDmg, [mob, Helper_4.getRandomInt(6, 18), GameData_15.GameData.Elements.ice], mob); },
                     // 'color': Phaser.Display.Color.HexStringToColor("#77ffff"),
                     'chasingRange': 400,
                     'chasingPower': 1.0,
@@ -4921,18 +4910,18 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
                     'target': targetMob,
                     'speed': 150,
                     'onMobHit': (self, mob) => {
-                        self.dieAfter(() => Helper_5.AoE((m) => {
+                        self.dieAfter(() => Helper_4.AoE((m) => {
                             // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
-                            m.receiveBuff(source, new Buffs.HDOT(Buff_3.Buff.fromKey('test_Burn', { source: source.mobData, time: 6.0, maxStack: 10, name: self.name }), GameData_16.GameData.Elements.fire, 3, 4, 1.2));
+                            m.receiveBuff(source, new Buffs.HDOT(Buff_3.Buff.fromKey('test_Burn', { source: source.mobData, time: 6.0, maxStack: 10, name: self.name }), GameData_15.GameData.Elements.fire, 3, 4, 1.2));
                         }, self.getPosition(), 50, self.targeting), [], mob);
                     },
                     'chasingRange': 400,
                     'chasingPower': 5.0,
                 }, 2);
-            Helper_5.AoE((m) => {
+            Helper_4.AoE((m) => {
                 // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
-                if (Helper_5.getRandomInt(0, 3) < 1) {
-                    m.receiveBuff(source, new Buffs.HDOT(Buff_3.Buff.fromKey('test_HOT', { source: source.mobData, time: 10.0, maxStack: 3 }), GameData_16.GameData.Elements.heal, 0, 1, 2.0));
+                if (Helper_4.getRandomInt(0, 3) < 1) {
+                    m.receiveBuff(source, new Buffs.HDOT(Buff_3.Buff.fromKey('test_HOT', { source: source.mobData, time: 10.0, maxStack: 3 }), GameData_15.GameData.Elements.heal, 0, 1, 2.0));
                 }
                 else {
                     // m.receiveBuff(source, new Buffs.HDOT(Buff.fromKey('test_Light', { source: source.mobData, time: 5.0 }), GameData.Elements.light, 2, 3, 1.0));
@@ -5085,7 +5074,7 @@ define("Lists/AgentList", ["require", "exports", "Agents/index"], function (requ
     };
 });
 /** @packageDocumentation @moduleeDocumentation @module SpellDatas */
-define("SpellData/FloraHeal", ["require", "exports", "Engine/Core/SpellData", "Engine/Core/UnitManager", "Engine/Core/GameData", "Engine/GameObjects/Spell", "Engine/Core/Helper"], function (require, exports, SpellData_1, UnitManager_8, GameData_17, Spell_5, Helper_6) {
+define("SpellData/FloraHeal", ["require", "exports", "Engine/Core/SpellData", "Engine/Core/UnitManager", "Engine/Core/GameData", "Engine/GameObjects/Spell", "Engine/Core/Helper"], function (require, exports, SpellData_1, UnitManager_8, GameData_16, Spell_5, Helper_5) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var SpellDatas;
@@ -5110,10 +5099,9 @@ define("SpellData/FloraHeal", ["require", "exports", "Engine/Core/SpellData", "E
                 if (Math.ceil(this.totalTime / 0.8) > this.hitCount) {
                     this.hitCount++;
                     UnitManager_8.UnitManager.getCurrent().getUnitList(UnitManager_8.UnitManager.sortByHealthPercentage, UnitManager_8.UnitManager.NOOP, mob.mobData.isPlayer).slice(0, 3).forEach(target => {
-                        target.receiveHeal({
-                            'source': mob,
-                            'value': Helper_6.getRandomInt(4, 6),
-                            'type': GameData_17.GameData.Elements.heal,
+                        mob.dealDamageHeal(target, {
+                            'value': Helper_5.getRandomInt(4, 6),
+                            'type': GameData_16.GameData.Elements.heal,
                             'spell': {
                                 'name': this.name,
                                 'flags': new Set([
@@ -5130,7 +5118,7 @@ define("SpellData/FloraHeal", ["require", "exports", "Engine/Core/SpellData", "E
     })(SpellDatas = exports.SpellDatas || (exports.SpellDatas = {}));
 });
 /** @packageDocumentation @module BattleScene */
-define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/index", "Engine/Agents/PlayerAgents", "Mobs/index", "Agents/index", "Engine/Core/Helper", "Engine/Core/ObjectPopulator", "Lists/ObjectList", "Lists/AgentList", "Engine/Core/GameData", "Engine/UI/Localization", "SpellData/FloraHeal"], function (require, exports, BattleScene_1, Mob_12, MobData_3, Weapons, PlayerAgents, Mobs, Agents, Helper_7, ObjectPopulator_3, ObjectList_1, AgentList_1, GameData_18, Localization_9, FloraHeal_1) {
+define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/index", "Engine/Agents/PlayerAgents", "Mobs/index", "Agents/index", "Engine/Core/Helper", "Engine/Core/ObjectPopulator", "Lists/ObjectList", "Lists/AgentList", "Engine/UI/Localization", "SpellData/FloraHeal"], function (require, exports, BattleScene_1, Mob_12, MobData_3, Weapons, PlayerAgents, Mobs, Agents, Helper_6, ObjectPopulator_3, ObjectList_1, AgentList_1, Localization_9, FloraHeal_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     Weapons = __importStar(Weapons);
@@ -5167,12 +5155,12 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
                     'backendData': new MobData_3.MobData({
                         'name': Localization_9._('testGirl') + i,
                         'isPlayer': true,
-                        'vit': 10 + Helper_7.getRandomInt(-3, 3),
-                        'mag': 8 + Helper_7.getRandomInt(-3, 3),
-                        'str': 2 + Helper_7.getRandomInt(-1, 1),
-                        'int': 3 + Helper_7.getRandomInt(-2, 2),
-                        'dex': 5 + Helper_7.getRandomInt(-3, 3),
-                        'tec': 7 + Helper_7.getRandomInt(-3, 3),
+                        'vit': 10 + Helper_6.getRandomInt(-3, 3),
+                        'mag': 8 + Helper_6.getRandomInt(-3, 3),
+                        'str': 2 + Helper_6.getRandomInt(-1, 1),
+                        'int': 3 + Helper_6.getRandomInt(-2, 2),
+                        'dex': 5 + Helper_6.getRandomInt(-3, 3),
+                        'tec': 7 + Helper_6.getRandomInt(-3, 3),
                     }),
                     'agent': PlayerAgents.Simple,
                 });
@@ -5194,12 +5182,12 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
                     'backendData': new MobData_3.MobData({
                         'name': Localization_9._('testGirl') + i,
                         'isPlayer': true,
-                        'vit': 10 + Helper_7.getRandomInt(-3, 3),
-                        'mag': 8 + Helper_7.getRandomInt(-3, 3),
-                        'str': 2 + Helper_7.getRandomInt(-1, 1),
-                        'int': 3 + Helper_7.getRandomInt(-2, 2),
-                        'dex': 5 + Helper_7.getRandomInt(-3, 3),
-                        'tec': 7 + Helper_7.getRandomInt(-3, 3),
+                        'vit': 10 + Helper_6.getRandomInt(-3, 3),
+                        'mag': 8 + Helper_6.getRandomInt(-3, 3),
+                        'str': 2 + Helper_6.getRandomInt(-1, 1),
+                        'int': 3 + Helper_6.getRandomInt(-2, 2),
+                        'dex': 5 + Helper_6.getRandomInt(-3, 3),
+                        'tec': 7 + Helper_6.getRandomInt(-3, 3),
                     }),
                     'agent': PlayerAgents.Simple,
                 });
@@ -5233,18 +5221,12 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
             this.addMob(woodlog);
         }
         updateScene(time, dt) {
-            // console.log("Mana: " + this.girl.mobData.currentMana.toString() + " / " + this.girl.mobData.maxMana.toString());
-            if (this.hc < 0) {
-                this.hc = this.hcM;
-                Helper_7.HealDmg({ 'source': this.h, 'target': this.h, type: GameData_18.GameData.Elements.heal, value: 5 });
-            }
-            this.hc -= dt * 0.001;
         }
     }
     exports.TestScene = TestScene;
 });
 /** @packageDocumentation @module ScenePrototypes */
-define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine/UI/Localization", "Engine/DynamicLoader/DynamicLoaderScene", "Engine/UI/UIScene", "TestScene", "Engine/Core/InventoryCore", "Lists/ItemList", "Engine/UI/ProgressBar", "papaparse", "Engine/Core/Buff", "js-cookie", "Engine/Core/GameData"], function (require, exports, Localization_10, DynamicLoaderScene_3, UIScene_5, TestScene_1, InventoryCore_3, ItemList_1, ProgressBar_3, papaparse_1, Buff_4, js_cookie_1, GameData_19) {
+define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine/UI/Localization", "Engine/DynamicLoader/DynamicLoaderScene", "Engine/UI/UIScene", "TestScene", "Engine/Core/InventoryCore", "Lists/ItemList", "Engine/UI/ProgressBar", "papaparse", "Engine/Core/Buff", "js-cookie", "Engine/Core/GameData"], function (require, exports, Localization_10, DynamicLoaderScene_3, UIScene_5, TestScene_1, InventoryCore_3, ItemList_1, ProgressBar_3, papaparse_1, Buff_4, js_cookie_1, GameData_17) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     js_cookie_1 = __importDefault(js_cookie_1);
@@ -5261,8 +5243,8 @@ define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine
             // Set Language
             let sbox = (document.getElementById("Language"));
             let slang = js_cookie_1.default.get('language') || sbox.options[sbox.selectedIndex].value;
-            GameData_19.GameData.mainLanguage = slang;
-            GameData_19.GameData.popUpBuffLanguage = slang;
+            GameData_17.GameData.mainLanguage = slang;
+            GameData_17.GameData.popUpBuffLanguage = slang;
             sbox.selectedIndex = slang === 'zh-cn' ? 0 : (slang === 'en-us' ? 1 : 2);
             this.load.bitmapFont('smallPx', './assets/fonts/smallPx_C_0.png', './assets/fonts/smallPx_C.fnt');
             this.load.bitmapFont('smallPx_HUD', './assets/fonts/smallPx_HUD_0.png', './assets/fonts/smallPx_HUD.fnt');

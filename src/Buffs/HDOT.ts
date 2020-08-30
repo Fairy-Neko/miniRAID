@@ -5,7 +5,7 @@ import { mRTypes } from "../Engine/Core/mRTypes";
 import { Mob } from "../Engine/GameObjects/Mob";
 import { MobData } from "../Engine/Core/MobData";
 import { GameData } from "../Engine/Core/GameData";
-import { HealDmg, getRandomFloat, getRandomInt } from "../Engine/Core/Helper";
+import { getRandomFloat, getRandomInt } from "../Engine/Core/Helper";
 import { SpellFlags } from "../Engine/GameObjects/Spell";
 import { _ } from "../Engine/UI/Localization";
 
@@ -50,11 +50,9 @@ export class HDOT extends Buff
         this.timer += dt;
         for (; this.vCount < Math.floor(this.timer / this.vGap); this.vCount++)
         {
-            HealDmg({
-                'source': this.source.parentMob,
-                'target': mob.parentMob,
-                'type': this.vType,
+            this.source.parentMob.dealDamageHeal(mob.parentMob, {
                 'value': getRandomInt(this.vMin, this.vMax) * this.stacks,
+                'type': this.vType,
                 'spell': { 'name': this.name, 'flags': new Set([SpellFlags.overTime]) },
                 'popUp': true,
             });

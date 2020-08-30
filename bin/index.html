@@ -52,13 +52,12 @@
 
     <p style="font-family:monospace">
         TODOs: <br>
-        Seperate calculation of attack power & resistence so we can calculate them in different time (with different
-        mobData). <br>
+        Move dynamic toolTips inside of the code (e.g. Buff toolTips etc.) <br><br>
+
         Please avoid the calculation of anything related to the mob (including attackPower etc. that was calculated in
         target.receiveDamage right now) when some attack hits its target after some delay! Please finish every necessary
         calculation inside Weapon.doRegular/SpecialAttack() so we can temporally modify the mobData to affect the attack
-        if needed. <br><br>
-        Edit the LinkedDict so it can be iterated in reverse order ...
+        if needed.
         <!-- Also please avoid temporally editing emitter's data in a listener and set it back during some "onFinish" event. This could lead to a bug when several this kind of listeners are listening the emitter, and currently seems unsolvable (since the LinkedDict that used in the EventSystem cannot be iterated in reverse order via API and LAZY). <br>
         Instead, e.g. when you need to  -->
     </p>

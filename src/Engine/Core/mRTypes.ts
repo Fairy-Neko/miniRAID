@@ -18,6 +18,7 @@ export namespace mRTypes
         export interface Buff
         {
             name?: string;
+            source?: MobData.MobData;
 
             countTime?: boolean;
             time?: number;
@@ -32,8 +33,6 @@ export namespace mRTypes
             color?: Phaser.Display.Color;
             popupName?: string;
             popupColor?: Phaser.Display.Color;
-
-            source?: MobData.MobData;
 
             UIimportant?: boolean;
             UIpriority?: number;
@@ -106,6 +105,8 @@ export namespace mRTypes
 
             source: MobEntity;
             target?: MobEntity | Phaser.Math.Vector2;
+            mainType?: GameData.Elements | GameData.Elements[];
+            data?: any; // Additional mobData needs to be captured during creation of the spell.
 
             onHit?: (self: SpellEntity, arg: Phaser.GameObjects.GameObject) => void;
             onMobHit?: (self: SpellEntity, arg: MobEntity) => void;
@@ -212,7 +213,7 @@ export namespace mRTypes
         flags: Set<SpellFlags>;
     }
 
-    export interface DamageHeal
+    export interface DamageHeal_Result
     {
         source?: MobData.MobData;
         target: MobData.MobData;
@@ -225,15 +226,25 @@ export namespace mRTypes
         spell?: SpellInfo;
     }
 
-    export interface DamageHeal_FrontEnd
+    export interface DamageHeal_Input
     {
-        source?: MobEntity;
-        target?: MobEntity;
+        source?: MobData.MobData;
         value: number;
         type: GameData.Elements;
-        isCrit?: boolean;
-        isAvoid?: boolean;
-        isBlock?: boolean;
+        crit?: number; // Crit chance
+        hit?: number; // Hit (not miss) chance
+        level?: number; // source level
+        spell?: SpellInfo;
+    }
+
+    export interface DamageHeal_FrontEndInput
+    {
+        source?: MobEntity;
+        value: number;
+        type: GameData.Elements;
+        crit?: number; // Crit chance
+        hit?: number; // Hit (not miss) chance
+        level?: number; // source level
         spell?: SpellInfo;
         popUp?: boolean;
     }

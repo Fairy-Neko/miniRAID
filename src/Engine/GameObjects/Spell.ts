@@ -5,7 +5,6 @@ import { dPhysSprite } from "../DynamicLoader/dPhysSprite"
 import { mRTypes } from "../Core/mRTypes";
 import { Mob } from "./Mob";
 import { BattleScene } from "../ScenePrototypes/BattleScene";
-import { HealDmg } from "../Core/Helper";
 import { GameData } from "../Core/GameData";
 
 export enum SpellFlags
@@ -51,6 +50,14 @@ export class Spell extends dPhysSprite
 
     lifeRemain: number;
 
+    // Parameter of the mob captured during the creation of this spell
+    mobCrit: number;
+    mobHit: number;
+    mobLevel: number;
+    mobAP: { [index: string]: number };
+    mainType: GameData.Elements;
+    cachedMobData: any;
+
     _onHit: (self: Spell, arg: Phaser.GameObjects.GameObject) => void;
     _onMobHit: (self: Spell, arg: Mob) => void;
     _onWorldHit: (self: Spell, arg: Phaser.GameObjects.GameObject) => void;
@@ -84,6 +91,29 @@ export class Spell extends dPhysSprite
         }
 
         this.targeting = this.flags.has(SpellFlags.targetingEverything) ? Targeting.Both : this.targeting;
+
+        // Capture data
+        if (this.source)
+        {
+            this.mobCrit = this.source.mobData.battleStats.crit;
+            this.mobHit = this.source.mobData.battleStats.hitAcc;
+            this.mobAP = {};
+            if (settings.mainType instanceof Array)
+            {
+                for (let type of settings.mainType)
+                {
+                    this.mobAP[type] = this.source.mobData.getAtkPower(type);
+                }
+                this.mainType = settings.mainType[0];
+            }
+            else if (settings.mainType)
+            {
+                this.mobAP[settings.mainType] = this.source.mobData.getAtkPower(settings.mainType);
+                this.mainType = settings.mainType;
+            }
+        }
+
+        this.cachedMobData = settings.data;
 
         if (this.useCollider === false)
         {
@@ -174,15 +204,26 @@ export class Spell extends dPhysSprite
         }
     }
 
-    HealDmg(target: Mob, dmg: number, type: GameData.Elements): mRTypes.DamageHeal
+    HealDmg(target: Mob, dmg: number, type?: GameData.Elements, applyCachedAP?: boolean, crit?: number, hit?: number, level?: number): mRTypes.DamageHeal_Result
     {
-        return HealDmg({
+        let finalDmg = dmg;
+        if (this.mobAP && ((typeof applyCachedAP === 'undefined') || applyCachedAP))
+        {
+            if (type in this.mobAP)
+            {
+                finalDmg *= this.mobAP[type];
+            }
+        }
+
+        return target.receiveDamageHeal({
             'source': this.source,
-            'target': target,
-            'value': dmg,
+            'value': finalDmg,
             'type': type,
             'popUp': true,
             'spell': this.info,
+            'crit': crit || this.mobCrit || 0,
+            'hit': hit || this.mobHit || 0,
+            'level': level || this.mobLevel || 0,
         });
     }
 

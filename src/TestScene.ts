@@ -7,7 +7,7 @@ import * as Weapons from "./Weapons";
 import * as PlayerAgents from "./Engine/Agents/PlayerAgents";
 import * as Mobs from './Mobs';
 import * as Agents from "./Agents";
-import { HealDmg, Helper, getRandomInt } from "./Engine/Core/Helper";
+import { Helper, getRandomInt } from "./Engine/Core/Helper";
 import { SpellFlags } from "./Engine/GameObjects/Spell";
 import { ItemManager } from "./Engine/Core/InventoryCore";
 import { ItemList } from "./Lists/ItemList";
@@ -158,13 +158,5 @@ export class TestScene extends BattleScene
 
     updateScene(time: number, dt: number)
     {
-        // console.log("Mana: " + this.girl.mobData.currentMana.toString() + " / " + this.girl.mobData.maxMana.toString());
-
-        if (this.hc < 0)
-        {
-            this.hc = this.hcM;
-            HealDmg({ 'source': this.h, 'target': this.h, type: GameData.Elements.heal, value: 5 });
-        }
-        this.hc -= dt * 0.001;
     }
 }

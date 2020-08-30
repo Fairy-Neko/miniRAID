@@ -178,18 +178,18 @@ export class MobListener extends EventSystem.EventElement
 
     // Damage/Heal Info: { source, target, value, overdeal, isCrit, isAvoid, isBlock, spell } = {}
 
-    onDealDamage(damageInfo: mRTypes.DamageHeal) { return false; }
-    onDealDamageFinal(damageInfo: mRTypes.DamageHeal) { return false; }
+    onDealDamage(damageInfo: mRTypes.DamageHeal_Input) { return false; }
+    onDealDamageFinal(damageInfo: mRTypes.DamageHeal_Result) { return false; }
 
-    onDealHeal(healInfo: mRTypes.DamageHeal) { return false; }
-    onDealHealFinal(healInfo: mRTypes.DamageHeal) { return false; }
+    onDealHeal(healInfo: mRTypes.DamageHeal_Input) { return false; }
+    onDealHealFinal(healInfo: mRTypes.DamageHeal_Result) { return false; }
 
-    onReceiveDamage(damageInfo: mRTypes.DamageHeal) { return false; }
-    onReceiveDamageFinal(damageInfo: mRTypes.DamageHeal) { return false; }
+    onReceiveDamage(damageInfo: mRTypes.DamageHeal_Input) { return false; }
+    onReceiveDamageFinal(damageInfo: mRTypes.DamageHeal_Result) { return false; }
 
-    onReceiveHeal(healInfo: mRTypes.DamageHeal) { return false; }
-    onReceiveHealFinal(healInfo: mRTypes.DamageHeal) { return false; }
+    onReceiveHeal(healInfo: mRTypes.DamageHeal_Input) { return false; }
+    onReceiveHealFinal(healInfo: mRTypes.DamageHeal_Result) { return false; }
 
-    onKill(damageInfo: mRTypes.DamageHeal) { return false; }
-    onDeath(damageInfo: mRTypes.DamageHeal) { return false; }
+    onKill(damageInfo: mRTypes.DamageHeal_Result) { return false; }
+    onDeath(damageInfo: mRTypes.DamageHeal_Result) { return false; }
 }

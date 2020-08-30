@@ -49,8 +49,7 @@ export namespace SpellDatas
                     mob.mobData.isPlayer,
                 ).slice(0, 3).forEach(target =>
                 {
-                    target.receiveHeal({
-                        'source': mob,
+                    mob.dealDamageHeal(target, {
                         'value': getRandomInt(4, 6),
                         'type': GameData.Elements.heal,
                         'spell': {

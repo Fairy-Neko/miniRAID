@@ -225,7 +225,7 @@ export class TauntBasedAgent extends MoveableAgent
     //     return true; 
     // },
 
-    onReceiveDamageFinal(info: mRTypes.DamageHeal): boolean
+    onReceiveDamageFinal(info: mRTypes.DamageHeal_Result): boolean
     {
         // Just in case
         if (info.type !== GameData.Elements.heal)
@@ -244,7 +244,7 @@ export class TauntBasedAgent extends MoveableAgent
         return false;
     }
 
-    onReceiveHealFinal(info: mRTypes.DamageHeal): boolean
+    onReceiveHealFinal(info: mRTypes.DamageHeal_Result): boolean
     {
         // Just in case
         if (info.type === GameData.Elements.heal)
@@ -263,7 +263,7 @@ export class TauntBasedAgent extends MoveableAgent
         return false;
     }
 
-    onDeath(damageInfo: mRTypes.DamageHeal): boolean
+    onDeath(damageInfo: mRTypes.DamageHeal_Result): boolean
     {
         if (this.targetMob)
         {

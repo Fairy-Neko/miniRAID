@@ -7,18 +7,6 @@ import { Targeting } from "../GameObjects/Spell";
 import { GameData } from "./GameData";
 import { MobData } from "./MobData";
 
-export function HealDmg(info: mRTypes.DamageHeal_FrontEnd): mRTypes.DamageHeal
-{
-    if (info.type === GameData.Elements.heal)
-    {
-        return info.target.receiveHeal(info);
-    }
-    else
-    {
-        return info.target.receiveDamage(info);
-    }
-}
-
 type AoECBm = (mob: Mob) => void;
 type AoECBml = (mob: Mob, list: Mob[]) => void;
 type AoECBmli = (mob: Mob, list: Mob[], idx: number) => void

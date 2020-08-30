@@ -391,6 +391,11 @@
                          "value":"FutsuMu"
                         }, 
                         {
+                         "name":"int",
+                         "type":"float",
+                         "value":10
+                        }, 
+                        {
                          "name":"mag",
                          "type":"float",
                          "value":8
@@ -426,6 +431,11 @@
                          "name":"image",
                          "type":"string",
                          "value":"FutsuMu"
+                        }, 
+                        {
+                         "name":"int",
+                         "type":"float",
+                         "value":10
                         }, 
                         {
                          "name":"mag",
@@ -465,6 +475,11 @@
                          "value":"FutsuMu"
                         }, 
                         {
+                         "name":"int",
+                         "type":"float",
+                         "value":10
+                        }, 
+                        {
                          "name":"mag",
                          "type":"float",
                          "value":8
@@ -500,6 +515,11 @@
                          "name":"image",
                          "type":"string",
                          "value":"FutsuMu"
+                        }, 
+                        {
+                         "name":"int",
+                         "type":"float",
+                         "value":10
                         }, 
                         {
                          "name":"mag",
@@ -539,6 +559,11 @@
                          "value":"FutsuMu"
                         }, 
                         {
+                         "name":"int",
+                         "type":"float",
+                         "value":10
+                        }, 
+                        {
                          "name":"mag",
                          "type":"float",
                          "value":8
@@ -574,6 +599,11 @@
                          "name":"image",
                          "type":"string",
                          "value":"FutsuMu"
+                        }, 
+                        {
+                         "name":"int",
+                         "type":"float",
+                         "value":10
                         }, 
                         {
                          "name":"mag",
@@ -613,6 +643,11 @@
                          "value":"FutsuMu"
                         }, 
                         {
+                         "name":"int",
+                         "type":"float",
+                         "value":10
+                        }, 
+                        {
                          "name":"mag",
                          "type":"float",
                          "value":8
@@ -648,6 +683,11 @@
                          "name":"image",
                          "type":"string",
                          "value":"FutsuMu"
+                        }, 
+                        {
+                         "name":"int",
+                         "type":"float",
+                         "value":10
                         }, 
                         {
                          "name":"mag",

@@ -104,6 +104,7 @@ export class CometWand extends Weapon
                 'source': source,
                 'target': targetMob,
                 'speed': 150,
+                'mainType': [GameData.Elements.ice, GameData.Elements.fire],
                 'onMobHit': (self: Spell, mob: Mob) => { self.dieAfter(self.HealDmg, [mob, getRandomInt(6, 18), GameData.Elements.ice], mob); },
                 // 'color': Phaser.Display.Color.HexStringToColor("#77ffff"),
                 'chasingRange': 400,
