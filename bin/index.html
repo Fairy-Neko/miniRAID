@@ -32,6 +32,13 @@
 </head>
 
 <body>
+    <div id="GameFrame" oncontextmenu="return false;">
+    </div>
+    <!-- Tool tip -->
+    <div id="tooltip" class="followmouse">
+        <h1 id="title">Test Sword 测试</h1>
+        <p id="body">测试 Test message</p>
+    </div>
 
     <div>
         Select a language; The page will refresh after selection!
@@ -42,18 +49,12 @@
         </select>
     </div>
 
-    <div id="GameFrame" oncontextmenu="return false;">
-    </div>
-    <!-- Tool tip -->
-    <div id="tooltip" class="followmouse">
-        <h1 id="title">Test Sword 测试</h1>
-        <p id="body">测试 Test message</p>
-    </div>
-
     <p style="font-family:monospace">
         TODOs: <br>
         Move dynamic toolTips inside of the code (e.g. Buff toolTips etc.) <br>
-        Add the access of target in Damage / Heal Mob Events. <br><br>
+        Add the access of target in Damage / Heal Mob Events. <br>
+        Adjust the popupTexts so higher numbers last longer and smaller numbers disappear nearly instantly. <br>
+        Refresh timeRemain when non-stackable buff was stacked. <br><br>
 
         Please avoid the calculation of anything related to the mob (including attackPower etc. that was calculated in
         target.receiveDamage right now) when some attack hits its target after some delay! Please finish every necessary

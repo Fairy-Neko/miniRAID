@@ -667,8 +667,8 @@ export class MobData extends EventSystem.EventElement
         // 3. Reset battle stats
         this.battleStats = {
             resist: {
-                physical: this.baseStats.vit,
-                elemental: this.baseStats.mag,
+                physical: 0,
+                elemental: 0,
                 pure: 0, // It should always be 0
 
                 slash: 0,
@@ -687,8 +687,8 @@ export class MobData extends EventSystem.EventElement
             },
 
             attackPower: {
-                physical: this.baseStats.str,
-                elemental: this.baseStats.int,
+                physical: 0,
+                elemental: 0,
                 pure: 0, // It should always be 0
 
                 slash: 0,
@@ -724,7 +724,7 @@ export class MobData extends EventSystem.EventElement
             extraRange: 0,
         };
 
-        this.tauntMul = 1.0;
+        // this.tauntMul = 1.0;
 
         // Go back to base speed
         this.modifiers.speed = 1.0 + this.baseStats.dex * 0.05;

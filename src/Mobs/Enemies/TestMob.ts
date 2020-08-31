@@ -14,7 +14,7 @@ export class TestMob extends Mob
         settings.agent = settings.agent || TauntBasedAgent;
         super(scene, x, y, sprite || 'sheet_FutsuMu', settings);
 
-        let myWeapon = new Weapons.CometWand();
+        let myWeapon = new Weapons.Staffs.CometWand();
         myWeapon.manaCost = 0;
         myWeapon.activeRange = 150;
         myWeapon.targetCount = 2;

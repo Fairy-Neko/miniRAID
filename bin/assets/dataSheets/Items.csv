@@ -43,4 +43,4 @@ aegisLiliaceae,花瓣圆盾,Aegis Liliaceae,,#ffffff,false,2,4,false,weapon,shie
 ,秘法飞弹,,,,,1,1,false,weapon,staff,,,,,,,,,,,,,
 cometWand,彗星权杖,Comet Wand,彗星の杖,#b7f6ff,false,2,3,false,weapon,staff,,彗星弹幕,Comet Orb,彗星弾,灼烧,Burn,星炎,sheet_test_weapons,0,寄宿着彗星之力的权杖。,"Served with comets, my lord.",氷と炎の力を宿った杖。,
 ,,,,,,,,false,,,,,,,,,,,,,,,
-ventonBow,风蒲狩猎弓,Venton Hunting Bow,,,,2,2,false,weapon,bow,,射击,Shot,,风之矢,Wind arrow,,sheet_test_weapons,2,,,,
+ventonBow,风蒲狩猎弓,Venton Hunting Bow,,#a9d17d,false,2,2,false,weapon,bow,,射击,Shot,射撃,风之矢,Wind arrow,風の矢,sheet_test_weapons,2,,,,

@@ -42,10 +42,10 @@ export namespace mRTypes
 
         export interface SpellData
         {
-            name: string;
+            name?: string;
 
-            coolDown: number;
-            manaCost: number;
+            coolDown?: number;
+            manaCost?: number;
         }
 
         export interface MobData

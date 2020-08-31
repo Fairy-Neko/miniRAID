@@ -54,7 +54,7 @@ export class HunterChar extends WindElfChar
     {
         let additionals: Phaser.Math.Vector2[] = [];
         let myPos = src.parentMob.footPos().clone();
-        let spread = Math.PI / 180; // 1 degree
+        let spread = Math.PI / 180 * 10; // 3 degrees
 
         for (let target of targets)
         {
@@ -68,8 +68,8 @@ export class HunterChar extends WindElfChar
         }
 
         this.cache_ap = { phy: src.battleStats.attackPower.physical, ele: src.battleStats.attackPower.elemental };
-        src.battleStats.attackPower.physical -= this.windPower * 6;
-        src.battleStats.attackPower.elemental -= this.windPower * 6;
+        src.battleStats.attackPower.physical -= this.windPower * 3;
+        src.battleStats.attackPower.elemental -= this.windPower * 3;
 
         targets.push(...additionals);
     }

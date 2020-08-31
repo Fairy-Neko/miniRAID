@@ -873,16 +873,16 @@ define("Engine/Core/GameData", ["require", "exports", "Engine/Core/mRTypes"], fu
         };
         GameData.critMultiplier = {
             slash: 2.0,
-            knock: 1.6,
-            pierce: 2.5,
+            knock: 1.8,
+            pierce: 2.2,
             fire: 2.0,
             ice: 2.0,
-            water: 1.6,
+            water: 1.8,
             nature: 2.0,
-            wind: 2.5,
-            thunder: 2.5,
-            light: 1.6,
-            dark: 1.6,
+            wind: 2.2,
+            thunder: 2.2,
+            light: 1.8,
+            dark: 1.8,
             heal: 2.0,
         };
         let Elements;
@@ -2170,8 +2170,12 @@ define("Engine/UI/UnitFrame", ["require", "exports", "Engine/UI/ProgressBar", "E
             this.wpAlter = new WeaponFrame(this.scene, 115, 7, this.targetMob.mobData.anotherWeapon);
             this.wpCurrent.wpIcon.setInteractive();
             this.wpCurrent.wpIcon.on('pointerdown', () => { this.switchWeapon(); });
+            this.wpCurrent.wpIcon.input.hitArea.width = 24;
+            this.wpCurrent.wpIcon.input.hitArea.height = 24;
             this.wpAlter.wpIcon.setInteractive();
             this.wpAlter.wpIcon.on('pointerdown', () => { this.switchWeapon(); });
+            this.wpAlter.wpIcon.input.hitArea.width = 24;
+            this.wpAlter.wpIcon.input.hitArea.height = 24;
             this.add(this.wpCurrent);
             this.add(this.wpAlter);
             // Health
@@ -3384,8 +3388,8 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
             // 3. Reset battle stats
             this.battleStats = {
                 resist: {
-                    physical: this.baseStats.vit,
-                    elemental: this.baseStats.mag,
+                    physical: 0,
+                    elemental: 0,
                     pure: 0,
                     slash: 0,
                     knock: 0,
@@ -3401,8 +3405,8 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
                     heal: 0,
                 },
                 attackPower: {
-                    physical: this.baseStats.str,
-                    elemental: this.baseStats.int,
+                    physical: 0,
+                    elemental: 0,
                     pure: 0,
                     slash: 0,
                     knock: 0,
@@ -3431,7 +3435,7 @@ define("Engine/Core/MobData", ["require", "exports", "Engine/Events/EventSystem"
                 attackRange: 0,
                 extraRange: 0,
             };
-            this.tauntMul = 1.0;
+            // this.tauntMul = 1.0;
             // Go back to base speed
             this.modifiers.speed = 1.0 + this.baseStats.dex * 0.05;
             this.modifiers.movingSpeed = 1.0 + this.baseStats.dex * 0.05;
@@ -4325,13 +4329,16 @@ define("Engine/Core/ObjectPopulator", ["require", "exports"], function (require,
     exports.ObjectPopulator = ObjectPopulator;
 });
 /** @packageDocumentation @module GameEntity */
-define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/Core/MobData", "Engine/Core/UnitManager", "Engine/Core/EquipmentCore", "Engine/UI/PopUpManager", "Engine/Core/ObjectPopulator", "Engine/Core/GameData", "Engine/UI/UIScene"], function (require, exports, dPhysSprite_2, MobData_1, UnitManager_5, EquipmentCore_2, PopUpManager_5, ObjectPopulator_1, GameData_13, UIScene_3) {
+define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dPhysSprite", "Engine/Core/MobData", "Engine/Core/UnitManager", "Engine/Core/EquipmentCore", "Engine/UI/PopUpManager", "Engine/Core/ObjectPopulator", "Engine/Core/GameData", "Engine/UI/UIScene", "Engine/UI/ProgressBar"], function (require, exports, dPhysSprite_2, MobData_1, UnitManager_5, EquipmentCore_2, PopUpManager_5, ObjectPopulator_1, GameData_13, UIScene_3, ProgressBar_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Mob extends dPhysSprite_2.dPhysSprite {
         constructor(scene, x, y, sprite, settings, subsprite, frame) {
             super(scene, x, y, sprite || 'sheet_default_mob', subsprite, frame);
             this.imageFacingRight = false;
+            this.container = new Phaser.GameObjects.Container(scene, x, y);
+            this.container.depth = 1;
+            scene.add.existing(this.container);
             this.setOrigin(0.5, 0.8);
             this.mobData = settings.backendData;
             this.mobData.parentMob = this;
@@ -4357,6 +4364,9 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
             }
             this.attackCounter = 0;
             // HPBar
+            if (this.isPlayer === false) {
+                this.container.add(new ProgressBar_2.ProgressBar(scene, -16, -32, () => [this.mobData.currentHealth, this.mobData.maxHealth], 32, 5, 1, true, 0x000000, 0x444444, 0xff5555, false));
+            }
         }
         // Somehow deprecated
         static fromTiled(mobCtor) {
@@ -4378,6 +4388,9 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
             };
         }
         update(dt) {
+            this.container.setPosition(this.x, this.y);
+            this.container.update(dt);
+            this.container.each((obj) => { obj.update(dt); });
             // this.sprite.x += dt / 1000.0 * 10;
             if (this.body.velocity.length() > 0) {
                 this.mobData.isMoving = true;
@@ -4587,6 +4600,7 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
             if (this.mobData.isPlayer === true) {
                 // Don't remove it, keep it dead
                 // game.units.removePlayer(this);
+                (this.body).setEnable(false);
             }
             else {
                 if (this.agent) {
@@ -4594,6 +4608,7 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
                     this.agent = undefined;
                 }
                 UnitManager_5.UnitManager.getCurrent().removeEnemy(this);
+                this.container.destroy();
                 this.destroy();
             }
         }
@@ -4632,7 +4647,7 @@ define("Engine/GameObjects/Mob", ["require", "exports", "Engine/DynamicLoader/dP
     exports.Mob = Mob;
 });
 /** @packageDocumentation @module BattleScene */
-define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/UnitManager", "Engine/Core/ObjectPopulator", "Engine/Core/BattleMonitor", "Engine/UI/UIScene", "Engine/UI/ProgressBar"], function (require, exports, Mob_6, UnitManager_6, ObjectPopulator_2, BattleMonitor_4, UIScene_4, ProgressBar_2) {
+define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/UnitManager", "Engine/Core/ObjectPopulator", "Engine/Core/BattleMonitor", "Engine/UI/UIScene", "Engine/UI/ProgressBar"], function (require, exports, Mob_6, UnitManager_6, ObjectPopulator_2, BattleMonitor_4, UIScene_4, ProgressBar_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class BattleScene extends Phaser.Scene {
@@ -4694,7 +4709,7 @@ define("Engine/ScenePrototypes/BattleScene", ["require", "exports", "Engine/Game
                 let path = this.tilesetImgPrefix + tileset.name + ".png";
                 this.load.image(tileset.name, path);
             }
-            this.pBar = new ProgressBar_2.ProgressBar(this, 400, 310, () => [this.currProgress, 1.0], 224, 20, 5, false, 0x444444, 0x000000, 0xade0ee, false);
+            this.pBar = new ProgressBar_3.ProgressBar(this, 400, 310, () => [this.currProgress, 1.0], 224, 20, 5, false, 0x444444, 0x000000, 0xade0ee, false);
             this.pBar.setDepth(1000);
             this.add.existing(this.pBar);
             this.load.on('progress', (value) => { this.currProgress = value; });
@@ -4846,8 +4861,8 @@ define("Buffs/index", ["require", "exports", "Buffs/HDOT"], function (require, e
     Object.defineProperty(exports, "__esModule", { value: true });
     __export(HDOT_1);
 });
-/** @packageDocumentation @module Weapons */
-define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/GameObjects/Projectile", "Engine/Core/Helper", "Engine/Core/GameData", "Buffs/index", "Engine/Core/Buff", "Engine/UI/Localization"], function (require, exports, EquipmentCore_3, UnitManager_7, Spell_4, Projectile_1, Helper_4, GameData_15, Buffs, Buff_3, Localization_8) {
+/** @packageDocumentation @module Weapons.Staffs */
+define("Weapons/Staffs/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Engine/Core/UnitManager", "Engine/GameObjects/Spell", "Engine/GameObjects/Projectile", "Engine/Core/Helper", "Engine/Core/GameData", "Buffs/index", "Engine/Core/Buff", "Engine/UI/Localization"], function (require, exports, EquipmentCore_3, UnitManager_7, Spell_4, Projectile_1, Helper_4, GameData_15, Buffs, Buff_3, Localization_8) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     Buffs = __importStar(Buffs);
@@ -4959,14 +4974,102 @@ define("Weapons/Staff", ["require", "exports", "Engine/Core/EquipmentCore", "Eng
     }
     exports.CometWand = CometWand;
 });
-/** @packageDocumentation @module Weapons */
-define("Weapons/index", ["require", "exports", "Weapons/Staff"], function (require, exports, Staff_1) {
+/** @packageDocumentation @module Weapons.Staffs */
+define("Weapons/Staffs/index", ["require", "exports", "Weapons/Staffs/Staff"], function (require, exports, Staff_1) {
     "use strict";
     function __export(m) {
         for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
     }
     Object.defineProperty(exports, "__esModule", { value: true });
     __export(Staff_1);
+});
+/** @packageDocumentation @module Weapons.Bows */
+define("Weapons/Bows/VentonHuntingBow", ["require", "exports", "Engine/Core/EquipmentCore", "Engine/UI/Localization", "Engine/GameObjects/Projectile", "Engine/GameObjects/Spell", "Engine/Core/GameData", "Engine/Core/Helper", "Engine/Core/UnitManager"], function (require, exports, EquipmentCore_4, Localization_9, Projectile_2, Spell_5, GameData_16, Helper_5, UnitManager_8) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class VentonHuntingBow extends EquipmentCore_4.Weapon {
+        constructor(itemID = 'ventonBow') {
+            super(itemID);
+            this.mainElement = 'pierce';
+            this.baseAttackMin = 4;
+            this.baseAttackMax = 14;
+            this.baseAttackSpeed = 2.8;
+            this.targetCount = 1;
+            this.activeRange = 485;
+            this.manaCost = 5;
+            this.weaponGaugeMax = 10;
+            this.weaponGaugeIncreasement = function (mob) { return mob.mobData.baseStats.dex; };
+            // ToolTips
+            this.weaponGaugeTooltip = `wp_${this.rawName}`;
+            Localization_9.Localization.setOneData(this.weaponGaugeTooltip, {
+                "zh-cn": "1x 敏捷",
+                "en-us": "1x DEX",
+                "ja-jp": "1x 敏捷"
+            });
+            this.getBaseAttackDesc = (mob) => {
+                return {
+                    "zh-cn": ``,
+                    "en-us": ``,
+                    "ja-jp": ``,
+                };
+            };
+            this.getSpecialAttackDesc = (mob) => {
+                return {
+                    "zh-cn": ``,
+                    "en-us": ``,
+                    "ja-jp": ``,
+                };
+            };
+        }
+        doRegularAttack(source, target) {
+            for (let targetMob of target)
+                new Projectile_2.Projectile(source.x, source.y, 'sheet_test_projectiles', {
+                    'info': { 'name': this.atkName, 'flags': new Set([Spell_5.SpellFlags.isDamage, Spell_5.SpellFlags.hasTarget]) },
+                    'source': source,
+                    'target': targetMob,
+                    'color': Phaser.Display.Color.HexStringToColor('#bd8c3c'),
+                    'speed': 450,
+                    'mainType': [GameData_16.GameData.Elements.pierce],
+                    'onMobHit': (self, mob) => { self.dieAfter(self.HealDmg, [mob, Helper_5.getRandomInt(this.baseAttackMin, this.baseAttackMax), GameData_16.GameData.Elements.pierce], mob); },
+                    'chasingRange': 0,
+                    'chasingPower': 0.0,
+                }, 0);
+        }
+        doSpecialAttack(source, target) {
+            for (let targetMob of target)
+                new Projectile_2.Projectile(source.x, source.y, 'sheet_test_projectiles', {
+                    'info': { 'name': this.atkName, 'flags': new Set([Spell_5.SpellFlags.isDamage, Spell_5.SpellFlags.hasTarget]) },
+                    'source': source,
+                    'target': targetMob,
+                    'color': Phaser.Display.Color.HexStringToColor('#96d474'),
+                    'speed': 450,
+                    'mainType': [GameData_16.GameData.Elements.pierce],
+                    'onMobHit': (self, mob) => { self.dieAfter(self.HealDmg, [mob, Helper_5.getRandomInt(this.baseAttackMin * 3, this.baseAttackMax * 3), GameData_16.GameData.Elements.pierce], mob); },
+                    'chasingRange': 200,
+                    'chasingPower': 5.0,
+                }, 0);
+        }
+        grabTargets(mob) {
+            return UnitManager_8.UnitManager.getCurrent().getNearest(mob.footPos(), !mob.mobData.isPlayer, this.targetCount);
+        }
+    }
+    exports.VentonHuntingBow = VentonHuntingBow;
+});
+/** @packageDocumentation @module Weapons.Bows */
+define("Weapons/Bows/index", ["require", "exports", "Weapons/Bows/VentonHuntingBow"], function (require, exports, VentonHuntingBow_1) {
+    "use strict";
+    function __export(m) {
+        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    __export(VentonHuntingBow_1);
+});
+/** @packageDocumentation @module Weapons */
+define("Weapons/index", ["require", "exports", "Weapons/Staffs/index", "Weapons/Bows/index"], function (require, exports, Staffs, Bows) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.Staffs = Staffs;
+    exports.Bows = Bows;
 });
 /** @packageDocumentation @module Mobs.Allies.WindElf */
 define("Mobs/Allies/WindElf/WindElf", ["require", "exports", "Engine/GameObjects/Mob", "Engine/Core/MobListener"], function (require, exports, Mob_8, MobListener_5) {
@@ -5015,7 +5118,7 @@ define("Mobs/Allies/WindElf/Hunter", ["require", "exports", "Engine/GameObjects/
         onRegularAttack(src, weapon, targets) {
             let additionals = [];
             let myPos = src.parentMob.footPos().clone();
-            let spread = Math.PI / 180; // 1 degree
+            let spread = Math.PI / 180 * 10; // 3 degrees
             for (let target of targets) {
                 for (let i = 0; i < this.windPower; i++) {
                     let atkVec = (target instanceof Mob_9.Mob ? target.footPos() : target).clone().subtract(myPos);
@@ -5024,8 +5127,8 @@ define("Mobs/Allies/WindElf/Hunter", ["require", "exports", "Engine/GameObjects/
                 }
             }
             this.cache_ap = { phy: src.battleStats.attackPower.physical, ele: src.battleStats.attackPower.elemental };
-            src.battleStats.attackPower.physical -= this.windPower * 6;
-            src.battleStats.attackPower.elemental -= this.windPower * 6;
+            src.battleStats.attackPower.physical -= this.windPower * 3;
+            src.battleStats.attackPower.elemental -= this.windPower * 3;
             targets.push(...additionals);
         }
         onRegularAttackFinish(src, weapon, targets) {
@@ -5115,7 +5218,7 @@ define("Mobs/Enemies/TestMob", ["require", "exports", "Engine/GameObjects/Mob", 
         constructor(scene, x, y, sprite, settings) {
             settings.agent = settings.agent || MobAgent_3.TauntBasedAgent;
             super(scene, x, y, sprite || 'sheet_FutsuMu', settings);
-            let myWeapon = new Weapons.CometWand();
+            let myWeapon = new Weapons.Staffs.CometWand();
             myWeapon.manaCost = 0;
             myWeapon.activeRange = 150;
             myWeapon.targetCount = 2;
@@ -5146,7 +5249,7 @@ define("Lists/ItemList", ["require", "exports", "Weapons/index"], function (requ
     Object.defineProperty(exports, "__esModule", { value: true });
     Weapons = __importStar(Weapons);
     exports.ItemList = {
-        "cometWand": Weapons.CometWand,
+        "cometWand": Weapons.Staffs.CometWand,
     };
 });
 /** @packageDocumentation @module Lists */
@@ -5170,57 +5273,114 @@ define("Lists/AgentList", ["require", "exports", "Agents/index"], function (requ
     };
 });
 /** @packageDocumentation @moduleeDocumentation @module SpellDatas */
-define("SpellData/FloraHeal", ["require", "exports", "Engine/Core/SpellData", "Engine/Core/UnitManager", "Engine/Core/GameData", "Engine/GameObjects/Spell", "Engine/Core/Helper"], function (require, exports, SpellData_1, UnitManager_8, GameData_16, Spell_5, Helper_5) {
+define("SpellData/FloraHeal", ["require", "exports", "Engine/Core/SpellData", "Engine/Core/UnitManager", "Engine/Core/GameData", "Engine/GameObjects/Spell", "Engine/Core/Helper", "Engine/Agents/MobAgent", "Engine/Core/Buff", "Buffs/index"], function (require, exports, SpellData_1, UnitManager_9, GameData_17, Spell_6, Helper_6, MobAgent_4, Buff_5, Buffs) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var SpellDatas;
-    (function (SpellDatas) {
-        class FloraHeal extends SpellData_1.SpellData {
-            constructor(settings) {
-                super(settings);
-                this.isCast = true;
-                this.isChannel = true;
-                this.channelTime = 2.4;
-                this.castTime = 1.4;
-                this.manaCost = 8;
-                this.totalTime = 0;
-                this.hitCount = 0;
-            }
-            onCast(mob, target) {
-                this.totalTime = 0;
-                this.hitCount = -1;
-            }
-            onChanneling(mob, target, dt) {
-                this.totalTime += dt;
-                if (Math.ceil(this.totalTime / 0.8) > this.hitCount) {
-                    this.hitCount++;
-                    UnitManager_8.UnitManager.getCurrent().getUnitList(UnitManager_8.UnitManager.sortByHealthPercentage, UnitManager_8.UnitManager.NOOP, mob.mobData.isPlayer).slice(0, 3).forEach(target => {
-                        mob.dealDamageHeal(target, {
-                            'value': Helper_5.getRandomInt(4, 6),
-                            'type': GameData_16.GameData.Elements.heal,
-                            'spell': {
-                                'name': this.name,
-                                'flags': new Set([
-                                    Spell_5.SpellFlags.areaEffect,
-                                    Spell_5.SpellFlags.isHeal,
-                                ])
-                            }
-                        });
+    Buffs = __importStar(Buffs);
+    class FloraHeal extends SpellData_1.SpellData {
+        constructor(settings) {
+            super(settings);
+            this.isCast = true;
+            this.isChannel = true;
+            this.channelTime = 2.4;
+            this.castTime = 1.4;
+            this.manaCost = 8;
+            this.totalTime = 0;
+            this.hitCount = 0;
+        }
+        onCast(mob, target) {
+            this.totalTime = 0;
+            this.hitCount = -1;
+        }
+        onChanneling(mob, target, dt) {
+            this.totalTime += dt;
+            if (Math.ceil(this.totalTime / 0.8) > this.hitCount) {
+                this.hitCount++;
+                UnitManager_9.UnitManager.getCurrent().getUnitList(UnitManager_9.UnitManager.sortByHealthPercentage, UnitManager_9.UnitManager.NOOP, mob.mobData.isPlayer).slice(0, 3).forEach(target => {
+                    mob.dealDamageHeal(target, {
+                        'value': Helper_6.getRandomInt(4, 6),
+                        'type': GameData_17.GameData.Elements.heal,
+                        'spell': {
+                            'name': this.name,
+                            'flags': new Set([
+                                Spell_6.SpellFlags.areaEffect,
+                                Spell_6.SpellFlags.isHeal,
+                            ])
+                        }
                     });
+                });
+            }
+        }
+    }
+    exports.FloraHeal = FloraHeal;
+    class Taunt extends SpellData_1.SpellData {
+        constructor(settings) {
+            settings.coolDown = settings.coolDown || 8;
+            super(settings);
+            this.isCast = true;
+            this.castTime = 0.7;
+            this.manaCost = 0;
+        }
+        onCast(mob, target) {
+            let myPos = mob.footPos();
+            let targets = UnitManager_9.UnitManager.getCurrent().getUnitList(UnitManager_9.UnitManager.IDENTITY, (a) => (myPos.distance(a.footPos()) < 250), !mob.mobData.isPlayer);
+            if (targets.length <= 0) {
+                return;
+            }
+            for (let i = 0; i < targets.length; i++) {
+                let agent = targets[i].agent;
+                if (agent instanceof MobAgent_4.TauntBasedAgent) {
+                    agent.changeTaunt(mob, 2000);
                 }
             }
         }
-        SpellDatas.FloraHeal = FloraHeal;
-    })(SpellDatas = exports.SpellDatas || (exports.SpellDatas = {}));
+    }
+    exports.Taunt = Taunt;
+    class BigHeal extends SpellData_1.SpellData {
+        constructor(settings) {
+            settings.coolDown = settings.coolDown || 6;
+            super(settings);
+            this.isCast = true;
+            this.castTime = 1.5;
+            this.manaCost = 25;
+        }
+        onCast(mob, target) {
+            let myPos = mob.footPos();
+            let targets = UnitManager_9.UnitManager.getCurrent().getUnitList(UnitManager_9.UnitManager.sortByHealthPercentage, UnitManager_9.UnitManager.NOOP, mob.mobData.isPlayer);
+            if (targets.length <= 0) {
+                return;
+            }
+            mob.dealDamageHeal(targets[0], {
+                'type': GameData_17.GameData.Elements.heal,
+                'value': 186,
+                'spell': {
+                    'name': 'BigHeal',
+                    'flags': new Set([Spell_6.SpellFlags.isHeal, Spell_6.SpellFlags.hasTarget])
+                }
+            });
+            targets[0].receiveBuff(mob, new Buffs.HDOT(Buff_5.Buff.fromKey('test_GodHeal', { 'source': mob.mobData, 'time': 12.0 }), GameData_17.GameData.Elements.heal, 5, 10, 0.5));
+        }
+    }
+    exports.BigHeal = BigHeal;
+});
+/** @packageDocumentation @moduleeDocumentation @module SpellDatas */
+define("SpellData/index", ["require", "exports", "SpellData/FloraHeal"], function (require, exports, FloraHeal_1) {
+    "use strict";
+    function __export(m) {
+        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    __export(FloraHeal_1);
 });
 /** @packageDocumentation @module BattleScene */
-define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/index", "Engine/Agents/PlayerAgents", "Mobs/index", "Agents/index", "Engine/Core/Helper", "Engine/Core/ObjectPopulator", "Lists/ObjectList", "Lists/AgentList", "Engine/UI/Localization"], function (require, exports, BattleScene_1, Mob_12, MobData_3, Weapons, PlayerAgents, Mobs, Agents, Helper_6, ObjectPopulator_3, ObjectList_1, AgentList_1, Localization_9) {
+define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene", "Engine/GameObjects/Mob", "Engine/Core/MobData", "Weapons/index", "Engine/Agents/PlayerAgents", "Mobs/index", "Agents/index", "Engine/Core/Helper", "Engine/Core/ObjectPopulator", "Lists/ObjectList", "Lists/AgentList", "Engine/UI/Localization", "SpellData/index"], function (require, exports, BattleScene_1, Mob_12, MobData_3, Weapons, PlayerAgents, Mobs, Agents, Helper_7, ObjectPopulator_3, ObjectList_1, AgentList_1, Localization_10, SpellDatas) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     Weapons = __importStar(Weapons);
     PlayerAgents = __importStar(PlayerAgents);
     Mobs = __importStar(Mobs);
     Agents = __importStar(Agents);
+    SpellDatas = __importStar(SpellDatas);
     class TestScene extends BattleScene_1.BattleScene {
         constructor() {
             super(false); // debug?
@@ -5245,13 +5405,13 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
             // this.tiles = this.map.addTilesetImage('Grass_Overworld', 'Grass_Overworld');
             // this.terrainLayer = this.map.createStaticLayer('Terrain', this.tiles, 0, 0);
             this.anims.create({ key: 'move', frames: this.anims.generateFrameNumbers('elf', { start: 0, end: 3, first: 0 }), frameRate: 8, repeat: -1 });
-            for (let i = 0; i < 6; i++) {
+            for (let i = 0; i < 1; i++) {
                 // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
-                this.girl = new Mob_12.Mob(this, 930, 220 + i * 30, 'sheet_forestelf_myst', {
+                this.girl = new Mob_12.Mob(this, 930, 220 + i * 30, 'sheet_mHwarrior', {
                     'backendData': new MobData_3.MobData({
-                        'name': Localization_9._('testGirl') + i,
+                        'name': Localization_10._('Guardian') + i,
                         'isPlayer': true,
-                        'vit': 12 + Helper_6.getRandomInt(-3, 3),
+                        'vit': 40 + Helper_7.getRandomInt(-10, 10),
                         'mag': 5,
                         'str': 2,
                         'int': 3,
@@ -5260,26 +5420,70 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
                     }),
                     'agent': PlayerAgents.Simple,
                 });
-                this.girl.mobData.battleStats.attackPower.ice = 10;
-                this.girl.mobData.battleStats.attackPower.fire = 40;
-                this.girl.mobData.battleStats.crit = 5.0;
-                this.girl.mobData.equip(new Weapons.CometWand(), MobData_3.EquipSlots.MainHand);
-                this.girl.mobData.equip(new Weapons.CometWand(), MobData_3.EquipSlots.SubHand);
-                this.girl.mobData.currentWeapon.activeRange = 2000;
+                this.girl.mobData.equip(new Weapons.Staffs.CometWand(), MobData_3.EquipSlots.MainHand);
+                this.girl.mobData.equip(new Weapons.Staffs.CometWand(), MobData_3.EquipSlots.SubHand);
+                this.girl.mobData.currentWeapon.activeRange = 50;
+                this.girl.mobData.tauntMul = 2.5;
+                this.girl.mobData.weaponSubHand.baseAttackSpeed = 0.05;
+                this.girl.mobData.weaponSubHand.manaCost = 1;
+                this.girl.mobData.spells['taunt'] = new SpellDatas.Taunt({ 'name': 'Taunt' });
+                this.addMob(this.girl);
+            }
+            for (let i = 0; i < 1; i++) {
+                // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
+                this.girl = new Mob_12.Mob(this, 930, 250 + i * 30, 'sheet_mHdruid', {
+                    'backendData': new MobData_3.MobData({
+                        'name': Localization_10._('Healer') + i,
+                        'isPlayer': true,
+                        'vit': 8 + Helper_7.getRandomInt(-10, 10),
+                        'mag': 20,
+                        'str': 2,
+                        'int': 3,
+                        'dex': 8,
+                        'tec': 7,
+                    }),
+                    'agent': PlayerAgents.Simple,
+                });
+                this.girl.mobData.equip(new Weapons.Staffs.CometWand(), MobData_3.EquipSlots.MainHand);
+                this.girl.mobData.equip(new Weapons.Staffs.CometWand(), MobData_3.EquipSlots.SubHand);
+                // this.girl.mobData.currentWeapon.activeRange = 350;
+                this.girl.mobData.weaponSubHand.baseAttackSpeed = 0.05;
+                this.girl.mobData.weaponSubHand.manaCost = 1;
+                this.girl.mobData.spells['bigHeal'] = new SpellDatas.BigHeal({ 'name': 'BigHeal' });
+                this.addMob(this.girl);
+            }
+            for (let i = 0; i < 4; i++) {
+                // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
+                this.girl = new Mob_12.Mob(this, 930, 280 + i * 30, 'sheet_forestelf_myst', {
+                    'backendData': new MobData_3.MobData({
+                        'name': Localization_10._('testGirl') + i,
+                        'isPlayer': true,
+                        'vit': 12 + Helper_7.getRandomInt(-3, 3),
+                        'mag': 5,
+                        'str': 2,
+                        'int': 3,
+                        'dex': 8,
+                        'tec': 7,
+                    }),
+                    'agent': PlayerAgents.Simple,
+                });
+                this.girl.mobData.equip(new Weapons.Staffs.CometWand(), MobData_3.EquipSlots.MainHand);
+                this.girl.mobData.equip(new Weapons.Staffs.CometWand(), MobData_3.EquipSlots.SubHand);
+                // this.girl.mobData.currentWeapon.activeRange = 2000;
                 this.girl.mobData.weaponSubHand.baseAttackSpeed = 0.05;
                 this.girl.mobData.weaponSubHand.manaCost = 1;
                 // this.girl.mobData.addListener(this.girl.mobData.weaponMainHand);
                 // this.girl.receiveBuff(this.girl, new Buffs.HDOT(Buff.fromKey('test_GodHeal'), GameData.Elements.heal, 20, 38, 0.8));
-                // this.girl.mobData.spells['floraHeal'] = new SpellDatas.FloraHeal({ 'name': 'FloraHeal', 'coolDown': 5.0 + i * 1.0, 'manaCost': 20 });
+                this.girl.mobData.spells['floraHeal'] = new SpellDatas.FloraHeal({ 'name': 'FloraHeal', 'coolDown': 5.0 + i * 1.0, 'manaCost': 20 });
                 this.addMob(this.girl);
             }
             for (let i = 0; i < 2; i++) {
                 // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
                 this.girl = new Mobs.Allies.WindElf.Hunter(this, 930, 220 + 180 + i * 30, 'sheet_forestelf_myst', {
                     'backendData': new MobData_3.MobData({
-                        'name': Localization_9._('Hunter') + i,
+                        'name': Localization_10._('Hunter') + i,
                         'isPlayer': true,
-                        'vit': 10 + Helper_6.getRandomInt(-3, 3),
+                        'vit': 10 + Helper_7.getRandomInt(-3, 3),
                         'mag': 5,
                         'str': 2,
                         'int': 3,
@@ -5291,14 +5495,14 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
                 this.girl.mobData.battleStats.attackPower.ice = 10;
                 this.girl.mobData.battleStats.attackPower.fire = 40;
                 this.girl.mobData.battleStats.crit = 5.0;
-                this.girl.mobData.equip(new Weapons.CometWand(), MobData_3.EquipSlots.MainHand);
-                this.girl.mobData.equip(new Weapons.CometWand(), MobData_3.EquipSlots.SubHand);
-                this.girl.mobData.currentWeapon.activeRange = 2000;
+                this.girl.mobData.equip(new Weapons.Bows.VentonHuntingBow(), MobData_3.EquipSlots.MainHand);
+                this.girl.mobData.equip(new Weapons.Staffs.CometWand(), MobData_3.EquipSlots.SubHand);
+                // this.girl.mobData.currentWeapon.activeRange = 2000;
                 this.girl.mobData.weaponSubHand.baseAttackSpeed = 0.05;
                 this.girl.mobData.weaponSubHand.manaCost = 1;
                 // this.girl.mobData.addListener(this.girl.mobData.weaponMainHand);
                 // this.girl.receiveBuff(this.girl, new Buffs.HDOT(Buff.fromKey('test_GodHeal'), GameData.Elements.heal, 20, 38, 0.8));
-                // this.girl.mobData.spells['floraHeal'] = new SpellDatas.FloraHeal({ 'name': 'FloraHeal', 'coolDown': 5.0 + i * 1.0, 'manaCost': 20 });
+                // this.girl.mobData.spells['floraHeal'] = new SpellDatas.FloraHeal({ 'name': 'FloraHeal', 'coolDown': 12.0 + i * 1.0, 'manaCost': 20 });
                 this.addMob(this.girl);
             }
             let woodlog = new Mob_12.Mob(this, 300, 200, 'sheet_forestelf_myst', {
@@ -5324,7 +5528,7 @@ define("TestScene", ["require", "exports", "Engine/ScenePrototypes/BattleScene",
     exports.TestScene = TestScene;
 });
 /** @packageDocumentation @module ScenePrototypes */
-define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine/UI/Localization", "Engine/DynamicLoader/DynamicLoaderScene", "Engine/UI/UIScene", "TestScene", "Engine/Core/InventoryCore", "Lists/ItemList", "Engine/UI/ProgressBar", "papaparse", "Engine/Core/Buff", "js-cookie", "Engine/Core/GameData"], function (require, exports, Localization_10, DynamicLoaderScene_3, UIScene_5, TestScene_1, InventoryCore_3, ItemList_1, ProgressBar_3, papaparse_1, Buff_5, js_cookie_1, GameData_17) {
+define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine/UI/Localization", "Engine/DynamicLoader/DynamicLoaderScene", "Engine/UI/UIScene", "TestScene", "Engine/Core/InventoryCore", "Lists/ItemList", "Engine/UI/ProgressBar", "papaparse", "Engine/Core/Buff", "js-cookie", "Engine/Core/GameData"], function (require, exports, Localization_11, DynamicLoaderScene_3, UIScene_5, TestScene_1, InventoryCore_3, ItemList_1, ProgressBar_4, papaparse_1, Buff_6, js_cookie_1, GameData_18) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     js_cookie_1 = __importDefault(js_cookie_1);
@@ -5341,8 +5545,8 @@ define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine
             // Set Language
             let sbox = (document.getElementById("Language"));
             let slang = js_cookie_1.default.get('language') || sbox.options[sbox.selectedIndex].value;
-            GameData_17.GameData.mainLanguage = slang;
-            GameData_17.GameData.popUpBuffLanguage = slang;
+            GameData_18.GameData.mainLanguage = slang;
+            GameData_18.GameData.popUpBuffLanguage = slang;
             sbox.selectedIndex = slang === 'zh-cn' ? 0 : (slang === 'en-us' ? 1 : 2);
             this.load.bitmapFont('smallPx', './assets/fonts/smallPx_C_0.png', './assets/fonts/smallPx_C.fnt');
             this.load.bitmapFont('smallPx_HUD', './assets/fonts/smallPx_HUD_0.png', './assets/fonts/smallPx_HUD.fnt');
@@ -5352,7 +5556,7 @@ define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine
             this.load.text('buffData', 'assets/dataSheets/Buffs.csv');
             this.load.text('assets', 'assets/dataSheets/Assets.csv');
             this.load.image('DOBJ_LOADING_PLACEHOLDER', 'assets/img/loading.png');
-            this.add.existing(new ProgressBar_3.ProgressBar(this, 400, 310, () => [this.currProgress, 1.0], 224, 20, 5, false, 0x444444, 0x000000, 0xfddac5, false));
+            this.add.existing(new ProgressBar_4.ProgressBar(this, 400, 310, () => [this.currProgress, 1.0], 224, 20, 5, false, 0x444444, 0x000000, 0xfddac5, false));
             this.load.on('progress', (value) => { this.currProgress = value; });
             this.load.on('complete', () => {
                 // https://medium.com/@kishanvikani/parse-multiple-files-using-papa-parse-and-perform-some-synchronous-task-2db18e531ede
@@ -5369,11 +5573,11 @@ define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine
                     let buffsCSV = (results[1]);
                     let itemsCSV = (results[2]);
                     let assetsCSV = (results[3]);
-                    Localization_10.Localization.setData(this.parseLocales(localesCSV));
+                    Localization_11.Localization.setData(this.parseLocales(localesCSV));
                     InventoryCore_3.ItemManager.setData(this.parseItems(itemsCSV), ItemList_1.ItemList);
                     // Create the ItemManager
                     // ItemManager.setData(this.cache.json.get('itemData'), ItemList);
-                    Buff_5.Buff.parsedBuffInfo = this.parseBuffs(buffsCSV);
+                    Buff_6.Buff.parsedBuffInfo = this.parseBuffs(buffsCSV);
                     let assetList = this.parseAssets(assetsCSV);
                     this.scene.add('TestScene', new TestScene_1.TestScene(), true);
                     this.scene.add('UIScene', UIScene_5.UIScene.getSingleton(), true);
@@ -5436,12 +5640,12 @@ define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine
                     'iconIdx': Number.parseInt(row[19]),
                     'toolTipText': 'itemtt_' + uid,
                 };
-                Localization_10.Localization.data.main[item.showName] = {
+                Localization_11.Localization.data.main[item.showName] = {
                     "zh-cn": row[1] === "" ? "BAD_STR" : row[1],
                     "en-us": row[2] === "" ? "BAD_STR" : row[2],
                     "ja-jp": row[3] === "" ? "BAD_STR" : row[3],
                 };
-                Localization_10.Localization.data.main[item.toolTipText] = {
+                Localization_11.Localization.data.main[item.toolTipText] = {
                     "zh-cn": row[20] === "" ? "BAD_STR" : row[20],
                     "en-us": row[21] === "" ? "BAD_STR" : row[21],
                     "ja-jp": row[22] === "" ? "BAD_STR" : row[22],
@@ -5450,7 +5654,7 @@ define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine
                 if (row[12] !== "") {
                     item.atkName = 'aN_' + uid;
                     // M, N, O
-                    Localization_10.Localization.data.main[item.atkName] = {
+                    Localization_11.Localization.data.main[item.atkName] = {
                         "zh-cn": row[12] === "" ? "BAD_STR" : (row[12]),
                         "en-us": row[13] === "" ? "BAD_STR" : (row[13]),
                         "ja-jp": row[14] === "" ? "BAD_STR" : (row[14]),
@@ -5460,7 +5664,7 @@ define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine
                 if (row[15] !== "") {
                     item.spName = 'sN_' + uid;
                     // P, Q, R
-                    Localization_10.Localization.data.main[item.spName] = {
+                    Localization_11.Localization.data.main[item.spName] = {
                         "zh-cn": row[15] === "" ? "BAD_STR" : (row[15]),
                         "en-us": row[16] === "" ? "BAD_STR" : (row[16]),
                         "ja-jp": row[17] === "" ? "BAD_STR" : (row[17]),
@@ -5488,7 +5692,7 @@ define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine
                     "en-us": row[2] === "" ? "BAD_STR" : row[2],
                     "ja-jp": row[3] === "" ? "BAD_STR" : row[3],
                 };
-                Localization_10.Localization.data.main[buff.name] = name;
+                Localization_11.Localization.data.main[buff.name] = name;
                 // E: color
                 buff.color = Phaser.Display.Color.HexStringToColor(row[4]);
                 // F, G: countTime, time
@@ -5508,7 +5712,7 @@ define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine
                     "en-us": row[13] === "" ? "BAD_STR" : row[13],
                     "ja-jp": row[14] === "" ? "BAD_STR" : row[14],
                 };
-                Localization_10.Localization.data.popUpBuff[buff.popupName] = pName;
+                Localization_11.Localization.data.popUpBuff[buff.popupName] = pName;
                 // O, P: UIImportant, UIPriority
                 buff.UIimportant = row[15] === "true";
                 buff.UIpriority = Number.parseFloat(row[16]);
@@ -5519,7 +5723,7 @@ define("Engine/ScenePrototypes/GamePreloadScene", ["require", "exports", "Engine
                     "en-us": row[18] === "" ? "BAD_STR" : row[18],
                     "ja-jp": row[19] === "" ? "BAD_STR" : row[19],
                 };
-                Localization_10.Localization.data.main[buff.toolTip] = ttText;
+                Localization_11.Localization.data.main[buff.toolTip] = ttText;
                 allBuffInfo[uid] = buff;
             }
             console.log("Parsed buffSettings:");
@@ -5592,14 +5796,5 @@ define("SimpleGame", ["require", "exports", "Engine/ScenePrototypes/GamePreloadS
     }
     exports.InitPhaser = InitPhaser;
     InitPhaser.initGame();
-});
-/** @packageDocumentation @moduleeDocumentation @module SpellDatas */
-define("SpellData/index", ["require", "exports", "SpellData/FloraHeal"], function (require, exports, FloraHeal_1) {
-    "use strict";
-    function __export(m) {
-        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-    }
-    Object.defineProperty(exports, "__esModule", { value: true });
-    __export(FloraHeal_1);
 });
 //# sourceMappingURL=gameMain.js.map

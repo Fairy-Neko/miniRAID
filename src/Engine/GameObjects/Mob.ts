@@ -15,9 +15,13 @@ import { DynamicLoaderScene } from '../DynamicLoader/DynamicLoaderScene';
 import { ObjectPopulator } from '../Core/ObjectPopulator';
 import { GameData } from '../Core/GameData';
 import { UIScene } from '../UI/UIScene';
+import { ProgressBar } from '../UI/ProgressBar';
 
 export class Mob extends dPhysSprite
 {
+    // A container that can be used to add some effects with this mob
+    container: Phaser.GameObjects.Container;
+
     moveAnim: string;
     idleAnim: string;
     deadAnim: string;
@@ -38,6 +42,9 @@ export class Mob extends dPhysSprite
         frame?: string | number)
     {
         super(scene, x, y, sprite || 'sheet_default_mob', subsprite, frame);
+        this.container = new Phaser.GameObjects.Container(scene, x, y);
+        this.container.depth = 1;
+        scene.add.existing(this.container);
 
         this.setOrigin(0.5, 0.8);
 
@@ -76,6 +83,10 @@ export class Mob extends dPhysSprite
         this.attackCounter = 0;
 
         // HPBar
+        if (this.isPlayer === false)
+        {
+            this.container.add(new ProgressBar(scene, -16, -32, () => [this.mobData.currentHealth, this.mobData.maxHealth], 32, 5, 1, true, 0x000000, 0x444444, 0xff5555, false));
+        }
     }
 
     // Somehow deprecated
@@ -103,6 +114,10 @@ export class Mob extends dPhysSprite
 
     update(dt: number)
     {
+        this.container.setPosition(this.x, this.y);
+        this.container.update(dt);
+        this.container.each((obj: Phaser.GameObjects.GameObject) => { obj.update(dt); });
+
         // this.sprite.x += dt / 1000.0 * 10;
         if (this.body.velocity.length() > 0)
         {
@@ -392,6 +407,7 @@ export class Mob extends dPhysSprite
         {
             // Don't remove it, keep it dead
             // game.units.removePlayer(this);
+            (<Phaser.Physics.Arcade.Body>(this.body)).setEnable(false);
         }
         else
         {
@@ -401,6 +417,7 @@ export class Mob extends dPhysSprite
                 this.agent = undefined;
             }
             UnitManager.getCurrent().removeEnemy(this);
+            this.container.destroy();
             this.destroy();
         }
     }

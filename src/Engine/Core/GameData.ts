@@ -27,16 +27,16 @@ export namespace GameData
 
     export const critMultiplier: mRTypes.LeafTypes<number> = {
         slash: 2.0,
-        knock: 1.6,
-        pierce: 2.5,
+        knock: 1.8,
+        pierce: 2.2,
         fire: 2.0,
         ice: 2.0,
-        water: 1.6,
+        water: 1.8,
         nature: 2.0,
-        wind: 2.5,
-        thunder: 2.5,
-        light: 1.6,
-        dark: 1.6,
+        wind: 2.2,
+        thunder: 2.2,
+        light: 1.8,
+        dark: 1.8,
         heal: 2.0,
     }
 

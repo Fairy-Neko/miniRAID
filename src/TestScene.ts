@@ -18,7 +18,7 @@ import { GameData } from "./Engine/Core/GameData";
 import * as Buffs from "./Buffs";
 import { _, Localization } from "./Engine/UI/Localization";
 import { Buff } from "./Engine/Core/Buff";
-import { SpellDatas } from "./SpellData/FloraHeal";
+import * as SpellDatas from "./SpellData/";
 import { MobListener } from "./Engine/Core/MobListener";
 
 export class TestScene extends BattleScene
@@ -65,10 +65,69 @@ export class TestScene extends BattleScene
 
         this.anims.create({ key: 'move', frames: this.anims.generateFrameNumbers('elf', { start: 0, end: 3, first: 0 }), frameRate: 8, repeat: -1 });
 
-        for (let i = 0; i < 6; i++)
+        for (let i = 0; i < 1; i++)
         {
             // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
-            this.girl = new Mob(this, 930, 220 + i * 30, 'sheet_forestelf_myst', {
+            this.girl = new Mob(this, 930, 220 + i * 30, 'sheet_mHwarrior', {
+                'backendData': new MobData({
+                    'name': _('Guardian') + i,
+                    'isPlayer': true,
+                    'vit': 40 + getRandomInt(-10, 10),
+                    'mag': 5,
+                    'str': 2,
+                    'int': 3,
+                    'dex': 8,
+                    'tec': 7,
+                }),
+                'agent': PlayerAgents.Simple,
+            });
+
+            this.girl.mobData.equip(new Weapons.Staffs.CometWand(), EquipSlots.MainHand);
+            this.girl.mobData.equip(new Weapons.Staffs.CometWand(), EquipSlots.SubHand);
+            this.girl.mobData.currentWeapon.activeRange = 50;
+            this.girl.mobData.tauntMul = 2.5;
+
+            this.girl.mobData.weaponSubHand.baseAttackSpeed = 0.05;
+            this.girl.mobData.weaponSubHand.manaCost = 1;
+
+            this.girl.mobData.spells['taunt'] = new SpellDatas.Taunt({ 'name': 'Taunt' });
+
+            this.addMob(this.girl);
+        }
+
+        for (let i = 0; i < 1; i++)
+        {
+            // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
+            this.girl = new Mob(this, 930, 250 + i * 30, 'sheet_mHdruid', {
+                'backendData': new MobData({
+                    'name': _('Healer') + i,
+                    'isPlayer': true,
+                    'vit': 8 + getRandomInt(-10, 10),
+                    'mag': 20,
+                    'str': 2,
+                    'int': 3,
+                    'dex': 8,
+                    'tec': 7,
+                }),
+                'agent': PlayerAgents.Simple,
+            });
+
+            this.girl.mobData.equip(new Weapons.Staffs.CometWand(), EquipSlots.MainHand);
+            this.girl.mobData.equip(new Weapons.Staffs.CometWand(), EquipSlots.SubHand);
+            // this.girl.mobData.currentWeapon.activeRange = 350;
+
+            this.girl.mobData.weaponSubHand.baseAttackSpeed = 0.05;
+            this.girl.mobData.weaponSubHand.manaCost = 1;
+
+            this.girl.mobData.spells['bigHeal'] = new SpellDatas.BigHeal({ 'name': 'BigHeal' });
+
+            this.addMob(this.girl);
+        }
+
+        for (let i = 0; i < 4; i++)
+        {
+            // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
+            this.girl = new Mob(this, 930, 280 + i * 30, 'sheet_forestelf_myst', {
                 'backendData': new MobData({
                     'name': _('testGirl') + i,
                     'isPlayer': true,
@@ -81,13 +140,10 @@ export class TestScene extends BattleScene
                 }),
                 'agent': PlayerAgents.Simple,
             });
-            this.girl.mobData.battleStats.attackPower.ice = 10;
-            this.girl.mobData.battleStats.attackPower.fire = 40;
-            this.girl.mobData.battleStats.crit = 5.0;
 
-            this.girl.mobData.equip(new Weapons.CometWand(), EquipSlots.MainHand);
-            this.girl.mobData.equip(new Weapons.CometWand(), EquipSlots.SubHand);
-            this.girl.mobData.currentWeapon.activeRange = 2000;
+            this.girl.mobData.equip(new Weapons.Staffs.CometWand(), EquipSlots.MainHand);
+            this.girl.mobData.equip(new Weapons.Staffs.CometWand(), EquipSlots.SubHand);
+            // this.girl.mobData.currentWeapon.activeRange = 2000;
 
             this.girl.mobData.weaponSubHand.baseAttackSpeed = 0.05;
             this.girl.mobData.weaponSubHand.manaCost = 1;
@@ -95,7 +151,7 @@ export class TestScene extends BattleScene
             // this.girl.mobData.addListener(this.girl.mobData.weaponMainHand);
             // this.girl.receiveBuff(this.girl, new Buffs.HDOT(Buff.fromKey('test_GodHeal'), GameData.Elements.heal, 20, 38, 0.8));
 
-            // this.girl.mobData.spells['floraHeal'] = new SpellDatas.FloraHeal({ 'name': 'FloraHeal', 'coolDown': 5.0 + i * 1.0, 'manaCost': 20 });
+            this.girl.mobData.spells['floraHeal'] = new SpellDatas.FloraHeal({ 'name': 'FloraHeal', 'coolDown': 5.0 + i * 1.0, 'manaCost': 20 });
 
             this.addMob(this.girl);
         }
@@ -120,9 +176,9 @@ export class TestScene extends BattleScene
             this.girl.mobData.battleStats.attackPower.fire = 40;
             this.girl.mobData.battleStats.crit = 5.0;
 
-            this.girl.mobData.equip(new Weapons.CometWand(), EquipSlots.MainHand);
-            this.girl.mobData.equip(new Weapons.CometWand(), EquipSlots.SubHand);
-            this.girl.mobData.currentWeapon.activeRange = 2000;
+            this.girl.mobData.equip(new Weapons.Bows.VentonHuntingBow(), EquipSlots.MainHand);
+            this.girl.mobData.equip(new Weapons.Staffs.CometWand(), EquipSlots.SubHand);
+            // this.girl.mobData.currentWeapon.activeRange = 2000;
 
             this.girl.mobData.weaponSubHand.baseAttackSpeed = 0.05;
             this.girl.mobData.weaponSubHand.manaCost = 1;
@@ -130,7 +186,7 @@ export class TestScene extends BattleScene
             // this.girl.mobData.addListener(this.girl.mobData.weaponMainHand);
             // this.girl.receiveBuff(this.girl, new Buffs.HDOT(Buff.fromKey('test_GodHeal'), GameData.Elements.heal, 20, 38, 0.8));
 
-            // this.girl.mobData.spells['floraHeal'] = new SpellDatas.FloraHeal({ 'name': 'FloraHeal', 'coolDown': 5.0 + i * 1.0, 'manaCost': 20 });
+            // this.girl.mobData.spells['floraHeal'] = new SpellDatas.FloraHeal({ 'name': 'FloraHeal', 'coolDown': 12.0 + i * 1.0, 'manaCost': 20 });
 
             this.addMob(this.girl);
         }

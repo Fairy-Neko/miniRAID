@@ -1,16 +1,16 @@
-/** @packageDocumentation @module Weapons */
+/** @packageDocumentation @module Weapons.Staffs */
 
-import { Weapon, WeaponType, WeaponSubType } from '../Engine/Core/EquipmentCore'
-import { MobData } from '../Engine/Core/MobData';
-import { Mob } from '../Engine/GameObjects/Mob';
-import { UnitManager } from '../Engine/Core/UnitManager';
-import { Spell, SpellFlags, Targeting } from '../Engine/GameObjects/Spell';
-import { Projectile } from '../Engine/GameObjects/Projectile';
-import { getRandomInt, AoE, Helper, reverseTarget } from '../Engine/Core/Helper';
-import { GameData } from '../Engine/Core/GameData';
-import * as Buffs from '../Buffs';
-import { Buff } from '../Engine/Core/Buff';
-import { _, Localization } from '../Engine/UI/Localization';
+import { Weapon, WeaponType, WeaponSubType } from '../../Engine/Core/EquipmentCore'
+import { MobData } from '../../Engine/Core/MobData';
+import { Mob } from '../../Engine/GameObjects/Mob';
+import { UnitManager } from '../../Engine/Core/UnitManager';
+import { Spell, SpellFlags, Targeting } from '../../Engine/GameObjects/Spell';
+import { Projectile } from '../../Engine/GameObjects/Projectile';
+import { getRandomInt, AoE, Helper, reverseTarget } from '../../Engine/Core/Helper';
+import { GameData } from '../../Engine/Core/GameData';
+import * as Buffs from '../../Buffs';
+import { Buff } from '../../Engine/Core/Buff';
+import { _, Localization } from '../../Engine/UI/Localization';
 
 export class CometWand extends Weapon
 {

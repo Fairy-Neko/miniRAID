@@ -14,13 +14,13 @@ div
 
 div#GameFrame
 {
-    margin: 1em auto;
+    margin: 0.15em auto;
 }
 
 body
 {
     margin: auto;
-    padding: 1em;
+    padding: 0 1em;
 }
 
 /*

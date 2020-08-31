@@ -74,7 +74,7 @@ export class WeaponFrame extends Phaser.GameObjects.Container
         this.wpIcon.on('pointerout', () =>
         {
             UIScene.getSingleton().hideToolTip();
-        })
+        });
     }
 
     setWeapon(target: Weapon)
@@ -442,9 +442,13 @@ export class UnitFrame extends Phaser.GameObjects.Container
 
         this.wpCurrent.wpIcon.setInteractive();
         this.wpCurrent.wpIcon.on('pointerdown', () => { this.switchWeapon(); });
+        this.wpCurrent.wpIcon.input.hitArea.width = 24;
+        this.wpCurrent.wpIcon.input.hitArea.height = 24;
 
         this.wpAlter.wpIcon.setInteractive();
         this.wpAlter.wpIcon.on('pointerdown', () => { this.switchWeapon(); });
+        this.wpAlter.wpIcon.input.hitArea.width = 24;
+        this.wpAlter.wpIcon.input.hitArea.height = 24;
 
         this.add(this.wpCurrent);
         this.add(this.wpAlter);

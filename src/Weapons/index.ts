@@ -1,3 +1,4 @@
 /** @packageDocumentation @module Weapons */
 
-export * from './Staff'
+export * as Staffs from './Staffs/'
+export * as Bows from './Bows/'

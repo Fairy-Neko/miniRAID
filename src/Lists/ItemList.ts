@@ -4,5 +4,5 @@ import * as Weapons from '../Weapons'
 
 export const ItemList: any =
 {
-    "cometWand": Weapons.CometWand,
+    "cometWand": Weapons.Staffs.CometWand,
 }
