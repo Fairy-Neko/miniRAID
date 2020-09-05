@@ -41,13 +41,7 @@ export class TestScene extends BattleScene
         ObjectPopulator.setData(ObjectList, AgentList);
 
         super.preload();
-        this.load.image('logo', 'assets/BlueHGRMJsm.png');
-
-        this.load.image('Grass_Overworld', 'assets/tilemaps/tiles/overworld_tileset_grass.png');
-        this.load.tilemapTiledJSON('overworld', 'assets/tilemaps/Overworld_tst.json');
-
-        this.load.spritesheet('elf', 'assets/img/spritesheets/forestElfMyst.png', { frameWidth: 32, frameHeight: 32, endFrame: 3 });
-
+        this.load.spritesheet('particles', 'assets/img/projectiles/particles.png', { 'frameWidth': 8, 'frameHeight': 8 });
     }
 
     // create()
@@ -58,6 +52,18 @@ export class TestScene extends BattleScene
     loadComplete() 
     {
         super.loadComplete();
+
+        // let iceShard = this.add.particles('particles', 0);
+        // iceShard.createEmitter({
+        //     x: 600,
+        //     y: 100,
+        //     angle: { min: 0, max: 360 },
+        //     speed: 400,
+        //     scale: 1,
+        //     gravityY: 200,
+        //     lifespan: { min: 1000, max: 2000 },
+        //     // blendMode: 'ADD'
+        // });
 
         // this.map = this.make.tilemap({ key: 'overworld' });
         // this.tiles = this.map.addTilesetImage('Grass_Overworld', 'Grass_Overworld');
@@ -73,17 +79,17 @@ export class TestScene extends BattleScene
                     'name': _('Guardian') + i,
                     'isPlayer': true,
                     'vit': 40 + getRandomInt(-10, 10),
-                    'mag': 5,
-                    'str': 2,
-                    'int': 3,
-                    'dex': 8,
-                    'tec': 7,
+                    'mag': 5 + getRandomInt(-3, 3),
+                    'str': 3 + getRandomInt(-3, 3),
+                    'int': 3 + getRandomInt(-3, 3),
+                    'dex': 8 + getRandomInt(-3, 3),
+                    'tec': 7 + getRandomInt(-3, 3),
                 }),
                 'agent': PlayerAgents.Simple,
             });
 
             this.girl.mobData.equip(new Weapons.Staffs.CometWand(), EquipSlots.MainHand);
-            this.girl.mobData.equip(new Weapons.Staffs.CometWand(), EquipSlots.SubHand);
+            this.girl.mobData.equip(new Weapons.Staffs.FlameWand(), EquipSlots.SubHand);
             this.girl.mobData.currentWeapon.activeRange = 50;
             this.girl.mobData.tauntMul = 2.5;
 
@@ -103,17 +109,17 @@ export class TestScene extends BattleScene
                     'name': _('Healer') + i,
                     'isPlayer': true,
                     'vit': 8 + getRandomInt(-10, 10),
-                    'mag': 20,
-                    'str': 2,
-                    'int': 3,
-                    'dex': 8,
-                    'tec': 7,
+                    'mag': 20 + getRandomInt(-8, 8),
+                    'str': 3 + getRandomInt(-3, 3),
+                    'int': 3 + getRandomInt(-3, 3),
+                    'dex': 8 + getRandomInt(-3, 3),
+                    'tec': 7 + getRandomInt(-3, 3),
                 }),
                 'agent': PlayerAgents.Simple,
             });
 
             this.girl.mobData.equip(new Weapons.Staffs.CometWand(), EquipSlots.MainHand);
-            this.girl.mobData.equip(new Weapons.Staffs.CometWand(), EquipSlots.SubHand);
+            this.girl.mobData.equip(new Weapons.Staffs.FlameWand(), EquipSlots.SubHand);
             // this.girl.mobData.currentWeapon.activeRange = 350;
 
             this.girl.mobData.weaponSubHand.baseAttackSpeed = 0.05;
@@ -124,7 +130,7 @@ export class TestScene extends BattleScene
             this.addMob(this.girl);
         }
 
-        for (let i = 0; i < 4; i++)
+        for (let i = 0; i < 3; i++)
         {
             // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
             this.girl = new Mob(this, 930, 280 + i * 30, 'sheet_forestelf_myst', {
@@ -132,17 +138,17 @@ export class TestScene extends BattleScene
                     'name': _('testGirl') + i,
                     'isPlayer': true,
                     'vit': 12 + getRandomInt(-3, 3),
-                    'mag': 5,
-                    'str': 2,
-                    'int': 3,
-                    'dex': 8,
-                    'tec': 7,
+                    'mag': 5 + getRandomInt(-3, 3),
+                    'str': 3 + getRandomInt(-3, 3),
+                    'int': 3 + getRandomInt(-3, 3),
+                    'dex': 8 + getRandomInt(-3, 3),
+                    'tec': 7 + getRandomInt(-3, 3),
                 }),
                 'agent': PlayerAgents.Simple,
             });
 
             this.girl.mobData.equip(new Weapons.Staffs.CometWand(), EquipSlots.MainHand);
-            this.girl.mobData.equip(new Weapons.Staffs.CometWand(), EquipSlots.SubHand);
+            this.girl.mobData.equip(new Weapons.Staffs.FlameWand(), EquipSlots.SubHand);
             // this.girl.mobData.currentWeapon.activeRange = 2000;
 
             this.girl.mobData.weaponSubHand.baseAttackSpeed = 0.05;
@@ -156,6 +162,38 @@ export class TestScene extends BattleScene
             this.addMob(this.girl);
         }
 
+        for (let i = 0; i < 1; i++)
+        {
+            // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
+            this.girl = new Mobs.Allies.MountainElf.Mage(this, 930, 280 + i * 30, 'sheet_forestelf_myst', {
+                'backendData': new MobData({
+                    'name': _('Mage') + i,
+                    'isPlayer': true,
+                    'vit': 12 + getRandomInt(-3, 3),
+                    'mag': 5 + getRandomInt(-3, 3),
+                    'str': 3 + getRandomInt(-3, 3),
+                    'int': 3 + getRandomInt(-3, 3),
+                    'dex': 8 + getRandomInt(-3, 3),
+                    'tec': 7 + getRandomInt(-3, 3),
+                }),
+                'agent': PlayerAgents.Simple,
+            });
+
+            this.girl.mobData.equip(new Weapons.Staffs.CometWand(), EquipSlots.MainHand);
+            this.girl.mobData.equip(new Weapons.Staffs.FlameWand(), EquipSlots.SubHand);
+            // this.girl.mobData.currentWeapon.activeRange = 2000;
+
+            this.girl.mobData.weaponSubHand.baseAttackSpeed = 0.05;
+            this.girl.mobData.weaponSubHand.manaCost = 1;
+
+            // this.girl.mobData.addListener(this.girl.mobData.weaponMainHand);
+            // this.girl.receiveBuff(this.girl, new Buffs.HDOT(Buff.fromKey('test_GodHeal'), GameData.Elements.heal, 20, 38, 0.8));
+
+            // this.girl.mobData.spells['floraHeal'] = new SpellDatas.FloraHeal({ 'name': 'FloraHeal', 'coolDown': 5.0 + i * 1.0, 'manaCost': 20 });
+
+            this.addMob(this.girl);
+        }
+
         for (let i = 0; i < 2; i++)
         {
             // this.alive.push(new Mob(this.add.sprite(100, 200, 'elf'), 'move'));
@@ -164,11 +202,11 @@ export class TestScene extends BattleScene
                     'name': _('Hunter') + i,
                     'isPlayer': true,
                     'vit': 10 + getRandomInt(-3, 3),
-                    'mag': 5,
-                    'str': 2,
-                    'int': 3,
-                    'dex': 8,
-                    'tec': 7,
+                    'mag': 5 + getRandomInt(-3, 3),
+                    'str': 3 + getRandomInt(-3, 3),
+                    'int': 3 + getRandomInt(-3, 3),
+                    'dex': 8 + getRandomInt(-3, 3),
+                    'tec': 7 + getRandomInt(-3, 3),
                 }),
                 'agent': PlayerAgents.Simple,
             });
@@ -177,7 +215,7 @@ export class TestScene extends BattleScene
             this.girl.mobData.battleStats.crit = 5.0;
 
             this.girl.mobData.equip(new Weapons.Bows.VentonHuntingBow(), EquipSlots.MainHand);
-            this.girl.mobData.equip(new Weapons.Staffs.CometWand(), EquipSlots.SubHand);
+            this.girl.mobData.equip(new Weapons.Staffs.FlameWand(), EquipSlots.SubHand);
             // this.girl.mobData.currentWeapon.activeRange = 2000;
 
             this.girl.mobData.weaponSubHand.baseAttackSpeed = 0.05;

@@ -6,6 +6,7 @@ import { mRTypes } from "../../../Engine/Core/mRTypes";
 import { MobData } from "../../../Engine/Core/MobData";
 import { Weapon, WeaponTarget } from "../../../Engine/Core/EquipmentCore";
 import { Buff } from "../../../Engine/Core/Buff";
+import { _ } from "../../../Engine/UI/Localization";
 
 export class Hunter extends Mob
 {
@@ -20,6 +21,8 @@ export class Hunter extends Mob
         sprite = 'sheet_mHarcher';
         super(scene, x, y, sprite, settings, subsprite, frame);
 
+        this.mobData.race = _('WindElf');
+        this.mobData.job = _('Hunter');
         this.mobData.addListener(new HunterChar(), this.mobData);
     }
 

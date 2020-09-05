@@ -591,6 +591,7 @@ export class MobData extends EventSystem.EventElement
             mob.mobData.castTime = spell.castTime / mob.mobData.modifiers.spellSpeed;
             mob.mobData.castRemain = mob.mobData.castTime;
             mob.mobData.currentSpell = spell;
+            mob.mobData.currentSpellTarget = target;
         }
         else
         {

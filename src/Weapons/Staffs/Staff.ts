@@ -18,7 +18,7 @@ export class CometWand extends Weapon
     {
         super(itemID);
 
-        this.mainElement = 'ice';
+        this.mainElement = GameData.Elements.ice;
 
         this.baseAttackMin = 6;
         this.baseAttackMax = 18;
@@ -100,7 +100,7 @@ export class CometWand extends Weapon
     {
         for (let targetMob of target)
             new Projectile(source.x, source.y, 'sheet_test_projectiles', {
-                'info': { 'name': this.atkName, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },
+                'info': { 'name': this.atkName, 'flags': new Set<SpellFlags>([SpellFlags.hasTarget]) },
                 'source': source,
                 'target': targetMob,
                 'speed': 250,
@@ -116,7 +116,7 @@ export class CometWand extends Weapon
     {
         for (let targetMob of target)
             new Projectile(source.x, source.y, 'sheet_test_projectiles', {
-                'info': { 'name': this.spName, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },
+                'info': { 'name': this.spName, 'flags': new Set<SpellFlags>([SpellFlags.hasTarget]) },
                 'source': source,
                 'target': targetMob,
                 'speed': 400,
@@ -138,7 +138,7 @@ export class CometWand extends Weapon
             // self.HealDmg(m, getRandomInt(30, 50), GameData.Elements.fire);
             if (getRandomInt(0, 3) < 1)
             {
-                m.receiveBuff(source, new Buffs.HDOT(Buff.fromKey('test_HOT', { source: source.mobData, time: 10.0, maxStack: 3 }), GameData.Elements.heal, 0, 1, 2.0));
+                m.receiveBuff(source, new Buffs.HDOT(Buff.fromKey('test_HOT', { source: source.mobData, time: 8.0, maxStack: 3 }), GameData.Elements.heal, 1, 3, 1.2));
             }
             else
             {
@@ -150,5 +150,31 @@ export class CometWand extends Weapon
     grabTargets(mob: Mob): Array<Mob> 
     {
         return UnitManager.getCurrent().getNearest(mob.footPos(), !mob.mobData.isPlayer, this.targetCount);
+    }
+}
+
+export class FlameWand extends CometWand
+{
+    constructor(itemID: string = 'cometWand')
+    {
+        super(itemID);
+
+        this.mainElement = GameData.Elements.fire;
+    }
+
+    doRegularAttack(source: Mob, target: Array<Mob>)
+    {
+        for (let targetMob of target)
+            new Projectile(source.x, source.y, 'sheet_test_projectiles', {
+                'info': { 'name': this.atkName, 'flags': new Set<SpellFlags>([SpellFlags.hasTarget]) },
+                'source': source,
+                'target': targetMob,
+                'speed': 250,
+                'mainType': [GameData.Elements.fire],
+                'onMobHit': (self: Spell, mob: Mob) => { self.dieAfter(self.HealDmg, [mob, getRandomInt(6, 18), GameData.Elements.fire], mob); },
+                // 'color': Phaser.Display.Color.HexStringToColor("#77ffff"),
+                'chasingRange': 400,
+                'chasingPower': 1.0,
+            }, 1);
     }
 }

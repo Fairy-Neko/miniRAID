@@ -22,6 +22,8 @@ export class SpellData
     priority: number;
     available: boolean;
 
+    requireTarget: boolean;
+
     isChannel: boolean;
     isCast: boolean;
     castTime: number;
@@ -33,6 +35,7 @@ export class SpellData
         this.coolDown = settings.coolDown || 10.0;
         this.manaCost = settings.manaCost || 0;
         this.name = settings.name || "Spell";
+        this.requireTarget = settings.requireTarget || false;
 
         // Available when init
         this.coolDownRemain = 0;
@@ -67,7 +70,7 @@ export class SpellData
 
     preCast(mob: Mob, target: Mob | Phaser.Math.Vector2)
     {
-        if (this.available && mob.mobData.canCastSpell() && mob.mobData.hasMana(this.getManaCost(mob)))
+        if (this.available && (!this.requireTarget || target) && mob.mobData.canCastSpell() && mob.mobData.hasMana(this.getManaCost(mob)))
         {
             return true;
         }

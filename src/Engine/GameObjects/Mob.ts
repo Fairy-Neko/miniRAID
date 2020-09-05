@@ -16,6 +16,9 @@ import { ObjectPopulator } from '../Core/ObjectPopulator';
 import { GameData } from '../Core/GameData';
 import { UIScene } from '../UI/UIScene';
 import { ProgressBar } from '../UI/ProgressBar';
+import { _ } from '../UI/Localization';
+import { Helper } from '../Core/Helper';
+import { SpellFlags } from './Spell';
 
 export class Mob extends dPhysSprite
 {
@@ -33,6 +36,17 @@ export class Mob extends dPhysSprite
 
     imageFacingRight: boolean = false;
 
+    // popUp related
+    avgPUDmg: number;
+    avgPUHeal: number;
+    PUDmgcnt: number = 0;
+    PUHealcnt: number = 0;
+    PUDecay: number = 0.99;
+    bigFontThreshold: number = 3.5;
+    _bigFontThreshold: number;
+    _logMul: number = 3.0;
+    _tanhMul: number = 0.8;
+
     constructor(
         scene: Phaser.Scene,
         x: number, y: number,
@@ -46,7 +60,7 @@ export class Mob extends dPhysSprite
         this.container.depth = 1;
         scene.add.existing(this.container);
 
-        this.setOrigin(0.5, 0.8);
+        this.setOrigin(0.5, 0.7);
 
         this.mobData = settings.backendData;
         this.mobData.parentMob = this;
@@ -87,6 +101,9 @@ export class Mob extends dPhysSprite
         {
             this.container.add(new ProgressBar(scene, -16, -32, () => [this.mobData.currentHealth, this.mobData.maxHealth], 32, 5, 1, true, 0x000000, 0x444444, 0xff5555, false));
         }
+
+        // PopUp settings
+        this._bigFontThreshold = Math.tanh(Math.log(this.bigFontThreshold) * this._logMul) * this._tanhMul + this._tanhMul;
     }
 
     // Somehow deprecated
@@ -340,11 +357,47 @@ export class Mob extends dPhysSprite
             var popUpPos = this.getTopCenter();
             if (result.type === 'heal')
             {
-                PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData.ElementColors[result.type], 1.0, 64);
+                // Exp moving average
+                let decay = 1 / Math.min(1 / this.PUDecay, this.PUHealcnt);
+                if (typeof this.avgPUHeal === 'undefined') { this.avgPUHeal = result.value; }
+                else { this.avgPUHeal = this.avgPUHeal * decay + (1 - decay) * result.value; }
+                this.PUHealcnt += 1;
+
+                let lvl: number = Math.tanh(Math.log(result.value / this.avgPUHeal) * this._logMul) * this._tanhMul + this._tanhMul;
+                if (result.spell.flags.has(SpellFlags.overTime)) { lvl *= 0.5; }
+
+                PopUpManager.getSingleton().addText(
+                    result.value.toString() + (result.isCrit ? "!" : ""),
+                    popUpPos.x, popUpPos.y,
+                    GameData.ElementColors[result.type],
+                    1.0,
+                    64, Math.min(1, lvl) * -256,
+                    0, Math.min(1, lvl) * 512,
+                    Math.min(1, lvl),
+                    lvl > this._bigFontThreshold ? 2 : 1
+                );
             }
             else
             {
-                PopUpManager.getSingleton().addText(result.value.toString() + (result.isCrit ? "!" : ""), popUpPos.x, popUpPos.y, GameData.ElementColors[result.type]);
+                // Exp moving average
+                let decay = 1 / Math.min(1 / this.PUDecay, this.PUDmgcnt);
+                if (typeof this.avgPUDmg === 'undefined') { this.avgPUDmg = result.value; }
+                else { this.avgPUDmg = this.avgPUDmg * decay + (1 - decay) * result.value; }
+                this.PUDmgcnt += 1;
+
+                let lvl: number = Math.tanh(Math.log(result.value / this.avgPUDmg) * this._logMul) * this._tanhMul + this._tanhMul;
+                if (result.spell.flags.has(SpellFlags.overTime)) { lvl *= 0.5; }
+
+                PopUpManager.getSingleton().addText(
+                    result.value.toString() + (result.isCrit ? "!" : ""),
+                    popUpPos.x, popUpPos.y,
+                    GameData.ElementColors[result.type],
+                    1.0,
+                    -64, Math.min(1, lvl) * -256,
+                    0, Math.min(1, lvl) * 512,
+                    Math.min(1, lvl),
+                    lvl > this._bigFontThreshold ? 2 : 1
+                );
             }
 
             // popUp texts on unit frames
@@ -454,6 +507,40 @@ export class Mob extends dPhysSprite
     footPos(): Phaser.Math.Vector2
     {
         return new Phaser.Math.Vector2(this.x, this.y);
+    }
+
+    getToolTip(): mRTypes.HTMLToolTip
+    {
+        let tt: mRTypes.HTMLToolTip = {
+            'title': `<p>${_(this.mobData.name)}</p>`,
+            'text': Helper.toolTip.beginSection() + `<p><strong>${this.mobData.currentHealth.toFixed(0)} / ${this.mobData.maxHealth.toFixed(0)}</strong><strong>${this.mobData.currentMana.toFixed(0)} / ${this.mobData.maxMana.toFixed(0)}</strong></p>`,
+            'color': '#ffcc00',
+            'bodyStyle': 'min-width: 200px',
+        };
+
+        if (this.mobData.isPlayer)
+        {
+            tt.text += Helper.toolTip.switchSection();
+            tt.text += Helper.toolTip.row(`${_('level')} ${this.mobData.level}`);
+            tt.text += Helper.toolTip.row(`${_(this.mobData.race)} - ${_(this.mobData.job)}`);
+            tt.text += Helper.toolTip.switchSection();
+            tt.text += Helper.toolTip.row(`<strong style = 'width: 2.5em'>${_('vit')}</strong>${this.mobData.baseStats.vit}`);
+            tt.text += Helper.toolTip.row(`<strong style = 'width: 2.5em'>${_('str')}</strong>${this.mobData.baseStats.str}`);
+            tt.text += Helper.toolTip.row(`<strong style = 'width: 2.5em'>${_('dex')}</strong>${this.mobData.baseStats.dex}`);
+            tt.text += Helper.toolTip.row(`<strong style = 'width: 2.5em'>${_('tec')}</strong>${this.mobData.baseStats.tec}`);
+            tt.text += Helper.toolTip.row(`<strong style = 'width: 2.5em'>${_('int')}</strong>${this.mobData.baseStats.int}`);
+            tt.text += Helper.toolTip.row(`<strong style = 'width: 2.5em'>${_('mag')}</strong>${this.mobData.baseStats.mag}`);
+            tt.text += Helper.toolTip.switchSection();
+            tt.text += Helper.toolTip.row(_('LearnedSkills'));
+            for (let key in this.mobData.spells)
+            {
+                tt.text += Helper.toolTip.row(_(this.mobData.spells[key].name));
+            }
+        }
+
+        tt.text += Helper.toolTip.endSection();
+
+        return tt;
     }
 
     static checkExist(mob?: Mob): boolean

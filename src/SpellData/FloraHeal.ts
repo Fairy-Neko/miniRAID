@@ -58,7 +58,6 @@ export class FloraHeal extends SpellData
                         'name': this.name,
                         'flags': new Set([
                             SpellFlags.areaEffect,
-                            SpellFlags.isHeal,
                         ])
                     }
                 });
@@ -133,7 +132,7 @@ export class BigHeal extends SpellData
             'value': 186,
             'spell': {
                 'name': 'BigHeal',
-                'flags': new Set<SpellFlags>([SpellFlags.isHeal, SpellFlags.hasTarget])
+                'flags': new Set<SpellFlags>([SpellFlags.hasTarget])
             }
         });
 

@@ -9,12 +9,13 @@ import { GameData } from "../Core/GameData";
 
 export enum SpellFlags
 {
-    isDamage,
-    isHeal,
+    // isDamage,
+    // isHeal,
     hasTarget,
     areaEffect,
     overTime, // DOT / HOT
     targetingEverything,
+    isSub,
 }
 
 export enum Targeting

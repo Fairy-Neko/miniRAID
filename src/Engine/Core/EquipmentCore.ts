@@ -120,7 +120,7 @@ export class Weapon extends Equipable
 {
     wpType: WeaponType;
     wpsubType: WeaponSubType;
-    mainElement: string;
+    mainElement: GameData.Elements;
 
     baseAttackSpeed: number;
     baseAttackMin: number;

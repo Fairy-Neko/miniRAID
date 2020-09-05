@@ -40,15 +40,31 @@ export function AoE(
     func: AoECBm | AoECBml | AoECBmli,
     pos: Phaser.Math.Vector2, range: number, targets: Targeting, maxCapture: number = -1, compareFunc: mRTypes.CompareFunc<Mob> = UnitManager.IDENTITY)
 {
+    AoE_general(func, (a: Mob) => { return (a.footPos().distance(pos) < range); }, targets, maxCapture, compareFunc)
+}
+
+/**
+ * Same as AoE, but supports arbitrary shape.
+ * 
+ * @param func Callback that will be applied for each mob once, who got captured by this AoE.
+ * @param isIn Function that defines the "shape" of AoE: returns true if target is inside the attack range, otherwise false.
+ * @param targets Which type of mobs is this AoE capturing. Rather player, enemy or both.
+ * @param maxCapture Maximum units that this AoE can capture, <= 0 means no limit. It is recommended to set a non-identity compareFunc when a maxCapture number is set.
+ * @param compareFunc The compareing function that will be used when quering the captured unit list. If set, target list will be sorted wrt this function, default is Identity (no sort).
+ */
+export function AoE_general(
+    func: AoECBm | AoECBml | AoECBmli,
+    isIn: mRTypes.FilterFunc<Mob>, targets: Targeting, maxCapture: number = -1, compareFunc: mRTypes.CompareFunc<Mob> = UnitManager.IDENTITY)
+{
     let AoEList =
         targets == Targeting.Both ?
             UnitManager.getCurrent().getUnitListAll(
                 compareFunc,
-                (a: Mob) => { return (a.footPos().distance(pos) < range); })
+                isIn)
             :
             UnitManager.getCurrent().getUnitList(
                 compareFunc,
-                (a: Mob) => { return (a.footPos().distance(pos) < range); },
+                isIn,
                 targets == Targeting.Player);
 
     if (maxCapture > 0)

@@ -436,6 +436,18 @@ export class UnitFrame extends Phaser.GameObjects.Container
         this.avatar.setOrigin(1, 0);
         this.add(this.avatar);
 
+        this.avatar.on('pointerover', () =>
+        {
+            UIScene.getSingleton().showToolTip(this.targetMob.getToolTip());
+        });
+        this.avatar.on('pointerout', () =>
+        {
+            UIScene.getSingleton().hideToolTip();
+        });
+        this.avatar.setInteractive();
+        this.avatar.input.hitArea.width = 32;
+        this.avatar.input.hitArea.height = 32;
+
         // Weapon, TODO: switch weapons on click
         this.wpCurrent = new WeaponFrame(this.scene, 85, 7, this.targetMob.mobData.currentWeapon);
         this.wpAlter = new WeaponFrame(this.scene, 115, 7, this.targetMob.mobData.anotherWeapon);

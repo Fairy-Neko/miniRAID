@@ -12,6 +12,8 @@ import { _ } from "./Localization";
 
 export class PopupText extends Phaser.GameObjects.BitmapText
 {
+    timeMax: number;
+    baseAlpha: number;
     time: number;
     velX: number;
     velY: number;
@@ -25,7 +27,8 @@ export class PopupText extends Phaser.GameObjects.BitmapText
         color: number,
         time: number = 1.0,
         velX: number = -64, velY: number = -256,
-        accX: number = 0.0, accY: number = 512.0, isBuff: boolean = false)
+        accX: number = 0.0, accY: number = 512.0, isBuff: boolean = false, alpha: number = 1.0,
+        scale: number = 1,)
     {
         if (isBuff)
         {
@@ -34,14 +37,18 @@ export class PopupText extends Phaser.GameObjects.BitmapText
         }
         else
         {
-            super(scene, x, y, GameData.popUpSmallFont ? 'smallPx' : 'mediumPx', text);
+            super(scene, x, y, GameData.popUpSmallFont ? 'smallPx' : 'mediumPx', text, -scale * (GameData.popUpSmallFont ? 10 : 16));
         }
 
         this.time = time;
-        this.velX = velX;
-        this.velY = velY;
-        this.accX = accX;
-        this.accY = accY;
+        this.timeMax = time;
+        this.baseAlpha = alpha;
+        this.velX = velX / scale;
+        this.velY = velY / scale;
+        this.accX = accX / scale;
+        this.accY = accY / scale;
+
+        // this.scale = scale;
 
         this.dead = false;
         this.setTint(color);
@@ -67,7 +74,7 @@ export class PopupText extends Phaser.GameObjects.BitmapText
         this.velX += this.accX * dt;
         this.velY += this.accY * dt;
 
-        this.alpha = this.time;
+        this.alpha = Math.max(this.time, (this.time / this.timeMax)) * this.baseAlpha;
     }
 }
 
@@ -114,11 +121,13 @@ export class PopUpManager extends Phaser.GameObjects.Container
         velY: number = -256, // jumping speed
         accX: number = 0.0,   // gravity
         accY: number = 512,// gravity
+        alpha: number = 1,
+        scale: number = 1,
     )
     {
         if (this.loaded)
         {
-            let txt = new PopupText(this.scene, posX, posY, text, color.color, time, velX, velY, accX, accY);
+            let txt = new PopupText(this.scene, posX, posY, text, color.color, time, velX, velY, accX, accY, false, alpha, scale);
             this.add(txt);
         }
     }

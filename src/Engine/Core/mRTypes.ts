@@ -46,6 +46,8 @@ export namespace mRTypes
 
             coolDown?: number;
             manaCost?: number;
+
+            requireTarget?: boolean;
         }
 
         export interface MobData

@@ -105,7 +105,7 @@ export namespace GameData
     export let useAutomove: boolean = true;
     export let moveThreshold: number = 150;
 
-    export let popUpSmallFont: boolean = false;
+    export let popUpSmallFont: boolean = true;
     export let popUpBuffLanguage: mRTypes.Languages = mRTypes.Languages.ENG;
     export let mainLanguage: mRTypes.Languages = mRTypes.Languages.ENG;
     export let showManaNumber: boolean = true;

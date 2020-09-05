@@ -16,7 +16,7 @@ export class VentonHuntingBow extends Weapon
     {
         super(itemID);
 
-        this.mainElement = 'pierce';
+        this.mainElement = GameData.Elements.pierce;
 
         this.baseAttackMin = 4;
         this.baseAttackMax = 14;
@@ -61,7 +61,7 @@ export class VentonHuntingBow extends Weapon
     {
         for (let targetMob of target)
             new Projectile(source.x, source.y, 'sheet_test_projectiles', {
-                'info': { 'name': this.atkName, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },
+                'info': { 'name': this.atkName, 'flags': new Set<SpellFlags>([SpellFlags.hasTarget]) },
                 'source': source,
                 'target': targetMob,
                 'color': Phaser.Display.Color.HexStringToColor('#bd8c3c'),
@@ -77,7 +77,7 @@ export class VentonHuntingBow extends Weapon
     {
         for (let targetMob of target)
             new Projectile(source.x, source.y, 'sheet_test_projectiles', {
-                'info': { 'name': this.atkName, 'flags': new Set<SpellFlags>([SpellFlags.isDamage, SpellFlags.hasTarget]) },
+                'info': { 'name': this.spName, 'flags': new Set<SpellFlags>([SpellFlags.hasTarget]) },
                 'source': source,
                 'target': targetMob,
                 'color': Phaser.Display.Color.HexStringToColor('#96d474'),
