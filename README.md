@@ -1,3 +1,7 @@
+**We are making a turn-based tactical RPG for miniRAID instead. Please check [miniRAIDs](https://fairy-neko.github.io/miniRAIDs).**  
+
+------
+
 Please refer to e.g. https://www.freecodecamp.org/news/how-to-build-a-simple-game-in-the-browser-with-phaser-3-and-typescript-bdc94719135/ for build up the enviorment, phaser and typescript.  
 I used NPM as the package manager.
 
